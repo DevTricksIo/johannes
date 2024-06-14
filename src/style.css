@@ -1,0 +1,189 @@
+.drag-handler {
+    color: #84888d;
+    visibility: hidden;
+    cursor: grab;
+    align-self: start;
+}
+
+.drag-handler:active {
+    cursor: grabbing;
+}
+
+.draggable-block {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1rem;
+}
+
+.draggable-block:hover .drag-handler {
+    visibility: visible;
+    vertical-align: top;
+    justify-content: start;
+}
+
+.drop-line {
+    height: 1rem;
+    background-color: #84888d;
+    width: 100%;
+}
+
+
+
+
+.add-block {
+    margin: 0;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #000;
+    background-color: white;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.add-block-wrapper {
+    width: 100%;
+    height: 3.125rem;
+
+}
+
+.add-block-wrapper:hover .add-block {
+    display: flex;
+
+}
+
+h1[data-placeholder]:empty:before {
+    content: attr(data-placeholder);
+    color: #84888d !important;
+    display: block;
+}
+
+h1[data-placeholder]:focus:before {}
+
+
+*[contenteditable="true"]:not(h1):empty:before {
+    content: attr(data-placeholder);
+    color: #84888acd;
+    display: none;
+}
+
+*[contenteditable="true"]:not(h1):empty:hover:before {
+    display: block;
+}
+
+*[contenteditable="true"]:not(h1)[data-placeholder]:empty:focus:before {
+    content: attr(data-placeholder);
+    color: #84888acd !important;
+    display: block;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: bolder !important;
+}
+
+.block-options {
+    width: 480px;
+}
+
+.johannes-editor {
+    width: 100%;
+
+}
+
+.content {
+    width: 100%;
+    box-sizing: border-box;
+
+
+}
+
+pre {
+    width: 100%;
+}
+
+[contenteditable] {
+    outline: none;
+}
+
+.content-area {
+    height: 2000px;
+    background-color: #f0f0f1 !important;
+
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+
+.editor {
+
+    display: flex;
+
+    margin-top: 80px;
+}
+
+.block-options {
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+    position: absolute;
+    display: none;
+}
+
+.block-options .option {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    margin: 5px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.block-options .option:hover {
+    background-color: #e9e9e9;
+}
+
+
+p {
+    font-size: 20px !important;
+    color: #242424;
+}
+
+
+.draggable-block,
+.draggable-block * {
+    user-select: text;
+}
+
+
+.johannes-content-element {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+
+.editor-wrapper {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+
+.button-reset {
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    overflow: visible;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    line-height: normal;
+    -webkit-font-smoothing: inherit;
+    -moz-osx-font-smoothing: inherit;
+    -webkit-appearance: none;
+}
