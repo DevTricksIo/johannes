@@ -1,0 +1,139 @@
+.block-options-wrapper {
+    z-index: 999999;
+    /* box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 3px 6px, rgba(15, 15, 15, 0.2) 0px 9px 24px; */
+    position: absolute;
+    display: none;
+    /* border: 2px solid #ccc; */
+
+}
+
+/* ::-webkit-scrollbar {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    width: 6px;
+} */
+
+.block-options {
+    /* width: 324px; 20.25rem */
+    width: 20.25rem;
+    /* height: 384px; */
+    height: 340px;
+
+    overflow-y: scroll;
+    /* border-radius: 10px; */
+}
+
+.block-options {
+    padding: 10px;
+    background: #f9f9f9;
+    border: 2px solid #ccc;
+    margin-top: 10px;
+    /* position: absolute; */
+}
+
+.block-options section h2 {
+    font-size: small ;
+    padding-left: 0.625rem;
+    color: #37352fa6;
+}
+
+.block-options .option {
+    padding: 0.3125rem 0.625rem;
+    margin: 0.3125rem 0;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+    gap: 0.6rem;
+    border-radius: 3px;
+}
+
+.block-options .option:focus {
+    outline: none;
+    background-color: #e9e9e9;
+    border: inherit;
+}
+
+.block-options-focused {
+    outline: none;
+    background-color: #e9e9e9;
+    border: inherit;
+}
+
+
+
+
+.block-options .option:focus-visible{
+    outline: none;
+    background-color: #e9e9e9;
+    border: inherit;
+}
+
+.block-options .option:hover {
+    background-color: #e9e9e9;
+}
+
+
+.option[focused="true"] {
+    background-color: #bde4ff; /* estilo de foco personalizado */
+}
+
+
+
+
+
+.option-image {
+    width: 2.875rem;
+    height: 2.875rem;
+    border-radius: 3px;
+    /* background-color: red; */
+    border: 1px solid #ccc;
+    color: #4f4f4f;
+
+    /* color: #84888d; */
+    /* color: #242424; */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    vertical-align: middle;
+    align-items: center;
+    background-color: #ffff;
+    box-sizing: border-box;
+}
+
+.option-image img {
+    /* max-width: 46px; 2,875rem */
+    max-width: 2.875rem;
+    max-height: 2.875rem;
+}
+
+.option-image svg {
+    /* padding: 10px;  0.625rem */
+    margin: 0;
+    padding: 0;
+    padding: 0.625rem;
+    box-sizing: border-box;
+    
+}
+
+.option-text {
+    /* background-color: yellow; */
+    /* font-size: 0.5rem; */
+
+}
+
+.option-text * {
+    margin: 0;
+    padding: 0;
+
+}
+
+.option-text .block-title {
+    font-size: small !important;
+    font-weight: 500;
+}
+
+.option-text .block-description {
+    font-size: small !important;
+}
