@@ -12,12 +12,13 @@ export function createNewH2Element() {
 
 export function createNewHeadingElement(number = 2) {
 
-    if(number < 1 || number > 6){
+    if (number < 1 || number > 6) {
         throw new Error("Invalid heading number");
     }
 
     let newElement = document.createElement(`h${number}`);
     newElement.classList.add('johannes-content-element');
+    newElement.classList.add('focusable');
 
     newElement.contentEditable = true;
 
@@ -31,6 +32,7 @@ export function createNewParagraphElement() {
 
     let newElement = document.createElement('p');
     newElement.classList.add('johannes-content-element');
+    newElement.classList.add('focusable');
 
     newElement.contentEditable = true;
 
@@ -57,3 +59,52 @@ export function createNewDraggableParagraphElement() {
 
     return newDiv;
 }
+
+export function createNewListElement(text) {
+    const newList = document.createElement('ul');
+    newList.classList.add('johannes-content-element');
+
+    const initialItem = createNewLiElement(text);
+
+    newList.appendChild(initialItem);
+
+    return newList;
+}
+
+
+export function createNewLiElement(text = '') {
+
+    // let newButton = document.createElement('button');
+    // let p = document.createElement('p');
+
+
+    // newButton.classList.add('button-reset');
+    // newButton.classList.add('drag-handler');
+
+    // newButton.innerHTML = '<svg width="20" height="20" fill="currentColor"><use href="#icon-material-drag"></use></svg>';
+
+    let initialItem = document.createElement('li');
+    initialItem.classList.add('focusable');
+
+    // initialItem.classList.add('draggable-block');
+    
+
+
+    // p.innerText = text;
+    initialItem.innerText = text;
+
+    // initialItem.appendChild(p);
+    // initialItem.appendChild(newButton);
+
+    // initialItem.innerHTML = initialItem.innerText + newButton.innerHTML;
+
+    initialItem.contentEditable = true;
+    initialItem.setAttribute('data-placeholder', 'Item');
+
+    // initialItem.innerHTML = initialItem.innerHTML + '';
+
+    return initialItem;
+
+}
+
+

@@ -18,7 +18,7 @@
 
 
 
-.drag-handler {
+.draggable-block > .drag-handler {
     color: #84888d;
     visibility: hidden;
     cursor: grab;
@@ -130,7 +130,6 @@ body {
 }
 
 p {
-    font-size: 20px !important;
     color: #242424;
 }
 

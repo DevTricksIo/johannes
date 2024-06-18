@@ -1,8 +1,8 @@
-import {createNewDraggableParagraphElement} from './element-farm';
+import { createNewDraggableParagraphElement } from './element-farm';
 
 document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && e.target.isContentEditable) {
+        if (e.key === 'Enter' && e.target.isContentEditable && !e.target.closest('li')) {
             e.preventDefault();
 
             const newP = createNewDraggableParagraphElement();
@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             setTimeout(() => {
-
                 let focusable = newP.querySelector('.johannes-content-element');
 
                 if (focusable) {

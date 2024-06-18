@@ -4,6 +4,9 @@
     position: absolute;
     display: none;
     /* border: 2px solid #ccc; */
+    /* background-color: pink; */
+    margin: 0;
+    padding: 0;
 
 }
 
@@ -15,11 +18,13 @@
 
 .block-options {
     /* width: 324px; 20.25rem */
-    width: 20.25rem;
+    width: 19rem;
     /* height: 384px; */
-    height: 340px;
+    /* max-height: 340px; */
 
-    overflow-y: scroll;
+    max-height: 19rem;
+
+    overflow-y: auto;
     /* border-radius: 10px; */
 }
 
@@ -28,6 +33,7 @@
     background: #f9f9f9;
     border: 2px solid #ccc;
     margin-top: 10px;
+    margin-bottom: 10px;
     /* position: absolute; */
 }
 

@@ -1,31 +1,27 @@
+import { focusOnPrevious } from './helper';
+
+
 document.addEventListener('DOMContentLoaded', (event) => {
-    const content = document.querySelector('.content');
+    const content = document.querySelector('.johannes-editor > .content');
+    const blockSelection = document.querySelector('.johannes-editor .block-options-wrapper');
 
     content.addEventListener('keydown', function (event) {
-        if (event.key === 'Backspace') {
+        if (event.key === 'Backspace' && blockSelection.style.display == 'none' && !event.target.closest('li')) {
             const activeElement = document.activeElement;
             if (activeElement.isContentEditable) {
-                const placeholder = activeElement.getAttribute('data-placeholder');
+
                 const textContent = activeElement.textContent.trim();
 
-                if (textContent === '' || textContent === placeholder) {
+                if (textContent === '') {
+
                     event.preventDefault();
 
-                    let actualDraggableBlock = activeElement.closest('.draggable-block');
-                    let previousDraggableBlockSibling = actualDraggableBlock.previousElementSibling;
+                    focusOnPrevious(activeElement);
 
+                    let actualDraggableBlock = activeElement.closest('.draggable-block')
                     actualDraggableBlock.remove();
 
-                    let previousSiblingContentElement = previousDraggableBlockSibling.querySelector('.johannes-content-element');
 
-                    previousSiblingContentElement.focus();
-
-                    let range = document.createRange();
-                    let selection = window.getSelection();
-                    range.selectNodeContents(previousSiblingContentElement);
-                    range.collapse(false);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
                 }
             }
         }

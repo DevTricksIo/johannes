@@ -1,6 +1,3 @@
-let uniqueIdCounter = 0;
-
-
 // Remove pest text style
 document.addEventListener('DOMContentLoaded', function () {
         
