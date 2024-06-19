@@ -60,8 +60,8 @@ export function createNewDraggableParagraphElement() {
     return newDiv;
 }
 
-export function createNewListElement(text) {
-    const newList = document.createElement('ul');
+export function createNewListElement(text, type = 'ul') {
+    const newList = document.createElement(type);
     newList.classList.add('johannes-content-element');
 
     const initialItem = createNewLiElement(text);
@@ -74,34 +74,13 @@ export function createNewListElement(text) {
 
 export function createNewLiElement(text = '') {
 
-    // let newButton = document.createElement('button');
-    // let p = document.createElement('p');
-
-
-    // newButton.classList.add('button-reset');
-    // newButton.classList.add('drag-handler');
-
-    // newButton.innerHTML = '<svg width="20" height="20" fill="currentColor"><use href="#icon-material-drag"></use></svg>';
-
     let initialItem = document.createElement('li');
     initialItem.classList.add('focusable');
 
-    // initialItem.classList.add('draggable-block');
-    
-
-
-    // p.innerText = text;
     initialItem.innerText = text;
-
-    // initialItem.appendChild(p);
-    // initialItem.appendChild(newButton);
-
-    // initialItem.innerHTML = initialItem.innerText + newButton.innerHTML;
 
     initialItem.contentEditable = true;
     initialItem.setAttribute('data-placeholder', 'Item');
-
-    // initialItem.innerHTML = initialItem.innerHTML + '';
 
     return initialItem;
 

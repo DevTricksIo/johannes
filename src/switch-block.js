@@ -367,13 +367,13 @@ function transformBlock(blockElement, type) {
 
         case 'numbered-list':
             {
-                newContentBlock = document.createElement('ol');
-                const items = content.split('\n');
-                items.forEach(item => {
-                    const listItem = document.createElement('li');
-                    listItem.innerText = item;
-                    newContentBlock.appendChild(listItem);
-                });
+                newContentBlock = farm.createNewListElement(content, 'ol');
+
+                let li = newContentBlock.querySelector('li');
+
+                setTimeout(() => {
+                    focusOnTheEndOfTheText(li);
+                }, 0);
                 break;
             }
 
