@@ -1,131 +1,103 @@
-import { createNewLiElement } from './element-farm';
 import { createNewDraggableParagraphElement } from './element-farm';
+
+import { createNewLiElement } from './element-farm';
 import { focusOnTheEndOfTheText } from './helper';
+import { focusOnPrevious } from './helper';
+import { focusOnNext } from './helper';
+
 import "./list.css";
 
-
 document.addEventListener('DOMContentLoaded', function () {
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && e.target.isContentEditable && e.target.closest('li')) {
 
-            e.preventDefault();
-
-            let newContentElement;
-
-            if (e.target.innerText !== '') {
-                newContentElement = createNewLiElement();
-                const currentItem = e.target.closest('li');
-
-                if (currentItem) {
-                    // Insere o novo elemento LI logo após o elemento LI atual
-                    currentItem.insertAdjacentElement('afterend', newContentElement);
-                }
-            } else {
-                let parent = e.target.closest('.draggable-block');
-
-                let aaa = createNewDraggableParagraphElement();
-                parent.insertAdjacentElement('afterend', aaa);
-
-                newContentElement = aaa.querySelector('.johannes-content-element');
-                e.target.remove();
-
-
-            }
-
-
-
-            // const list = e.target.closest('ol, ul');
-
-            // if (list) {
-            //     list.appendChild(newListItem);
-            // }
-
-            setTimeout(() => {
-                focusOnTheEndOfTheText(newContentElement);
-
-            }, 0);
-        }
-    });
-});
-
-
-document.addEventListener('DOMContentLoaded', (event) => {
-    const content = document.querySelector('.johannes-editor > .content');
+    const editor = document.querySelector('.johannes-editor');
     const blockSelection = document.querySelector('.johannes-editor .block-options-wrapper');
 
-    content.addEventListener('keydown', function (event) {
-        if (event.key === 'Backspace' && blockSelection.style.display == 'none' && event.target.closest('li')) {
+    if (editor) {
+        editor.addEventListener('keydown', function (e) {
 
-            const activeElement = document.activeElement;
+            if (e.key === 'Enter' && e.target.isContentEditable && e.target.closest('li') && !e.shiftKey) {
 
-            if (activeElement.isContentEditable) {
+                e.preventDefault();
+
+                let newContentElement;
+
+                if (e.target.innerText !== '') {
+
+                    newContentElement = createNewLiElement();
+                    const currentItem = e.target.closest('li');
+
+                    if (currentItem) {
+                        currentItem.insertAdjacentElement('afterend', newContentElement);
+                    }
+                } else {
+                    let parent = e.target.closest('.draggable-block');
+
+                    let aaa = createNewDraggableParagraphElement();
+                    parent.insertAdjacentElement('afterend', aaa);
+
+                    newContentElement = aaa.querySelector('.johannes-content-element');
+                    e.target.remove();
+
+                }
+
+                setTimeout(() => {
+                    focusOnTheEndOfTheText(newContentElement);
+
+                }, 0);
+
+            } else if (e.key === 'Backspace' && e.target.isContentEditable && blockSelection.style.display == 'none' && e.target.closest('li')) {
+
+                const activeElement = document.activeElement;
 
                 const textContent = activeElement.textContent.trim();
 
                 if (textContent === '') {
 
-                    event.preventDefault();
+                    e.preventDefault();
 
-                    // let parent = activeElement.closest('ol, ul');
+                    focusOnPrevious(activeElement);
 
-                    let previous = activeElement.previousElementSibling;
+                    let parent = activeElement.closest('ol, ul');
 
-                    if (previous) {
-                        activeElement.remove();
-                        focusOnTheEndOfTheText(previous);
+                    let numberOfLi = parent.querySelectorAll('li').length;
+
+                    if (numberOfLi <= 1) {
+
+                        let block = parent.closest('.draggable-block');
+                        block.remove();
                     } else {
-                        let list = activeElement.closest('ol, ul');
-                        let parentBlock = list.closest('.draggable-block');
+                        activeElement.remove();
+                    }
+                }
 
 
-                        if (list.childNodes.length <= 1) {
-                            list.remove();
-                        } else {
+            } else if (e.key === 'Delete' && e.target.isContentEditable && blockSelection.style.display == 'none' && e.target.closest('li')) {
 
-                            let block = activeElement.closest('.draggable-block');
-                            activeElement.remove();
+                const activeElement = document.activeElement;
 
-                            blo
+                const textContent = activeElement.textContent.trim();
 
-                            focusOnTheEndOfTheText(block);
-                        }
+                if (textContent === '') {
+
+                    e.preventDefault();
+
+                    focusOnNext(activeElement);
+
+                    let parent = activeElement.closest('ol, ul');
+
+                    let numberOfLi = parent.querySelectorAll('li').length;
+
+                    if (numberOfLi <= 1) {
+
+                        let block = parent.closest('.draggable-block');
+                        block.remove();
+                    } else {
+                        activeElement.remove();
                     }
 
-
-
-
-                    // activeElement.remove();
-                    // let lastChild = parent.lastChild;
-
-                    // if (lastChild) {
-                    //     // lastChild.focus();
-                    //     focusOnTheEndOfTheText(lastChild);
-                    // } else {
-
-                    //     // let anotherParent = parent.closest();
-
-                    //     // parent.remove();
-                    // }
-
-
-                    // let actualDraggableBlock = activeElement.closest('.draggable-block');
-
-                    // let previousDraggableBlockSibling = actualDraggableBlock.previousElementSibling;
-
-                    // actualDraggableBlock.remove();
-
-                    // let previousSiblingContentElement = previousDraggableBlockSibling.querySelector('.johannes-content-element');
-
-                    // previousSiblingContentElement.focus();
-
-                    // let range = document.createRange();
-                    // let selection = window.getSelection();
-                    // range.selectNodeContents(previousSiblingContentElement);
-                    // range.collapse(false);
-                    // selection.removeAllRanges();
-                    // selection.addRange(range);
                 }
+
             }
-        }
-    });
+        });
+    }
 });
