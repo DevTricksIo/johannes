@@ -1,6 +1,7 @@
 import { createNewDraggableParagraphElement } from './element-farm';
 
 import { createNewLiElement } from './element-farm';
+import { createNewCheckboxLiElement } from './element-farm';
 import { focusOnTheEndOfTheText } from './helper';
 import { focusOnPrevious } from './helper';
 import { focusOnNext } from './helper';
@@ -20,10 +21,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 e.preventDefault();
 
                 let newContentElement;
+                let isTodo = e.target.closest('ol, ul')?.classList.contains('todo-list');
 
                 if (e.target.innerText !== '') {
 
-                    newContentElement = createNewLiElement();
+                    newContentElement = isTodo ? createNewCheckboxLiElement() : createNewLiElement();
                     const currentItem = e.target.closest('li');
 
                     if (currentItem) {
@@ -32,15 +34,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     let parent = e.target.closest('.draggable-block');
 
-                    let aaa = createNewDraggableParagraphElement();
-                    parent.insertAdjacentElement('afterend', aaa);
+                    let pElement = createNewDraggableParagraphElement();
+                    parent.insertAdjacentElement('afterend', pElement);
 
-                    newContentElement = aaa.querySelector('.johannes-content-element');
+                    newContentElement = pElement.querySelector('.johannes-content-element');
 
                     let listParent = e.target.closest('ol, ul');
                     
                     if(listParent.querySelectorAll('li').length > 1){
-                        e.target.remove();
+                        e.target.closest('li').remove();
                     }else{
                         parent.remove();
                     }

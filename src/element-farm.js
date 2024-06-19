@@ -61,6 +61,18 @@ export function createNewListElement(text, type = 'ul') {
     return newList;
 }
 
+export function createNewTodoListElement(text, type = 'ul') {
+    const newList = document.createElement(type);
+    newList.classList.add('johannes-content-element');
+    newList.classList.add('todo-list');
+
+    const initialItem = createNewCheckboxLiElement(text);
+
+    newList.appendChild(initialItem);
+
+    return newList;
+}
+
 
 export function createNewLiElement(text = '') {
 
@@ -74,6 +86,26 @@ export function createNewLiElement(text = '') {
 
     return initialItem;
 
+}
+
+export function createNewCheckboxLiElement(text = '') {
+
+    let li = document.createElement('li');
+
+    let checkbox = document.createElement('input');
+    checkbox.setAttribute('type', 'checkbox');
+
+    let span = document.createElement('span');
+    span.textContent = text || "";
+    span.classList.add('focusable');
+    span.setAttribute('data-placeholder', 'To-do');
+    span.contentEditable = true;
+    
+
+    li.appendChild(checkbox);
+    li.appendChild(span);
+
+    return li;
 }
 
 export function createNewSeparatorElement() {

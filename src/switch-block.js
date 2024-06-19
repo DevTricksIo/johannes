@@ -376,6 +376,17 @@ function transformBlock(blockElement, type) {
                 }, 0);
                 break;
             }
+        case 'todo-list':
+            {
+                newContentBlock = farm.createNewTodoListElement(content, 'ul');
+
+                let li = newContentBlock.querySelector('li');
+
+                setTimeout(() => {
+                    focusOnTheEndOfTheText(li);
+                }, 0);
+                break;
+            }
 
         case 'separator':
             {

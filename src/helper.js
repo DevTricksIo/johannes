@@ -51,6 +51,20 @@ export function focusOnNext(actualElement, position) {
         }
     }
 
+    if (actualElement.parentNode.tagName.toUpperCase() === 'LI' /* focusable SPAN inside LI*/) {
+        let nextElement = actualElement.closest('li').nextElementSibling?.querySelector('.focusable');
+
+        if (nextElement && nextElement.classList.contains('focusable')) {
+            focusedElement = nextElement;
+            if (position) {
+                applyCursorXStartPosition(focusedElement, position);
+            } else {
+                focusOnTheStartOfTheText(focusedElement);
+            }
+            return focusedElement;
+        }
+    }
+
     let parent = actualElement.closest('.draggable-block');
     let sibling = parent.nextElementSibling;
 
@@ -79,6 +93,20 @@ export function focusOnPrevious(actualElement, position) {
 
     if (tag === 'LI') {
         let previousElement = actualElement.previousElementSibling;
+
+        if (previousElement && previousElement.classList.contains('focusable')) {
+            focusedElement = previousElement;
+            if (position) {
+                applyCursorXEndPosition(focusedElement, position);
+            } else {
+                focusOnTheEndOfTheText(focusedElement);
+            }
+            return focusedElement;
+        }
+    }
+
+    if (actualElement.parentNode.tagName.toUpperCase() === 'LI' /* focusable SPAN inside LI*/) {
+        let previousElement = actualElement.closest('li').previousElementSibling?.querySelector('.focusable');
 
         if (previousElement && previousElement.classList.contains('focusable')) {
             focusedElement = previousElement;

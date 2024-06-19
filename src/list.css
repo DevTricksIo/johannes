@@ -31,33 +31,58 @@
      color: blueviolet !important;
  } */
 
- li > button{
-    /* display: none; */
-    display: none;
-    position: absolute;
-    margin-left: 10px;
-    top: 0;
-    
-    flex-direction: row;
-    align-items: start;
-    justify-content: start;
-    
+ li>button {
+     /* display: none; */
+     display: none;
+     position: absolute;
+     margin-left: 10px;
+     top: 0;
+
+     flex-direction: row;
+     align-items: start;
+     justify-content: start;
+
  }
 
- li{
-    position: relative;
+ li {
+     position: relative;
  }
- 
 
- li:hover > button {
-    /* display: inline-block; */
-    display: inline-flex;
-    
-}
+ li::before {
+     margin-left: 4px;
+ }
 
-li p{
-    display: inline-block;
-    line-height: 1;
-    margin: 0;
-    padding: 0;
-}
+ li:hover>button {
+     /* display: inline-block; */
+     display: inline-flex;
+
+ }
+
+ li p {
+     display: inline-block;
+     line-height: 1;
+     margin: 0;
+     padding: 0;
+ }
+
+ .todo-list {
+     list-style-type: none;
+     padding-left: 0 !important;
+ }
+
+
+ .todo-list li {
+     display: flex;
+     flex-direction: row;
+     justify-content: left;
+ }
+
+
+ ul.todo-list input[type="checkbox"]:checked+span {
+     text-decoration: line-through;
+ }
+
+ ul:not(.todo-list),
+ ol:not(.todo-list) {
+     padding-left: 1.5rem !important;
+ }
