@@ -2,7 +2,7 @@ import { createNewDraggableParagraphElement } from './element-farm';
 
 document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && e.target.isContentEditable && !e.target.closest('li')) {
+        if (e.key === 'Enter' && e.target.isContentEditable && !e.target.closest('li') && !e.shiftKey && !e.ctrlKey && !e.altKey ) {
             e.preventDefault();
 
             const newP = createNewDraggableParagraphElement();

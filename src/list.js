@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (editor) {
         editor.addEventListener('keydown', function (e) {
 
-            if (e.key === 'Enter' && e.target.isContentEditable && e.target.closest('li') && !e.shiftKey) {
+            if (e.key === 'Enter' && e.target.isContentEditable && e.target.closest('li') && !e.shiftKey && !e.ctrlKey && !e.altKey) {
 
                 e.preventDefault();
 
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 }, 0);
 
-            } else if (e.key === 'Backspace' && e.target.isContentEditable && blockSelection.style.display == 'none' && e.target.closest('li')) {
+            } else if (e.key === 'Backspace' && e.target.isContentEditable && blockSelection.style.display == 'none' && e.target.closest('li') && !e.shiftKey && !e.ctrlKey && !e.altKey) {
 
                 const activeElement = document.activeElement;
 
@@ -70,8 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
 
-
-            } else if (e.key === 'Delete' && e.target.isContentEditable && blockSelection.style.display == 'none' && e.target.closest('li')) {
+            } else if (e.key === 'Delete' && e.target.isContentEditable && blockSelection.style.display == 'none' && e.target.closest('li') && !e.shiftKey && !e.ctrlKey && !e.altKey) {
 
                 const activeElement = document.activeElement;
 
