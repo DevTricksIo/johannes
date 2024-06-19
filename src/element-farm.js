@@ -8,6 +8,7 @@ export function createNewHeadingElement(number = 2) {
 
     let newElement = document.createElement(`h${number}`);
     newElement.classList.add('johannes-content-element');
+    newElement.classList.add('swittable');
     newElement.classList.add('focusable');
 
     newElement.contentEditable = true;
@@ -22,6 +23,7 @@ export function createNewParagraphElement(text) {
 
     let newElement = document.createElement('p');
     newElement.classList.add('johannes-content-element');
+    newElement.classList.add('swittable');
     newElement.classList.add('focusable');
 
     newElement.contentEditable = true;
@@ -55,6 +57,7 @@ export function createNewDraggableParagraphElement() {
 export function createNewListElement(text, type = 'ul') {
     const newList = document.createElement(type);
     newList.classList.add('johannes-content-element');
+    newList.classList.add('swittable');
 
     const initialItem = createNewLiElement(text);
 
@@ -66,6 +69,7 @@ export function createNewListElement(text, type = 'ul') {
 export function createNewTodoListElement(text, type = 'ul') {
     const newList = document.createElement(type);
     newList.classList.add('johannes-content-element');
+    newList.classList.add('swittable');
     newList.classList.add('todo-list');
 
     const initialItem = createNewCheckboxLiElement(text);
@@ -120,11 +124,26 @@ export function createNewSeparatorElement() {
 
 export function createNewQuoteElement(text) {
     const quote = document.createElement('blockquote');
+    quote.classList.add('swittable');
 
-    const p = createNewParagraphElement(text);
+    const p = createNewNoSwittableParagraphElement(text);
 
     quote.appendChild(p);
 
     return quote;
 }
 
+function createNewNoSwittableParagraphElement(text) {
+
+    let newElement = document.createElement('p');
+    newElement.classList.add('johannes-content-element');
+    newElement.classList.add('focusable');
+
+    newElement.contentEditable = true;
+
+    newElement.innerText = text || "";
+
+    newElement.setAttribute('data-placeholder', 'Write something or type / (slash) to choose a block...');
+
+    return newElement;
+}

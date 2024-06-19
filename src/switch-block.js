@@ -286,7 +286,7 @@ function removeAllVirtualFocus() {
 /** Transform a block type into another */
 function transformBlock(blockElement, type) {
 
-    let contentElement = blockElement.querySelector('.johannes-content-element');
+    let contentElement = blockElement.querySelector('.swittable');
     let content = contentElement.innerText;
 
     if (content.endsWith('/')) {
