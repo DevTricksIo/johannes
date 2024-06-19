@@ -36,8 +36,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     parent.insertAdjacentElement('afterend', aaa);
 
                     newContentElement = aaa.querySelector('.johannes-content-element');
-                    e.target.remove();
 
+                    let listParent = e.target.closest('ol, ul');
+                    
+                    if(listParent.querySelectorAll('li').length > 1){
+                        e.target.remove();
+                    }else{
+                        parent.remove();
+                    }
                 }
 
                 setTimeout(() => {
