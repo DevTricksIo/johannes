@@ -9,5 +9,4 @@ import './keyboard-navigation.js';
 import './text-blocks-from-newlines.js';
 import './focus-on-p.js';
 import './list.js';
-
-import './johannes.js';
+import './clear-form-pasting.js';

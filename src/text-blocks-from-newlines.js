@@ -2,42 +2,32 @@ import { createNewDraggableParagraphElement } from './element-farm';
 import { focusOnTheEndOfTheText } from './helper';
 
 document.addEventListener('DOMContentLoaded', () => {
-
     const content = document.querySelector('.johannes-editor > .content');
 
-    content.addEventListener('input', function (event) {
+    content.addEventListener('paste', function (event) {
+        event.preventDefault();
 
         const target = event.target;
 
         if (target.tagName === 'P' && target.isContentEditable) {
+            const clipboardData = event.clipboardData || window.clipboardData;
+            const pastedText = clipboardData.getData('text');
 
-            const blocks = target.innerText.split('\n');
+            const blocks = pastedText.split('\n').filter(block => block.trim() !== '');
 
-            if (blocks.length > 1) {
+            target.innerText = blocks[0];
 
-                event.preventDefault();
+            let currentTarget = target.closest('.draggable-block');
 
-                // Remove original text to avoid duplication
-                target.innerText = blocks[0]; // Keep the first actual line paragraph 
-
-                let currentTarget = target.closest('.draggable-block');
-                let lastContentBlock = null;
-
-                // Each new line, create a new P below the actual
-                for (let i = 1; i < blocks.length; i++) {
-
-                    const newParagraph = createNewDraggableParagraphElement();
-
-                    //works?  I dont't know
-                    lastContentBlock = newParagraph.querySelector('.johannes-content-element');
-
-                    lastContentBlock.innerText = blocks[i];
-                    currentTarget.insertAdjacentElement('afterend', newParagraph);
-                    currentTarget = newParagraph;
-                }
-
-                focusOnTheEndOfTheText(lastContentBlock);
+            for (let i = 1; i < blocks.length; i++) {
+                const newParagraph = createNewDraggableParagraphElement();
+                const lastContentBlock = newParagraph.querySelector('.johannes-content-element');
+                lastContentBlock.innerText = blocks[i];
+                currentTarget.insertAdjacentElement('afterend', newParagraph);
+                currentTarget = newParagraph;
             }
+
+            focusOnTheEndOfTheText(currentTarget.querySelector('.johannes-content-element'));
         }
     });
 });
