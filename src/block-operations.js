@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     content.addEventListener('keydown', function (event) {
 
-        if (event.key === 'Enter' && event.target.isContentEditable && !event.target.closest('li') && !event.shiftKey && !event.ctrlKey && !event.altKey) {
+        if (event.key === 'Enter' && blockSelection.style.display == 'none' && event.target.isContentEditable && !event.target.closest('li') && !event.shiftKey && !event.ctrlKey && !event.altKey) {
             event.preventDefault();
 
             const newP = createNewDraggableParagraphElement();
