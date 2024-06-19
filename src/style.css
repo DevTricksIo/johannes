@@ -18,7 +18,7 @@
 
 
 
-.draggable-block > .drag-handler {
+.draggable-block>.drag-handler {
     color: #84888d;
     visibility: hidden;
     cursor: grab;
@@ -62,7 +62,7 @@
 }
 
 
-.title h1{
+.title h1 {
     margin-left: 1.3rem;
 }
 
@@ -152,4 +152,14 @@ p {
     width: 60%;
     margin-left: auto;
     margin-right: auto;
+}
+
+
+
+.johannes-editor hr {
+    width: 100%;
+    height: 2px;
+    visibility: visible;
+    border: none;
+    border-bottom: 1px solid rgba(55, 53, 47, 0.16);
 }

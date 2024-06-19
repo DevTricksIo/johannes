@@ -377,6 +377,12 @@ function transformBlock(blockElement, type) {
                 break;
             }
 
+        case 'separator':
+            {
+                newContentBlock = farm.createNewSeparatorElement();
+                break;
+            }
+
         default:
             console.error('Unsupported type');
             return;

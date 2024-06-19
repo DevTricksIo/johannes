@@ -1,14 +1,4 @@
-export function createNewH2Element() {
 
-    let newElement = document.createElement('h2');
-    newElement.classList.add('johannes-content-element');
-
-    newElement.contentEditable = true;
-
-    newElement.setAttribute('data-placeholder', 'Heading 2');
-
-    return newElement;
-}
 
 export function createNewHeadingElement(number = 2) {
 
@@ -84,6 +74,13 @@ export function createNewLiElement(text = '') {
 
     return initialItem;
 
+}
+
+export function createNewSeparatorElement() {
+
+    let newElement = document.createElement('hr');
+
+    return newElement;
 }
 
 
