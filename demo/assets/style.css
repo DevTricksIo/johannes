@@ -21,7 +21,7 @@
 
 
 
-.draggable-block > .drag-handler {
+.draggable-block>.drag-handler {
     color: #84888d;
     visibility: hidden;
     cursor: grab;
@@ -65,7 +65,7 @@
 }
 
 
-.title h1{
+.title h1 {
     margin-left: 1.3rem;
 }
 
@@ -155,6 +155,16 @@ p {
     width: 60%;
     margin-left: auto;
     margin-right: auto;
+}
+
+
+
+.johannes-editor hr {
+    width: 100%;
+    height: 2px;
+    visibility: visible;
+    border: none;
+    border-bottom: 1px solid rgba(55, 53, 47, 0.16);
 }
 /*!*********************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./src/add-block.css ***!
@@ -366,33 +376,58 @@ p {
      color: blueviolet !important;
  } */
 
- li > button{
-    /* display: none; */
-    display: none;
-    position: absolute;
-    margin-left: 10px;
-    top: 0;
-    
-    flex-direction: row;
-    align-items: start;
-    justify-content: start;
-    
+ li>button {
+     /* display: none; */
+     display: none;
+     position: absolute;
+     margin-left: 10px;
+     top: 0;
+
+     flex-direction: row;
+     align-items: start;
+     justify-content: start;
+
  }
 
- li{
-    position: relative;
+ li {
+     position: relative;
  }
- 
 
- li:hover > button {
-    /* display: inline-block; */
-    display: inline-flex;
-    
-}
+ li::before {
+     margin-left: 4px;
+ }
 
-li p{
-    display: inline-block;
-    line-height: 1;
-    margin: 0;
-    padding: 0;
-}
+ li:hover>button {
+     /* display: inline-block; */
+     display: inline-flex;
+
+ }
+
+ li p {
+     display: inline-block;
+     line-height: 1;
+     margin: 0;
+     padding: 0;
+ }
+
+ .todo-list {
+     list-style-type: none;
+     padding-left: 0 !important;
+ }
+
+
+ .todo-list li {
+     display: flex;
+     flex-direction: row;
+     justify-content: left;
+ }
+
+
+ ul.todo-list input[type="checkbox"]:checked+span {
+     text-decoration: line-through;
+ }
+
+ ul:not(.todo-list),
+ ol:not(.todo-list) {
+     padding-left: 1.5rem !important;
+ }

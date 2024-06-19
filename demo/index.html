@@ -8,11 +8,11 @@
 
     <link rel="icon" href="assets/img/kepler.ico" type="image/x-icon">
 
-    <link rel="stylesheet" href="./assets/style.css">
-    <script src="./assets/bundle.js"></script>
+    <!-- <link rel="stylesheet" href="./assets/style.css">
+    <script src="./assets/bundle.js"></script> -->
 
-    <!-- <link rel="stylesheet" href="../dist/style.css">
-    <script src="../dist/bundle.js"></script> -->
+    <link rel="stylesheet" href="../dist/style.css">
+    <script src="../dist/bundle.js"></script>
 
     <style>
 
@@ -36,7 +36,7 @@
                             <use href="#icon-material-drag"></use>
                         </svg>
                     </button>
-                    <p class="johannes-content-element" contenteditable="true"
+                    <p class="johannes-content-element focusable" contenteditable="true"
                         data-placeholder="Write something or type / (slash) to choose a block..." tabindex="0"></p>
                 </div>
 
@@ -50,7 +50,7 @@
                 </button>
             </div>
 
-            <div class="block-options-wrapper" role="listbox">
+            <div class="block-options-wrapper" style="display: none;" role="listbox">
                 <div class="block-options">
                     <section class="basic-section">
                         <h2>Basic blocks</h2>
@@ -69,7 +69,6 @@
 
                         <div id="blck-opt-image" class="option" data-type="image" tabindex="0" role="option">
                             <div class="option-image">
-                                <!-- <img src="./assets/img/11zon_cropped (1).jpeg"> -->
                                 <img src="./assets/img/ginal96 - 1172px-Venus_botticelli_detail (1).jpg">
                             </div>
                             <div class="option-text">
@@ -78,7 +77,8 @@
                             </div>
                         </div>
 
-                        <div id="blck-opt-bulleted-list" class="option" data-type="bulleted-list" tabindex="0" role="option">
+                        <div id="blck-opt-bulleted-list" class="option" data-type="bulleted-list" tabindex="0"
+                            role="option">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-wordpress-bulleted-list"></use>
@@ -100,6 +100,7 @@
                                 <p class="block-description">List items in a numbered format.</p>
                             </div>
                         </div>
+
                         <div class="option" data-type="code" tabindex="0">
                             <div class="option-image">
                             </div>
@@ -143,7 +144,7 @@
                             </div>
                         </div>
 
-                        <div class="option" data-type="h3" tabindex="0">
+                        <div class="option" data-type="separator" tabindex="0">
                             <div class="option-image">
 
                                 <svg width="100%" height="100%" fill="currentColor">
@@ -232,6 +233,46 @@
                         </div>
                     </section>
 
+                    <section class="list-section">
+                        <h2>List</h2>
+                        <div id="blck-opt-bulleted-list" class="option" data-type="todo-list" tabindex="0"
+                            role="option">
+                            <div class="option-image">
+                                <svg width="100%" height="100%" fill="currentColor">
+                                    <use href="#icon-material-check-list"></use>
+                                </svg>
+                            </div>
+                            <div class="option-text">
+                                <p class="block-title">Todo list</p>
+                                <p class="block-description">Organize items with bullet points.</p>
+                            </div>
+                        </div>
+                        <div id="blck-opt-bulleted-list" class="option" data-type="bulleted-list" tabindex="0"
+                            role="option">
+                            <div class="option-image">
+                                <svg width="100%" height="100%" fill="currentColor">
+                                    <use href="#icon-wordpress-bulleted-list"></use>
+                                </svg>
+                            </div>
+                            <div class="option-text">
+                                <p class="block-title">Bulleted list</p>
+                                <p class="block-description">Organize items with bullet points.</p>
+                            </div>
+                        </div>
+                        <div class="option" data-type="numbered-list" tabindex="0" role="option">
+                            <div class="option-image">
+                                <svg width="100%" height="100%" fill="currentColor">
+                                    <use href="#icon-wordpress-numbered-list"></use>
+                                </svg>
+                            </div>
+                            <div class="option-text">
+                                <p class="block-title">Numbered list</p>
+                                <p class="block-description">List items in a numbered format.</p>
+                            </div>
+                        </div>
+
+                    </section>
+
                     <section>
                         <h2>Embed</h2>
                         <div class="option" data-type="embed-video" tabindex="0">
@@ -268,7 +309,7 @@
 
                         <div class="option" data-type="embed-github-gist" tabindex="0">
                             <div class="option-image">
-                                
+
                             </div>
                             <div class="option-text">
                                 <p class="block-title">GitHub Gist</p>
@@ -278,7 +319,7 @@
 
                         <div class="option" data-type="embed-github-gist" tabindex="0">
                             <div class="option-image">
-                                
+
                             </div>
                             <div class="option-text">
                                 <p class="block-title">Spotify</p>
@@ -288,7 +329,7 @@
 
                         <div class="option" data-type="embed-github-gist" tabindex="0">
                             <div class="option-image">
-                                
+
                             </div>
                             <div class="option-text">
                                 <p class="block-title">SoundCloud</p>
@@ -411,12 +452,15 @@
             <line x1="49.7256" y1="1010.37" x2="980.46" y2="1010.37" stroke="#7E7B7B" stroke-width="54.2021" />
         </symbol>
 
+        <symbol id="icon-material-check-list" viewBox="0 -960 960 960">
+            <path
+                d="M222-200 80-342l56-56 85 85 170-170 56 57-225 226Zm0-320L80-662l56-56 85 85 170-170 56 57-225 226Zm298 240v-80h360v80H520Zm0-320v-80h360v80H520Z" />
+        </symbol>
+
 
 
     </svg>
 </body>
-
-
 
 
 
