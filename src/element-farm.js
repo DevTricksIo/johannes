@@ -18,13 +18,15 @@ export function createNewHeadingElement(number = 2) {
 }
 
 
-export function createNewParagraphElement() {
+export function createNewParagraphElement(text) {
 
     let newElement = document.createElement('p');
     newElement.classList.add('johannes-content-element');
     newElement.classList.add('focusable');
 
     newElement.contentEditable = true;
+
+    newElement.innerText = text || "";
 
     newElement.setAttribute('data-placeholder', 'Write something or type / (slash) to choose a block...');
 
@@ -115,4 +117,14 @@ export function createNewSeparatorElement() {
     return newElement;
 }
 
+
+export function createNewQuoteElement(text) {
+    const quote = document.createElement('blockquote');
+
+    const p = createNewParagraphElement(text);
+
+    quote.appendChild(p);
+
+    return quote;
+}
 

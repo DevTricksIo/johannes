@@ -163,3 +163,13 @@ p {
     border: none;
     border-bottom: 1px solid rgba(55, 53, 47, 0.16);
 }
+
+
+
+.johannes-editor blockquote {
+    margin: 20px 0;
+    padding-left: 20px; 
+    border-left: 4px solid rgb(55, 53, 47);
+    font-style: italic
+}
+

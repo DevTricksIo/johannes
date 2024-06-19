@@ -350,9 +350,11 @@ function transformBlock(blockElement, type) {
             newContentBlock.alt = "Descriptive text";
             break;
         case 'quote':
-            newContentBlock = document.createElement('blockquote');
-            newContentBlock.innerText = content;
-            break;
+            {
+                newContentBlock = farm.createNewQuoteElement(content);
+                // newContentBlock.innerText = content;
+                break;
+            }
         case 'bulleted-list':
             {
                 newContentBlock = farm.createNewListElement(content);
