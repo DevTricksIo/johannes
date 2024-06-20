@@ -10,6 +10,7 @@ export function createNewHeadingElement(number = 2) {
     newElement.classList.add('johannes-content-element');
     newElement.classList.add('swittable');
     newElement.classList.add('focusable');
+    newElement.classList.add('focus');
 
     newElement.contentEditable = true;
 
@@ -47,6 +48,7 @@ export function createNewDraggableParagraphElement() {
     newDiv.appendChild(newElement);
 
     newDiv.classList.add('draggable-block');
+    newDiv.classList.add('deletable');
     newButton.classList.add('drag-handler');
     newButton.classList.add('button-reset');
     newButton.draggable = true;
@@ -58,6 +60,7 @@ export function createNewListElement(text, type = 'ul') {
     const newList = document.createElement(type);
     newList.classList.add('johannes-content-element');
     newList.classList.add('swittable');
+    newList.classList.add('list');
 
     const initialItem = createNewLiElement(text);
 
@@ -69,8 +72,8 @@ export function createNewListElement(text, type = 'ul') {
 export function createNewTodoListElement(text, type = 'ul') {
     const newList = document.createElement(type);
     newList.classList.add('johannes-content-element');
-    newList.classList.add('swittable');
-    newList.classList.add('todo-list');
+    newList.classList.add('checkbox-list');
+    newList.classList.add('list');
 
     const initialItem = createNewCheckboxLiElement(text);
 
@@ -83,7 +86,12 @@ export function createNewTodoListElement(text, type = 'ul') {
 export function createNewLiElement(text = '') {
 
     let initialItem = document.createElement('li');
+
     initialItem.classList.add('focusable');
+    initialItem.classList.add('deletable');
+    initialItem.classList.add('editable');
+    initialItem.classList.add('focus');
+    initialItem.classList.add('list-item'); /* list item é um elemento que faz parte de uma lista (list), mas não é necessariamente um li */
 
     initialItem.innerText = text;
 
@@ -97,16 +105,20 @@ export function createNewLiElement(text = '') {
 export function createNewCheckboxLiElement(text = '') {
 
     let li = document.createElement('li');
+    li.classList.add('deletable');
+    li.classList.add('list-item');
 
     let checkbox = document.createElement('input');
     checkbox.setAttribute('type', 'checkbox');
 
     let span = document.createElement('span');
     span.textContent = text || "";
-    span.classList.add('focusable');
     span.setAttribute('data-placeholder', 'To-do');
     span.contentEditable = true;
-    
+
+    span.classList.add('focusable');
+    span.classList.add('editable');    
+    span.classList.add('focus');  
 
     li.appendChild(checkbox);
     li.appendChild(span);
@@ -127,8 +139,10 @@ export function createNewQuoteElement(text) {
     quote.classList.add('swittable');
 
     const p = createNewNoSwittableParagraphElement(text);
+    const cite = createNewNoSwittableCiteElement();
 
     quote.appendChild(p);
+    quote.appendChild(cite);
 
     return quote;
 }
@@ -136,14 +150,33 @@ export function createNewQuoteElement(text) {
 function createNewNoSwittableParagraphElement(text) {
 
     let newElement = document.createElement('p');
+    newElement.classList.add('focus');
     newElement.classList.add('johannes-content-element');
     newElement.classList.add('focusable');
+    newElement.classList.add('editable');
 
     newElement.contentEditable = true;
 
     newElement.innerText = text || "";
 
-    newElement.setAttribute('data-placeholder', 'Write something or type / (slash) to choose a block...');
+    newElement.setAttribute('data-placeholder', '”To be, or not to be, that is the question”');
+
+    return newElement;
+}
+
+function createNewNoSwittableCiteElement(text) {
+
+    let newElement = document.createElement('cite');
+    newElement.classList.add('johannes-content-element');
+    newElement.classList.add('focusable');
+    newElement.classList.add('deletable');
+    newElement.classList.add('editable');
+
+    newElement.contentEditable = true;
+
+    newElement.innerText = text || "";
+
+    newElement.setAttribute('data-placeholder', '— Socrates');
 
     return newElement;
 }

@@ -1,7 +1,12 @@
 import { createNewDraggableParagraphElement } from './element-farm';
+import { createNewLiElement } from './element-farm';
+import { createNewCheckboxLiElement } from './element-farm';
 
 import { focusOnPrevious } from './helper';
 import { focusOnNext } from './helper';
+import { focusOnTheEndOfTheText } from './helper';
+
+import './list.css';
 
 document.addEventListener('DOMContentLoaded', (event) => {
     const content = document.querySelector('.johannes-editor > .content');
@@ -9,30 +14,65 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     content.addEventListener('keydown', function (event) {
 
-        if (event.key === 'Enter' && blockSelection.style.display == 'none' && event.target.isContentEditable && !event.target.closest('li') && !event.shiftKey && !event.ctrlKey && !event.altKey) {
+        if (event.key === 'Enter' && blockSelection.style.display == 'none' && event.target.isContentEditable && !event.shiftKey && !event.ctrlKey && !event.altKey) {
             event.preventDefault();
 
-            const newP = createNewDraggableParagraphElement();
+            const activeElement = document.activeElement;
 
-            const draggableBlock = event.target.closest('.draggable-block');
+            let newContentElement = null;
 
-            if (draggableBlock) {
-                if (draggableBlock.nextSibling) {
-                    draggableBlock.parentNode.insertBefore(newP, draggableBlock.nextSibling);
+            let boxContent = event.target.closest('.johannes-content-element');
+
+            if (boxContent.classList.contains('checkbox-list')) {
+                newContentElement = createNewCheckboxLiElement();
+            } else if (boxContent.classList.contains('list')) {
+                newContentElement = createNewLiElement();
+            } else {
+                newContentElement = createNewDraggableParagraphElement();
+            }
+
+            let parentBlock = null;
+
+            if (boxContent.classList.contains('list')) {
+
+                parentBlock = boxContent;
+
+                const textContent = activeElement.textContent.trim();
+
+                if (textContent === '') {
+
+                    parentBlock = event.target.closest('.draggable-block');
+
+                    event.target.closest('.deletable').remove();
+
+                    newContentElement = createNewDraggableParagraphElement();
+                    parentBlock.insertAdjacentElement('afterend', newContentElement);
+                
                 } else {
-                    draggableBlock.parentNode.appendChild(newP);
+                    event.target.closest('.list-item').insertAdjacentElement('afterend', newContentElement);
+                }
+
+            } else {
+                parentBlock = event.target.closest('.draggable-block');
+
+                if (parentBlock) {
+                    if (parentBlock.nextSibling) {
+                        parentBlock.parentNode.insertBefore(newContentElement, parentBlock.nextSibling);
+                    } else {
+                        parentBlock.parentNode.appendChild(newContentElement);
+                    }
                 }
             }
 
             setTimeout(() => {
-                let focusable = newP.querySelector('.johannes-content-element');
+                let focus = newContentElement.querySelector('.focus') || newContentElement;
 
-                if (focusable) {
-                    focusable.focus();
+                if (focus) {
+                    focusOnTheEndOfTheText(focus);
                 }
             }, 0);
 
-        } else if (event.key === 'Backspace' && blockSelection.style.display == 'none' && !event.target.closest('li') && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+        } else if (event.key === 'Backspace' && blockSelection.style.display == 'none' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
             const activeElement = document.activeElement;
             if (activeElement.isContentEditable) {
 
@@ -44,13 +84,22 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
                     focusOnPrevious(activeElement);
 
-                    let actualDraggableBlock = activeElement.closest('.draggable-block')
-                    actualDraggableBlock.remove();
+                    let parentBlock = activeElement.closest('.draggable-block');
+                    let actual = activeElement.closest('.deletable');
 
+                    actual.remove();
+
+                    if (parentBlock) {
+                        let isEmpty = parentBlock.querySelectorAll('.editable').length <= 0;
+
+                        if (isEmpty) {
+                            parentBlock.remove();
+                        }
+                    }
 
                 }
             }
-        } else if (event.key === 'Delete' && blockSelection.style.display == 'none' && !event.target.closest('li') && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+        } else if (event.key === 'Delete' && blockSelection.style.display == 'none' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
             const activeElement = document.activeElement;
             if (activeElement.isContentEditable) {
 
@@ -62,8 +111,18 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
                     focusOnNext(activeElement);
 
-                    let actualDraggableBlock = activeElement.closest('.draggable-block')
-                    actualDraggableBlock.remove();
+                    const parentBlock = activeElement.closest('.draggable-block');
+                    const actual = activeElement.closest('.deletable');
+
+                    actual.remove();
+
+                    if (parentBlock) {
+                        const isEmpty = parentBlock.querySelectorAll('.editable').length <= 0;
+
+                        if (isEmpty) {
+                            parentBlock.remove();
+                        }
+                    }
                 }
             }
         }

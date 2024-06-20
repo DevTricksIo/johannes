@@ -242,7 +242,24 @@ function updateBlockVisibility(filter) {
 
         section.style.display = allHidden ? 'none' : '';
     });
+
+    let emptyListIndicator = document.querySelector('.empty-block-options');
+
+    let allOptions = document.querySelectorAll('.johannes-editor .block-options-wrapper .option');
+
+    let hasVisibleOption = Array.from(allOptions).some(option => {
+        let style = window.getComputedStyle(option);
+        return style.display !== 'none';
+    });
+
+    if (hasVisibleOption) {
+        emptyListIndicator.style.display = 'none';
+
+    } else {
+        emptyListIndicator.style.display = 'block';
+    }
 }
+
 
 function removeDisplayNoneFromAllBlockOptions() {
     let sections = document.querySelectorAll('.johannes-editor .block-options-wrapper section');
@@ -352,18 +369,13 @@ function transformBlock(blockElement, type) {
         case 'quote':
             {
                 newContentBlock = farm.createNewQuoteElement(content);
-                // newContentBlock.innerText = content;
+
                 break;
             }
         case 'bulleted-list':
             {
                 newContentBlock = farm.createNewListElement(content);
 
-                let li = newContentBlock.querySelector('li');
-
-                setTimeout(() => {
-                    focusOnTheEndOfTheText(li);
-                }, 0);
                 break;
             }
 
@@ -371,22 +383,12 @@ function transformBlock(blockElement, type) {
             {
                 newContentBlock = farm.createNewListElement(content, 'ol');
 
-                let li = newContentBlock.querySelector('li');
-
-                setTimeout(() => {
-                    focusOnTheEndOfTheText(li);
-                }, 0);
                 break;
             }
         case 'todo-list':
             {
                 newContentBlock = farm.createNewTodoListElement(content, 'ul');
 
-                let li = newContentBlock.querySelector('li');
-
-                setTimeout(() => {
-                    focusOnTheEndOfTheText(li);
-                }, 0);
                 break;
             }
 
@@ -404,7 +406,13 @@ function transformBlock(blockElement, type) {
     removeDisplayNoneFromAllBlockOptions();
     blockElement.replaceChild(newContentBlock, contentElement);
 
-    focusOnTheEndOfTheText(newContentBlock);
+    const focus = newContentBlock.querySelector('.focus') || newContentBlock;
+
+    if (focus) {
+        setTimeout(() => {
+            focusOnTheEndOfTheText(focus);
+        }, 0);
+    }
 
     document.querySelector('.block-options-wrapper').style.display = 'none';
 }
