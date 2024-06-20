@@ -8,3 +8,7 @@ import './keyboard-navigation.js';
 import './text-blocks-from-newlines.js';
 import './focus-on-p.js';
 import './clear-form-pasting.js';
+import './rich-text.js';
+
+
+import './memento.js';
