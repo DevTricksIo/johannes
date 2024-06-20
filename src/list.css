@@ -65,24 +65,24 @@
      padding: 0;
  }
 
- .todo-list {
+ .checkbox-list {
      list-style-type: none;
      padding-left: 0 !important;
  }
 
 
- .todo-list li {
+ .checkbox-list li {
      display: flex;
      flex-direction: row;
      justify-content: left;
  }
 
 
- ul.todo-list input[type="checkbox"]:checked+span {
+ ul.checkbox-list input[type="checkbox"]:checked+span {
      text-decoration: line-through;
  }
 
- ul:not(.todo-list),
- ol:not(.todo-list) {
+ ul:not(.checkbox-list),
+ ol:not(.checkbox-list) {
      padding-left: 1.5rem !important;
  }
