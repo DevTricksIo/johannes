@@ -1,10 +1,15 @@
-import { createNewDraggableParagraphElement } from './element-farm';
+import { createNewDraggableParagraphElement } from './element-factory';
 import { focusOnTheEndOfTheText } from './helper';
 
 document.addEventListener('DOMContentLoaded', () => {
     const content = document.querySelector('.johannes-editor > .content');
 
     content.addEventListener('paste', function (event) {
+
+        if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+            return;
+        }
+
         event.preventDefault();
 
         const target = event.target;

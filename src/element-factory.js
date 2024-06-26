@@ -1,10 +1,4 @@
-
-
 export function createNewHeadingElement(number = 2) {
-
-    if (number < 1 || number > 6) {
-        throw new Error("Invalid heading number");
-    }
 
     let newElement = document.createElement(`h${number}`);
     newElement.classList.add('johannes-content-element');
@@ -19,13 +13,13 @@ export function createNewHeadingElement(number = 2) {
     return newElement;
 }
 
-
 export function createNewParagraphElement(text) {
 
     let newElement = document.createElement('p');
     newElement.classList.add('johannes-content-element');
     newElement.classList.add('swittable');
     newElement.classList.add('focusable');
+    newElement.classList.add('key-trigger');
 
     newElement.contentEditable = true;
 
@@ -91,7 +85,8 @@ export function createNewLiElement(text = '') {
     initialItem.classList.add('deletable');
     initialItem.classList.add('editable');
     initialItem.classList.add('focus');
-    initialItem.classList.add('list-item'); /* list item é um elemento que faz parte de uma lista (list), mas não é necessariamente um li */
+    initialItem.classList.add('key-trigger');
+    initialItem.classList.add('list-item');
 
     initialItem.innerText = text;
 
@@ -107,6 +102,7 @@ export function createNewCheckboxLiElement(text = '') {
     let li = document.createElement('li');
     li.classList.add('deletable');
     li.classList.add('list-item');
+    initialItem.classList.add('key-trigger');
 
     let checkbox = document.createElement('input');
     checkbox.setAttribute('type', 'checkbox');
@@ -127,9 +123,7 @@ export function createNewCheckboxLiElement(text = '') {
 }
 
 export function createNewSeparatorElement() {
-
     let newElement = document.createElement('hr');
-
     return newElement;
 }
 
@@ -137,6 +131,7 @@ export function createNewSeparatorElement() {
 export function createNewQuoteElement(text) {
     const quote = document.createElement('blockquote');
     quote.classList.add('swittable');
+    quote.classList.add('johannes-content-element');
 
     const p = createNewNoSwittableParagraphElement(text);
     const cite = createNewNoSwittableCiteElement();
@@ -151,7 +146,6 @@ function createNewNoSwittableParagraphElement(text) {
 
     let newElement = document.createElement('p');
     newElement.classList.add('focus');
-    newElement.classList.add('johannes-content-element');
     newElement.classList.add('focusable');
     newElement.classList.add('editable');
 

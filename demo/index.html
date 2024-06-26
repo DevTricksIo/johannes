@@ -22,7 +22,7 @@
 <body>
 
     <div class="editor-wrapper">
-        <div class="johannes-editor">
+        <div id="johannesEditor" class="johannes-editor">
 
             <div class="title">
                 <h1 contenteditable="true" data-placeholder="Untitled"></h1>
@@ -30,92 +30,32 @@
 
             <div class="content">
 
-
-                <div class="container">
-                    <div class="item">
-                        <span role="button" class="xpy">Ask AI</span>
-                    </div>
-
-                    <!-- <div class="item">
-                        <span role="button" class="xpy">Text</span>
-                    </div> -->
-
-                    <select name="block-type" id="block-type-select">
-                        <option value="volvo">Text</option>
-                        <option value="saab">List</option>
-                        <option value="mercedes">Code</option>
-                    </select>
-
-                    <div class="item">
-                        <span role="button" class="xpy" title="Link">
-                            <svg width="24" height="24" fill="currentColor">
-                                <use href="#icon-wordpress-anchor"></use>
-                            </svg>
-                        </span>
-                        <span id="bold-text-button" role="button" class="xpy" title="Bold">
-                            <svg width="24" height="24" fill="currentColor">
-                                <use href="#icon-wordpress-bold"></use>
-                            </svg>
-                        </span>
-                        <span role="button" class="xpy" title="Italic">
-                            <svg width="24" height="24" fill="currentColor">
-                                <use href="#icon-wordpress-italic"></use>
-                            </svg>
-                        </span>
-                        <span role="button" class="xpy" title="Underline">
-                            <svg width="24" height="24" fill="currentColor">
-                                <use href="#icon-material-underline"></use>
-                            </svg>
-                        </span>
-                        <span role="button" class="xpy" title="Code">
-                            <svg width="24" height="24" fill="currentColor">
-                                <use href="#icon-wordpress-code-mark"></use>
-                            </svg>
-                        </span>
-                        <span role="button" class="xpy" title="Strike-through">
-                            <svg width="24" height="24" fill="currentColor">
-                                <use href="#icon-wordpress-strike-through"></use>
-                            </svg>
-                        </span>
-                        <span role="button" class="xpy" title="Equation">
-                            <svg width="24" height="24" fill="currentColor">
-                                <use href="#icon-wordpress-equation-mark"></use>
-                            </svg>
-                        </span>
-                    </div>
-
-                </div>
-
-
-
-
-
                 <div class="draggable-block deletable">
                     <button class="drag-handler button-reset" draggable="true">
                         <svg width="20" height="20" fill="currentColor">
                             <use href="#icon-material-drag"></use>
                         </svg>
                     </button>
-                    <p class="johannes-content-element focusable swittable" contenteditable="true"
+                    <p class="johannes-content-element focusable swittable key-trigger" contenteditable="true"
                         data-placeholder="Write something or type / (slash) to choose a block..." tabindex="0"></p>
                 </div>
 
             </div>
 
             <div class="add-block-wrapper">
-                <button class="add-block">
+                <button class="add-block block-operation" data-block-operation="create-default-block">
                     <svg width="24" height="24" fill="currentColor">
                         <use href="#icon-add-block"></use>
                     </svg>
                 </button>
             </div>
 
-            <div class="block-options-wrapper" style="display: none;" role="listbox">
+            <div id="blockOptionsWrapper" class="block-options-wrapper soft-box-shadow" style="display: none;">
                 <div class="block-options" style="position: relative;">
                     <section class="basic-section">
                         <h2>Basic blocks</h2>
 
-                        <div id="blck-opt-p" class="option" data-type="p" tabindex="0" role="option">
+                        <div id="blck-opt-p" class="option option-hover" data-type="p" tabindex="0" role="option">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-wordpress-paragraph"></use>
@@ -127,7 +67,8 @@
                             </div>
                         </div>
 
-                        <div id="blck-opt-image" class="option" data-type="image" tabindex="0" role="option">
+                        <div id="blck-opt-image" class="option option-hover" data-type="image" tabindex="0"
+                            role="option">
                             <div class="option-image">
                                 <img src="./assets/img/ginal96 - 1172px-Venus_botticelli_detail (1).jpg">
                             </div>
@@ -137,8 +78,8 @@
                             </div>
                         </div>
 
-                        <div id="blck-opt-bulleted-list" class="option" data-type="bulleted-list" tabindex="0"
-                            role="option">
+                        <div id="blck-opt-bulleted-list" class="option option-hover" data-type="bulleted-list"
+                            tabindex="0" role="option">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-wordpress-bulleted-list"></use>
@@ -399,9 +340,266 @@
 
                     </section>
 
-                    <span class="empty-block-options" style="display: none;">(˚Δ˚)b</span>
+                    <span class="empty-block-options" style="display: none; padding: 10px;">(˚Δ˚)b</span>
 
                 </div>
+            </div>
+
+            <div id="textFormattingBar" style="display: none;" class="soft-box-shadow">
+
+                <div class="select-wrapper">
+
+                    <button id="turnIntoButton" role="button" class=" button-reset text-formatting-select-button"
+                        title="Link">
+                        <span style="line-height: 1;">Text</span>
+
+                        <svg width="24" height="24" fill="currentColor">
+                            <use href="#icon-wordpress-chevron-down"></use>
+                        </svg>
+
+                    </button>
+
+                    <ul id="turnIntoSelect" name="block-type" style="display: none;"
+                        class="soft-box-shadow dependent-box">
+                        <h3 style="margin-left: 5px;">Turn into</h3>
+
+                        <li class="option option-hover" data-type="p">
+                            <div class="option-image">
+                                <svg width="100%" height="100%" fill="currentColor">
+                                    <use href="#icon-wordpress-paragraph"></use>
+                                </svg>
+                            </div>
+                            Text
+                        </li>
+                        <li class="option option-hover" data-type="bulleted-list">
+                            <div class="option-image">
+                                <svg width="100%" height="100%" fill="currentColor">
+                                    <use href="#icon-wordpress-bulleted-list"></use>
+                                </svg>
+                            </div>
+                            Bulleted list
+                        </li>
+                        <li class="option option-hover" data-type="numbered-list">
+                            <div class="option-image">
+                                <svg width="100%" height="100%" fill="currentColor">
+                                    <use href="#icon-wordpress-numbered-list"></use>
+                                </svg>
+                            </div>
+                            Numbered list
+                        </li>
+                        <li class="option option-hover" data-type="code">
+                            <div class="option-image">
+                                <svg width="100%" height="100%" fill="currentColor">
+                                    <use href="#icon-wordpress-numbered-list"></use>
+                                </svg>
+                            </div>Code
+                        </li>
+                        <li class="option option-hover" data-type="quote">
+                            <div class="option-image">
+                                <svg width="100%" height="100%" fill="currentColor">
+                                    <use href="#icon-wordpress-quote"></use>
+                                </svg>
+                            </div>
+                            Quote
+                        </li>
+                        <li class="option option-hover" data-type="h1">
+                            <div class="option-image" style="padding: 3px !important;">
+                                <svg width="100%" height="100%" fill="currentColor">
+                                    <use href="#icon-julia-head-1"></use>
+                                </svg>
+                            </div>Heading 1
+                        </li>
+                        <li class="option option-hover" data-type="h2">
+                            <div class="option-image" style="padding: 3px !important;">
+                                <svg width="100%" height="100%" fill="currentColor">
+                                    <use href="#icon-julia-head-2"></use>
+                                </svg>
+                            </div>Heading 2
+                        </li>
+                        <li class="option option-hover" data-type="h3">
+                            <div class="option-image" style="padding: 3px !important;">
+                                <svg width="100%" height="100%" fill="currentColor">
+                                    <use href="#icon-julia-head-3"></use>
+                                </svg>
+                            </div>Heading 3
+                        </li>
+                        <li class="option option-hover" data-type="h4">
+                            <div class="option-image" style="padding: 3px !important;">
+                                <svg width="100%" height="100%" fill="currentColor">
+                                    <use href="#icon-julia-head-4"></use>
+                                </svg>
+                            </div>Heading 4
+                        </li>
+                        <li class="option option-hover" data-type="h5">
+                            <div class="option-image" style="padding: 3px !important;">
+                                <svg width="100%" height="100%" fill="currentColor">
+                                    <use href="#icon-julia-head-5"></use>
+                                </svg>
+                            </div>Heading 5
+                        </li>
+                        <li class="option option-hover" data-type="h6">
+                            <div class="option-image" style="padding: 3px !important;">
+                                <svg width="100%" height="100%" fill="currentColor">
+                                    <use href="#icon-julia-head-6"></use>
+                                </svg>
+                            </div>Heading 6
+                        </li>
+                    </ul>
+
+                </div>
+
+                <div style="height: 24px; width: 1px; border-right: 1px solid #d0d0d0; margin: auto 6px;">
+                </div>
+
+                <div class="item">
+                    <button id="linkTextButton" role="button" class="xpy button-reset" title="Link">
+                        <svg width="22" height="22" fill="currentColor">
+                            <use href="#icon-material-link"></use>
+                        </svg>
+                    </button>
+                    <button id="boldTextButton" role="button" class="xpy button-reset" title="Bold">
+                        <svg width="22" height="22" fill="currentColor">
+                            <use href="#icon-wordpress-bold"></use>
+                        </svg>
+                    </button>
+                    <button id="italicTextButton" role="button" class="xpy button-reset" title="Italic">
+                        <svg width="22" height="22" fill="currentColor">
+                            <use href="#icon-material-italic"></use>
+                        </svg>
+                    </button>
+                    <button id="underlineTextButton" role="button" class="xpy button-reset" title="Underline">
+                        <svg width="22" height="22" fill="currentColor">
+                            <use href="#icon-material-underline"></use>
+                        </svg>
+                    </button>
+                    <button id="codeTextButton" role="button" class="xpy button-reset" title="Code">
+                        <svg width="22" height="22" fill="currentColor">
+                            <use href="#icon-wordpress-code-mark"></use>
+                        </svg>
+                    </button>
+                    <button id="strikeThroughTextButton" role="button" class="xpy button-reset" title="Strike-through">
+                        <svg width="22" height="22" fill="currentColor">
+                            <use href="#icon-wordpress-strike-through"></use>
+                        </svg>
+                    </button>
+                    <button id="mathTextButton" role="button" class="xpy button-reset" title="Equation">
+                        <svg width="22" height="22" fill="currentColor">
+                            <use href="#icon-wordpress-equation-mark"></use>
+                        </svg>
+                    </button>
+
+                    <div class="select-wrapper">
+
+                        <button id="colorTextButton" role="button" class="button-reset text-formatting-select-button"
+                            title="Color">
+                            <div
+                                style="width: 20px; height: 20px; border-radius: 50%; background-color: #FAF4D1; border: 1px solid #d0d0d0;">
+
+                            </div>
+
+                            <svg width="24" height="24" fill="currentColor">
+                                <use href="#icon-wordpress-chevron-down"></use>
+                            </svg>
+                        </button>
+
+                        <ul id="colorTextOptionSelect" name="block-type" style="display: none;"
+                            class="soft-box-shadow dependent-box">
+
+                            <h3 style="margin-left: 5px;">Background</h3>
+
+                            <li class="option option-hover" data-color="bgc-red">
+                                <div
+                                    style="width: 20px; height: 20px; border-radius: 50%; background-color: #FDDEDE; border: 1px solid #d0d0d0;">
+
+                                </div>
+                                Red
+                            </li>
+
+                            <li class="option option-hover" data-color="bgc-green">
+                                <div
+                                    style="width: 20px; height: 20px; border-radius: 50%; background-color: #D7F7DC; border: 1px solid #d0d0d0;">
+
+                                </div>
+                                Green
+                            </li>
+
+                            <li class="option option-hover" data-color="bgc-blue">
+                                <div
+                                    style="width: 20px; height: 20px; border-radius: 50%; background-color: #D9EDF6; border: 1px solid #d0d0d0;">
+
+                                </div>
+                                Blue
+                            </li>
+                            <li id="colorTextBackgroundYellow" class="option option-hover" data-color="bgc-yellow">
+                                <div
+                                    style="width: 20px; height: 20px; border-radius: 50%; background-color: #FAF4D1; border: 1px solid #d0d0d0;">
+
+                                </div>
+                                Yellow
+                            </li>
+
+                            <li class="option option-hover" data-color="bgc-grey">
+                                <div
+                                    style="width: 20px; height: 20px; border-radius: 50%; background-color: #E1E0E0; border: 1px solid #d0d0d0;">
+
+                                </div>
+                                Grey
+                            </li>
+
+                        </ul>
+
+                    </div>
+                </div>
+
+                <div style="height: 24px; width: 1px; border-right: 1px solid #d0d0d0; margin: auto 6px;">
+                </div>
+
+                <div class="select-wrapper">
+
+                    <button id="moreTextOptionButton" role="button"
+                        class="xpy button-reset text-formatting-select-button" title="More options">
+                        <svg width="24" height="24" fill="currentColor">
+                            <path d="M13 19h-2v-2h2v2zm0-6h-2v-2h2v2zm0-6h-2V5h2v2z"></path>
+                        </svg>
+                    </button>
+
+                    <ul id="moreTextOptionSelect" name="block-type" style="display: none;"
+                        class="soft-box-shadow dependent-box">
+
+                        <h3 style="margin-left: 5px;">More options</h3>
+
+                        <li class="option option-hover block-operation" data-block-operation="delete-draggable-block">
+
+                            <svg width="22" height="22" fill="currentColor" style="color: #787774;">
+                                <use href="#icon-material-trash"></use>
+                            </svg>
+
+                            Delete
+                        </li>
+                        <li class="option option-hover" data-type="bulleted-list">
+
+                            <svg width="22" height="22" fill="currentColor" style="color: #787774;">
+                                <use href="#icon-material-duplicate"></use>
+                            </svg>
+
+                            Duplicate
+                        </li>
+
+                        <li class="option option-hover" data-type="bulleted-list">
+
+                            <svg width="22" height="22" fill="currentColor" style="color: #787774;">
+                                <use href="#icon-material-clear"></use>
+                            </svg>
+
+                            Clear formatting
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+
+            <div id="linkBox" style="display: none;" class="dependent-box">
+                <input id="linkBoxInput" type="url" placeholder="Paste or type a link...">
             </div>
 
         </div>
@@ -409,7 +607,7 @@
 
 
 
-    <svg>
+    <svg shape-rendering="geometricPrecision">
         <symbol id="icon-add-block" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M11 12.5V17.5H12.5V12.5H17.5V11H12.5V6H11V11H6V12.5H11Z" />
         </symbol>
@@ -565,10 +763,51 @@
         </symbol>
 
         <symbol id="icon-material-underline" viewBox="0 -960 960 960">
+            <!-- <path
+                d="M200-120v-80h560v80H200Zm280-160q-101 0-157-63t-56-167v-330h103v336q0 56 28 91t82 35q54 0 82-35t28-91v-336h103v330q0 104-56 167t-157 63Z" /> -->
+
             <path
-                d="M200-120v-80h560v80H200Zm280-160q-101 0-157-63t-56-167v-330h103v336q0 56 28 91t82 35q54 0 82-35t28-91v-336h103v330q0 104-56 167t-157 63Z" />
+                d="M213.85-155v-60h532.3v60h-532.3ZM480-298.85q-93.31 0-145.65-56.65Q282-412.15 282-507.31v-316.15h74.15v319.84q0 60.62 32.23 97.16T480-369.92q59.39 0 91.62-36.54 32.23-36.54 32.23-97.16v-319.84H678v316.15q0 95.16-52.35 151.81-52.34 56.65-145.65 56.65Z" />
         </symbol>
 
+
+        <symbol id="icon-material-link" viewBox="0 -960 960 960">
+            <path
+                d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z" />
+        </symbol>
+
+        <symbol id="icon-material-italic" viewBox="0 -960 960 960">
+            <!-- <path d="M200-200v-100h160l120-360H320v-100h400v100H580L460-300h140v100H200Z" /> -->
+
+            <path
+                d="M215.77-215v-72.31h152.69l129.62-385.38H345.39V-745h366.15v72.31H571.15L441.54-287.31h140.38V-215H215.77Z" />
+        </symbol>
+
+        <symbol id="icon-wordpress-chevron-down" viewBox="0 0 24 24">
+            <path d="M17.5 11.6L12 16l-5.5-4.4.9-1.2L12 14l4.5-3.6 1 1.2z"></path>
+        </symbol>
+
+
+        <symbol id="icon-material-trash" viewBox="0 -960 960 960">
+
+            <path
+                d="M292.31-140q-29.92 0-51.12-21.19Q220-182.39 220-212.31V-720h-40v-60h180v-35.38h240V-780h180v60h-40v507.69Q740-182 719-161q-21 21-51.31 21H292.31ZM680-720H280v507.69q0 5.39 3.46 8.85t8.85 3.46h375.38q4.62 0 8.46-3.85 3.85-3.84 3.85-8.46V-720ZM376.16-280h59.99v-360h-59.99v360Zm147.69 0h59.99v-360h-59.99v360ZM280-720v520-520Z" />
+        </symbol>
+
+        <symbol id="icon-material-duplicate" viewBox="0 -960 960 960">
+
+            <path
+                d="M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 0-56.5-23.5T120-160v-560h80v560h440v80H200Zm160-240v-480 480Z" />
+            <!-- <path
+                d="M560-320h80v-120h120v-80H640v-120h-80v120H440v80h120v120ZM240-140Q131-178 65.5-271.5T0-480q0-115 65.5-208.5T240-820v88q-74 35-117 103T80-480q0 81 43 149t117 103v88Zm360 20q-75 0-140.5-28.5t-114-77q-48.5-48.5-77-114T240-480q0-75 28.5-140.5t77-114q48.5-48.5 114-77T600-840q75 0 140.5 28.5t114 77q48.5 48.5 77 114T960-480q0 75-28.5 140.5t-77 114q-48.5 48.5-114 77T600-120Zm0-360Zm0 280q117 0 198.5-81.5T880-480q0-117-81.5-198.5T600-760q-117 0-198.5 81.5T320-480q0 117 81.5 198.5T600-200Z" /> -->
+        </symbol>
+
+        <symbol id="icon-material-clear" viewBox="0 -960 960 960">
+            <path
+                d="M182.15-140q-14.38-3.62-26.46-15.69-12.07-12.08-15.69-26.46L777.85-820q15.61 4.23 26.76 15.69 11.16 11.46 16 26.46L182.15-140Zm213.31 0 76.85-76.85V-140h-76.85ZM560-227.69v-60h300v60H560ZM140-395.46v-84.31L480.23-820h84.31L140-395.46Zm490.85 20.07L820-564.54v84.31L715.15-375.39h-84.3ZM140-693.08v-54.61Q140-778 161-799q21-21 51.31-21h54.61L140-693.08Z" />
+            <!-- <path
+                d="M440-520h80v-280q0-17-11.5-28.5T480-840q-17 0-28.5 11.5T440-800v280ZM200-360h560v-80H200v80Zm-58 240h98v-80q0-17 11.5-28.5T280-240q17 0 28.5 11.5T320-200v80h120v-80q0-17 11.5-28.5T480-240q17 0 28.5 11.5T520-200v80h120v-80q0-17 11.5-28.5T680-240q17 0 28.5 11.5T720-200v80h98l-40-160H182l-40 160Zm676 80H142q-39 0-63-31t-14-69l55-220v-80q0-33 23.5-56.5T200-520h160v-280q0-50 35-85t85-35q50 0 85 35t35 85v280h160q33 0 56.5 23.5T840-440v80l55 220q13 38-11.5 69T818-40Zm-58-400H200h560Zm-240-80h-80 80Z" /> -->
+        </symbol>
 
 
     </svg>

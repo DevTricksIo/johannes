@@ -1,46 +1,42 @@
-.block-options-wrapper {
-    z-index: 999999;
-    /* box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 3px 6px, rgba(15, 15, 15, 0.2) 0px 9px 24px; */
-    position: absolute;
-    display: none;
-    /* border: 2px solid #ccc; */
-    /* background-color: pink; */
+.soft-box-shadow {
     margin: 0;
     padding: 0;
+    border-radius: 2px;
+    box-shadow:
+        0 4px 6px rgba(0, 0, 0, 0.1),
+        0 -2px 4px rgba(216, 196, 196, 0.02),
+        -2px 0 4px rgba(0, 0, 0, 0.02),
+        2px 0 4px rgba(0, 0, 0, 0.02);
 
+    border: 1px solid #d0d0d0;
 }
 
-/* ::-webkit-scrollbar {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-    width: 6px;
-} */
+.block-options-wrapper {
+    z-index: 999999;
+    position: absolute;
+    display: none;
+}
 
 .block-options {
-    /* width: 324px; 20.25rem */
     width: 19rem;
-    /* height: 384px; */
-    /* max-height: 340px; */
-
     max-height: 19rem;
-
     overflow-y: auto;
-    /* border-radius: 10px; */
 }
 
 .block-options {
-    padding: 10px;
+    padding: 0 10px;
     background: #f9f9f9;
-    border: 2px solid #ccc;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    /* position: absolute; */
 }
 
 .block-options section h2 {
-    font-size: small ;
-    padding-left: 0.625rem;
+    font-size: small !important;
     color: #37352fa6;
+    margin: 0;
+    padding: 0;
+    font-weight: 600 !important;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-left: 5px;    
 }
 
 .block-options .option {
@@ -70,19 +66,19 @@
 
 
 
-.block-options .option:focus-visible{
+.block-options .option:focus-visible {
     outline: none;
     background-color: #e9e9e9;
     border: inherit;
 }
 
-.block-options .option:hover {
+.option-hover:hover {
     background-color: #e9e9e9;
 }
 
 
 .option[focused="true"] {
-    background-color: #bde4ff; /* estilo de foco personalizado */
+    background-color: #bde4ff;
 }
 
 
@@ -93,7 +89,6 @@
     width: 2.875rem;
     height: 2.875rem;
     border-radius: 3px;
-    /* background-color: red; */
     border: 1px solid #ccc;
     color: #4f4f4f;
 
@@ -109,23 +104,15 @@
 }
 
 .option-image img {
-    /* max-width: 46px; 2,875rem */
     max-width: 2.875rem;
     max-height: 2.875rem;
 }
 
 .option-image svg {
-    /* padding: 10px;  0.625rem */
     margin: 0;
     padding: 0;
     padding: 0.625rem;
     box-sizing: border-box;
-    
-}
-
-.option-text {
-    /* background-color: yellow; */
-    /* font-size: 0.5rem; */
 
 }
 

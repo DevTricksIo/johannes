@@ -88,11 +88,17 @@ h1[data-placeholder]:focus:before {}
     display: block;
 }
 
+cite[contenteditable="true"]:empty:before {
+    display: block;
+}
+
 *[contenteditable="true"]:not(h1)[data-placeholder]:empty:focus:before {
     content: attr(data-placeholder);
     color: #84888acd !important;
     display: block;
 }
+
+
 
 h1 {
     font-size: 2.5rem;
@@ -157,14 +163,360 @@ p {
     margin-right: auto;
 }
 
-
-
 .johannes-editor hr {
     width: 100%;
     height: 2px;
     visibility: visible;
     border: none;
     border-bottom: 1px solid rgba(55, 53, 47, 0.16);
+}
+
+
+
+.johannes-editor blockquote {
+    margin: 0.5rem 0;
+    padding-left: 20px;
+    border-left: 4px solid rgb(55, 53, 47);
+    font-style: italic
+}
+
+.johannes-editor cite {
+    padding-top: 1rem !important;
+    display: inline-block;
+}
+
+
+.johannes-editor cite::before {
+    content: '— ';
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#linkBox {
+    border-radius: 2px;
+    padding: 20px;
+    background-color: #f9f9f9;
+
+
+    box-shadow:
+        0 4px 6px rgba(0, 0, 0, 0.1),
+        0 -2px 4px rgba(0, 0, 0, 0.02),
+        -2px 0 4px rgba(0, 0, 0, 0.02),
+        2px 0 4px rgba(0, 0, 0, 0.02);
+
+
+    border: 1px solid #d0d0d0;
+    width: fit-content;
+    z-index: 999999;
+    color: rgb(120, 119, 116);
+    border-radius: none;
+}
+
+
+#linkBox input {
+    width: 316px;
+    padding: 8px 40px 8px 16px;
+    /* border-color: #d0d0d0; */
+
+    border: 1px solid #949494;
+    /* border-radius: 4px; */
+    height: 24px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#linkBox input::selection,
+#linkBox input:focus {
+    border-radius: none;
+}
+
+
+
+
+
+
+
+
+/** Text formatting Bar **/
+
+
+
+#textFormattingBar {
+    /* display: flex; */
+    justify-content: space-between;
+    padding: 8px 16px;
+    background-color: #f9f9f9;
+
+    background: #f9f9f9 !important;
+
+    width: fit-content;
+    z-index: 999999;
+    position: absolute;
+
+}
+
+
+span {
+    font-family: Arial, sans-serif;
+}
+
+
+
+/* #textFormattingBar .xpy {
+    display: inline-block;
+}*/
+
+#textFormattingBar .item {
+    color: rgb(120, 119, 116);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#textFormattingBar .item>button {
+
+    display: inline-flex;
+    align-items: center;
+}
+
+
+/*
+#textFormattingBar .item .xpy {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    border-radius: 5px;
+} */
+
+
+#textFormattingBar .item .xpy :hover {
+    background-color: rgba(55, 53, 47, 0.08);
+    border-radius: 3px;
+}
+
+#textFormattingBar select {
+    color: rgb(120, 119, 116);
+    border: none;
+    font-size: 0.85rem;
+    /* background-position: calc(100% - 4px) center; */
+    background-color: inherit;
+
+    /* background-color: red; */
+
+    /* display: flex;
+    justify-content: start;
+    text-align: center; */
+}
+
+
+#textFormattingBar select option {
+    /* padding: 10px 15px ; */
+}
+
+.select-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.select-wrapper ul {
+    position: absolute;
+    background: #f9f9f9;
+    flex-direction: column;
+    width: 180px;
+    padding-bottom: 0.5rem;
+    padding-left: 5px;
+    padding-right: 5px;
+    top: 2.2rem;
+    color: rgb(55, 53, 47);
+}
+
+.select-wrapper ul li {
+    /* display: flex;
+    flex-direction: row !important;
+    background-color: yellow; */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding: 3px 5px;
+    border-radius: 3px;
+    user-select: none !important;
+
+    font-size: small !important;
+    font-weight: 500;
+}
+
+.select-wrapper ul li .option-image {
+    width: 22px;
+    height: 22px;
+    color: #242424;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.select-wrapper ul li .option-image svg {
+    color: #4f4f4f;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.text-formatting-select-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#turnIntoButton span {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9rem;
+
+}
+
+#turnIntoButton svg use {
+    margin: auto;
+}
+
+.select-wrapper {
+    position: relative;
+    color: rgb(120, 119, 116);
+}
+
+
+
+
+
+
+
+
+
+
+code {
+    background-color: #d0d0d0;
+}
+
+
+
+
+a:not([href]) {
+    background-color: #d3e3fd;
+}
+
+.text-formatting-button-active {
+    color: blue;
+}
+
+
+
+
+/* #Seeessdas svg{
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background-color: red;
+    vertical-align: center !important;
+    flex-direction: row !important;
+}
+
+#Seeessdas svg use{
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background-color: red;
+    vertical-align: center !important;
+    flex-direction: row !important;
+} */
+
+
+
+#moreTextOptionSelect {
+    position: absolute;
+}
+
+.moreTextOptionWrapper {
+    position: relative;
+}
+
+
+
+
+.select-wrapper ul>h3 {
+    font-size: small !important;
+    color: #37352fa6;
+    margin: 0;
+    padding: 0;
+    font-weight: 600 !important;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+
+.bgc-red{
+    background-color: #FDDEDE;
+}
+
+.bgc-green{
+    background-color: #D7F7DC;
+}
+
+.bgc-blue{
+    background-color: #D9EDF6;
+}
+
+.bgc-yellow{
+    background-color: #FAF4D1;
+}
+
+.bgc-grey{
+    background-color: #E1E0E0;
+}
+
+p, mark{
+    line-height: 1;
+}
+
+#turnIntoSelect .option-image{
+    display: none !important;
+}
+
+.border-less-image{
+    width: 24px;
+    height: 24px;
 }
 /*!*********************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./src/add-block.css ***!
@@ -195,49 +547,45 @@ p {
 /*!************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./src/switch-block.css ***!
   \************************************************************************/
-.block-options-wrapper {
-    z-index: 999999;
-    /* box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 3px 6px, rgba(15, 15, 15, 0.2) 0px 9px 24px; */
-    position: absolute;
-    display: none;
-    /* border: 2px solid #ccc; */
-    /* background-color: pink; */
+.soft-box-shadow {
     margin: 0;
     padding: 0;
+    border-radius: 2px;
+    box-shadow:
+        0 4px 6px rgba(0, 0, 0, 0.1),
+        0 -2px 4px rgba(216, 196, 196, 0.02),
+        -2px 0 4px rgba(0, 0, 0, 0.02),
+        2px 0 4px rgba(0, 0, 0, 0.02);
 
+    border: 1px solid #d0d0d0;
 }
 
-/* ::-webkit-scrollbar {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-    width: 6px;
-} */
+.block-options-wrapper {
+    z-index: 999999;
+    position: absolute;
+    display: none;
+}
 
 .block-options {
-    /* width: 324px; 20.25rem */
     width: 19rem;
-    /* height: 384px; */
-    /* max-height: 340px; */
-
     max-height: 19rem;
-
     overflow-y: auto;
-    /* border-radius: 10px; */
 }
 
 .block-options {
-    padding: 10px;
+    padding: 0 10px;
     background: #f9f9f9;
-    border: 2px solid #ccc;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    /* position: absolute; */
 }
 
 .block-options section h2 {
-    font-size: small ;
-    padding-left: 0.625rem;
+    font-size: small !important;
     color: #37352fa6;
+    margin: 0;
+    padding: 0;
+    font-weight: 600 !important;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-left: 5px;    
 }
 
 .block-options .option {
@@ -267,19 +615,19 @@ p {
 
 
 
-.block-options .option:focus-visible{
+.block-options .option:focus-visible {
     outline: none;
     background-color: #e9e9e9;
     border: inherit;
 }
 
-.block-options .option:hover {
+.option-hover:hover {
     background-color: #e9e9e9;
 }
 
 
 .option[focused="true"] {
-    background-color: #bde4ff; /* estilo de foco personalizado */
+    background-color: #bde4ff;
 }
 
 
@@ -290,7 +638,6 @@ p {
     width: 2.875rem;
     height: 2.875rem;
     border-radius: 3px;
-    /* background-color: red; */
     border: 1px solid #ccc;
     color: #4f4f4f;
 
@@ -306,23 +653,15 @@ p {
 }
 
 .option-image img {
-    /* max-width: 46px; 2,875rem */
     max-width: 2.875rem;
     max-height: 2.875rem;
 }
 
 .option-image svg {
-    /* padding: 10px;  0.625rem */
     margin: 0;
     padding: 0;
     padding: 0.625rem;
     box-sizing: border-box;
-    
-}
-
-.option-text {
-    /* background-color: yellow; */
-    /* font-size: 0.5rem; */
 
 }
 
@@ -340,94 +679,3 @@ p {
 .option-text .block-description {
     font-size: small !important;
 }
-/*!****************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./src/list.css ***!
-  \****************************************************************/
- ol,
- ul {
-     /* list-style-position: inside;
-     background-color: pink; */
-
-     padding-left: 1rem !important;
- }
-
-
- li {
-     /* list-style-position: inside; */
-     /* display: inline-block; */
-
-
- }
-
- li::before {
-     /* display: inline !important; */
- }
-
-
- /* li::before {
-     content: '';
-     display: inline-block;
-     width: 10px;
-
- }
-
-
- li::marker {
-     color: blueviolet !important;
- } */
-
- li>button {
-     /* display: none; */
-     display: none;
-     position: absolute;
-     margin-left: 10px;
-     top: 0;
-
-     flex-direction: row;
-     align-items: start;
-     justify-content: start;
-
- }
-
- li {
-     position: relative;
- }
-
- li::before {
-     margin-left: 4px;
- }
-
- li:hover>button {
-     /* display: inline-block; */
-     display: inline-flex;
-
- }
-
- li p {
-     display: inline-block;
-     line-height: 1;
-     margin: 0;
-     padding: 0;
- }
-
- .todo-list {
-     list-style-type: none;
-     padding-left: 0 !important;
- }
-
-
- .todo-list li {
-     display: flex;
-     flex-direction: row;
-     justify-content: left;
- }
-
-
- ul.todo-list input[type="checkbox"]:checked+span {
-     text-decoration: line-through;
- }
-
- ul:not(.todo-list),
- ol:not(.todo-list) {
-     padding-left: 1.5rem !important;
- }

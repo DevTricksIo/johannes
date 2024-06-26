@@ -1,88 +1,62 @@
- ol,
- ul {
-     /* list-style-position: inside;
-     background-color: pink; */
-
-     padding-left: 1rem !important;
- }
+ol.johannes-content-element,
+ul.johannes-content-element {
+    padding-left: 1rem !important;
+}
 
 
- li {
-     /* list-style-position: inside; */
-     /* display: inline-block; */
+
+.johannes-content-element li>button {
+    /* display: none; */
+    display: none;
+    position: absolute;
+    margin-left: 10px;
+    top: 0;
+
+    flex-direction: row;
+    align-items: start;
+    justify-content: start;
+
+}
+
+.johannes-content-element li {
+    position: relative;
+}
+
+.johannes-content-element li::before {
+    margin-left: 4px;
+}
+
+.johannes-content-element li:hover>button {
+    /* display: inline-block; */
+    display: inline-flex;
+
+}
+
+p.johannes-content-element {
+    display: inline-block;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+}
+
+.johannes-content-element .checkbox-list {
+    list-style-type: none;
+    padding-left: 0 !important;
+}
 
 
- }
-
- li::before {
-     /* display: inline !important; */
- }
-
-
- /* li::before {
-     content: '';
-     display: inline-block;
-     width: 10px;
-
- }
+.johannes-content-element .checkbox-list li {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+}
 
 
- li::marker {
-     color: blueviolet !important;
- } */
+.johannes-content-element ul.checkbox-list input[type="checkbox"]:checked+span {
+    text-decoration: line-through;
+}
 
- li>button {
-     /* display: none; */
-     display: none;
-     position: absolute;
-     margin-left: 10px;
-     top: 0;
-
-     flex-direction: row;
-     align-items: start;
-     justify-content: start;
-
- }
-
- li {
-     position: relative;
- }
-
- li::before {
-     margin-left: 4px;
- }
-
- li:hover>button {
-     /* display: inline-block; */
-     display: inline-flex;
-
- }
-
- li p {
-     display: inline-block;
-     line-height: 1;
-     margin: 0;
-     padding: 0;
- }
-
- .checkbox-list {
-     list-style-type: none;
-     padding-left: 0 !important;
- }
-
-
- .checkbox-list li {
-     display: flex;
-     flex-direction: row;
-     justify-content: left;
- }
-
-
- ul.checkbox-list input[type="checkbox"]:checked+span {
-     text-decoration: line-through;
- }
-
- ul:not(.checkbox-list),
- ol:not(.checkbox-list) {
-     padding-left: 1.5rem !important;
- }
+ul.johannes-content-element:not(.checkbox-list),
+ol.johannes-content-element:not(.checkbox-list) {
+    padding-left: 1.5rem !important;
+}
