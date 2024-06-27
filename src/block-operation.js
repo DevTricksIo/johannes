@@ -3,6 +3,26 @@ import './add-block.css';
 import * as factory from './element-factory';
 import * as jSelection from './j-selection';
 import { closeAll } from './j-window';
+import { focusOnTheEndOfTheText } from './j-window';
+
+import { focusOnPrevious } from './j-window';
+import { focusOnNext } from './j-window';
+
+import { createNewLiElement } from './element-factory';
+import { createNewCheckboxLiElement } from './element-factory';
+import { createNewDraggableParagraphElement } from './element-factory';
+
+
+//** Create a default block or a element list */
+export function createNewElement(element) {
+    let contentElement = element.closest('.johannes-content-element');
+
+    if (contentElement.classList.contains('list')) {
+        createListItem(contentElement);
+    } else {
+        createADefaultBlock(contentElement);
+    }
+}
 
 //** Just create a new paragraph draggable block and insert in the DOM */
 export function createADefaultBlock(eventParagraph) {
@@ -17,7 +37,61 @@ export function createADefaultBlock(eventParagraph) {
     }
 
     const focusable = newBlock.querySelector('.johannes-content-element');
-    focusable.focus();
+    // focusable.focus();
+
+    focusOnTheEndOfTheText(focusable);
+}
+
+export function createListItem(element) {
+
+    let newContentElement = null;
+
+    let activeElement = document.activeElement;
+    let contentElement = element.closest('.johannes-content-element');
+
+    if (contentElement.classList.contains('checkbox-list')) {
+        newContentElement = createNewCheckboxLiElement();
+    } else if (contentElement.classList.contains('list')) {
+        newContentElement = createNewLiElement();
+    } else {
+        newContentElement = createNewDraggableParagraphElement();
+    }
+
+    let parentBlock = null;
+
+    if (contentElement.classList.contains('list')) {
+
+        parentBlock = contentElement;
+
+        const textContent = activeElement.textContent.trim();
+
+        if (textContent === '') {
+
+            parentBlock = element.closest('.draggable-block');
+
+            element.closest('.deletable').remove();
+
+            newContentElement = createNewDraggableParagraphElement();
+            parentBlock.insertAdjacentElement('afterend', newContentElement);
+
+        } else {
+            const activeElement = document.activeElement.closest('.list-item');
+            activeElement.insertAdjacentElement('afterend', newContentElement);
+        }
+
+    } else {
+        parentBlock = element.closest('.draggable-block');
+
+        if (parentBlock) {
+            if (parentBlock.nextSibling) {
+                parentBlock.parentNode.insertBefore(newContentElement, parentBlock.nextSibling);
+            } else {
+                parentBlock.parentNode.appendChild(newContentElement);
+            }
+        }
+    }
+
+    focusOnTheEndOfTheText(newContentElement);
 }
 
 //** Delete the closest draggable-block parent of a child. Take the current selection if a child is not passed. */
@@ -40,11 +114,28 @@ export function deleteDraggableParentBlock(child) {
     clearAllAfterDelete();
 }
 
-//** Delete the current element and the draggable-block parent if empty. A block is empty if has no editable element inside. */
-export function deleteTheCurrentElementAndTheDraggableBlockIfEmpty(element) {
+export function deleteAndFocusOnPrevious(){
 
-    const parentBlock = element.closest('.draggable-block');
-    const actual = element.closest('.deletable');
+    const currentActiveElement = document.activeElement;
+
+    focusOnPrevious(currentActiveElement);
+    deleteTheCurrentElementAndTheDraggableBlockIfEmpty(currentActiveElement);
+}
+
+export function deleteAndFocusOnNext(){
+
+    const currentActiveElement = document.activeElement;
+
+    focusOnNext(currentActiveElement);
+    deleteTheCurrentElementAndTheDraggableBlockIfEmpty(currentActiveElement);
+}
+
+
+//** Delete the current element and the draggable-block parent if empty. A block is empty if has no editable element inside. */
+function deleteTheCurrentElementAndTheDraggableBlockIfEmpty(currentElement) {
+
+    const parentBlock = currentElement.closest('.draggable-block');
+    const actual = currentElement.closest('.deletable');
 
     actual.remove();
 
@@ -59,9 +150,9 @@ export function transformBlock(blockElement, type) {
     let contentElement = blockElement.querySelector('.swittable');
     let content = contentElement.innerText;
 
-    if (content.endsWith('/')) {
-        content = content.slice(0, -1); // Remove the last '/'
-    }
+    // if (content.endsWith('/')) {
+    //     content = content.slice(0, -1); // Remove the last '/'
+    // }
 
     let newContentBlock;
 
@@ -156,18 +247,11 @@ export function transformBlock(blockElement, type) {
             return;
     }
 
-    removeDisplayNoneFromAllBlockOptions();
     blockElement.replaceChild(newContentBlock, contentElement);
 
-    const focus = newContentBlock.querySelector('.focus') || newContentBlock;
+    const focusable =  newContentBlock.closest('.focusable') || blockElement.querySelector('.focusable');
 
-    if (focus) {
-        setTimeout(() => {
-            focusOnTheEndOfTheText(focus);
-        }, 0);
-    }
-
-    document.querySelector('.block-options-wrapper').style.display = 'none';
+    focusOnTheEndOfTheText(focusable);
 }
 
 

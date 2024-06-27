@@ -486,67 +486,44 @@ a:not([href]) {
 }
 
 
-.bgc-red{
+.bgc-red {
     background-color: #FDDEDE;
 }
 
-.bgc-green{
+.bgc-green {
     background-color: #D7F7DC;
 }
 
-.bgc-blue{
+.bgc-blue {
     background-color: #D9EDF6;
 }
 
-.bgc-yellow{
+.bgc-yellow {
     background-color: #FAF4D1;
 }
 
-.bgc-grey{
+.bgc-grey {
     background-color: #E1E0E0;
 }
 
-p, mark{
+p,
+mark {
     line-height: 1;
 }
 
-#turnIntoSelect .option-image{
+#turnIntoSelect .option-image {
     display: none !important;
 }
 
-.border-less-image{
+.border-less-image {
     width: 24px;
     height: 24px;
 }
-/*!*********************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./src/add-block.css ***!
-  \*********************************************************************/
-.add-block {
-    margin: 0;
-    padding: 0;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #000;
-    background-color: white;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-    margin-left: 1.3rem;
-}
 
-.add-block-wrapper {
-    width: 100%;
-    height: 3.125rem;
-}
 
-.add-block-wrapper:hover .add-block {
-    display: flex;
-}
-/*!************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./src/switch-block.css ***!
-  \************************************************************************/
+
+
+/** Block Options **/
 .soft-box-shadow {
     margin: 0;
     padding: 0;
@@ -585,7 +562,7 @@ p, mark{
     font-weight: 600 !important;
     margin-top: 5px;
     margin-bottom: 5px;
-    padding-left: 5px;    
+    padding-left: 5px;
 }
 
 .block-options .option {
@@ -678,4 +655,32 @@ p, mark{
 
 .option-text .block-description {
     font-size: small !important;
+}
+
+/** End Block Options **/
+/*!*********************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/add-block.css ***!
+  \*********************************************************************/
+.add-block {
+    margin: 0;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #000;
+    background-color: white;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    margin-left: 1.3rem;
+}
+
+.add-block-wrapper {
+    width: 100%;
+    height: 3.125rem;
+}
+
+.add-block-wrapper:hover .add-block {
+    display: flex;
 }

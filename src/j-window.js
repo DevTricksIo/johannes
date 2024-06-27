@@ -1,8 +1,3 @@
-import * as blockOptionsManagerImport from './block-options-manager';
-
-export const blockOptionsManager = blockOptionsManagerImport;
-
-
 //**Show */
 export function showInputLinkBox() {
 
@@ -114,38 +109,43 @@ function anyDependentBoxVisible() {
 }
 
 export function focusOnTheEndOfTheText(contentBlock) {
-    const range = document.createRange();
-    const selection = window.getSelection();
+    setTimeout(() => {
+        const range = document.createRange();
+        const selection = window.getSelection();
 
-    range.selectNodeContents(contentBlock);
+        range.selectNodeContents(contentBlock);
 
-    let lastChild = contentBlock;
-    while (lastChild.lastChild && lastChild.lastChild.nodeType === Node.ELEMENT_NODE) {
-        lastChild = lastChild.lastChild;
-    }
-    if (lastChild.lastChild) {
-        lastChild = lastChild.lastChild;
-    }
+        let lastChild = contentBlock;
+        while (lastChild.lastChild && lastChild.lastChild.nodeType === Node.ELEMENT_NODE) {
+            lastChild = lastChild.lastChild;
+        }
+        if (lastChild.lastChild) {
+            lastChild = lastChild.lastChild;
+        }
 
-    range.setEnd(lastChild, lastChild.textContent.length);
-    range.collapse(false);
+        range.setEnd(lastChild, lastChild.textContent.length);
+        range.collapse(false);
 
-    selection.removeAllRanges();
-    selection.addRange(range);
+        selection.removeAllRanges();
+        selection.addRange(range);
 
-    contentBlock.focus();
+        contentBlock.focus();
+    }, 10);
 }
 
 export function focusOnTheStartOfTheText(contentBlock) {
-    const range = document.createRange();
-    const selection = window.getSelection();
 
-    range.selectNodeContents(contentBlock);
-    range.collapse(true);
-    selection.removeAllRanges();
-    selection.addRange(range);
+    setTimeout(() => {
+        const range = document.createRange();
+        const selection = window.getSelection();
 
-    contentBlock.focus();
+        range.selectNodeContents(contentBlock);
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        contentBlock.focus();
+    }, 10);
 }
 
 export function focusOnNext(actualElement, position) {

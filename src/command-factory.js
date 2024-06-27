@@ -1,5 +1,5 @@
-import * as block from "./block-operation";
-import { createListItem } from "./create-list-item";
+import * as blockOperation from "./block-operation";
+import * as blockOptionOperation from './block-options-operations';
 import * as jWindow from './j-window';
 
 export function createCommand(operationName, elements = null) {
@@ -26,49 +26,55 @@ export const OPERATIONS = {
     BLOCK: {
         CREATE_DEFAULT_BLOCK: 'create-default-block',
         CREATE_LIST_ELEMENT: 'create-list-element',
+        CREATE_NEW_ELEMENT: 'create-new-element',
         DELETE_DRAGGABLE_BLOCK: 'delete-draggable-block',
-        DELETE_CURRENT_ELEMENT_AND_PARENT_BLOCK_IF_EMPTY: 'delete-current-element-and-parent-block-if-empty',
+        DELETE_AND_FOCUS_ON_NEXT: 'delete-and-focus-on-next',
+        DELETE_AND_FOCUS_ON_PREVIOUS: 'delete-and-focus-on-previous',
         DUPLICATE_BLOCK: 'duplicate-block',
         TRANSFORM_BLOCK: 'transform-block',
         MOVE_UP_BLOCK: 'move-up-block',
         MOVE_DOWN_BLOCK: 'move-down-block',
-        
-        
         SHOW_TURN_INTO_BOX: 'show-turn-into-box',
         SHOW_COLOR_BOX: 'show-color-box',
         SHOW_MORE_OPTIONS_BOX: 'show-more-options-box'
     },
-    BLOCK_OPTIONS:{
+    BLOCK_OPTIONS: {
         SHOW_BLOCK_OPTIONS: 'show-block-options',
-        HIDE_BLOCK_OPTIONS: 'hide-block-options',
+        HIDE_CLEAR_BLOCK_OPTIONS: 'hide-clear-block-options',
         MOVE_FAKE_FOCUS_TO_NEXT_OPTION: 'move-fake-focus-to-next-option',
         MOVE_FAKE_FOCUS_TO_PREVIOUS_OPTION: 'move-fake-focus-to-previous-option',
         APPLY_SELECTED_FAKE_FOCUS_TYPE: 'apply-selected-fake-focus-type',
+        FILTER_CONCAT: 'filter-contact',
+        FILTER_REMOVE_LAST: 'filter-remove-last',
     },
-    FORMATTING_BAR:{
+    FORMATTING_BAR: {
         SHOW_TEXT_FORMATTING_BAR: 'show-text-formatting-bar',
     },
 
 };
 
 export const operationMap = {
-    [OPERATIONS.BLOCK.CREATE_DEFAULT_BLOCK]: block.createADefaultBlock,
-    [OPERATIONS.BLOCK.CREATE_LIST_ELEMENT]: createListItem,
-    [OPERATIONS.BLOCK.DELETE_DRAGGABLE_BLOCK]: block.deleteDraggableParentBlock,
-    [OPERATIONS.BLOCK.DELETE_CURRENT_ELEMENT_AND_PARENT_BLOCK_IF_EMPTY]: block.deleteTheCurrentElementAndTheDraggableBlockIfEmpty,
-    [OPERATIONS.BLOCK.DUPLICATE_BLOCK]: block.duplicateBlock,
-    [OPERATIONS.BLOCK.TRANSFORM_BLOCK]: block.transformBlock,
-    [OPERATIONS.BLOCK.MOVE_UP_BLOCK]: block.moveUpBlock,
-    [OPERATIONS.BLOCK.MOVE_DOWN_BLOCK]: block.moveDownBlock,
-    [OPERATIONS.BLOCK_OPTIONS.SHOW_BLOCK_OPTIONS]: jWindow.blockOptionsManager.showBlockOptions,
-    [OPERATIONS.BLOCK_OPTIONS.HIDE_BLOCK_OPTIONS]: jWindow.blockOptionsManager.hideBlockOptions,
-    [OPERATIONS.BLOCK_OPTIONS.MOVE_FAKE_FOCUS_TO_NEXT_OPTION]: jWindow.blockOptionsManager.moveTheFakeFocusToTheNextBlockOption,
-    [OPERATIONS.BLOCK_OPTIONS.MOVE_FAKE_FOCUS_TO_PREVIOUS_OPTION]: jWindow.blockOptionsManager.moveTheFakeFocusToPreviousBlockOption,
-    [OPERATIONS.BLOCK_OPTIONS.APPLY_SELECTED_FAKE_FOCUS_TYPE]: jWindow.blockOptionsManager.applySelectedFakeFocusType,
-    [OPERATIONS.SHOW_TEXT_FORMATTING_BAR]: block.transformBlock,
-    [OPERATIONS.SHOW_TURN_INTO_BOX]: block.transformBlock,
-    [OPERATIONS.SHOW_COLOR_BOX]: block.transformBlock,
-    [OPERATIONS.SHOW_MORE_OPTIONS_BOX]: block.transformBlock
+    [OPERATIONS.BLOCK.CREATE_DEFAULT_BLOCK]: blockOperation.createADefaultBlock,
+    [OPERATIONS.BLOCK.CREATE_LIST_ELEMENT]: blockOperation.createListItem,
+    [OPERATIONS.BLOCK.CREATE_NEW_ELEMENT]: blockOperation.createNewElement,
+    [OPERATIONS.BLOCK.DELETE_DRAGGABLE_BLOCK]: blockOperation.deleteDraggableParentBlock,
+    [OPERATIONS.BLOCK.DELETE_AND_FOCUS_ON_NEXT]: blockOperation.deleteAndFocusOnNext,
+    [OPERATIONS.BLOCK.DELETE_AND_FOCUS_ON_PREVIOUS]: blockOperation.deleteAndFocusOnPrevious,
+    [OPERATIONS.BLOCK.DUPLICATE_BLOCK]: blockOperation.duplicateBlock,
+    [OPERATIONS.BLOCK.TRANSFORM_BLOCK]: blockOperation.transformBlock,
+    [OPERATIONS.BLOCK.MOVE_UP_BLOCK]: blockOperation.moveUpBlock,
+    [OPERATIONS.BLOCK.MOVE_DOWN_BLOCK]: blockOperation.moveDownBlock,
+    [OPERATIONS.BLOCK_OPTIONS.SHOW_BLOCK_OPTIONS]: blockOptionOperation.showBlockOptions,
+    [OPERATIONS.BLOCK_OPTIONS.HIDE_CLEAR_BLOCK_OPTIONS]: blockOptionOperation.hideAndClearBlockOptions,
+    [OPERATIONS.BLOCK_OPTIONS.MOVE_FAKE_FOCUS_TO_NEXT_OPTION]: blockOptionOperation.moveTheFakeFocusToTheNextBlockOption,
+    [OPERATIONS.BLOCK_OPTIONS.MOVE_FAKE_FOCUS_TO_PREVIOUS_OPTION]: blockOptionOperation.moveTheFakeFocusToPreviousBlockOption,
+    [OPERATIONS.BLOCK_OPTIONS.APPLY_SELECTED_FAKE_FOCUS_TYPE]: blockOptionOperation.applySelectedFakeFocusType,
+    [OPERATIONS.BLOCK_OPTIONS.FILTER_CONCAT]: blockOptionOperation.filterContact,
+    [OPERATIONS.BLOCK_OPTIONS.FILTER_REMOVE_LAST]: blockOptionOperation.filterRemoveLast,
+    [OPERATIONS.SHOW_TEXT_FORMATTING_BAR]: blockOperation.transformBlock,
+    [OPERATIONS.SHOW_TURN_INTO_BOX]: blockOperation.transformBlock,
+    [OPERATIONS.SHOW_COLOR_BOX]: blockOperation.transformBlock,
+    [OPERATIONS.SHOW_MORE_OPTIONS_BOX]: blockOperation.transformBlock
 };
 
 export function getBlockOperationFunction(blockOperation) {

@@ -1,7 +1,8 @@
-// import * as commandFactory from './command-factory';
+import { transformBlock } from "./block-operation";
+import { focusOnTheEndOfTheText } from './j-window';
 
 let currentDraggableBlock = null; //This element represents the block where block-options will be displayed close to
-let currentFakeFocusedOption = null;
+let currentFakeFocusedOption = null; //Fake focus is where the visual focus in on
 let realFocusedElement = null;   // This element is where the real/actual focus is on / TODO: change the name
 let filterText = '';
 
@@ -26,12 +27,36 @@ export function setCurrentFakeFocusElement(element) {
     currentFakeFocusedOption = element;
 }
 
-export function filterContact(str) {
-    filterText += str;
+export function filterContact(event) {
+
+    filterText += event.key.toLowerCase();
+
+    updateBlockVisibility(filterText);
+
+    const firstVisibleOption = getTheFirstVisibleBlockOption();
+    removeAllVisualFakeFocus();
+
+    setCurrentFakeFocusElement(firstVisibleOption);
+    applyVisualFakeFocus(realFocusedElement, firstVisibleOption);
 }
 
-function clearFilter() {
-    filterText = '';
+export function filterRemoveLast() {
+
+    if (filterText.length > 0) {
+
+        filterText = filterText.slice(0, -1);
+
+        updateBlockVisibility(filterText);
+
+        const firstVisibleOption = getTheFirstVisibleBlockOption();
+        removeAllVisualFakeFocus();
+
+        setCurrentFakeFocusElement(firstVisibleOption);
+        applyVisualFakeFocus(realFocusedElement, firstVisibleOption);
+
+    } else {
+        hideAndClearBlockOptions();
+    }
 }
 
 export function clear() {
@@ -85,7 +110,7 @@ export function showBlockOptions() {
     }, 10);
 }
 
-export function hideBlockOptions(elementToFocus) {
+export function hideAndClearBlockOptions(elementToFocus) {
 
     if (elementToFocus) {
         elementToFocus.focus();
@@ -191,16 +216,21 @@ export function moveTheFakeFocusToTheNextBlockOption() {
 export function applySelectedFakeFocusType() {
 
     const draggableBlock = realFocusedElement.closest('.draggable-block');
-    const newBlockType = option.getAttribute('data-type');
+    const newBlockType = currentFakeFocusedOption.getAttribute('data-type');
 
     const lastSlashIndex = realFocusedElement.innerText.lastIndexOf('/');
     realFocusedElement.innerText = lastSlashIndex !== -1 ? realFocusedElement.innerText.slice(0, lastSlashIndex) : realFocusedElement.innerText;
 
-    const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK.TRANSFORM_BLOCK, [draggableBlock, newBlockType]);
-    command.execute();
 
+    transformBlock(draggableBlock, newBlockType);
+
+    // focusOnTheEndOfTheText(realFocusedElement);
+    hideAndClearBlockOptions();
 }
 
+function clearFilter() {
+    filterText = '';
+}
 
 function isElementVisible(element) {
     return element && element.style.display !== 'none' && element.style.visibility !== 'hidden' && element.offsetParent !== null;
@@ -235,4 +265,44 @@ function removeAllVisualFakeFocus() {
     focusedElements.forEach(element => {
         element.classList.remove('block-options-focused');
     });
+}
+
+function updateBlockVisibility(filter) {
+
+    let sections = blockOptionsWrapper.querySelectorAll('section');
+
+    sections.forEach(section => {
+        let options = section.querySelectorAll('.option');
+        let allHidden = true;
+
+        options.forEach(option => {
+            const type = option.getAttribute('data-type');
+            const title = option.querySelector('.block-title').textContent.toLowerCase();
+
+            if (type.includes(filter) || title.includes(filter.toLowerCase())) {
+                option.style.display = '';
+                allHidden = false;
+            } else {
+                option.style.display = 'none';
+            }
+        });
+
+        section.style.display = allHidden ? 'none' : '';
+    });
+
+    let emptyListIndicator = document.querySelector('.empty-block-options');
+
+    let allOptions = blockOptionsWrapper.querySelectorAll('.option');
+
+    let hasVisibleOption = Array.from(allOptions).some(option => {
+        let style = window.getComputedStyle(option);
+        return style.display !== 'none';
+    });
+
+    if (hasVisibleOption) {
+        emptyListIndicator.style.display = 'none';
+
+    } else {
+        emptyListIndicator.style.display = 'block';
+    }
 }

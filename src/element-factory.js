@@ -5,6 +5,7 @@ export function createNewHeadingElement(number = 2) {
     newElement.classList.add('swittable');
     newElement.classList.add('focusable');
     newElement.classList.add('focus');
+    newElement.classList.add('key-trigger');
 
     newElement.contentEditable = true;
 
