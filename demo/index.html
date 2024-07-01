@@ -596,7 +596,8 @@
 
                             <h3 style="margin-left: 5px;">Background</h3>
 
-                            <li id="clearColorBackgroundOption" class="entry option option-hover text-formatting-operation"
+                            <li id="clearColorBackgroundOption"
+                                class="entry option option-hover text-formatting-operation"
                                 data-text-formatting-operation="toggle-enclose-selected-text-to" data-tag="mark"
                                 data-class="bgc-grey" tabindex="2" style="display: none;">
                                 <div class="text-option">
@@ -696,23 +697,14 @@
 
                         <h3 style="margin-left: 5px;">More options</h3>
 
-                        <li class="option option-hover" data-type="bulleted-list" tabindex="2">
+                        <li class="option option-hover block-operation" data-type="bulleted-list" tabindex="2"
+                            data-block-operation="duplicate-selected-block">
                             <div class="text-option">
                                 <svg width="22" height="22" fill="currentColor" style="color: #787774;">
                                     <use href="#icon-material-duplicate"></use>
                                 </svg>
-                                <spa>Duplicate</spa>
+                                <span>Duplicate</span>
                             </div>
-                        </li>
-
-                        <li class="option option-hover" data-type="bulleted-list" tabindex="2">
-                            <div class="text-option">
-                                <svg width="22" height="22" fill="currentColor" style="color: #787774;">
-                                    <use href="#icon-material-clear"></use>
-                                </svg>
-                                <span>Clear formatting</span>
-                            </div>
-
                         </li>
 
                         <li id="deleteBlockButton" role="button" class="option option-hover block-operation"
@@ -724,7 +716,6 @@
                                 <span>Delete</span>
                             </div>
                         </li>
-
                     </ul>
                 </div>
 

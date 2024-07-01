@@ -268,8 +268,29 @@ export function moveUpBlock() {
 
 }
 
-export function duplicateBlock(block) {
+export function duplicateSelectedBlock() {
 
+    let element = jSelection.getCurrentDraggableBlockFocused();
+
+    if (!element || !element.parentNode) {
+        console.error('O elemento fornecido é inválido ou não está no DOM.');
+        return;
+    }
+
+    const clone = element.cloneNode(true);
+
+    // Obtem o próximo elemento irmão
+    const nextElement = element.nextSibling;
+
+    // Insere o clone antes do próximo elemento irmão no pai
+    // Se o próximo elemento irmão não existir, 'insertBefore' funcionará como 'appendChild'
+    element.parentNode.insertBefore(clone, nextElement);
+
+
+    hideAllDependentBox();
+    hideTextFormattingBar();
+
+    focusOnTheEndOfTheText(clone);
 }
 
 function clearAllAfterDelete() {
