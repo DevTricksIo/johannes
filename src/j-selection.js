@@ -17,7 +17,7 @@ export function temporarySelectContentFromCurrentSelection() {
             const selection = window.getSelection();
 
             if (selection.rangeCount > 0) {
-                const range = selection.getRangeAt(0);
+                const range = savedRange || selection.getRangeAt(0);
                 let container = range.commonAncestorContainer;
 
                 if (container.nodeType !== 1) {

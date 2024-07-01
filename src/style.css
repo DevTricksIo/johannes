@@ -740,18 +740,22 @@ ul .option-hover:not([disabled]):hover {
 
 
 .johannes-editor *::selection {
-    background-color: #d3e3fd !important;
+    background-color: rgba(211, 227, 253, 0.5) !important;
 }
 
+.johannes-editor mark,
 .johannes-editor * {
-    line-height: 1.5;
+    line-height: 1.5 !important;
 }
 
+.option{
+    justify-content: space-between;
+}
 
 .text-option {
-    width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: start;
     align-items: center;
+    gap: 10px;
 }

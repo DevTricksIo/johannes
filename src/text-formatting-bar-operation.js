@@ -57,8 +57,6 @@ export function showTextFormattingBar(event) {
     updateTextFormattingActiveButtons();
 
     changeTurnIntoButtonText();
-    removeAllSVGsFromTextOptions();
-    setCurrentSelectedBlockOptionIcon();
 
     const selection = window.getSelection();
 
@@ -520,7 +518,7 @@ function getBlockTypeText() {
 
 }
 
-function setCurrentSelectedBlockOptionIcon() {
+function setTurnIntoCurrentSelectedBlockOptionIcon() {
     let block = getCurrentDraggableBlockFocused().querySelector('.johannes-content-element');
 
     if (block) {
@@ -529,25 +527,91 @@ function setCurrentSelectedBlockOptionIcon() {
 
         if (option) {
             let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.classList.add('checked-svg');
             let use = document.createElementNS("http://www.w3.org/2000/svg", "use");
             use.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#icon-material-small-check");
 
+
             svg.appendChild(use);
-            svg.setAttribute('width', '24');
-            svg.setAttribute('height', '24');
+            svg.setAttribute('width', '16');
+            svg.setAttribute('height', '16');
             svg.setAttribute('fill', 'currentColor');
 
-            let textOption = option.querySelector('.text-option');
-            textOption.appendChild(svg);
+            // let textOption = option.querySelector('.text-option');
+            option.appendChild(svg);
         }
     }
 }
 
-function removeAllSVGsFromTextOptions() {
-    const textOptions = turnIntoSelect.querySelectorAll('.text-option');
+function extractMarkClasses(element) {
+    const marks = element.querySelectorAll('mark');
+    const classes = [];
+
+    marks.forEach(mark => {
+        mark.classList.forEach(cls => {
+            if (!classes.includes(cls)) {
+                classes.push(cls);
+            }
+        });
+    });
+
+    return classes;
+}
+
+function setColorCurrentSelectedIcon() {
+    let currentRange = jSelection.getSavedRange();
+
+    if (currentRange) {
+        let fragment = currentRange.cloneContents();
+
+        let tempDiv = document.createElement("div");
+        tempDiv.appendChild(fragment);
+
+        let marks = extractMarkClasses(tempDiv);
+
+        marks.forEach(markClass => {
+            let option = colorTextOptionSelect.querySelector(`[data-class="${markClass}"]`);
+
+            if (option && !option.querySelector('.checked-svg')) {
+                let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.classList.add('checked-svg');
+                let use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+                use.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#icon-material-small-check");
+
+                svg.appendChild(use);
+                svg.setAttribute('width', '16');
+                svg.setAttribute('height', '16');
+                svg.setAttribute('fill', 'currentColor');
+
+                option.appendChild(svg);
+            }
+        });
+
+        if (marks.length > 0) {
+            let options = colorTextOptionSelect.querySelectorAll('.option');
+
+            options.forEach(option => {
+                option.setAttribute('disabled', 'true');
+                option.style.cursor = "not-allowed";
+            });
+
+            clearColorBackgroundOption.removeAttribute('disabled');
+            clearColorBackgroundOption.style.display = 'flex';
+            clearColorBackgroundOption.style.cursor = "auto";
+
+        } else {
+            clearColorBackgroundOption.style.display = 'none';
+        }
+
+
+    }
+}
+
+function removeAllSVGsFromTurnIntoTextOptions() {
+    const textOptions = turnIntoSelect.querySelectorAll('.option');
 
     textOptions.forEach(textOption => {
-        const svgs = textOption.querySelectorAll('svg');
+        const svgs = textOption.querySelectorAll('.checked-svg');
 
         svgs.forEach(svg => {
             svg.parentNode.removeChild(svg);
@@ -555,8 +619,27 @@ function removeAllSVGsFromTextOptions() {
     });
 }
 
+function removeAllSVGsFromColorsTextOptions() {
+    const textOptions = colorTextOptionSelect.querySelectorAll('.option');
 
+    textOptions.forEach(textOption => {
+        const svgs = textOption.querySelectorAll('.checked-svg');
 
+        svgs.forEach(svg => {
+            svg.parentNode.removeChild(svg);
+        });
+    });
+
+    let options = colorTextOptionSelect.querySelectorAll('.option');
+
+    options.forEach(option => {
+        option.removeAttribute('disabled');
+        option.style.cursor = "auto";
+    });
+
+    clearColorBackgroundOption.style.display = 'none';
+    clearColorBackgroundOption.style.cursor = "auto";
+}
 
 
 export function toggleMoreOptionsBox(event) {
@@ -589,6 +672,10 @@ export function toggleChangeColorBox(event) {
     if (isHidden) {
         colorTextOptionSelect.style.display = 'flex';
         showDependentBlockOptions(event.target);
+
+        removeAllSVGsFromColorsTextOptions();
+        setColorCurrentSelectedIcon();
+
     } else {
         colorTextOptionSelect.style.display = 'none';
     }
@@ -609,6 +696,8 @@ export function toggleTurnIntoBox(event) {
         jSelection.temporarySelectContentFromCurrentSelection();
 
         showDependentBlockOptions(event.target);
+        removeAllSVGsFromTurnIntoTextOptions();
+        setTurnIntoCurrentSelectedBlockOptionIcon();
     } else {
         hideTurnIntoBox();
     }
