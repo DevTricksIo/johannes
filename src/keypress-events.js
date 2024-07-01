@@ -1,23 +1,26 @@
 //The start point for key press events
-// import * as jWindow from './j-window';
-import { isShowingBlockOptions } from './block-options-operations';
-// import * as blockOperation from './block-operation';
-
 import * as commandFactory from './command-factory';
+import { isShowingBlockOptions } from './block-options-operation';
+import { isTriggable } from './helper';
+import { canHideTextFormattingBar, isShowingTextFormattingBar } from './text-formatting-bar-operation';
+import { isShowingTextFormattingSelectableDependentBox } from './text-formatting-bar-operation';
 
 
 // Block operations is operations related to the block it self. Create a block, delete a block, change the block type, etc...
 document.addEventListener('DOMContentLoaded', function () {
 
+
     document.addEventListener('keydown', function (event) {
 
-        if (event.target.classList.contains('key-trigger') && !isShowingBlockOptions()) {
-            if (event.key === 'Enter' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+        if (isTriggable(event) && !isShowingBlockOptions()) {
+
+            if (event.key === 'Enter' && !isShowingTextFormattingSelectableDependentBox() && !isShowingTextFormattingBar() && !event.ctrlKey && !event.shiftKey && !event.altKey) {
 
                 event.preventDefault();
+                event.stopPropagation();
 
                 //TODO: pass the event not event.target/it`s more simple to deal with event when create a click eventListener
-                const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK.CREATE_NEW_ELEMENT, [event.target]);
+                const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK.CREATE_NEW_ELEMENT, [event]);
                 command.execute();
 
             } else if (event.key === 'Backspace' && isActiveContentBlank(event) && !event.ctrlKey && !event.shiftKey && !event.altKey) {
@@ -34,7 +37,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK.DELETE_AND_FOCUS_ON_NEXT);
                 command.execute();
 
-            } else if (event.key === 'Escape' && isActiveContentBlank() && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+            }
+        }
+    });
+
+    document.addEventListener('keyup', function (event) {
+
+        if (isTriggable(event) && !isShowingBlockOptions()) {
+            if (event.key === 'Escape' && isActiveContentBlank() && !event.ctrlKey && !event.shiftKey && !event.altKey) {
 
                 //TODO: write the code to select the all text
 
@@ -48,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.addEventListener('keydown', function (event) {
 
-        if (event.target.classList.contains('key-trigger') && !isShowingBlockOptions()) {
+        if (isTriggable(event) && !isShowingBlockOptions()) {
 
             if (event.key === '/' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
 
@@ -57,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        if (event.target.classList.contains('key-trigger') && isShowingBlockOptions()) {
+        if (isShowingBlockOptions()) {
 
             if (event.key === 'Escape' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
 
@@ -86,8 +96,9 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (event.key === 'Enter' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
 
                 event.preventDefault();
+                event.stopPropagation();
 
-                const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.APPLY_SELECTED_FAKE_FOCUS_TYPE);
+                const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.APPLY_SELECTED_BLOCK_TYPE, [event]);
                 command.execute();
 
             } else if (/^[a-z0-9]$/i.test(event.key) && !event.ctrlKey && !event.shiftKey && !event.altKey) {
@@ -101,9 +112,118 @@ document.addEventListener('DOMContentLoaded', function () {
                 command.execute();
             }
         }
+
+
+        if (isShowingTextFormattingSelectableDependentBox()) {
+
+            if (event.key === 'Escape' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+
+                event.preventDefault();
+
+                const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.HIDE_TEXT_FORMATTING_BAR, [event]);
+                command.execute();
+
+            } else if (event.key === 'ArrowDown' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+
+                event.preventDefault();
+
+                const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.MOVE_FAKE_FOCUS_TO_NEXT_OPTION);
+                command.execute();
+
+            } else if (event.key === 'ArrowUp' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+
+                event.preventDefault();
+
+                const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.MOVE_FAKE_FOCUS_TO_PREVIOUS_OPTION);
+                command.execute();
+
+            } else if (event.key === 'Enter' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.APPLY_SELECTED_BLOCK_TYPE, [event]);
+                command.execute();
+
+            }
+        }
     });
 });
+
+
+// Text formatting bar operations is operations related to text presentation, color, show or hide text formatting dependent boxes,...
+document.addEventListener('keyup', function (event) {
+    if (event.key === 'Shift' && isTriggable(event)) {
+
+        setTimeout(() => {
+            if (window.getSelection().toString().trim() !== '') {
+                const command = commandFactory.createCommand(commandFactory.OPERATIONS.FORMATTING_BAR.SHOW_TEXT_FORMATTING_BAR, [event]);
+                command.execute();
+            }
+        }, 10);
+
+    }
+});
+
+document.addEventListener('keydown', function (event) {
+    if (event.ctrlKey && event.key.toLowerCase() === 'a' && isTriggable(event)) {
+
+        setTimeout(() => {
+            if (window.getSelection().toString().trim() !== '') {
+                const command = commandFactory.createCommand(commandFactory.OPERATIONS.FORMATTING_BAR.SHOW_TEXT_FORMATTING_BAR, [event]);
+                command.execute();
+            }
+        }, 10);
+
+    } else if (event.key === 'Escape' && canHideTextFormattingBar() && isShowingTextFormattingBar()) {
+
+        const command = commandFactory.createCommand(commandFactory.OPERATIONS.FORMATTING_BAR.HIDE_TEXT_FORMATTING_BAR, [event]);
+        command.execute();
+    }
+});
+
+
 
 function isActiveContentBlank() {
     return document.activeElement.textContent.trim() === '';
 }
+
+
+// Listen a input link
+document.addEventListener('DOMContentLoaded', function () {
+    linkBoxInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const command = commandFactory.createCommand(commandFactory.OPERATIONS.FORMATTING_BAR.INPUT_LINK_URL);
+            command.execute();
+        }
+    });
+});
+
+
+// Lock left and right key when is showing the dependent box
+document.addEventListener('keydown', function (event) {
+    if (isShowingTextFormattingSelectableDependentBox() &&
+        (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
+
+        event.preventDefault();
+        event.stopPropagation();
+    }
+});
+
+
+document.addEventListener('keyup', function (event) {
+    if (isShowingTextFormattingBar() && canHideTextFormattingBar() && !isShowingTextFormattingSelectableDependentBox() &&
+        (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
+
+        setTimeout(() => {
+            if (window.getSelection().toString().trim() == '') {
+                const command = commandFactory.createCommand(commandFactory.OPERATIONS.FORMATTING_BAR.HIDE_TEXT_FORMATTING_BAR, [event]);
+                command.execute();
+            }
+        }, 10);
+    }
+});

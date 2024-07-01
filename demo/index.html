@@ -29,21 +29,20 @@
             </div>
 
             <div class="content">
-
                 <div class="draggable-block deletable">
                     <button class="drag-handler button-reset" draggable="true">
                         <svg width="20" height="20" fill="currentColor">
                             <use href="#icon-material-drag"></use>
                         </svg>
                     </button>
-                    <p class="johannes-content-element focusable swittable key-trigger" contenteditable="true"
-                        data-placeholder="Write something or type / (slash) to choose a block..." tabindex="0"></p>
+                    <p class="johannes-content-element focusable swittable key-trigger" data-type="p"
+                        contenteditable="true" data-placeholder="Write something or type / (slash) to choose a block..."
+                        tabindex="0"></p>
                 </div>
-
             </div>
 
             <div class="add-block-wrapper">
-                <button class="add-block block-operation" data-block-operation="create-default-block">
+                <button class="add-block block-operation" data-block-operation="create-new-element">
                     <svg width="24" height="24" fill="currentColor">
                         <use href="#icon-add-block"></use>
                     </svg>
@@ -55,7 +54,8 @@
                     <section class="basic-section">
                         <h2>Basic blocks</h2>
 
-                        <div id="blck-opt-p" class="option option-hover" data-type="p" tabindex="0" role="option">
+                        <div id="blck-opt-p" class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="p" tabindex="0" role="option">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-wordpress-paragraph"></use>
@@ -67,7 +67,8 @@
                             </div>
                         </div>
 
-                        <div id="blck-opt-image" class="option option-hover" data-type="image" tabindex="0"
+                        <div id="blck-opt-image" class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="image" tabindex="0"
                             role="option">
                             <div class="option-image">
                                 <img src="./assets/img/ginal96 - 1172px-Venus_botticelli_detail (1).jpg">
@@ -78,8 +79,9 @@
                             </div>
                         </div>
 
-                        <div id="blck-opt-bulleted-list" class="option option-hover" data-type="bulleted-list"
-                            tabindex="0" role="option">
+                        <div id="blck-opt-bulleted-list" class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="bulleted-list" tabindex="0"
+                            role="option">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-wordpress-bulleted-list"></use>
@@ -90,7 +92,9 @@
                                 <p class="block-description">Organize items with bullet points.</p>
                             </div>
                         </div>
-                        <div class="option" data-type="numbered-list" tabindex="0" role="option">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="numbered-list" tabindex="0"
+                            role="option">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-wordpress-numbered-list"></use>
@@ -102,7 +106,8 @@
                             </div>
                         </div>
 
-                        <div class="option" data-type="code" tabindex="0">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="code" tabindex="0">
                             <div class="option-image">
                             </div>
                             <div class="option-text">
@@ -110,7 +115,8 @@
                                 <p class="block-description">Insert code snippets with syntax highlighting.</p>
                             </div>
                         </div>
-                        <div class="option" data-type="quote" tabindex="0">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="quote" tabindex="0">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-wordpress-quote"></use>
@@ -121,7 +127,8 @@
                                 <p class="block-description">Highlight text as a significant quote.</p>
                             </div>
                         </div>
-                        <div class="option" data-type="h2" tabindex="0">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="h2" tabindex="0">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-julia-head-2"></use>
@@ -133,7 +140,8 @@
                             </div>
                         </div>
 
-                        <div class="option" data-type="h3" tabindex="0">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="h3" tabindex="0">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-julia-head-3"></use>
@@ -145,7 +153,8 @@
                             </div>
                         </div>
 
-                        <div class="option" data-type="separator" tabindex="0">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="separator" tabindex="0">
                             <div class="option-image">
 
                                 <svg width="100%" height="100%" fill="currentColor">
@@ -162,7 +171,8 @@
 
                     <section class="heading-section">
                         <h2>Heading</h2>
-                        <div class="option" data-type="h1" tabindex="0">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="h1" tabindex="0">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-julia-head-1"></use>
@@ -173,7 +183,8 @@
                                 <p class="block-description">Large header to organize content.</p>
                             </div>
                         </div>
-                        <div class="option" data-type="h2" tabindex="0">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="h2" tabindex="0">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-julia-head-2"></use>
@@ -185,7 +196,8 @@
                             </div>
                         </div>
 
-                        <div class="option" data-type="h3" tabindex="0">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="h3" tabindex="0">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-julia-head-3"></use>
@@ -197,7 +209,8 @@
                             </div>
                         </div>
 
-                        <div class="option" data-type="h4" tabindex="0">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="h4" tabindex="0">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-julia-head-4"></use>
@@ -209,7 +222,8 @@
                             </div>
                         </div>
 
-                        <div class="option" data-type="h5" tabindex="0">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="h5" tabindex="0">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-julia-head-5"></use>
@@ -221,7 +235,8 @@
                             </div>
                         </div>
 
-                        <div class="option" data-type="h6" tabindex="0">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="h6" tabindex="0">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-julia-head-6"></use>
@@ -236,7 +251,8 @@
 
                     <section class="list-section">
                         <h2>List</h2>
-                        <div id="blck-opt-bulleted-list" class="option" data-type="todo-list" tabindex="0"
+                        <div id="blck-opt-bulleted-list" class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="todo-list" tabindex="0"
                             role="option">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
@@ -248,7 +264,8 @@
                                 <p class="block-description">Organize items with bullet points.</p>
                             </div>
                         </div>
-                        <div id="blck-opt-bulleted-list" class="option" data-type="bulleted-list" tabindex="0"
+                        <div id="blck-opt-bulleted-list" class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="bulleted-list" tabindex="0"
                             role="option">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
@@ -260,7 +277,9 @@
                                 <p class="block-description">Organize items with bullet points.</p>
                             </div>
                         </div>
-                        <div class="option" data-type="numbered-list" tabindex="0" role="option">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="numbered-list" tabindex="0"
+                            role="option">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-wordpress-numbered-list"></use>
@@ -276,7 +295,8 @@
 
                     <section>
                         <h2>Embed</h2>
-                        <div class="option" data-type="embed-video" tabindex="0">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="embed-video" tabindex="0">
                             <div class="option-image">
                                 <img src="./assets/img/youtube.jpeg">
                             </div>
@@ -286,7 +306,8 @@
                             </div>
                         </div>
 
-                        <div class="option" data-type="embed-tweet" tabindex="0">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="embed-tweet" tabindex="0">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor" style="color:rgb(29, 161, 242);">
                                     <use href="#icon-wordpress-twitter"></use>
@@ -298,7 +319,8 @@
                             </div>
                         </div>
 
-                        <div class="option" data-type="embed-google-maps" tabindex="0">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="embed-google-maps" tabindex="0">
                             <div class="option-image">
                                 <img src="./assets/img/icons8-google-maps-96.png">
                             </div>
@@ -308,7 +330,8 @@
                             </div>
                         </div>
 
-                        <div class="option" data-type="embed-github-gist" tabindex="0">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="embed-github-gist" tabindex="0">
                             <div class="option-image">
 
                             </div>
@@ -318,7 +341,8 @@
                             </div>
                         </div>
 
-                        <div class="option" data-type="embed-github-gist" tabindex="0">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="embed-github-gist" tabindex="0">
                             <div class="option-image">
 
                             </div>
@@ -328,7 +352,8 @@
                             </div>
                         </div>
 
-                        <div class="option" data-type="embed-github-gist" tabindex="0">
+                        <div class="option option-hover block-operation"
+                            data-block-operation="apply-selected-block-type" data-type="embed-github-gist" tabindex="0">
                             <div class="option-image">
 
                             </div>
@@ -349,8 +374,9 @@
 
                 <div class="select-wrapper">
 
-                    <button id="turnIntoButton" role="button" class=" button-reset text-formatting-select-button"
-                        title="Link">
+                    <button id="turnIntoButton" aria-controls="turnIntoSelect" role="button"
+                        class=" button-reset text-formatting-select-button text-formatting-operation option-hover"
+                        data-text-formatting-operation="toggle-turn-into-box" title="Link" tabindex="1">
                         <span style="line-height: 1;">Text</span>
 
                         <svg width="24" height="24" fill="currentColor">
@@ -363,86 +389,130 @@
                         class="soft-box-shadow dependent-box">
                         <h3 style="margin-left: 5px;">Turn into</h3>
 
-                        <li class="option option-hover" data-type="p">
+                        <li class="option option-hover block-operation" data-block-operation="apply-selected-block-type"
+                            data-type="p" tabindex="2">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-wordpress-paragraph"></use>
                                 </svg>
                             </div>
-                            Text
+
+                            <div class="text-option">
+                                <span>Text</span>
+                            </div>
+
+
+
                         </li>
-                        <li class="option option-hover" data-type="bulleted-list">
+                        <li class="option option-hover block-operation" data-block-operation="apply-selected-block-type"
+                            data-type="bulleted-list" tabindex="2">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-wordpress-bulleted-list"></use>
                                 </svg>
                             </div>
-                            Bulleted list
+                            <div class="text-option">
+                                <span>Bulleted list</span>
+                            </div>
                         </li>
-                        <li class="option option-hover" data-type="numbered-list">
+                        <li class="option option-hover block-operation" data-block-operation="apply-selected-block-type"
+                            data-type="numbered-list" tabindex="2">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-wordpress-numbered-list"></use>
                                 </svg>
                             </div>
-                            Numbered list
+                            <div class="text-option">
+                                <span>Numbered list</span>
+                            </div>
                         </li>
-                        <li class="option option-hover" data-type="code">
+                        <li class="option option-hover block-operation" data-block-operation="apply-selected-block-type"
+                            data-type="code" tabindex="2">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-wordpress-numbered-list"></use>
                                 </svg>
-                            </div>Code
+                            </div>
+                            <div class="text-option">
+                                <span>Code</span>
+                            </div>
                         </li>
-                        <li class="option option-hover" data-type="quote">
+                        <li class="option option-hover block-operation" data-block-operation="apply-selected-block-type"
+                            data-type="quote" tabindex="2">
                             <div class="option-image">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-wordpress-quote"></use>
                                 </svg>
                             </div>
-                            Quote
+                            <div class="text-option">
+                                <span>Quote</span>
+                            </div>
                         </li>
-                        <li class="option option-hover" data-type="h1">
+                        <li class="option option-hover block-operation" data-block-operation="apply-selected-block-type"
+                            data-type="h1" tabindex="2">
                             <div class="option-image" style="padding: 3px !important;">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-julia-head-1"></use>
                                 </svg>
-                            </div>Heading 1
+                            </div>
+                            <div class="text-option">
+                                <span>Heading 1</span>
+                            </div>
                         </li>
-                        <li class="option option-hover" data-type="h2">
+                        <li class="option option-hover block-operation" data-block-operation="apply-selected-block-type"
+                            data-type="h2" tabindex="2">
                             <div class="option-image" style="padding: 3px !important;">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-julia-head-2"></use>
                                 </svg>
-                            </div>Heading 2
+                            </div>
+                            <div class="text-option">
+                                <span>Heading 2</span>
+                            </div>
                         </li>
-                        <li class="option option-hover" data-type="h3">
+                        <li class="option option-hover block-operation" data-block-operation="apply-selected-block-type"
+                            data-type="h3" tabindex="2">
                             <div class="option-image" style="padding: 3px !important;">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-julia-head-3"></use>
                                 </svg>
-                            </div>Heading 3
+                            </div>
+                            <div class="text-option">
+                                <span>Heading 3</span>
+                            </div>
                         </li>
-                        <li class="option option-hover" data-type="h4">
+                        <li class="option option-hover block-operation" data-block-operation="apply-selected-block-type"
+                            data-type="h4" tabindex="2">
                             <div class="option-image" style="padding: 3px !important;">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-julia-head-4"></use>
                                 </svg>
-                            </div>Heading 4
+                            </div>
+                            <div class="text-option">
+                                <span>Heading 4</span>
+                            </div>
                         </li>
-                        <li class="option option-hover" data-type="h5">
+                        <li class="option option-hover block-operation" data-block-operation="apply-selected-block-type"
+                            data-type="h5" tabindex="2">
                             <div class="option-image" style="padding: 3px !important;">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-julia-head-5"></use>
                                 </svg>
-                            </div>Heading 5
+                            </div>
+                            <div class="text-option">
+                                <span>Heading 5</span>
+                            </div>
                         </li>
-                        <li class="option option-hover" data-type="h6">
+                        <li class="option option-hover block-operation" data-block-operation="apply-selected-block-type"
+                            data-type="h6" tabindex="2">
                             <div class="option-image" style="padding: 3px !important;">
                                 <svg width="100%" height="100%" fill="currentColor">
                                     <use href="#icon-julia-head-6"></use>
                                 </svg>
-                            </div>Heading 6
+                            </div>
+                            <div class="text-option">
+                                <span>Heading 6</span>
+                            </div>
                         </li>
                     </ul>
 
@@ -452,37 +522,57 @@
                 </div>
 
                 <div class="item">
-                    <button id="linkTextButton" role="button" class="xpy button-reset" title="Link">
+                    <button id="linkTextButton" role="button"
+                        class="entry button-reset text-formatting-operation option-hover"
+                        data-text-formatting-operation="toggle-input-link-box" title="Link" tabindex="1">
                         <svg width="22" height="22" fill="currentColor">
                             <use href="#icon-material-link"></use>
                         </svg>
                     </button>
-                    <button id="boldTextButton" role="button" class="xpy button-reset" title="Bold">
+                    <button id="boldTextButton" role="button"
+                        class="entry button-reset text-formatting-operation option-hover"
+                        data-text-formatting-operation="toggle-enclose-selected-text-to" data-tag="strong" title="Bold"
+                        tabindex="1">
                         <svg width="22" height="22" fill="currentColor">
                             <use href="#icon-wordpress-bold"></use>
                         </svg>
                     </button>
-                    <button id="italicTextButton" role="button" class="xpy button-reset" title="Italic">
+                    <button id="italicTextButton" role="button"
+                        class="entry button-reset text-formatting-operation option-hover"
+                        data-text-formatting-operation="toggle-enclose-selected-text-to" data-tag="em" title="Italic"
+                        tabindex="1">
                         <svg width="22" height="22" fill="currentColor">
                             <use href="#icon-material-italic"></use>
                         </svg>
                     </button>
-                    <button id="underlineTextButton" role="button" class="xpy button-reset" title="Underline">
+                    <button id="underlineTextButton" role="button"
+                        class="entry button-reset text-formatting-operation option-hover"
+                        data-text-formatting-operation="toggle-enclose-selected-text-to" data-tag="u" title="Underline"
+                        tabindex="1">
                         <svg width="22" height="22" fill="currentColor">
                             <use href="#icon-material-underline"></use>
                         </svg>
                     </button>
-                    <button id="codeTextButton" role="button" class="xpy button-reset" title="Code">
+                    <button id="codeTextButton" role="button"
+                        class="entry button-reset text-formatting-operation option-hover"
+                        data-text-formatting-operation="toggle-enclose-selected-text-to" data-tag="code" title="Code"
+                        tabindex="1">
                         <svg width="22" height="22" fill="currentColor">
                             <use href="#icon-wordpress-code-mark"></use>
                         </svg>
                     </button>
-                    <button id="strikeThroughTextButton" role="button" class="xpy button-reset" title="Strike-through">
+                    <button id="strikeThroughTextButton" role="button"
+                        class="entry button-reset text-formatting-operation option-hover"
+                        data-text-formatting-operation="toggle-enclose-selected-text-to" data-tag="s"
+                        title="Strike-through" tabindex="1">
                         <svg width="22" height="22" fill="currentColor">
                             <use href="#icon-wordpress-strike-through"></use>
                         </svg>
                     </button>
-                    <button id="mathTextButton" role="button" class="xpy button-reset" title="Equation">
+                    <button id="mathTextButton" role="button"
+                        class="entry button-reset text-formatting-operation option-hover"
+                        data-text-formatting-operation="toggle-enclose-selected-text-to" data-tag="math"
+                        title="Equation" tabindex="1">
                         <svg width="22" height="22" fill="currentColor">
                             <use href="#icon-wordpress-equation-mark"></use>
                         </svg>
@@ -490,9 +580,10 @@
 
                     <div class="select-wrapper">
 
-                        <button id="colorTextButton" role="button" class="button-reset text-formatting-select-button"
-                            title="Color">
-                            <div
+                        <button id="colorTextButton" role="button" aria-controls="colorTextOptionSelect"
+                            class="button-reset text-formatting-select-button text-formatting-operation option-hover"
+                            data-text-formatting-operation="toggle-change-color-box" title="Color" tabindex="1">
+                            <div id="colorCircle"
                                 style="width: 20px; height: 20px; border-radius: 50%; background-color: #FAF4D1; border: 1px solid #d0d0d0;">
 
                             </div>
@@ -507,7 +598,9 @@
 
                             <h3 style="margin-left: 5px;">Background</h3>
 
-                            <li class="option option-hover" data-color="bgc-red">
+                            <li class="entry option option-hover text-formatting-operation"
+                                data-text-formatting-operation="toggle-enclose-selected-text-to" data-tag="mark"
+                                data-class="bgc-red" tabindex="2">
                                 <div
                                     style="width: 20px; height: 20px; border-radius: 50%; background-color: #FDDEDE; border: 1px solid #d0d0d0;">
 
@@ -515,7 +608,9 @@
                                 Red
                             </li>
 
-                            <li class="option option-hover" data-color="bgc-green">
+                            <li class="entry option option-hover text-formatting-operation"
+                                data-text-formatting-operation="toggle-enclose-selected-text-to" data-tag="mark"
+                                data-class="bgc-green" tabindex="2">
                                 <div
                                     style="width: 20px; height: 20px; border-radius: 50%; background-color: #D7F7DC; border: 1px solid #d0d0d0;">
 
@@ -523,14 +618,18 @@
                                 Green
                             </li>
 
-                            <li class="option option-hover" data-color="bgc-blue">
+                            <li class="entry option option-hover text-formatting-operation"
+                                data-text-formatting-operation="toggle-enclose-selected-text-to" data-tag="mark"
+                                data-class="bgc-blue" tabindex="2">
                                 <div
                                     style="width: 20px; height: 20px; border-radius: 50%; background-color: #D9EDF6; border: 1px solid #d0d0d0;">
 
                                 </div>
                                 Blue
                             </li>
-                            <li id="colorTextBackgroundYellow" class="option option-hover" data-color="bgc-yellow">
+                            <li class="entry option option-hover text-formatting-operation"
+                                data-text-formatting-operation="toggle-enclose-selected-text-to" data-tag="mark"
+                                data-class="bgc-yellow" tabindex="2">
                                 <div
                                     style="width: 20px; height: 20px; border-radius: 50%; background-color: #FAF4D1; border: 1px solid #d0d0d0;">
 
@@ -538,7 +637,9 @@
                                 Yellow
                             </li>
 
-                            <li class="option option-hover" data-color="bgc-grey">
+                            <li class="entry option option-hover text-formatting-operation"
+                                data-text-formatting-operation="toggle-enclose-selected-text-to" data-tag="mark"
+                                data-class="bgc-grey" tabindex="2">
                                 <div
                                     style="width: 20px; height: 20px; border-radius: 50%; background-color: #E1E0E0; border: 1px solid #d0d0d0;">
 
@@ -556,8 +657,9 @@
 
                 <div class="select-wrapper">
 
-                    <button id="moreTextOptionButton" role="button"
-                        class="xpy button-reset text-formatting-select-button" title="More options">
+                    <button id="moreTextOptionButton" role="button" aria-controls="moreTextOptionSelect"
+                        class="xpy button-reset text-formatting-select-button text-formatting-operation option-hover"
+                        data-text-formatting-operation="toggle-more-options-box" title="More options" tabindex="1">
                         <svg width="24" height="24" fill="currentColor">
                             <path d="M13 19h-2v-2h2v2zm0-6h-2v-2h2v2zm0-6h-2V5h2v2z"></path>
                         </svg>
@@ -568,15 +670,7 @@
 
                         <h3 style="margin-left: 5px;">More options</h3>
 
-                        <li class="option option-hover block-operation" data-block-operation="delete-draggable-block">
-
-                            <svg width="22" height="22" fill="currentColor" style="color: #787774;">
-                                <use href="#icon-material-trash"></use>
-                            </svg>
-
-                            Delete
-                        </li>
-                        <li class="option option-hover" data-type="bulleted-list">
+                        <li class="option option-hover" data-type="bulleted-list" tabindex="2">
 
                             <svg width="22" height="22" fill="currentColor" style="color: #787774;">
                                 <use href="#icon-material-duplicate"></use>
@@ -585,7 +679,7 @@
                             Duplicate
                         </li>
 
-                        <li class="option option-hover" data-type="bulleted-list">
+                        <li class="option option-hover" data-type="bulleted-list" tabindex="2">
 
                             <svg width="22" height="22" fill="currentColor" style="color: #787774;">
                                 <use href="#icon-material-clear"></use>
@@ -594,8 +688,20 @@
                             Clear formatting
                         </li>
 
+                        <li id="deleteBlockButton" role="button" class="option option-hover block-operation"
+                            data-block-operation="delete-draggable-block" tabindex="2">
+
+                            <svg width="22" height="22" fill="currentColor" style="color: #787774;">
+                                <use href="#icon-material-trash"></use>
+                            </svg>
+
+                            Delete
+                        </li>
+
                     </ul>
                 </div>
+
+
             </div>
 
             <div id="linkBox" style="display: none;" class="dependent-box">
@@ -809,13 +915,13 @@
                 d="M440-520h80v-280q0-17-11.5-28.5T480-840q-17 0-28.5 11.5T440-800v280ZM200-360h560v-80H200v80Zm-58 240h98v-80q0-17 11.5-28.5T280-240q17 0 28.5 11.5T320-200v80h120v-80q0-17 11.5-28.5T480-240q17 0 28.5 11.5T520-200v80h120v-80q0-17 11.5-28.5T680-240q17 0 28.5 11.5T720-200v80h98l-40-160H182l-40 160Zm676 80H142q-39 0-63-31t-14-69l55-220v-80q0-33 23.5-56.5T200-520h160v-280q0-50 35-85t85-35q50 0 85 35t35 85v280h160q33 0 56.5 23.5T840-440v80l55 220q13 38-11.5 69T818-40Zm-58-400H200h560Zm-240-80h-80 80Z" /> -->
         </symbol>
 
+        <symbol id="icon-material-small-check" viewBox="0 -960 960 960">
+            <path d="M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z" />
+        </symbol>
+
 
     </svg>
 </body>
-
-
-
-
 
 
 <style>

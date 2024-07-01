@@ -1,11 +1,12 @@
 import { transformBlock } from "./block-operation";
-import { focusOnTheEndOfTheText } from './j-window';
+import { getCurrentDraggableBlockFocused } from './j-selection';
+import { hideAllDependentBox } from './text-formatting-bar-operation';
+import { hideTextFormattingBar } from './text-formatting-bar-operation';
 
 let currentDraggableBlock = null; //This element represents the block where block-options will be displayed close to
 let currentFakeFocusedOption = null; //Fake focus is where the visual focus in on
 let realFocusedElement = null;   // This element is where the real/actual focus is on / TODO: change the name
 let filterText = '';
-
 
 export function isShowingBlockOptions() {
     return blockOptionsWrapper.style.display !== 'none'
@@ -63,7 +64,28 @@ export function clear() {
     throw new Error('Not Implement Exception')
 }
 
-export function showBlockOptions() {
+export function showDependentBlockOptions(element) {
+    // The timeout in necessary to wait the browser process the selection before show the Block Options
+    setTimeout(() => {
+
+        removeAllVisualFakeFocus();
+
+        let draggableBlock = getCurrentDraggableBlockFocused();
+
+        const realFocusedElement = draggableBlock.querySelector('.focusable');
+        const currentDraggableBlock = draggableBlock;
+        const firstBlockOption = getTheFirstVisibleBlockOptionV2(element);
+
+        setRealFocusedElement(realFocusedElement);
+        setCurrentDraggableBlock(currentDraggableBlock);
+        setCurrentFakeFocusElement(null);
+
+        applyVisualFakeFocus(realFocusedElement, null);
+
+    }, 10);
+}
+
+export function showMainBlockOptions() {
 
     // The timeout in necessary to wait the browser process the selection before show the Block Options
     setTimeout(() => {
@@ -141,6 +163,16 @@ export function removeDisplayNoneFromAllBlockOptions() {
 }
 
 export function moveTheFakeFocusToPreviousBlockOption() {
+
+    if (!currentFakeFocusedOption) {
+        let options = document.getElementById(getVisibleSelectionId()).querySelectorAll('.option');
+        currentFakeFocusedOption = options[options.length - 1];
+
+        applyVisualFakeFocus(realFocusedElement, currentFakeFocusedOption);
+
+        return;
+    }
+
     let previous = currentFakeFocusedOption.previousElementSibling;
 
     while (previous && (!previous.classList.contains('option') || !isElementVisible(previous))) {
@@ -149,7 +181,13 @@ export function moveTheFakeFocusToPreviousBlockOption() {
 
     if (!previous) {
         let currentSection = currentFakeFocusedOption.closest('section');
-        let siblingSection = currentSection.previousElementSibling;
+        let siblingSection;
+
+        if (currentSection) {
+            siblingSection = currentSection.previousElementSibling;
+        } else {
+            siblingSection = currentFakeFocusedOption.closest('ul');
+        }
 
         while (siblingSection) {
             let options = siblingSection.querySelectorAll('.option');
@@ -179,7 +217,30 @@ export function moveTheFakeFocusToPreviousBlockOption() {
     applyVisualFakeFocus(realFocusedElement, previous);
 }
 
+
+function getVisibleSelectionId() {
+    if (turnIntoSelect.style.display !== 'none') {
+        return 'turnIntoSelect';
+    }
+
+    if (colorTextOptionSelect.style.display !== 'none') {
+        return 'colorTextOptionSelect';
+    }
+
+    if (moreTextOptionSelect.style.display !== 'none') {
+        return 'moreTextOptionSelect';
+    }
+}
+
 export function moveTheFakeFocusToTheNextBlockOption() {
+
+    if (!currentFakeFocusedOption) {
+        currentFakeFocusedOption = document.getElementById(getVisibleSelectionId()).querySelectorAll('.option')[0];
+
+        applyVisualFakeFocus(realFocusedElement, currentFakeFocusedOption);
+
+        return;
+    }
 
     let next = currentFakeFocusedOption.nextElementSibling;
 
@@ -189,7 +250,13 @@ export function moveTheFakeFocusToTheNextBlockOption() {
 
     if (!next) {
         let currentSection = currentFakeFocusedOption.closest('section');
-        let siblingSection = currentSection.nextElementSibling;
+        let siblingSection;
+
+        if (currentSection) {
+            siblingSection = currentSection.nextElementSibling;
+        } else {
+            siblingSection = currentFakeFocusedOption.closest('ul');
+        }
 
         while (siblingSection) {
             next = siblingSection.querySelector('.option');
@@ -213,10 +280,12 @@ export function moveTheFakeFocusToTheNextBlockOption() {
 }
 
 
-export function applySelectedFakeFocusType() {
+export function applySelectedBlockType(event) {
 
     const draggableBlock = realFocusedElement.closest('.draggable-block');
-    const newBlockType = currentFakeFocusedOption.getAttribute('data-type');
+    const newBlockType = event.target.closest('.option') ?
+        event.target.closest('.option').getAttribute('data-type') :
+        currentFakeFocusedOption.getAttribute('data-type');
 
     const lastSlashIndex = realFocusedElement.innerText.lastIndexOf('/');
     realFocusedElement.innerText = lastSlashIndex !== -1 ? realFocusedElement.innerText.slice(0, lastSlashIndex) : realFocusedElement.innerText;
@@ -224,8 +293,9 @@ export function applySelectedFakeFocusType() {
 
     transformBlock(draggableBlock, newBlockType);
 
-    // focusOnTheEndOfTheText(realFocusedElement);
     hideAndClearBlockOptions();
+    hideAllDependentBox();
+    hideTextFormattingBar();
 }
 
 function clearFilter() {
@@ -234,6 +304,24 @@ function clearFilter() {
 
 function isElementVisible(element) {
     return element && element.style.display !== 'none' && element.style.visibility !== 'hidden' && element.offsetParent !== null;
+}
+
+function getTheFirstVisibleBlockOptionV2(element) {
+
+    let button = element.closest('button');
+    let listId = button.getAttribute('aria-controls');
+    let list = document.querySelector(`#${listId}`);
+
+    let options = list.querySelectorAll('.option');
+
+    // for (let option of options) {
+    //     if (option.style.display !== 'none') {
+    //         return option;
+    //     }
+    // }
+
+    return options[0];
+
 }
 
 function getTheFirstVisibleBlockOption() {
@@ -259,8 +347,16 @@ function applyVisualFakeFocus(realFocusedElement, elementToApplyFakeFocus) {
     realFocusedElement.focus();
 }
 
+// function applyVisualFakeAndRealFocus(elementToApplyFakeFocus) {
+
+//     if (elementToApplyFakeFocus) {
+//         elementToApplyFakeFocus.focus();
+//         elementToApplyFakeFocus.classList.add('block-options-focused');
+//     }
+// }
+
 function removeAllVisualFakeFocus() {
-    let focusedElements = blockOptionsWrapper.querySelectorAll('.block-options-focused');
+    let focusedElements = document.querySelectorAll('.block-options-focused');
 
     focusedElements.forEach(element => {
         element.classList.remove('block-options-focused');

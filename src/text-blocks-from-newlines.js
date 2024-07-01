@@ -1,5 +1,5 @@
 import { createNewDraggableParagraphElement } from './element-factory';
-import { focusOnTheEndOfTheText } from './helper';
+import { focusOnTheEndOfTheText } from './j-window';
 
 document.addEventListener('DOMContentLoaded', () => {
     const content = document.querySelector('.johannes-editor > .content');

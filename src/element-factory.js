@@ -1,6 +1,7 @@
 export function createNewHeadingElement(number = 2) {
 
     let newElement = document.createElement(`h${number}`);
+    newElement.setAttribute('data-type', `h${number}`);
     newElement.classList.add('johannes-content-element');
     newElement.classList.add('swittable');
     newElement.classList.add('focusable');
@@ -17,6 +18,7 @@ export function createNewHeadingElement(number = 2) {
 export function createNewParagraphElement(text) {
 
     let newElement = document.createElement('p');
+    newElement.setAttribute('data-type', 'p');
     newElement.classList.add('johannes-content-element');
     newElement.classList.add('swittable');
     newElement.classList.add('focusable');
@@ -57,6 +59,12 @@ export function createNewListElement(text, type = 'ul') {
     newList.classList.add('swittable');
     newList.classList.add('list');
 
+    if (type == 'ul') {
+        newList.setAttribute('data-type', 'bulleted-list');
+    } else {
+        newList.setAttribute('data-type', 'numbered-list');
+    }
+
     const initialItem = createNewLiElement(text);
 
     newList.appendChild(initialItem);
@@ -69,6 +77,7 @@ export function createNewTodoListElement(text, type = 'ul') {
     newList.classList.add('johannes-content-element');
     newList.classList.add('checkbox-list');
     newList.classList.add('list');
+    newList.setAttribute('data-type', 'todo-list');
 
     const initialItem = createNewCheckboxLiElement(text);
 
@@ -103,6 +112,7 @@ export function createNewCheckboxLiElement(text = '') {
     let li = document.createElement('li');
     li.classList.add('deletable');
     li.classList.add('list-item');
+
     initialItem.classList.add('key-trigger');
 
     let checkbox = document.createElement('input');
@@ -114,8 +124,8 @@ export function createNewCheckboxLiElement(text = '') {
     span.contentEditable = true;
 
     span.classList.add('focusable');
-    span.classList.add('editable');    
-    span.classList.add('focus');  
+    span.classList.add('editable');
+    span.classList.add('focus');
 
     li.appendChild(checkbox);
     li.appendChild(span);
@@ -130,9 +140,11 @@ export function createNewSeparatorElement() {
 
 
 export function createNewQuoteElement(text) {
+
     const quote = document.createElement('blockquote');
     quote.classList.add('swittable');
     quote.classList.add('johannes-content-element');
+    quote.setAttribute('data-type', 'quote');
 
     const p = createNewNoSwittableParagraphElement(text);
     const cite = createNewNoSwittableCiteElement();
@@ -149,6 +161,7 @@ function createNewNoSwittableParagraphElement(text) {
     newElement.classList.add('focus');
     newElement.classList.add('focusable');
     newElement.classList.add('editable');
+    newElement.classList.add('key-trigger');
 
     newElement.contentEditable = true;
 

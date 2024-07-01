@@ -1,8 +1,5 @@
-import './add-block.css';
-
 import * as factory from './element-factory';
 import * as jSelection from './j-selection';
-import { closeAll } from './j-window';
 import { focusOnTheEndOfTheText } from './j-window';
 
 import { focusOnPrevious } from './j-window';
@@ -12,12 +9,17 @@ import { createNewLiElement } from './element-factory';
 import { createNewCheckboxLiElement } from './element-factory';
 import { createNewDraggableParagraphElement } from './element-factory';
 
+import { hideAllDependentBox } from './text-formatting-bar-operation';
+import { hideTextFormattingBar } from './text-formatting-bar-operation';
 
 //** Create a default block or a element list */
-export function createNewElement(element) {
-    let contentElement = element.closest('.johannes-content-element');
+export function createNewElement(event) {
 
-    if (contentElement.classList.contains('list')) {
+    const element = event.target;
+
+    const contentElement = element.closest('.johannes-content-element');
+
+    if (contentElement && contentElement.classList.contains('list')) {
         createListItem(contentElement);
     } else {
         createADefaultBlock(contentElement);
@@ -25,7 +27,7 @@ export function createNewElement(element) {
 }
 
 //** Just create a new paragraph draggable block and insert in the DOM */
-export function createADefaultBlock(eventParagraph) {
+function createADefaultBlock(eventParagraph) {
 
     const newBlock = factory.createNewDraggableParagraphElement();
 
@@ -99,7 +101,7 @@ export function deleteDraggableParentBlock(child) {
 
     let draggableBlockToRemove = null;
 
-    if (child && child.closest('.draggable-block')) {
+    if (child && child instanceof HTMLElement && child.closest('.draggable-block')) {
         draggableBlockToRemove = child.closest('.draggable-block');
     } else {
         draggableBlockToRemove = jSelection.getCurrentDraggableBlockFocused();
@@ -114,7 +116,7 @@ export function deleteDraggableParentBlock(child) {
     clearAllAfterDelete();
 }
 
-export function deleteAndFocusOnPrevious(){
+export function deleteAndFocusOnPrevious() {
 
     const currentActiveElement = document.activeElement;
 
@@ -122,7 +124,7 @@ export function deleteAndFocusOnPrevious(){
     deleteTheCurrentElementAndTheDraggableBlockIfEmpty(currentActiveElement);
 }
 
-export function deleteAndFocusOnNext(){
+export function deleteAndFocusOnNext() {
 
     const currentActiveElement = document.activeElement;
 
@@ -146,6 +148,9 @@ function deleteTheCurrentElementAndTheDraggableBlockIfEmpty(currentElement) {
 
 /** Transform a block type into another */
 export function transformBlock(blockElement, type) {
+
+    //blockElement, type
+
 
     let contentElement = blockElement.querySelector('.swittable');
     let content = contentElement.innerText;
@@ -249,7 +254,7 @@ export function transformBlock(blockElement, type) {
 
     blockElement.replaceChild(newContentBlock, contentElement);
 
-    const focusable =  newContentBlock.closest('.focusable') || blockElement.querySelector('.focusable');
+    const focusable = newContentBlock.closest('.focusable') || blockElement.querySelector('.focusable');
 
     focusOnTheEndOfTheText(focusable);
 }
@@ -268,6 +273,8 @@ export function duplicateBlock(block) {
 }
 
 function clearAllAfterDelete() {
-    jSelection.clearSelection();
-    closeAll();
+    jSelection.clearAllSelection();
+
+    hideAllDependentBox();
+    hideTextFormattingBar();
 }
