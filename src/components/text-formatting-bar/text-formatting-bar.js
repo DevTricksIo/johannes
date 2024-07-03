@@ -1,10 +1,10 @@
-import * as jSelection from './j-selection';
+import * as jSelection from '../../j-selection';
 
 
-import * as jAnchor from './j-anchor';
-import { showDependentBlockOptions } from './block-options-operation';
+import * as jAnchor from '../../j-anchor';
+import { showDependentBlockOptions } from '../quick-insert-menu/quick-insert-menu';
 
-import { getCurrentDraggableBlockFocused } from './j-selection';
+import { getCurrentDraggableBlockFocused } from '../../j-selection';
 
 
 let textFormattingBarVisible = false;

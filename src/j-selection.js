@@ -83,6 +83,58 @@ export function getCurrentDraggableBlockFocused() {
 }
 
 
-export function hasSelection(){
+export function hasSelection() {
     savedRange != null;
+}
+
+export function isRangeCoveringElement(element, range) {
+    const textNodes = getTextNodes(element);
+
+    if (textNodes.length === 0) {
+        return false;
+    }
+
+    const firstNode = textNodes[0];
+    if (range.startContainer !== firstNode || range.startOffset !== 0) {
+        return false;
+    }
+
+    const lastNode = textNodes[textNodes.length - 1];
+    if (range.endContainer !== lastNode || range.endOffset !== lastNode.length) {
+        return false;
+    }
+
+    return true;
+}
+
+function getTextNodes(node) {
+    let textNodes = [];
+    if (node.nodeType === Node.TEXT_NODE) {
+        textNodes.push(node);
+    } else {
+        node.childNodes.forEach(child => {
+            textNodes = textNodes.concat(getTextNodes(child));
+        });
+    }
+    return textNodes;
+}
+
+export function getSelectedClosestElementAcceptingClosest() {
+    let currentRange = window.getSelection().getRangeAt(0);
+    if (!currentRange || currentRange.collapsed) {
+        console.error('No valid selection found.');
+        return null;
+    }
+
+    let commonAncestor = currentRange.commonAncestorContainer;
+
+    while (commonAncestor.nodeType !== 1) {
+        commonAncestor = commonAncestor.parentNode;
+    }
+
+    return commonAncestor;
+}
+
+export function getClosestContentEditable() {
+    return getSelectedClosestElementAcceptingClosest().closest('.editable');
 }

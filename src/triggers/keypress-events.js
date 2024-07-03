@@ -1,9 +1,9 @@
 //The start point for key press events
-import * as commandFactory from './command-factory';
-import { isShowingBlockOptions } from './block-options-operation';
-import { isTriggable } from './helper';
-import { canHideTextFormattingBar, isShowingTextFormattingBar } from './text-formatting-bar-operation';
-import { isShowingTextFormattingSelectableDependentBox } from './text-formatting-bar-operation';
+import * as commandFactory from '../commands/command-factory';
+import { isShowingBlockOptions } from '../components/quick-insert-menu/quick-insert-menu';
+import { isTriggable } from '../helper';
+import { canHideTextFormattingBar, isShowingTextFormattingBar } from '../components/text-formatting-bar/text-formatting-bar';
+import { isShowingTextFormattingSelectableDependentBox } from '../components/text-formatting-bar/text-formatting-bar';
 
 
 // Block operations is operations related to the block it self. Create a block, delete a block, change the block type, etc...
@@ -58,14 +58,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.addEventListener('keydown', function (event) {
 
-        if (isTriggable(event) && !isShowingBlockOptions()) {
+        // if (isTriggable(event) && !isShowingBlockOptions()) {
 
-            if (event.key === '/' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+        //     if (event.key === '/' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
 
-                const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.SHOW_BLOCK_OPTIONS);
-                command.execute();
-            }
-        }
+        //         const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.SHOW_BLOCK_OPTIONS);
+        //         command.execute();
+        //     }
+        // }
 
         if (isShowingBlockOptions()) {
 

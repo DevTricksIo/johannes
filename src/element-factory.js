@@ -188,3 +188,18 @@ function createNewNoSwittableCiteElement(text) {
 
     return newElement;
 }
+
+
+export function createCheckedSVG() {
+    let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.classList.add('checked-svg');
+    let use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+    use.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#icon-material-small-check");
+
+    svg.appendChild(use);
+    svg.setAttribute('width', '16');
+    svg.setAttribute('height', '16');
+    svg.setAttribute('fill', 'currentColor');
+
+    return svg;
+}

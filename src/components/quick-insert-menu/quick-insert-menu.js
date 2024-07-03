@@ -1,7 +1,7 @@
-import { transformBlock } from "./block-operation";
-import { getCurrentDraggableBlockFocused } from './j-selection';
-import { hideAllDependentBox } from './text-formatting-bar-operation';
-import { hideTextFormattingBar } from './text-formatting-bar-operation';
+import { transformBlock } from "../../block-operation";
+import { getCurrentDraggableBlockFocused } from '../../j-selection';
+import { hideAllDependentBox } from '../text-formatting-bar/text-formatting-bar';
+import { hideTextFormattingBar } from '../text-formatting-bar/text-formatting-bar';
 
 let currentDraggableBlock = null; //This element represents the block where block-options will be displayed close to
 let currentFakeFocusedOption = null; //Fake focus is where the visual focus in on

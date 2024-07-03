@@ -1,8 +1,10 @@
-import * as blockOperation from "./block-operation";
-import * as blockOptionOperation from './block-options-operation';
-import * as jWindow from './j-window';
+import * as blockOperation from "../block-operation";
+import * as blockOptionOperation from '../components/quick-insert-menu/quick-insert-menu';
+import * as jWindow from '../j-window';
 
-import * as textFormattingBarOperation from './text-formatting-bar-operation';
+import instance from "../components/quick-insert-menu/QuickInsertMenu";
+
+import * as textFormattingBarOperation from '../components/text-formatting-bar/text-formatting-bar';
 
 export function createCommand(operationName, elements = null) {
     return new Command(operationName, elements);
@@ -73,7 +75,7 @@ export const operationMap = {
     [OPERATIONS.BLOCK.MOVE_DOWN_BLOCK]: blockOperation.moveDownBlock,
     [OPERATIONS.BLOCK_OPTIONS.SHOW_BLOCK_OPTIONS]: blockOptionOperation.showMainBlockOptions,
     [OPERATIONS.BLOCK_OPTIONS.HIDE_CLEAR_BLOCK_OPTIONS]: blockOptionOperation.hideAndClearBlockOptions,
-    [OPERATIONS.BLOCK_OPTIONS.MOVE_FAKE_FOCUS_TO_NEXT_OPTION]: blockOptionOperation.moveTheFakeFocusToTheNextBlockOption,
+    [OPERATIONS.BLOCK_OPTIONS.MOVE_FAKE_FOCUS_TO_NEXT_OPTION]: instance.moveTheFakeFocusToTheNextMenuItem,   // blockOptionOperation.moveTheFakeFocusToTheNextBlockOption,
     [OPERATIONS.BLOCK_OPTIONS.MOVE_FAKE_FOCUS_TO_PREVIOUS_OPTION]: blockOptionOperation.moveTheFakeFocusToPreviousBlockOption,
     [OPERATIONS.BLOCK_OPTIONS.APPLY_SELECTED_BLOCK_TYPE]: blockOptionOperation.applySelectedBlockType,
     [OPERATIONS.BLOCK_OPTIONS.FILTER_CONCAT]: blockOptionOperation.filterContact,
