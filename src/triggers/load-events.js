@@ -1,5 +1,5 @@
 //TODO use commands
-import instance from '../components/quick-insert-menu/QuickInsertMenu'
+import instance from '../components/quick-menu/QuickMenu'
 
 //Focus on P when load
 document.addEventListener('DOMContentLoaded', function () {

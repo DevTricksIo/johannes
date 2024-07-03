@@ -1,8 +1,8 @@
 import * as blockOperation from "../block-operation";
-import * as blockOptionOperation from '../components/quick-insert-menu/quick-insert-menu';
+import * as blockOptionOperation from '../components/quick-menu/quick-insert-menu';
 import * as jWindow from '../j-window';
 
-import instance from "../components/quick-insert-menu/QuickInsertMenu";
+import instance from "../components/quick-menu/QuickMenu";
 
 import * as textFormattingBarOperation from '../components/text-formatting-bar/text-formatting-bar';
 

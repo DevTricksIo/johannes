@@ -1,10 +1,19 @@
 import JNode from './JNode';
 
+/**
+ * Lista ligada que pode trabalhar com qualquer tipo de dados.
+ * @template T - O tipo de elementos que a lista armazenará.
+ */
 class JLinkedList {
 
     constructor() {
+        /** @type {T|null} */
         this.head = null;
+
+        /** @type {T|null} */
         this.tail = null;
+
+        
         this.length = 0;
     }
 
@@ -33,16 +42,14 @@ class JLinkedList {
 
 
         /**
-        * Get the node in the head.
-        * @returns {JNode} node.
+        * @returns {T} node.
         */
         this.getFirst = () => {
             return this.head;
         }
 
         /**
-        * Get the node in the tail.
-        * @returns {JNode} node.
+        * @returns {T} node.
         */
         this.getLast = () => {
             return this.tail;

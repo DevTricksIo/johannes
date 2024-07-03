@@ -1,6 +1,6 @@
 //The start point for key press events
 import * as commandFactory from '../commands/command-factory';
-import { isShowingBlockOptions } from '../components/quick-insert-menu/quick-insert-menu';
+import { isShowingBlockOptions } from '../components/quick-menu/quick-insert-menu';
 import { isTriggable } from '../helper';
 import { canHideTextFormattingBar, isShowingTextFormattingBar } from '../components/text-formatting-bar/text-formatting-bar';
 import { isShowingTextFormattingSelectableDependentBox } from '../components/text-formatting-bar/text-formatting-bar';

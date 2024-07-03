@@ -1,16 +1,25 @@
 import JNode from './JNode';
 
+/**
+ * Lista ligada que pode trabalhar com qualquer tipo de dados.
+ * @template T - O tipo de elementos que a lista armazenará.
+ */
 class JCircularLinkedList {
 
     constructor() {
+
+        /** @type {T|null} */
         this.head = null;
+
+        /** @type {T|null} */
         this.tail = null;
+
         this.length = 0;
     }
 
     /**
      * Append a new node with the given value to the end of the list.
-     * @param {JNode} node - The node to append.
+     * @param {T} node - The node to append.
      */
     append(node) {
         if (!(node instanceof JNode)) {
@@ -36,16 +45,14 @@ class JCircularLinkedList {
     }
 
     /**
-     * Get the first node (head) of the list.
-     * @returns {JNode} The first node.
+     * @returns {T|null} The first node.
      */
     getFirst() {
         return this.head;
     }
 
     /**
-     * Get the last node (tail) of the list.
-     * @returns {JNode} The last node.
+     * @returns {T|null} The last node.
      */
     getLast() {
         return this.tail;

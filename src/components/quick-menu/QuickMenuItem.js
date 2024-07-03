@@ -1,29 +1,29 @@
 import * as helperDOM from './helperDOM';
 import JNode from '../../common/JNode';
-import QuickInsertMenuSection from './QuickInsertMenuSection';
+import QuickMenuSection from './QuickMenuSection';
 
-class QuickInsertMenuItem extends JNode {
+class QuickMenuItem extends JNode {
 
-    constructor(quickInsertMenuSectionInstance, itemName, itemDescription, SVGHrefUseId, dataType) {
+    constructor(quickMenuSectionInstance, itemName, itemDescription, SVGHrefUseId, dataType) {
 
-        // if (!(quickInsertMenuSectionInstance instanceof QuickInsertMenuSection)) {
-        //     throw new TypeError("Expected an instance of QuickInsertMenuSection.");
+        super();
+
+        // if (!(QuickMenuSectionInstance instanceof QuickMenuSection)) {
+        //     throw new TypeError("Expected an instance of QuickMenuSection.");
         // }
 
         /**
-         * The QuickInsertMenuItem element of the component in the DOM.
+         * The QuickMenu element of the component in the DOM.
          * @type {HTMLElement}
          */
-        const htmlElement = document.createElement('div');
+        this.htmlElement = document.createElement('div');
         htmlElement.classList.add('option', 'option-hover', 'block-operation');
 
-        super(htmlElement);
-
         /**
-         * The QuickInsertMenuSection parent.
-         * @type {QuickInsertMenuSection}
+         * The QuickMenuSection parent.
+         * @type {QuickMenuSection}
          */
-        this.quickInsertMenuSectionInstance = quickInsertMenuSectionInstance;
+        this.quickMenuSectionInstance = quickMenuSectionInstance;
 
         htmlElement.setAttribute('data-block-operation', 'apply-selected-block-type');
         htmlElement.setAttribute('data-type', dataType);
@@ -70,7 +70,7 @@ class QuickInsertMenuItem extends JNode {
 
         this.attachEvents = () => {
             this.htmlElement.addEventListener('mousemove', () => {
-                this.quickInsertMenuSectionInstance.quickInsertMenuInstance.changeFocus(this);
+                this.quickMenuSectionInstance.quickMenuInstance.changeFocus(this);
             });
         }
 
@@ -78,4 +78,4 @@ class QuickInsertMenuItem extends JNode {
     }
 }
 
-export default QuickInsertMenuItem;
+export default QuickMenuItem;

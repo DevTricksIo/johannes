@@ -1,13 +1,13 @@
-import QuickInsertMenuSection from './QuickInsertMenuSection';
-import QuickInsertMenuItem from './QuickInsertMenuItem';
+import QuickMenuSection from './QuickMenuSection';
+import QuickMenuItem from './QuickMenuItem';
 import JCircularLinkedList from '../../common/JCircularLinkedList';
 
-class QuickInsertMenu {
+class QuickMenu {
 
     constructor() {
 
         /**
-         * The QuickInsertMenu element of the component in the DOM.
+         * The QuickMenu element of the component in the DOM.
          * @type {HTMLElement}
          */
         this.htmlElement = document.createElement('div');
@@ -16,13 +16,13 @@ class QuickInsertMenu {
         this.isShowing = false;
 
         /**
-         * The QuickInsertMenuItem current focused.
-         * @type {QuickInsertMenuItem|null}
+         * The QuickMenuItem current focused.
+         * @type {QuickMenuItem|null}
          */
         this.currentFocusedMenuItem = null;
 
         /**
-         * The QuickInsertMenuSection elements in a CircularLinkedList.
+         * The QuickMenuSection elements in a CircularLinkedList.
          * @type {JCircularLinkedList}
          */
         this.menuSections = new JCircularLinkedList();
@@ -36,45 +36,45 @@ class QuickInsertMenu {
 
         this.htmlElement.appendChild(blockOptions);
 
-        const basicBlocksSection = new QuickInsertMenuSection(this, 'Basic blocks', 'basic-section');
+        const basicBlocksSection = new QuickMenuSection(this, 'Basic blocks', 'basic-section');
 
-        basicBlocksSection.appendQuickInsertMenuItem([
-            new QuickInsertMenuItem(basicBlocksSection, 'Paragraph', 'Just start writing with plain text.', 'icon-wordpress-paragraph', 'p'),
-            new QuickInsertMenuItem(basicBlocksSection, 'Image', 'Just start writing with plain text.', 'icon-wordpress-paragraph', 'image'),
-            new QuickInsertMenuItem(basicBlocksSection, 'Bulleted list', 'Organize items with bullet points.', 'icon-wordpress-bulleted-list', 'bulleted-list'),
-            new QuickInsertMenuItem(basicBlocksSection, 'Numbered list', 'List items in a numbered format.', 'icon-wordpress-numbered-list', 'numbered-list'),
-            new QuickInsertMenuItem(basicBlocksSection, 'Code', 'Insert code snippets with syntax highlighting.', 'icon-wordpress-code-mark', 'code'),
-            new QuickInsertMenuItem(basicBlocksSection, 'Quote', 'Highlight text as a significant quote.', 'icon-wordpress-quote', 'quote'),
-            new QuickInsertMenuItem(basicBlocksSection, 'Heading 2', 'Medium header for subsections.', 'icon-julia-head-2', 'h2'),
-            new QuickInsertMenuItem(basicBlocksSection, 'Heading 3', 'Small header for detailed sections.', 'icon-julia-head-2', 'h3'),
-            new QuickInsertMenuItem(basicBlocksSection, 'Separator', 'Visually divide blocks.', 'icon-wordpress-separator', 'separator')
+        basicBlocksSection.appendQuickMenuItem([
+            new QuickMenuItem(basicBlocksSection, 'Paragraph', 'Just start writing with plain text.', 'icon-wordpress-paragraph', 'p'),
+            new QuickMenuItem(basicBlocksSection, 'Image', 'Just start writing with plain text.', 'icon-wordpress-paragraph', 'image'),
+            new QuickMenuItem(basicBlocksSection, 'Bulleted list', 'Organize items with bullet points.', 'icon-wordpress-bulleted-list', 'bulleted-list'),
+            new QuickMenuItem(basicBlocksSection, 'Numbered list', 'List items in a numbered format.', 'icon-wordpress-numbered-list', 'numbered-list'),
+            new QuickMenuItem(basicBlocksSection, 'Code', 'Insert code snippets with syntax highlighting.', 'icon-wordpress-code-mark', 'code'),
+            new QuickMenuItem(basicBlocksSection, 'Quote', 'Highlight text as a significant quote.', 'icon-wordpress-quote', 'quote'),
+            new QuickMenuItem(basicBlocksSection, 'Heading 2', 'Medium header for subsections.', 'icon-julia-head-2', 'h2'),
+            new QuickMenuItem(basicBlocksSection, 'Heading 3', 'Small header for detailed sections.', 'icon-julia-head-2', 'h3'),
+            new QuickMenuItem(basicBlocksSection, 'Separator', 'Visually divide blocks.', 'icon-wordpress-separator', 'separator')
         ]);
 
         this.menuSections.append(basicBlocksSection);
         blockOptions.appendChild(basicBlocksSection.htmlElement);
 
 
-        const headingBlocksSection = new QuickInsertMenuSection(this, 'Heading', 'heading-section');
+        const headingBlocksSection = new QuickMenuSection(this, 'Heading', 'heading-section');
 
-        headingBlocksSection.appendQuickInsertMenuItem([
-            new QuickInsertMenuItem(headingBlocksSection, 'Heading 1', 'Large header to organize content.', 'icon-julia-head-1', 'h1'),
-            new QuickInsertMenuItem(headingBlocksSection, 'Heading 2', 'Medium header for subsections.', 'icon-julia-head-2', 'h2'),
-            new QuickInsertMenuItem(headingBlocksSection, 'Heading 3', 'Small header for detailed sections.', 'icon-julia-head-3', 'h3'),
-            new QuickInsertMenuItem(headingBlocksSection, 'Heading 4', 'Small header for detailed sections.', 'icon-julia-head-4', 'h4'),
-            new QuickInsertMenuItem(headingBlocksSection, 'Heading 5', 'Small header for detailed sections.', 'icon-julia-head-5', 'h5'),
-            new QuickInsertMenuItem(headingBlocksSection, 'Heading 6', 'Small header for detailed sections.', 'icon-julia-head-6', 'h6'),
+        headingBlocksSection.appendQuickMenuItem([
+            new QuickMenuItem(headingBlocksSection, 'Heading 1', 'Large header to organize content.', 'icon-julia-head-1', 'h1'),
+            new QuickMenuItem(headingBlocksSection, 'Heading 2', 'Medium header for subsections.', 'icon-julia-head-2', 'h2'),
+            new QuickMenuItem(headingBlocksSection, 'Heading 3', 'Small header for detailed sections.', 'icon-julia-head-3', 'h3'),
+            new QuickMenuItem(headingBlocksSection, 'Heading 4', 'Small header for detailed sections.', 'icon-julia-head-4', 'h4'),
+            new QuickMenuItem(headingBlocksSection, 'Heading 5', 'Small header for detailed sections.', 'icon-julia-head-5', 'h5'),
+            new QuickMenuItem(headingBlocksSection, 'Heading 6', 'Small header for detailed sections.', 'icon-julia-head-6', 'h6'),
         ]);
 
         this.menuSections.append(headingBlocksSection);
         blockOptions.appendChild(headingBlocksSection.htmlElement);
 
 
-        const listBlocksSection = new QuickInsertMenuSection(this, 'List', 'list-section');
+        const listBlocksSection = new QuickMenuSection(this, 'List', 'list-section');
 
-        listBlocksSection.appendQuickInsertMenuItem([
-            new QuickInsertMenuItem(listBlocksSection, 'Todo list', 'Organize items with bullet points.', 'icon-material-check-list', 'todo-list'),
-            new QuickInsertMenuItem(listBlocksSection, 'Bulleted list', 'Organize items with bullet points.', 'icon-wordpress-bulleted-list', 'bulleted-list'),
-            new QuickInsertMenuItem(listBlocksSection, 'Numbered list', 'List items in a numbered format.', 'icon-wordpress-numbered-list', 'numbered-list')
+        listBlocksSection.appendQuickMenuItem([
+            new QuickMenuItem(listBlocksSection, 'Todo list', 'Organize items with bullet points.', 'icon-material-check-list', 'todo-list'),
+            new QuickMenuItem(listBlocksSection, 'Bulleted list', 'Organize items with bullet points.', 'icon-wordpress-bulleted-list', 'bulleted-list'),
+            new QuickMenuItem(listBlocksSection, 'Numbered list', 'List items in a numbered format.', 'icon-wordpress-numbered-list', 'numbered-list')
         ]);
 
         this.menuSections.append(listBlocksSection);
@@ -83,15 +83,15 @@ class QuickInsertMenu {
 
         /**
         * Change the current fake focus and remove the current fake focus.
-        * If the input is not a QuickInsertMenuItem or contains an item that is not a QuickInsertMenuItem, an error is thrown.
+        * If the input is not a QuickMenuItem or contains an item that is not a QuickMenuItem, an error is thrown.
         *
-        * @param {QuickInsertMenuItem} menuItems The item(s) to be focused.
-        * @throws {TypeError} Throws an 'Expected an instance of QuickInsertMenuItem. if item is not a QuickInsertMenuItem.
+        * @param {QuickMenuItem} menuItems The item(s) to be focused.
+        * @throws {TypeError} Throws an 'Expected an instance of QuickMenuItem. if item is not a QuickMenuItem.
         */
         this.changeFocus = (item) => {
 
-            if (!(item instanceof QuickInsertMenuItem)) {
-                throw new TypeError("Expected an instance of QuickInsertMenuItem.");
+            if (!(item instanceof QuickMenuItem)) {
+                throw new TypeError("Expected an instance of QuickMenuItem.");
             }
 
             if (this.currentFocusedMenuItem == item) {
@@ -108,7 +108,7 @@ class QuickInsertMenu {
 
         /**
         * Move the fake focus menu indication to the next element.
-        * If no element is currently focused the first QuickInsertMenuItem is used.
+        * If no element is currently focused the first QuickMenuItem is used.
         */
         this.moveTheFakeFocusToTheNextMenuItem = () => {
 
@@ -122,7 +122,7 @@ class QuickInsertMenu {
                 nextItem = this.currentFocusedMenuItem.nextNode;
 
                 if (!nextItem) {
-                    nextItem = this.currentFocusedMenuItem.quickInsertMenuSectionInstance.nextNode.getFirstMenuItem();
+                    nextItem = this.currentFocusedMenuItem.quickMenuSectionInstance.nextNode.getFirstMenuItem();
                 }
             }
 
@@ -130,7 +130,7 @@ class QuickInsertMenu {
         }
 
         /**
-        * Get the QuickInsertMenu HTML Element.
+        * Get the QuickMenu HTML Element.
         * @returns {HTMLElement} htmlElement.
         */
         this.getMenuElement = () => {
@@ -202,5 +202,5 @@ class QuickInsertMenu {
 
 }
 
-const instance = new QuickInsertMenu();
+const instance = new QuickMenu();
 export default instance;

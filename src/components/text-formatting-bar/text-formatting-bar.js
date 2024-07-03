@@ -2,7 +2,7 @@ import * as jSelection from '../../j-selection';
 
 
 import * as jAnchor from '../../j-anchor';
-import { showDependentBlockOptions } from '../quick-insert-menu/quick-insert-menu';
+import { showDependentBlockOptions } from '../quick-menu/quick-insert-menu';
 
 import { getCurrentDraggableBlockFocused } from '../../j-selection';
 
