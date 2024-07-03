@@ -58,14 +58,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.addEventListener('keydown', function (event) {
 
-        // if (isTriggable(event) && !isShowingBlockOptions()) {
+        if (isTriggable(event) && !isShowingBlockOptions()) {
 
-        //     if (event.key === '/' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+            if (event.key === '/' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
 
-        //         const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.SHOW_BLOCK_OPTIONS);
-        //         command.execute();
-        //     }
-        // }
+                const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.SHOW_BLOCK_OPTIONS);
+                command.execute();
+            }
+        }
 
         if (isShowingBlockOptions()) {
 

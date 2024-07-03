@@ -18,11 +18,15 @@ class Command {
     }
 
     execute() {
-        if (this.elements !== null) {
-            this.operation(...this.elements);
-        } else {
-            this.operation();
-        }
+
+        setTimeout(() => {
+            if (this.elements !== null) {
+                this.operation(...this.elements);
+            } else {
+                this.operation();
+            }
+        }, 0);
+
     }
 }
 
@@ -57,7 +61,7 @@ export const OPERATIONS = {
         TOGGLE_CHANGE_COLOR_BOX: 'toggle-change-color-box',
         TOGGLE_TURN_INTO_BOX: 'toggle-turn-into-box',
         TOGGLE_INPUT_LINK_BOX: 'toggle-input-link-box',
-        INPUT_LINK_URL: 'input-link-url',  
+        INPUT_LINK_URL: 'input-link-url',
         TOGGLE_ENCLOSE_SELECTED_TEXT_TO: 'toggle-enclose-selected-text-to',
     },
 

@@ -1,5 +1,5 @@
 //TODO use commands
-import instance from '../components/quick-menu/QuickMenu'
+import QuickInsertMenu from '../components/quick-menu/QuickMenu'
 
 //Focus on P when load
 document.addEventListener('DOMContentLoaded', function () {
@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 document.addEventListener('DOMContentLoaded', function () {
 
+    let instance = QuickInsertMenu.getInstance();
 
     johannesEditor.appendChild(instance.getMenuElement());
 });

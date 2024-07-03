@@ -1,4 +1,4 @@
-export function createSVG(hrefUseId, classList = "", width = 16, height = 16) {
+export function createSVG(hrefUseId: string, classList = "", width = "16", height = "16") {
 
     if (!hrefUseId) {
         throw new Error('Invalid Argument Exception');
