@@ -1,13 +1,13 @@
 import QuickMenuSection from './QuickMenuSection';
 import QuickMenuItem from './QuickMenuItem';
-import JCircularLinkedList from '../../common/JCircularLinkedList';
+import CircularDoublyLinkedList from '../../common/CircularDoublyLinkedList';
 
 class QuickMenu {
 
     private static instance: QuickMenu | null = null;
 
     htmlElement: HTMLElement;
-    menuSections: JCircularLinkedList<QuickMenuSection>;
+    menuSections: CircularDoublyLinkedList<QuickMenuSection>;
 
     isShowing: boolean;
     currentFocusedMenuItem: QuickMenuItem | null = null;
@@ -21,7 +21,7 @@ class QuickMenu {
 
         this.isShowing = false;
 
-        this.menuSections = new JCircularLinkedList<QuickMenuSection>();
+        this.menuSections = new CircularDoublyLinkedList<QuickMenuSection>();
 
         this.htmlElement.classList.add('block-options-wrapper', 'soft-box-shadow');
         this.htmlElement.style.display = 'none';
@@ -105,69 +105,59 @@ class QuickMenu {
 
     moveTheFocusToThePreviousItem(): void {
 
-        let nextItem: QuickMenuItem | null;
+        let previousVisibleItem: QuickMenuItem | null;
 
         if (!this.currentFocusedMenuItem) {
-            nextItem = this.menuSections.getLast()!.getLastMenuItem();
+            let lastVisibleSection: null | QuickMenuSection = this.menuSections.findLast(section => section.isVisible());
+            if (!lastVisibleSection) {
+                return;
+            }
+            previousVisibleItem = lastVisibleSection.menuItems.findLast(item => item.isVisible());
+
         } else {
-            nextItem = this.currentFocusedMenuItem.previousNode;
-            if (!nextItem) {
-                nextItem = this.currentFocusedMenuItem.quickMenuSectionInstance!.previousNode!.getLastMenuItem();
+            previousVisibleItem = this.currentFocusedMenuItem.getPreviousSatisfying(item => item.isVisible());
+            if (!previousVisibleItem) {
+                let previousVisibleSection = this.currentFocusedMenuItem.quickMenuSectionInstance.getPreviousSatisfying(section => section.isVisible());
+                if (!previousVisibleSection) {
+                    return;
+                }
+                previousVisibleItem = previousVisibleSection.menuItems.findLast(item => item.isVisible());
             }
         }
-
-        this.changeFocus(nextItem!);
+        this.changeFocus(previousVisibleItem!);
     }
 
     moveTheFocusToTheNextItem(): void {
 
-        let nextItem: QuickMenuItem | null;
+        let nextVisibleItem: QuickMenuItem | null;
 
         if (!this.currentFocusedMenuItem) {
-            nextItem = this.menuSections.getFirst()!.getFirstMenuItem();
+            let firstVisibleSection: null | QuickMenuSection = this.menuSections.findFirst(section => section.isVisible());
+            if (!firstVisibleSection) {
+                return;
+            }
+            nextVisibleItem = firstVisibleSection.menuItems.findFirst(item => item.isVisible());
         } else {
-            nextItem = this.currentFocusedMenuItem.nextNode;
-            if (!nextItem) {
-                nextItem = this.currentFocusedMenuItem.quickMenuSectionInstance!.nextNode!.getFirstMenuItem();
+            nextVisibleItem = this.currentFocusedMenuItem.getNextSatisfying(item => item.isVisible());
+            if (!nextVisibleItem) {
+                let nextVisibleSection: null | QuickMenuSection = this.currentFocusedMenuItem.quickMenuSectionInstance.getNextSatisfying(section => section.isVisible());
+                if (!nextVisibleSection) {
+                    return;
+                }
+                nextVisibleItem = nextVisibleSection.menuItems.findFirst(item => item.isVisible());
             }
         }
-
-        this.changeFocus(nextItem!);
+        this.changeFocus(nextVisibleItem!);
     }
 
     getMenuElement(): HTMLElement {
         return this.htmlElement;
     }
 
-    attachEvents() {
-
-        document.addEventListener('keydown', (event) => {
-            if (!this.isShowing && event.key === '/' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-                this.openMenu();
-            } else if (this.isShowing && event.key === 'ArrowDown' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-                this.moveTheFocusToTheNextItem();
-            } else if (this.isShowing && event.key === 'ArrowUp' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-                this.moveTheFocusToThePreviousItem();
-            } else if (this.isShowing && /^[a-z0-9]$/i.test(event.key) && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-                this.concatFilter(event.key);
-                this.filter();
-            } else if (this.isShowing && event.key === 'Backspace') {
-
-                this.removeLastFilterCharacter();
-
-                if (this.filterText == "") {
-                    this.closeMenu();
-                } else {
-                    this.filter();
-                }
-            } else if (this.isShowing && event.key === 'Escape' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-                this.closeMenu();
-            }
+    filterItems(): void {
+        this.menuSections.forEach(section => {
+            section.filterSection(this.filterText);
         });
-    }
-
-    filter(): void {
-        alert('filter');
     }
 
     closeMenu() {
@@ -230,6 +220,29 @@ class QuickMenu {
 
     private concatFilter(stg: string): void {
         this.filterText += stg.toLowerCase();
+    }
+
+    private attachEvents() {
+
+        document.addEventListener('keydown', (event) => {
+            if (!this.isShowing && event.key === '/' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                this.openMenu();
+            } else if (this.isShowing && event.key === 'ArrowDown' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                event.preventDefault();
+                this.moveTheFocusToTheNextItem();
+            } else if (this.isShowing && event.key === 'ArrowUp' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                event.preventDefault();
+                this.moveTheFocusToThePreviousItem();
+            } else if (this.isShowing && /^[a-z0-9]$/i.test(event.key) && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                this.concatFilter(event.key);
+                this.filterItems();
+            } else if (this.isShowing && event.key === 'Backspace') {
+                this.removeLastFilterCharacter();
+                this.filterItems();
+            } else if (this.isShowing && event.key === 'Escape' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                this.closeMenu();
+            }
+        });
     }
 }
 
