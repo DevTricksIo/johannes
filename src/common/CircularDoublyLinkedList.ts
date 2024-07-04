@@ -1,14 +1,10 @@
 import JNode from './JNode';
+import BaseDoublyLinkedList from './BaseDoublyLinkedList';
 
-class JCircularLinkedList<T extends JNode<T>> {
-
-    head: T | null = null;
-    tail: T | null = null;
-
-    length: number = 0;
+class CircularDoublyLinkedList<T extends JNode<T>> extends BaseDoublyLinkedList<T> {
 
     constructor() {
-
+        super();
     }
 
     append(node: T): void {
@@ -33,14 +29,6 @@ class JCircularLinkedList<T extends JNode<T>> {
 
         this.length++;
     }
-
-    getFirst(): T | null {
-        return this.head;
-    }
-
-    getLast(): T | null {
-        return this.tail;
-    }
 }
 
-export default JCircularLinkedList;
+export default CircularDoublyLinkedList;
