@@ -47,6 +47,14 @@ class QuickMenuSection extends JNode<QuickMenuSection> {
             return null;
         }
     }
+
+    getLastMenuItem() {
+        if (this.menuItems.length) {
+            return this.menuItems.getLast();
+        } else {
+            return null;
+        }
+    }
 }
 
 export default QuickMenuSection;

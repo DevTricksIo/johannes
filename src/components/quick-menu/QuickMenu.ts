@@ -11,6 +11,8 @@ class QuickMenu {
 
     isShowing: boolean;
     currentFocusedMenuItem: QuickMenuItem | null = null;
+    realFocusedElement: HTMLElement | null = null;
+    filterText: string = "";
 
     private constructor() {
 
@@ -74,7 +76,7 @@ class QuickMenu {
         this.menuSections.append(listBlocksSection);
         blockOptions.appendChild(listBlocksSection.htmlElement);
 
-        // this.attachEvents();
+        this.attachEvents();
     }
 
     public static getInstance(): QuickMenu {
@@ -97,21 +99,34 @@ class QuickMenu {
 
         this.currentFocusedMenuItem = item;
         this.currentFocusedMenuItem.focus();
+
+        this.realFocusedElement?.focus();
     }
 
-
-    moveTheFakeFocusToTheNextMenuItem(): void {
+    moveTheFocusToThePreviousItem(): void {
 
         let nextItem: QuickMenuItem | null;
 
         if (!this.currentFocusedMenuItem) {
-
-            nextItem = this.menuSections.getFirst()!.getFirstMenuItem();
-
+            nextItem = this.menuSections.getLast()!.getLastMenuItem();
         } else {
+            nextItem = this.currentFocusedMenuItem.previousNode;
+            if (!nextItem) {
+                nextItem = this.currentFocusedMenuItem.quickMenuSectionInstance!.previousNode!.getLastMenuItem();
+            }
+        }
 
+        this.changeFocus(nextItem!);
+    }
+
+    moveTheFocusToTheNextItem(): void {
+
+        let nextItem: QuickMenuItem | null;
+
+        if (!this.currentFocusedMenuItem) {
+            nextItem = this.menuSections.getFirst()!.getFirstMenuItem();
+        } else {
             nextItem = this.currentFocusedMenuItem.nextNode;
-
             if (!nextItem) {
                 nextItem = this.currentFocusedMenuItem.quickMenuSectionInstance!.nextNode!.getFirstMenuItem();
             }
@@ -124,63 +139,98 @@ class QuickMenu {
         return this.htmlElement;
     }
 
-    attachEvents = () => {
+    attachEvents() {
 
         document.addEventListener('keydown', (event) => {
-            if (event.key === '/' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-                alert('show the Quick Insert Menu');
+            if (!this.isShowing && event.key === '/' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                this.openMenu();
+            } else if (this.isShowing && event.key === 'ArrowDown' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                this.moveTheFocusToTheNextItem();
+            } else if (this.isShowing && event.key === 'ArrowUp' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                this.moveTheFocusToThePreviousItem();
+            } else if (this.isShowing && /^[a-z0-9]$/i.test(event.key) && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                this.concatFilter(event.key);
+                this.filter();
+            } else if (this.isShowing && event.key === 'Backspace') {
+
+                this.removeLastFilterCharacter();
+
+                if (this.filterText == "") {
+                    this.closeMenu();
+                } else {
+                    this.filter();
+                }
+            } else if (this.isShowing && event.key === 'Escape' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                this.closeMenu();
             }
         });
     }
 
-    showMenu() {
-
-        // The timeout in necessary to wait the browser process the selection before show the Block Options
-        // setTimeout(() => {
-
-        //     const realFocusedElement = document.activeElement;
-        //     const currentDraggableBlock = realFocusedElement.closest('.draggable-block');
-        //     const firstBlockOption = getTheFirstVisibleBlockOption();
-
-        //     setRealFocusedElement(realFocusedElement);
-        //     setCurrentDraggableBlock(currentDraggableBlock);
-        //     setCurrentFakeFocusElement(firstBlockOption);
-
-        //     applyVisualFakeFocus(realFocusedElement, firstBlockOption);
-
-
-        //     //TODO: create a clear filter
-        //     // removeDisplayNoneFromAllBlockOptions();
-
-        //     const range = document.getSelection().getRangeAt(0);
-        //     const cursorPos = range.getBoundingClientRect();
-
-        //     const remSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
-        //     const menuWidth = 19 * remSize;
-
-        //     let xPosition = cursorPos.right;
-        //     let yPosition = cursorPos.bottom + window.scrollY;
-
-        //     const margin = remSize * 1.25;
-
-        //     blockOptionsWrapper.style.display = 'block';
-
-        //     let blockWidth = blockOptionsWrapper.offsetWidth;
-
-
-        //     if (xPosition + blockWidth + margin > window.innerWidth) {
-        //         xPosition = cursorPos.left - menuWidth;
-        //         if (xPosition < 0) xPosition = 0;
-        //     }
-
-        //     blockOptionsWrapper.style.left = `${xPosition}px`;
-        //     blockOptionsWrapper.style.top = `${yPosition}px`;
-
-
-        // }, 10);
+    filter(): void {
+        alert('filter');
     }
 
+    closeMenu() {
+        this.hideMenu();
+    }
+
+    openMenu() {
+
+        // The timeout in necessary to wait the browser process the selection before show the Block Options
+        setTimeout(() => {
+
+            this.realFocusedElement = document.activeElement as HTMLElement;
+
+            if (!this.realFocusedElement) {
+                throw new Error('Ops Isso não deveria acontecer');
+            }
+
+            const range = document.getSelection()!.getRangeAt(0);
+            const cursorPos = range.getBoundingClientRect();
+
+            const remSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+            const menuWidth = 19 * remSize;
+
+            let xPosition = cursorPos.right;
+            let yPosition = cursorPos.bottom + window.scrollY;
+
+            const margin = remSize * 1.25;
+
+            let blockWidth = this.htmlElement.offsetWidth;
+
+            if (xPosition + blockWidth + margin > window.innerWidth) {
+                xPosition = cursorPos.left - menuWidth;
+                if (xPosition < 0) xPosition = 0;
+            }
+
+            this.showMenu(xPosition, yPosition);
+
+        }, 10);
+    }
+
+    private showMenu(posLeft: number, postRight: number) {
+
+        this.isShowing = true;
+
+        this.htmlElement.style.display = 'block';
+        this.htmlElement.style.left = `${posLeft}px`;
+        this.htmlElement.style.top = `${postRight}px`;
+    }
+
+    private hideMenu() {
+        this.isShowing = false;
+        this.htmlElement.style.display = 'none';
+    }
+
+    private removeLastFilterCharacter(): void {
+        if (this.filterText.length > 0) {
+            this.filterText = this.filterText.slice(0, -1);
+        }
+    }
+
+    private concatFilter(stg: string): void {
+        this.filterText += stg.toLowerCase();
+    }
 }
 
-// const instance = new QuickMenu();
 export default QuickMenu;

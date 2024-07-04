@@ -58,59 +58,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.addEventListener('keydown', function (event) {
 
-        if (isTriggable(event) && !isShowingBlockOptions()) {
-
-            if (event.key === '/' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-
-                const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.SHOW_BLOCK_OPTIONS);
-                command.execute();
-            }
-        }
-
         if (isShowingBlockOptions()) {
 
-            if (event.key === 'Escape' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+            // if (event.key === 'Escape' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
 
-                event.preventDefault();
+            //     event.preventDefault();
 
-                const elementToFocusAfterHide = event.target;
+            //     const elementToFocusAfterHide = event.target;
 
-                //TODO: pass the event not event.target/it`s more simple to deal with event when create a click eventListener
-                const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.HIDE_CLEAR_BLOCK_OPTIONS, [elementToFocusAfterHide]);
-                command.execute();
+            //     //TODO: pass the event not event.target/it`s more simple to deal with event when create a click eventListener
+            //     const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.HIDE_CLEAR_BLOCK_OPTIONS, [elementToFocusAfterHide]);
+            //     command.execute();
 
-            } else if (event.key === 'ArrowDown' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+            // }
 
-                event.preventDefault();
+            // else if (event.key === 'Enter' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
 
-                const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.MOVE_FAKE_FOCUS_TO_NEXT_OPTION);
-                command.execute();
+            //     event.preventDefault();
+            //     event.stopPropagation();
 
-            } else if (event.key === 'ArrowUp' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+            //     const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.APPLY_SELECTED_BLOCK_TYPE, [event]);
+            //     command.execute();
 
-                event.preventDefault();
+            // } else if (/^[a-z0-9]$/i.test(event.key) && !event.ctrlKey && !event.shiftKey && !event.altKey) {
 
-                const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.MOVE_FAKE_FOCUS_TO_PREVIOUS_OPTION);
-                command.execute();
+            //     const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.FILTER_CONCAT, [event]);
+            //     command.execute();
 
-            } else if (event.key === 'Enter' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+            // } else if (event.key === 'Backspace') {
 
-                event.preventDefault();
-                event.stopPropagation();
-
-                const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.APPLY_SELECTED_BLOCK_TYPE, [event]);
-                command.execute();
-
-            } else if (/^[a-z0-9]$/i.test(event.key) && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-
-                const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.FILTER_CONCAT, [event]);
-                command.execute();
-
-            } else if (event.key === 'Backspace') {
-
-                const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.FILTER_REMOVE_LAST);
-                command.execute();
-            }
+            //     const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.FILTER_REMOVE_LAST);
+            //     command.execute();
+            // }
         }
 
 
