@@ -1,7 +1,6 @@
-
 import QuickMenu from './QuickMenu';
 import QuickMenuItem from "./QuickMenuItem";
-import JLinkedList from '../../common/JLinkedList';
+import DoublyLinkedList from '../../common/DoublyLinkedList';
 import JNode from "../../common/JNode";
 
 class QuickMenuSection extends JNode<QuickMenuSection> {
@@ -9,9 +8,9 @@ class QuickMenuSection extends JNode<QuickMenuSection> {
     htmlElement: HTMLElement;
     quickMenuInstance: QuickMenu;
 
-    menuItems = new JLinkedList<QuickMenuItem>();
+    menuItems = new DoublyLinkedList<QuickMenuItem>();
 
-    constructor(quickMenuInstance: QuickMenu, sectionName: string, classList: string) {
+    constructor(quickMenuInstance: QuickMenu, title: string, classList: string) {
 
         super();
 
@@ -21,12 +20,12 @@ class QuickMenuSection extends JNode<QuickMenuSection> {
         this.quickMenuInstance = quickMenuInstance;
 
         let heading = document.createElement('h2');
-        heading.textContent = sectionName;
+        heading.textContent = title;
 
         this.htmlElement.appendChild(heading);
     }
 
-    appendQuickMenuItems(menuItems: QuickMenuItem[]) {
+    appendQuickMenuItems(menuItems: QuickMenuItem[]): void {
 
         menuItems.forEach(item => {
 
@@ -35,25 +34,56 @@ class QuickMenuSection extends JNode<QuickMenuSection> {
     }
 
     appendQuickMenuItem(menuItem: QuickMenuItem): void {
-
         this.menuItems.append(menuItem);
         this.htmlElement.appendChild(menuItem.htmlElement);
     }
 
-    getFirstMenuItem() {
-        if (this.menuItems.length) {
-            return this.menuItems.getFirst();
-        } else {
-            return null;
+    getFirstMenuItem(): QuickMenuItem | null {
+        return this.menuItems.getFirst();
+    }
+
+    getLastMenuItem(): QuickMenuItem | null {
+        return this.menuItems.getLast();
+    }
+
+    filterSection(text: string): void {
+
+        this.restoreSection();
+
+        if (text !== "") {
+            this.menuItems.forEach(menuItem => {
+
+                if (!(menuItem.title.includes(text) || menuItem.dataType.includes(text))) {
+                    menuItem.hideItem();
+                }
+            });
+
+            let atLeadOneItm = this.menuItems.any(e => e.title.includes(text) || e.dataType.includes(text));
+
+            if (!atLeadOneItm) {
+                this.hideSection();
+            }
         }
     }
 
-    getLastMenuItem() {
-        if (this.menuItems.length) {
-            return this.menuItems.getLast();
-        } else {
-            return null;
-        }
+    hideSection() {
+        this.htmlElement.style.display = 'none';
+    }
+
+    showSection() {
+        this.htmlElement.style.display = 'block';
+    }
+
+    restoreSection() {
+        this.showSection();
+
+        this.menuItems.forEach(menuItem => {
+            menuItem.showItem();
+        });
+    }
+
+    isVisible(): boolean {
+        return this.htmlElement.style.display != 'none';
     }
 }
 
