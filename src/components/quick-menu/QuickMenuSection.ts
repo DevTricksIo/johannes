@@ -53,12 +53,12 @@ class QuickMenuSection extends JNode<QuickMenuSection> {
         if (text !== "") {
             this.menuItems.forEach(menuItem => {
 
-                if (!(menuItem.title.includes(text) || menuItem.dataType.includes(text))) {
+                if (!(menuItem.title.toLocaleLowerCase().includes(text) || menuItem.dataType.includes(text))) {
                     menuItem.hideItem();
                 }
             });
 
-            let atLeadOneItm = this.menuItems.any(e => e.title.includes(text) || e.dataType.includes(text));
+            let atLeadOneItm = this.menuItems.any(item => item.title.toLocaleLowerCase().includes(text) || item.dataType.includes(text));
 
             if (!atLeadOneItm) {
                 this.hideSection();

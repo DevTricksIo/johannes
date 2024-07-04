@@ -9,9 +9,11 @@ class QuickMenu {
     htmlElement: HTMLElement;
     menuSections: CircularDoublyLinkedList<QuickMenuSection>;
 
+    htmlEmptyIndicator: HTMLElement;
+
     isShowing: boolean;
     currentFocusedMenuItem: QuickMenuItem | null = null;
-    realFocusedElement: HTMLElement | null = null;
+    htmlRealFocusedElement: HTMLElement | null = null;
     filterText: string = "";
 
     private constructor() {
@@ -76,6 +78,14 @@ class QuickMenu {
         this.menuSections.append(listBlocksSection);
         blockOptions.appendChild(listBlocksSection.htmlElement);
 
+        const emptyIndicator = document.createElement('span');
+        emptyIndicator.innerText = '(˚Δ˚)b';
+        emptyIndicator.classList.add('empty-block-options');
+        emptyIndicator.style.display = 'none';
+
+        this.htmlEmptyIndicator = emptyIndicator;
+        blockOptions.append(emptyIndicator);
+
         this.attachEvents();
     }
 
@@ -100,7 +110,7 @@ class QuickMenu {
         this.currentFocusedMenuItem = item;
         this.currentFocusedMenuItem.focus();
 
-        this.realFocusedElement?.focus();
+        this.htmlRealFocusedElement?.focus();
     }
 
     moveTheFocusToThePreviousItem(): void {
@@ -158,6 +168,12 @@ class QuickMenu {
         this.menuSections.forEach(section => {
             section.filterSection(this.filterText);
         });
+
+        if (!this.menuSections.any(section => section.isVisible())) {
+            this.htmlEmptyIndicator.style.display = 'block';
+        } else {
+            this.htmlEmptyIndicator.style.display = 'none';
+        }
     }
 
     closeMenu() {
@@ -169,9 +185,9 @@ class QuickMenu {
         // The timeout in necessary to wait the browser process the selection before show the Block Options
         setTimeout(() => {
 
-            this.realFocusedElement = document.activeElement as HTMLElement;
+            this.htmlRealFocusedElement = document.activeElement as HTMLElement;
 
-            if (!this.realFocusedElement) {
+            if (!this.htmlRealFocusedElement) {
                 throw new Error('Ops Isso não deveria acontecer');
             }
 
