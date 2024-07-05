@@ -1,21 +1,23 @@
+import IElementFactoryService from "./IElementFactoryService";
+
 interface ElementCreator {
     (content: string): HTMLElement;
 }
 
-class ElementFactory {
+class ElementFactoryService implements IElementFactoryService {
 
     private creators: { [type: string]: ElementCreator };
 
     constructor() {
         this.creators = {};
 
-        this.register('p', ElementFactory.paragraphCreator());
-        this.register('h1', ElementFactory.headingCreator(1));
-        this.register('h2', ElementFactory.headingCreator(2));
-        this.register('h3', ElementFactory.headingCreator(3));
-        this.register('h4', ElementFactory.headingCreator(4));
-        this.register('h5', ElementFactory.headingCreator(5));
-        this.register('h6', ElementFactory.headingCreator(6));
+        this.register('p', ElementFactoryService.paragraphCreator());
+        this.register('h1', ElementFactoryService.headingCreator(1));
+        this.register('h2', ElementFactoryService.headingCreator(2));
+        this.register('h3', ElementFactoryService.headingCreator(3));
+        this.register('h4', ElementFactoryService.headingCreator(4));
+        this.register('h5', ElementFactoryService.headingCreator(5));
+        this.register('h6', ElementFactoryService.headingCreator(6));
     }
 
     register(type: string, creator: ElementCreator): void {
@@ -67,4 +69,4 @@ class ElementFactory {
     }
 }
 
-export default ElementFactory
+export default ElementFactoryService
