@@ -1,12 +1,20 @@
 abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
 
+    props: Record<string, any>;
     htmlElement: T;
 
-    constructor() {
+    constructor(props: Record<string, any>) {
+
+        this.props = props;
+
         this.htmlElement = this.init() as T;
     }
 
-    appendTo(parent: HTMLElement): void {
+    abstract init(): HTMLElement;
+
+    abstract display: string;
+
+    documentAppendTo(parent: HTMLElement): void {
         parent.appendChild(this.htmlElement);
     }
 
@@ -24,8 +32,9 @@ abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
         this.htmlElement.style.display = 'none';
     }
 
-    abstract init(): HTMLElement;
-    abstract display: string;
+    focus() {
+        this.htmlElement.focus();
+    }
 }
 
 export default BaseUIComponent;
