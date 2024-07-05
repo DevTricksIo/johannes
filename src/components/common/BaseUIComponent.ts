@@ -18,7 +18,7 @@ abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
         parent.appendChild(this.htmlElement);
     }
 
-    isVisible() {
+    get isVisible(): boolean {
         return this.htmlElement.style.display !== 'none' &&
             this.htmlElement.style.visibility !== 'hidden' &&
             document.contains(this.htmlElement);

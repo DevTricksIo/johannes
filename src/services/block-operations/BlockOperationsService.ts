@@ -1,3 +1,4 @@
+import IBlockOperationsService from "./IBlockOperationsService";
 import IElementFactoryService from "../element-factory/IElementFactoryService";
 
 class BlockOperationsService implements IBlockOperationsService {

@@ -1,10 +1,11 @@
 abstract class JNode<T extends JNode<T>> {
 
-    previousNode: T | null = null;
-    nextNode: T | null = null;
+    previousNode: T | null;
+    nextNode: T | null;
 
     constructor() {
-
+        this.previousNode = null;
+        this.nextNode = null;
     }
 
     setNext(node: T): void {
@@ -17,7 +18,7 @@ abstract class JNode<T extends JNode<T>> {
 
     getNextSatisfying(predicate: (node: T) => boolean): T | null {
         let current = this.nextNode;
-        while (current !== null) {
+        while (current) {
             if (predicate(current)) {
                 return current;
             }
@@ -28,7 +29,7 @@ abstract class JNode<T extends JNode<T>> {
 
     getPreviousSatisfying(predicate: (node: T) => boolean): T | null {
         let current = this.previousNode;
-        while (current !== null) {
+        while (current) {
             if (predicate(current)) {
                 return current;
             }
@@ -39,15 +40,3 @@ abstract class JNode<T extends JNode<T>> {
 }
 
 export default JNode;
-
-
-// Example usage:
-// Assume we have a class QuickMenuItem that extends JNode.
-// class QuickMenuItem extends JNode {
-//     constructor(value) {
-//         super(value);
-//     }
-// }
-// let menuList = new JLinkedList();
-// let item = new QuickMenuItem("Item 1");
-// menuList.append(item);
