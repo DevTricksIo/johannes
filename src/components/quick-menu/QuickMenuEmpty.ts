@@ -6,7 +6,7 @@ class QuickMenuEmpty extends BaseUIComponent {
 
     constructor() {
 
-        super();
+        super({});
 
         this.display = 'block';
     }
@@ -14,6 +14,7 @@ class QuickMenuEmpty extends BaseUIComponent {
     init(): HTMLElement {
 
         const htmlEmptyIndicator = document.createElement('span');
+
         htmlEmptyIndicator.innerText = 'No results';
         htmlEmptyIndicator.classList.add('empty-block-options');
         htmlEmptyIndicator.style.padding = '10px';

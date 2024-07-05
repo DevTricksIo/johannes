@@ -1,63 +1,80 @@
 import SVGIcon from '../common/SVGIcon';
 import JNode from '../../common/JNode';
 import QuickMenuSection from './QuickMenuSection';
+import BaseUIComponent from '../common/BaseUIComponent';
+import Mixins from '../../utilities/Mixins';
 
-class QuickMenuItem extends JNode<QuickMenuItem> {
+class QuickMenuItem extends BaseUIComponent {
+
+    display: string;
 
     readonly title: string;
     readonly description: string;
     readonly dataType: string;
 
-    htmlElement: HTMLElement;
     quickMenuSectionInstance: QuickMenuSection;
 
     constructor(quickMenuSectionInstance: QuickMenuSection, title: string, description: string, SVGHrefUseId: string, dataType: string) {
 
-        super();
+        super({
+            title: title,
+            description: description,
+            dataType: dataType,
+            SVGHrefUseId: SVGHrefUseId
+        });
+
+        this.display = 'flex';
 
         this.title = title;
         this.description = description;
         this.dataType = dataType;
 
-        this.htmlElement = document.createElement('div');
-        this.htmlElement.classList.add('option', 'option-hover', 'block-operation');
-
         this.quickMenuSectionInstance = quickMenuSectionInstance;
 
-        this.htmlElement.setAttribute('data-block-operation', 'apply-selected-block-type');
-        this.htmlElement.setAttribute('data-type', dataType);
-        this.htmlElement.setAttribute('tabindex', '0');
-        this.htmlElement.setAttribute('role', 'option');
-
         this.dataType = dataType;
+
+        this.attachEvents();
+    }
+
+    init(): HTMLElement {
+
+        const htmlElement = document.createElement('div');
+        htmlElement.classList.add('option', 'option-hover', 'block-operation');
+
+        htmlElement.setAttribute('data-block-operation', 'apply-selected-block-type');
+        htmlElement.setAttribute('data-type', this.props.dataType);
+        htmlElement.setAttribute('tabindex', '0');
+        htmlElement.setAttribute('role', 'option');
+
 
         const optionImage = document.createElement('div');
         optionImage.classList.add('option-image');
 
-        const svg = new SVGIcon(SVGHrefUseId, '', '100%', '100%');
+        const svg = new SVGIcon(this.props.SVGHrefUseId, '', '100%', '100%');
 
         optionImage.appendChild(svg.htmlElement);
 
-        this.htmlElement.appendChild(optionImage);
+        htmlElement.appendChild(optionImage);
 
         const optionText = document.createElement('div');
         optionText.classList.add('option-text');
 
         const blockTitle = document.createElement('p');
         blockTitle.classList.add('block-title');
-        blockTitle.innerText = title;
+        blockTitle.innerText = this.props.title;
 
         optionText.appendChild(blockTitle);
 
         const blockDescription = document.createElement('p');
         blockDescription.classList.add('block-description');
-        blockDescription.innerText = description;
+        blockDescription.innerText = this.props.description;
+
 
         optionText.appendChild(blockDescription);
 
-        this.htmlElement.appendChild(optionText);
+        htmlElement.appendChild(optionText);
 
-        this.attachEvents();
+        return htmlElement;
     }
 
     focus(): void {
@@ -74,18 +91,9 @@ class QuickMenuItem extends JNode<QuickMenuItem> {
             this.quickMenuSectionInstance.quickMenuInstance.changeFocus(this);
         });
     }
-
-    hideItem(): void {
-        this.htmlElement.style.display = 'none';
-    }
-
-    showItem(): void {
-        this.htmlElement.style.display = 'flex';
-    }
-
-    isVisible(): boolean {
-        return this.htmlElement.style.display != 'none';
-    }
 }
+
+interface QuickMenuItem extends JNode<QuickMenuItem> { }
+Mixins.applyMixins(QuickMenuItem, [JNode<QuickMenuItem>]);
 
 export default QuickMenuItem;

@@ -2,27 +2,40 @@ import QuickMenu from './QuickMenu';
 import QuickMenuItem from "./QuickMenuItem";
 import DoublyLinkedList from '../../common/DoublyLinkedList';
 import JNode from "../../common/JNode";
+import BaseUIComponent from '../common/BaseUIComponent';
+import Mixins from '../../utilities/Mixins';
 
-class QuickMenuSection extends JNode<QuickMenuSection> {
+class QuickMenuSection extends BaseUIComponent {
 
-    htmlElement: HTMLElement;
+    display: string;
+
     quickMenuInstance: QuickMenu;
 
     menuItems = new DoublyLinkedList<QuickMenuItem>();
 
     constructor(quickMenuInstance: QuickMenu, title: string, classList: string) {
 
-        super();
-
-        this.htmlElement = document.createElement('section');
-        this.htmlElement.classList.add(classList);
+        super({
+            title: title,
+            classList: classList
+        });
 
         this.quickMenuInstance = quickMenuInstance;
 
-        let heading = document.createElement('h2');
-        heading.textContent = title;
+        this.display = 'block';
+    }
 
-        this.htmlElement.appendChild(heading);
+    init(): HTMLElement {
+
+        const htmlElement = document.createElement('section');
+        htmlElement.classList.add(this.props.classList);
+
+        const heading = document.createElement('h2');
+        heading.textContent = this.props.title;
+
+        htmlElement.appendChild(heading);
+
+        return htmlElement;
     }
 
     appendQuickMenuItems(menuItems: QuickMenuItem[]): void {
@@ -34,6 +47,7 @@ class QuickMenuSection extends JNode<QuickMenuSection> {
     }
 
     appendQuickMenuItem(menuItem: QuickMenuItem): void {
+
         this.menuItems.append(menuItem);
         this.htmlElement.appendChild(menuItem.htmlElement);
     }
@@ -54,37 +68,28 @@ class QuickMenuSection extends JNode<QuickMenuSection> {
             this.menuItems.forEach(menuItem => {
 
                 if (!(menuItem.title.toLocaleLowerCase().includes(text) || menuItem.dataType.includes(text))) {
-                    menuItem.hideItem();
+                    menuItem.hide();
                 }
             });
 
-            let atLeadOneItm = this.menuItems.any(item => item.title.toLocaleLowerCase().includes(text) || item.dataType.includes(text));
+            let atLeadOneItem = this.menuItems.any(item => item.title.toLocaleLowerCase().includes(text) || item.dataType.includes(text));
 
-            if (!atLeadOneItm) {
-                this.hideSection();
+            if (!atLeadOneItem) {
+                this.hide();
             }
         }
     }
 
-    hideSection() {
-        this.htmlElement.style.display = 'none';
-    }
-
-    showSection() {
-        this.htmlElement.style.display = 'block';
-    }
-
     restoreSection() {
-        this.showSection();
+        this.show();
 
         this.menuItems.forEach(menuItem => {
-            menuItem.showItem();
+            menuItem.show();
         });
     }
-
-    isVisible(): boolean {
-        return this.htmlElement.style.display != 'none';
-    }
 }
+
+interface QuickMenuSection extends JNode<QuickMenuSection> { }
+Mixins.applyMixins(QuickMenuSection, [JNode<QuickMenuSection>]);
 
 export default QuickMenuSection;
