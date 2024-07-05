@@ -1,6 +1,9 @@
 //TODO use commands
 import QuickInsertMenu from '../components/quick-menu/QuickMenu'
 
+import BlockOperationsService from '../services/block-operations/BlockOperationsService';
+import ElementFactory from '../services/element-factory/ElementFactoryService';
+
 //Focus on P when load
 document.addEventListener('DOMContentLoaded', function () {
     const editor = document.querySelector('.johannes-editor');
@@ -51,9 +54,13 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+//TODO: use a DI Container
 document.addEventListener('DOMContentLoaded', function () {
 
-    let instance = QuickInsertMenu.getInstance();
+    let elementFactory = new ElementFactory();
+    let blockOperations = new BlockOperationsService(elementFactory);
+
+    let instance = QuickInsertMenu.getInstance(blockOperations);
 
     johannesEditor.appendChild(instance.getMenuElement());
 });

@@ -14,4 +14,4 @@ import './memento.js';
 
 
 // default style
-import './style.css';
+import './style/style.css';
