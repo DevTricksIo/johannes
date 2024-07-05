@@ -1,8 +1,6 @@
 import SVGIcon from '../common/SVGIcon';
-import JNode from '../../common/JNode';
 import QuickMenuSection from './QuickMenuSection';
 import BaseUIComponent from '../common/BaseUIComponent';
-import Mixins from '../../utilities/Mixins';
 
 class QuickMenuItem extends BaseUIComponent {
 
@@ -88,12 +86,12 @@ class QuickMenuItem extends BaseUIComponent {
 
     attachEvents(): void {
         this.htmlElement.addEventListener('mousemove', () => {
-            this.quickMenuSectionInstance.quickMenuInstance.changeFocus(this);
+
+            const node = this.quickMenuSectionInstance.menuItems.find(this);
+
+            this.quickMenuSectionInstance.quickMenuInstance.changeFocus(node!);
         });
     }
 }
-
-interface QuickMenuItem extends JNode<QuickMenuItem> { }
-Mixins.applyMixins(QuickMenuItem, [JNode<QuickMenuItem>]);
 
 export default QuickMenuItem;

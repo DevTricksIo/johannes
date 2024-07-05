@@ -1,13 +1,15 @@
 import JNode from './JNode';
 import BaseDoublyLinkedList from './BaseDoublyLinkedList';
 
-class CircularDoublyLinkedList<T extends JNode<T>> extends BaseDoublyLinkedList<T> {
+class CircularDoublyLinkedList<T> extends BaseDoublyLinkedList<T> {
 
     constructor() {
         super();
     }
 
-    append(node: T): void {
+    append(element: T): void {
+
+        const node = new JNode(element, this);
 
         if (!this.head || !this.tail) {
 

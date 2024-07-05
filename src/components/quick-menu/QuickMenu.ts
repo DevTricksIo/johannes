@@ -4,6 +4,7 @@ import QuickMenuItem from './QuickMenuItem';
 import BaseUIComponent from '../common/BaseUIComponent';
 import CircularDoublyLinkedList from '../../common/CircularDoublyLinkedList';
 import IBlockOperationsService from '../../services/block-operations/IBlockOperationsService';
+import JNode from 'common/JNode';
 
 class QuickMenu extends BaseUIComponent {
 
@@ -13,7 +14,9 @@ class QuickMenu extends BaseUIComponent {
 
     private readonly blockOperations: IBlockOperationsService;
 
-    private currentFocusedMenuItem: QuickMenuItem | null = null;
+    private currentFocusedMenuItem: JNode<QuickMenuItem> | null = null;
+
+
     private htmlFocusedElementBeforeOpenQuickMenu: HTMLElement | null = null;
 
     private menuSections: CircularDoublyLinkedList<QuickMenuSection>;
@@ -120,65 +123,70 @@ class QuickMenu extends BaseUIComponent {
         return QuickMenu.instance;
     }
 
-    changeFocus(item: QuickMenuItem): void {
+    changeFocus(item: JNode<QuickMenuItem>): void {
 
         if (this.currentFocusedMenuItem == item) {
             return;
         }
 
         if (this.currentFocusedMenuItem) {
-            this.currentFocusedMenuItem.removeFocus();
+            this.currentFocusedMenuItem.value.removeFocus();
         }
 
         this.currentFocusedMenuItem = item;
-        this.currentFocusedMenuItem.focus();
+        this.currentFocusedMenuItem.value.focus();
 
         this.htmlFocusedElementBeforeOpenQuickMenu?.focus();
     }
 
     moveTheFocusToThePreviousItem(): void {
 
-        let previousVisibleItem: QuickMenuItem | null;
+        let previousVisibleItem: JNode<QuickMenuItem> | null;
 
         if (this.currentFocusedMenuItem) {
             previousVisibleItem = this.currentFocusedMenuItem.getPreviousSatisfying(item => item.isVisible);
             if (!previousVisibleItem) {
-                let previousVisibleSection = this.currentFocusedMenuItem.quickMenuSectionInstance.getPreviousSatisfying(section => section.isVisible);
-                if (!previousVisibleSection) {
+
+                let previousVisibleSectionNode: JNode<QuickMenuSection> | null = this.menuSections.find(this.currentFocusedMenuItem.value.quickMenuSectionInstance)!.getPreviousSatisfying(section => section.isVisible);
+
+                if (!previousVisibleSectionNode) {
                     return;
                 }
-                previousVisibleItem = previousVisibleSection.menuItems.findLast(item => item.isVisible);
+                previousVisibleItem = previousVisibleSectionNode.value.menuItems.findLast(item => item.isVisible);
             }
         } else {
-            let lastVisibleSection: null | QuickMenuSection = this.menuSections.findLast(section => section.isVisible);
-            if (!lastVisibleSection) {
+            let lastVisibleSectionNode: JNode<QuickMenuSection> | null = this.menuSections.findLast(section => section.isVisible);
+
+            if (!lastVisibleSectionNode) {
                 return;
             }
-            previousVisibleItem = lastVisibleSection.menuItems.findLast(item => item.isVisible);
+            previousVisibleItem = lastVisibleSectionNode.value.menuItems.findLast(item => item.isVisible);
         }
         this.changeFocus(previousVisibleItem!);
     }
 
     moveTheFocusToTheNextItem(): void {
 
-        let nextVisibleItem: QuickMenuItem | null;
+        let nextVisibleItem: JNode<QuickMenuItem> | null;
 
         if (this.currentFocusedMenuItem) {
             nextVisibleItem = this.currentFocusedMenuItem.getNextSatisfying(item => item.isVisible);
             if (!nextVisibleItem) {
-                let nextVisibleSection: null | QuickMenuSection = this.currentFocusedMenuItem.quickMenuSectionInstance.getNextSatisfying(section => section.isVisible);
-                if (!nextVisibleSection) {
+
+                let nextVisibleSectionNode: JNode<QuickMenuSection> | null = this.menuSections.find(this.currentFocusedMenuItem.value.quickMenuSectionInstance)!.getPreviousSatisfying(section => section.isVisible);
+
+                if (!nextVisibleSectionNode) {
                     return;
                 }
-                nextVisibleItem = nextVisibleSection.menuItems.findFirst(item => item.isVisible);
+                nextVisibleItem = nextVisibleSectionNode.value.menuItems.findFirst(item => item.isVisible);
             }
 
         } else {
-            let firstVisibleSection: null | QuickMenuSection = this.menuSections.findFirst(section => section.isVisible);
-            if (!firstVisibleSection) {
+            let firstVisibleSectionNode: null | JNode<QuickMenuSection> = this.menuSections.findFirst(section => section.isVisible);
+            if (!firstVisibleSectionNode) {
                 return;
             }
-            nextVisibleItem = firstVisibleSection.menuItems.findFirst(item => item.isVisible);
+            nextVisibleItem = firstVisibleSectionNode.value.menuItems.findFirst(item => item.isVisible);
         }
 
         this.changeFocus(nextVisibleItem!);
@@ -292,7 +300,7 @@ class QuickMenu extends BaseUIComponent {
                 event.preventDefault();
                 event.stopPropagation();
 
-                let dataType = this.currentFocusedMenuItem!.htmlElement.getAttribute('data-type');
+                let dataType = this.currentFocusedMenuItem!.value.htmlElement.getAttribute('data-type');
                 let element = this.htmlFocusedElementBeforeOpenQuickMenu?.closest('.draggable-block') as HTMLElement;
 
                 if (element && dataType) {

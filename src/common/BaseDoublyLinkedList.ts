@@ -1,19 +1,19 @@
 import JNode from "./JNode";
 
-abstract class BaseDoublyLinkedList<T extends JNode<T>> {
+abstract class BaseDoublyLinkedList<T> {
 
-    head: T | null = null;
-    tail: T | null = null;
+    head: JNode<T> | null = null;
+    tail: JNode<T> | null = null;
 
     length: number = 0;
 
-    abstract append(node: T): void;
+    abstract append(element: T): void;
 
-    getFirst(): T | null {
+    getFirst(): JNode<T> | null {
         return this.head;
     }
 
-    getLast(): T | null {
+    getLast(): JNode<T> | null {
         return this.tail;
     }
 
@@ -29,7 +29,7 @@ abstract class BaseDoublyLinkedList<T extends JNode<T>> {
     forEach(callback: (node: T, index: number, list: BaseDoublyLinkedList<T>) => void): void {
         let index = 0;
         for (let node of this) {
-            callback(node, index, this);
+            callback(node.value, index, this);
             index++;
         }
     }
@@ -37,7 +37,7 @@ abstract class BaseDoublyLinkedList<T extends JNode<T>> {
     any(predicate: (node: T) => boolean): boolean {
         let current = this.head;
         while (current) {
-            if (predicate(current)) {
+            if (predicate(current.value)) {
                 return true;
             }
             current = current.nextNode;
@@ -46,12 +46,12 @@ abstract class BaseDoublyLinkedList<T extends JNode<T>> {
         return false;
     }
 
-    findFirst(predicate: (node: T) => boolean): T | null {
+    findFirst(predicate: (node: T) => boolean): JNode<T> | null {
         if (!this.head) return null;
 
-        let current: null | T = this.head;
+        let current: null | JNode<T> = this.head;
         do {
-            if (predicate(current)) {
+            if (predicate(current.value)) {
                 return current;
             }
             current = current.nextNode;
@@ -60,17 +60,33 @@ abstract class BaseDoublyLinkedList<T extends JNode<T>> {
         return null;
     }
 
-    findLast(predicate: (node: T) => boolean): T | null {
+    findLast(predicate: (node: T) => boolean): JNode<T> | null {
         if (!this.tail) return null;
 
-        let current: null | T = this.tail;
+        let current: null | JNode<T> = this.tail;
 
         do {
-            if (predicate(current)) {
+            if (predicate(current.value)) {
                 return current;
             }
             current = current.previousNode;
         } while (current && current !== this.tail);
+
+        return null;
+    }
+
+    find(element: T): JNode<T> | null {
+
+        let current: JNode<T> | null = this.head;
+
+        while (current) {
+            if (current.value == element) {
+                return current;
+            }
+
+            current = current.nextNode;
+            if (current === this.head) break;
+        }
 
         return null;
     }

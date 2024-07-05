@@ -1,39 +1,54 @@
-abstract class JNode<T extends JNode<T>> {
+import BaseDoublyLinkedList from "./BaseDoublyLinkedList";
 
-    previousNode: T | null;
-    nextNode: T | null;
+class JNode<T> {
 
-    constructor() {
+    list: BaseDoublyLinkedList<T>;
+
+    previousNode: JNode<T> | null;
+    nextNode: JNode<T> | null;
+    value: T;
+
+    constructor(value: T, list: BaseDoublyLinkedList<T>) {
         this.previousNode = null;
         this.nextNode = null;
+        this.value = value;
+        this.list = list;
     }
 
-    setNext(node: T): void {
+    setNext(node: JNode<T>): void {
         this.nextNode = node;
     }
 
-    setPrevious(node: T): void {
+    setPrevious(node: JNode<T>): void {
         this.previousNode = node;
     }
 
-    getNextSatisfying(predicate: (node: T) => boolean): T | null {
+    getNextSatisfying(predicate: (node: T) => boolean): JNode<T> | null {
         let current = this.nextNode;
+        const startNode = this;
         while (current) {
-            if (predicate(current)) {
+            if (predicate(current.value)) {
                 return current;
             }
             current = current.nextNode;
+            if (current === startNode) {
+                break;
+            }
         }
         return null;
     }
 
-    getPreviousSatisfying(predicate: (node: T) => boolean): T | null {
+    getPreviousSatisfying(predicate: (node: T) => boolean): JNode<T> | null {
         let current = this.previousNode;
-        while (current) {
-            if (predicate(current)) {
+        const startNode = this;
+        while (current && current !== startNode) {
+            if (predicate(current.value)) {
                 return current;
             }
             current = current.previousNode;
+            if (current === this) {
+                break;
+            }
         }
         return null;
     }

@@ -1,9 +1,7 @@
 import QuickMenu from './QuickMenu';
 import QuickMenuItem from "./QuickMenuItem";
 import DoublyLinkedList from '../../common/DoublyLinkedList';
-import JNode from "../../common/JNode";
 import BaseUIComponent from '../common/BaseUIComponent';
-import Mixins from '../../utilities/Mixins';
 
 class QuickMenuSection extends BaseUIComponent {
 
@@ -52,14 +50,6 @@ class QuickMenuSection extends BaseUIComponent {
         this.htmlElement.appendChild(menuItem.htmlElement);
     }
 
-    getFirstMenuItem(): QuickMenuItem | null {
-        return this.menuItems.getFirst();
-    }
-
-    getLastMenuItem(): QuickMenuItem | null {
-        return this.menuItems.getLast();
-    }
-
     filterSection(text: string): void {
 
         this.restoreSection();
@@ -88,8 +78,5 @@ class QuickMenuSection extends BaseUIComponent {
         });
     }
 }
-
-interface QuickMenuSection extends JNode<QuickMenuSection> { }
-Mixins.applyMixins(QuickMenuSection, [JNode<QuickMenuSection>]);
 
 export default QuickMenuSection;
