@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.addEventListener('keydown', function (event) {
 
-        if (isShowingBlockOptions()) {
+        // if (isShowingBlockOptions()) {
 
             // if (event.key === 'Escape' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
 
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
             //     const command = commandFactory.createCommand(commandFactory.OPERATIONS.BLOCK_OPTIONS.FILTER_REMOVE_LAST);
             //     command.execute();
             // }
-        }
+        // }
 
 
         if (isShowingTextFormattingSelectableDependentBox()) {

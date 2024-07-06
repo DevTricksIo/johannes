@@ -258,16 +258,23 @@ class QuickMenu extends BaseUIComponent {
                 event.stopPropagation();
 
                 let dataType = this.currentFocusedMenuItem!.value.htmlElement.getAttribute('data-type');
-                let element = this.htmlFocusedElementBeforeOpenQuickMenu?.closest('.draggable-block') as HTMLElement;
 
-                if (element && dataType) {
-                    this.blockOperations.transformBlock(element, dataType);
+                if (dataType) {
+                    this.transformHtmlFocusedElementBeforeOpenQuickMenu(dataType);
                 }
-
-                this.closeMenu();
             }
-
         });
+    }
+
+    transformHtmlFocusedElementBeforeOpenQuickMenu(dataType: string): void {
+
+        let element = this.htmlFocusedElementBeforeOpenQuickMenu?.closest('.draggable-block') as HTMLElement;
+
+        if (element && dataType) {
+            this.blockOperations.transformBlock(element, dataType);
+        }
+
+        this.closeMenu();
     }
 
     private concatFilterInput(stg: string): void {

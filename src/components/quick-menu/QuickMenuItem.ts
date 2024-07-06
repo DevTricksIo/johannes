@@ -1,6 +1,7 @@
 import SVGIcon from '../common/SVGIcon';
 import QuickMenuSection from './QuickMenuSection';
 import BaseUIComponent from '../common/BaseUIComponent';
+import JNode from 'common/JNode';
 
 class QuickMenuItem extends BaseUIComponent {
 
@@ -87,9 +88,19 @@ class QuickMenuItem extends BaseUIComponent {
     attachEvents(): void {
         this.htmlElement.addEventListener('mousemove', () => {
 
-            const node = this.quickMenuSectionInstance.menuItems.find(this);
+            const node: JNode<QuickMenuItem> = this.quickMenuSectionInstance.menuItems.find(this)!;
 
             this.quickMenuSectionInstance.quickMenuInstance.switchVisualFocus(node!);
+        });
+
+        this.htmlElement.addEventListener('click', (event) => {
+
+            const dataType: string = (event.target as HTMLElement).closest('.option')!.getAttribute('data-type')!;
+
+            if (dataType) {
+                this.quickMenuSectionInstance.quickMenuInstance.transformHtmlFocusedElementBeforeOpenQuickMenu(dataType);
+            }
+
         });
     }
 }
