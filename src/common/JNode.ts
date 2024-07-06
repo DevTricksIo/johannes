@@ -2,17 +2,17 @@ import BaseDoublyLinkedList from "./BaseDoublyLinkedList";
 
 class JNode<T> {
 
-    list: BaseDoublyLinkedList<T>;
+    parentList: BaseDoublyLinkedList<T>;
 
     previousNode: JNode<T> | null;
     nextNode: JNode<T> | null;
     value: T;
 
-    constructor(value: T, list: BaseDoublyLinkedList<T>) {
+    constructor(value: T, parentList: BaseDoublyLinkedList<T>) {
         this.previousNode = null;
         this.nextNode = null;
         this.value = value;
-        this.list = list;
+        this.parentList = parentList;
     }
 
     setNext(node: JNode<T>): void {

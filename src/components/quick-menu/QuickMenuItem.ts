@@ -89,7 +89,7 @@ class QuickMenuItem extends BaseUIComponent {
 
             const node = this.quickMenuSectionInstance.menuItems.find(this);
 
-            this.quickMenuSectionInstance.quickMenuInstance.changeFocus(node!);
+            this.quickMenuSectionInstance.quickMenuInstance.switchVisualFocus(node!);
         });
     }
 }

@@ -73,7 +73,7 @@ class QuickMenu extends BaseUIComponent {
         return QuickMenu.instance;
     }
 
-    changeFocus(item: JNode<QuickMenuItem>): void {
+    switchVisualFocus(item: JNode<QuickMenuItem>): void {
 
         if (this.currentFocusedMenuItem == item) {
             return;
@@ -89,7 +89,19 @@ class QuickMenu extends BaseUIComponent {
         this.htmlFocusedElementBeforeOpenQuickMenu?.focus();
     }
 
-    moveTheFocusToThePreviousItem(): void {
+    focusOnTheFirstItem(): void {
+        const firstSectionNode: JNode<QuickMenuSection> | null = this.menuSections.getFirst();
+
+        if (firstSectionNode) {
+            const firstItemNode: JNode<QuickMenuItem> | null = firstSectionNode.value.menuItems.getFirst();
+
+            if (firstItemNode) {
+                this.switchVisualFocus(firstItemNode);
+            }
+        }
+    }
+
+    focusPreviousVisibleItem(): void {
 
         let previousVisibleItem: JNode<QuickMenuItem> | null;
 
@@ -112,10 +124,10 @@ class QuickMenu extends BaseUIComponent {
             }
             previousVisibleItem = lastVisibleSectionNode.value.menuItems.findLast(item => item.isVisible);
         }
-        this.changeFocus(previousVisibleItem!);
+        this.switchVisualFocus(previousVisibleItem!);
     }
 
-    moveTheFocusToTheNextItem(): void {
+    focusNextVisibleItem(): void {
 
         let nextVisibleItem: JNode<QuickMenuItem> | null;
 
@@ -139,7 +151,7 @@ class QuickMenu extends BaseUIComponent {
             nextVisibleItem = firstVisibleSectionNode.value.menuItems.findFirst(item => item.isVisible);
         }
 
-        this.changeFocus(nextVisibleItem!);
+        this.switchVisualFocus(nextVisibleItem!);
     }
 
     filterItems(): void {
@@ -173,6 +185,7 @@ class QuickMenu extends BaseUIComponent {
 
             this.show();
 
+            this.focusOnTheFirstItem();
             this.htmlFocusedElementBeforeOpenQuickMenu.focus();
 
         }, 10);
@@ -224,10 +237,10 @@ class QuickMenu extends BaseUIComponent {
             }
             else if (this.isVisible && event.key === 'ArrowDown' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
                 event.preventDefault();
-                this.moveTheFocusToTheNextItem();
+                this.focusNextVisibleItem();
             } else if (this.isVisible && event.key === 'ArrowUp' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
                 event.preventDefault();
-                this.moveTheFocusToThePreviousItem();
+                this.focusPreviousVisibleItem();
             } else if (this.isVisible && /^[a-z0-9]$/i.test(event.key) && !event.ctrlKey && !event.shiftKey && !event.altKey) {
                 this.concatFilterInput(event.key);
                 this.filterItems();
