@@ -4,6 +4,8 @@ import QuickInsertMenu from '../components/quick-menu/QuickMenu'
 import BlockOperationsService from '../services/block-operations/BlockOperationsService';
 import ElementFactory from '../services/element-factory/ElementFactoryService';
 
+import QuickMenuBuilder from "../builders/QuickMenuBuilder";
+
 //Focus on P when load
 document.addEventListener('DOMContentLoaded', function () {
     const editor = document.querySelector('.johannes-editor');
@@ -60,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let elementFactory = new ElementFactory();
     let blockOperations = new BlockOperationsService(elementFactory);
 
-    let instance = QuickInsertMenu.getInstance(blockOperations);
+    let quickMenu = QuickMenuBuilder.build(blockOperations);
 
-    johannesEditor.appendChild(instance.getMenuElement());
+    johannesEditor.appendChild(quickMenu.htmlElement);
 });
