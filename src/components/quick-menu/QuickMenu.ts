@@ -10,15 +10,12 @@ class QuickMenu extends BaseUIComponent {
 
     display: string;
 
-    private static instance: QuickMenu | null = null;
-
     private readonly blockOperations: IBlockOperationsService;
 
-    private currentFocusedMenuItem: JNode<QuickMenuItem> | null = null;
+    private static instance: QuickMenu | null;
 
-
-    private htmlFocusedElementBeforeOpenQuickMenu: HTMLElement | null = null;
-
+    private currentFocusedMenuItem: JNode<QuickMenuItem> | null;
+    private htmlFocusedElementBeforeOpenQuickMenu: HTMLElement | null;
     private menuSections: CircularDoublyLinkedList<QuickMenuSection>;
     private quickMenuEmpty: QuickMenuEmpty;
     private filterInput: string;
@@ -27,19 +24,20 @@ class QuickMenu extends BaseUIComponent {
 
         super({});
 
-        this.blockOperations = blockOperations;
-
         this.display = 'block';
 
+        this.blockOperations = blockOperations;
+        this.currentFocusedMenuItem = null;
+        this.htmlFocusedElementBeforeOpenQuickMenu = null;
         this.menuSections = new CircularDoublyLinkedList<QuickMenuSection>();
-        this.attachEvents();
+        this.quickMenuEmpty = new QuickMenuEmpty();
 
         let blockOptions = this.htmlElement.querySelector('.block-options') as HTMLElement;
 
-        this.filterInput = "";
-
-        this.quickMenuEmpty = new QuickMenuEmpty();
         this.quickMenuEmpty.documentAppendTo(blockOptions);
+        this.attachEvents();
+
+        this.filterInput = "";
     }
 
     init(): HTMLElement {
