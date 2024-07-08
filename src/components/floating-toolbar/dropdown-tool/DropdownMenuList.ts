@@ -16,6 +16,8 @@ class DropdownMenuList extends BaseUIComponent {
         this.display = 'flex';
 
         this.dropdownItems = new CircularDoublyLinkedList<DropdownMenuListItem>();
+
+        this.attachEvents();
     }
 
     init(): HTMLElement {
@@ -39,6 +41,16 @@ class DropdownMenuList extends BaseUIComponent {
 
         this.dropdownItems.append(dropdownItem);
         this.htmlElement.appendChild(dropdownItem.htmlElement)
+    }
+
+    attachEvents(): void {
+
+        document.addEventListener('click', (event) => {
+            if (this.canHide && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`)) {
+
+                this.hide();
+            }
+        });
     }
 }
 

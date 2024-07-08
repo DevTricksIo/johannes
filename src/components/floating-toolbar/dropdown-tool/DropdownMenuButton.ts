@@ -51,9 +51,7 @@ class DropdownMenuButton extends BaseUIComponent {
     attachEvents(): void {
 
         this.htmlElement.addEventListener("click", () => {
-            if (this.dropdownList.isVisible) {
-                this.dropdownList.hide();
-            } else {
+            if (!this.dropdownList.isVisible) {
                 this.dropdownList.show();
             }
         });

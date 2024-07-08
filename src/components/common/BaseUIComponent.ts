@@ -1,5 +1,7 @@
 abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
 
+    private _canHide: boolean;
+
     props: Record<string, any>;
     htmlElement: T;
 
@@ -8,6 +10,7 @@ abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
         this.props = props;
 
         this.htmlElement = this.init() as T;
+        this._canHide = true;
     }
 
     abstract init(): HTMLElement;
@@ -25,11 +28,24 @@ abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
     }
 
     show() {
+        this._canHide = false;
         this.htmlElement.style.display = this.display;
+
+        setTimeout(() => {
+            this._canHide = true;
+        }, 100);
     }
 
     hide() {
+        if (!this._canHide) {
+            throw new Error("Attempted to hide the element before 100 milliseconds have passed since the last display.");
+        }
+
         this.htmlElement.style.display = 'none';
+    }
+
+    get canHide(): boolean {
+        return this._canHide && this.isVisible;
     }
 
     focus() {
