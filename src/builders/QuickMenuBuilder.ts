@@ -25,7 +25,6 @@ class QuickMenuBuilder {
 
         quickMenu.append(basicBlocksSection);
 
-
         const headingBlocksSection = new QuickMenuSection(quickMenu, 'Heading', 'heading-section');
 
         headingBlocksSection.appendQuickMenuItems([

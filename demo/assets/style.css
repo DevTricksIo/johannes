@@ -651,10 +651,10 @@ mark {
 
 /* .select-wrapper>button, */
 
-#turnIntoButton,
-#colorTextButton{
+/* #turnIntoButton,
+#colorTextButton {
     padding-left: 4px;
-}
+} */
 
 #turnIntoButton:not([disabled]):hover,
 #colorTextButton:not([disabled]):hover,
@@ -751,7 +751,7 @@ ul .option-hover:not([disabled]):hover {
     line-height: 1.5 !important;
 }
 
-.option{
+.option {
     justify-content: space-between;
 }
 

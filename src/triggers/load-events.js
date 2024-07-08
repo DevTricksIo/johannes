@@ -1,10 +1,8 @@
 //TODO use commands
-import QuickInsertMenu from '../components/quick-menu/QuickMenu'
-
 import BlockOperationsService from '../services/block-operations/BlockOperationsService';
 import ElementFactory from '../services/element-factory/ElementFactoryService';
-
 import QuickMenuBuilder from "../builders/QuickMenuBuilder";
+import FloatingToolbarBuilder from "../builders/FloatingToolbarBuilder";
 
 //Focus on P when load
 document.addEventListener('DOMContentLoaded', function () {
@@ -65,4 +63,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let quickMenu = QuickMenuBuilder.build(blockOperations);
 
     johannesEditor.appendChild(quickMenu.htmlElement);
+
+    let floatingToolbar = FloatingToolbarBuilder.build();
+
+    johannesEditor.appendChild(floatingToolbar.htmlElement);
+
 });

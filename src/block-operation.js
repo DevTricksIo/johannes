@@ -9,8 +9,8 @@ import { createNewLiElement } from './element-factory';
 import { createNewCheckboxLiElement } from './element-factory';
 import { createNewDraggableParagraphElement } from './element-factory';
 
-import { hideAllDependentBox } from './components/text-formatting-bar/text-formatting-bar';
-import { hideTextFormattingBar } from './components/text-formatting-bar/text-formatting-bar';
+import { hideAllDependentBox } from './components/floating-toolbar/text-formatting-bar';
+import { hideTextFormattingBar } from './components/floating-toolbar/text-formatting-bar';
 
 //** Create a default block or a element list */
 export function createNewElement(event) {

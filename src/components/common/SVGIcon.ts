@@ -1,23 +1,41 @@
-class SVGIcon {
+import BaseUIComponent from "./BaseUIComponent";
 
-    htmlElement: SVGSVGElement;
+class SVGIcon extends BaseUIComponent {
 
-    constructor(hrefUseId: string, classList = "", width = "16", height = "16") {
+    display: string;
 
-        this.htmlElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    useElement: SVGUseElement;
 
-        if (classList && classList.trim() !== "") {
-            const classes = classList.split(',');
-            this.htmlElement.classList.add(...classes);
-        }
+    constructor(hrefUseId: string, width = "16", height = "16") {
+
+        super({
+            hrefUseId: hrefUseId,
+            width: width,
+            height: height,
+
+        })
+
+        this.display = "block";
+        this.useElement = this.htmlElement.querySelector('use') as SVGUseElement;
+    }
+
+    init(): HTMLElement {
+
+        const htmlElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 
         let use = document.createElementNS("http://www.w3.org/2000/svg", "use");
-        use.setAttributeNS("http://www.w3.org/1999/xlink", "href", `#${hrefUseId}`);
+        use.setAttributeNS("http://www.w3.org/1999/xlink", "href", `#${this.props.hrefUseId}`);
 
-        this.htmlElement.appendChild(use);
-        this.htmlElement.setAttribute('width', width);
-        this.htmlElement.setAttribute('height', height);
-        this.htmlElement.setAttribute('fill', 'currentColor');
+        htmlElement.appendChild(use);
+        htmlElement.setAttribute('width', this.props.width);
+        htmlElement.setAttribute('height', this.props.height);
+        htmlElement.setAttribute('fill', 'currentColor');
+
+        return htmlElement as unknown as HTMLElement;
+    }
+
+    clone(): SVGIcon {
+        return new SVGIcon(this.props.hrefUseId, this.props.width, this.props.height);
     }
 }
 

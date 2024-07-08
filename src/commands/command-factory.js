@@ -4,7 +4,7 @@ import * as jWindow from '../j-window';
 
 import instance from "../components/quick-menu/QuickMenu";
 
-import * as textFormattingBarOperation from '../components/text-formatting-bar/text-formatting-bar';
+import * as textFormattingBarOperation from '../components/floating-toolbar/text-formatting-bar';
 
 export function createCommand(operationName, elements = null) {
     return new Command(operationName, elements);
