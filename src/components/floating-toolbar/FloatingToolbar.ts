@@ -31,6 +31,23 @@ class FloatingToolbar extends BaseUIComponent {
         return htmlElement;
     }
 
+    show(): void {
+
+        setTimeout(() => {
+
+            const selection = window.getSelection();
+
+            let range = selection!.getRangeAt(0);
+            let rect = range.getBoundingClientRect();
+    
+            this.htmlElement.style.display = 'flex';
+            this.htmlElement.style.left = `${rect.left + window.scrollX - 50}px`;
+            this.htmlElement.style.top = `${rect.top + window.scrollY - this.htmlElement.offsetHeight - 10}px`;
+
+            super.show();            
+        }, 10);
+    }
+
     appendDropdown(dropdown: DropdownMenu): void {
         this.htmlElement.appendChild(dropdown.htmlElement);
     }

@@ -178,7 +178,7 @@ class QuickMenu extends BaseUIComponent {
             this.htmlFocusedElementBeforeOpenQuickMenu = document.activeElement as HTMLElement;
 
             if (!this.htmlFocusedElementBeforeOpenQuickMenu) {
-                throw new Error('Ops Isso não deveria acontecer');
+                throw new Error("Failed to capture the focused element before displaying the QuickMenu. Ensure an element is focused.");
             }
 
             this.show();
