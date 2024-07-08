@@ -264,6 +264,12 @@ class QuickMenu extends BaseUIComponent {
                 }
             }
         });
+
+        document.addEventListener('click', (event) => {
+            if (this.isVisible && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`)) {
+                this.closeMenu();
+            }
+        });
     }
 
     transformHtmlFocusedElementBeforeOpenQuickMenu(dataType: string): void {
