@@ -34,13 +34,23 @@ class TextOperationService implements ITextOperationService {
     getTag(command: string): string | null {
         switch (command) {
             case 'bold':
-                return 'b';
+                return 'strong';
             case 'italic':
-                return 'i';
+                return 'em';
             case 'strikethrough':
                 return 's';
+            case 'underline':
+                return 'u';
+            case 'code':
+                return 'code';
+            case 'math':
+                return 'span';
+            case 'color':
+                return 'span';
+            case 'background':
+                return 'span';
             default:
-                return null;
+                throw new Error(`Unsupported command: ${command}`);
         }
     }
 
