@@ -7,7 +7,7 @@ function setupDOM(htmlContent: string = 'This is a strong text!'): HTMLDivElemen
     return div;
 }
 
-function selectTextInElement(searchText: string): void {
+function simulateSelectionIn(searchText: string): void {
     const element = document.querySelector('div');
     if (!element) return;
 
@@ -49,7 +49,7 @@ describe('Base operations', () => {
 
     test('Applying bold to "strong"', () => {
         setupDOM();
-        selectTextInElement("strong");
+        simulateSelectionIn("strong");
 
         textOperationService.execCommand('bold');
 
@@ -59,7 +59,7 @@ describe('Base operations', () => {
 
     test('Removing bold from "strong"', () => {
         setupDOM("This is a <strong>strong</strong> text!");
-        selectTextInElement("strong");
+        simulateSelectionIn("strong");
 
         textOperationService.execCommand('bold');
 
@@ -70,7 +70,7 @@ describe('Base operations', () => {
     test('Adding multiples bold', () => {
         setupDOM("This is a <strong>strong</strong> text!");
 
-        selectTextInElement("text");
+        simulateSelectionIn("text");
         textOperationService.execCommand('bold');
 
         const after = document.querySelector("div")?.innerHTML;
@@ -80,7 +80,7 @@ describe('Base operations', () => {
     test('Remove specific bold without remove previous', () => {
         setupDOM("This is a <strong>strong</strong> <strong>text</strong>!");
 
-        selectTextInElement("text");
+        simulateSelectionIn("text");
         textOperationService.execCommand('bold');
 
         const after = document.querySelector("div")?.innerHTML;
@@ -90,7 +90,7 @@ describe('Base operations', () => {
     test('Applying bold to all text content', () => {
         setupDOM("This is a strong text!");
 
-        selectTextInElement("This is a strong text!");
+        simulateSelectionIn("This is a strong text!");
         textOperationService.execCommand('bold');
 
         const after = document.querySelector("div")?.innerHTML;
@@ -100,7 +100,7 @@ describe('Base operations', () => {
     test('Remove bold from all text content', () => {
         setupDOM("<strong>This is a strong text!</strong>");
 
-        selectTextInElement("This is a strong text!");
+        simulateSelectionIn("This is a strong text!");
         textOperationService.execCommand('bold');
 
         const after = document.querySelector("div")?.innerHTML;
@@ -111,13 +111,13 @@ describe('Base operations', () => {
 
         setupDOM("This is a strong text!");
 
-        selectTextInElement("strong");
+        simulateSelectionIn("strong");
         textOperationService.execCommand('bold');
 
         const after1 = document.querySelector("div")?.innerHTML;
         expect(after1).toEqual("This is a <strong>strong</strong> text!");
 
-        selectTextInElement("strong");
+        simulateSelectionIn("strong");
         textOperationService.execCommand('bold');
 
         const after2 = document.querySelector("div")?.innerHTML;
@@ -128,7 +128,7 @@ describe('Base operations', () => {
 
         setupDOM("This is a <strong>strong</strong> text!");
 
-        selectTextInElement("str");
+        simulateSelectionIn("str");
         textOperationService.execCommand('bold');
 
         const after = document.querySelector("div")?.innerHTML;
@@ -139,7 +139,7 @@ describe('Base operations', () => {
 
         setupDOM("This is a <strong>strong</strong> text!");
 
-        selectTextInElement("ong");
+        simulateSelectionIn("ong");
         textOperationService.execCommand('bold');
 
         const after = document.querySelector("div")?.innerHTML;
@@ -150,7 +150,7 @@ describe('Base operations', () => {
 
         setupDOM("<strong>This is</strong> a <strong>strong</strong> - <strong>text</strong>!");
 
-        selectTextInElement("str");
+        simulateSelectionIn("str");
         textOperationService.execCommand('bold');
 
         const after = document.querySelector("div")?.innerHTML;
@@ -161,7 +161,7 @@ describe('Base operations', () => {
 
         setupDOM("<strong>This is</strong> a <strong>strong</strong> - <strong>text</strong>!");
 
-        selectTextInElement("ong");
+        simulateSelectionIn("ong");
         textOperationService.execCommand('bold');
 
         const after = document.querySelector("div")?.innerHTML;
@@ -172,7 +172,7 @@ describe('Base operations', () => {
 
         setupDOM("<u>This</u> is a <strong>strong</strong> text!");
 
-        selectTextInElement("text");
+        simulateSelectionIn("text");
         textOperationService.execCommand('bold');
 
         const after1 = document.querySelector("div")?.innerHTML;
@@ -192,7 +192,7 @@ describe('Nested operations', () => {
     test('Toggle bold on part of bold text', () => {
         setupDOM("This <strong>is a strong</strong> text!");
 
-        selectTextInElement("a");
+        simulateSelectionIn("a");
         textOperationService.execCommand('bold');
 
         const after = document.querySelector("div")?.innerHTML;
@@ -202,7 +202,7 @@ describe('Nested operations', () => {
     test('Applying bold surrounding italicized text', () => {
         setupDOM("This is <em>a strong text</em>!");
 
-        selectTextInElement("is a strong text");
+        simulateSelectionIn("is a strong text");
         textOperationService.execCommand('bold');
 
         const after = document.querySelector("div")?.innerHTML;
@@ -212,7 +212,7 @@ describe('Nested operations', () => {
     test('Applying bold within italicized text', () => {
         setupDOM("This is <em>a strong text</em>!");
 
-        selectTextInElement("is a strong");
+        simulateSelectionIn("is a strong");
         textOperationService.execCommand('bold');
 
         const after = document.querySelector("div")?.innerHTML;
@@ -221,7 +221,7 @@ describe('Nested operations', () => {
 
     test('Applying italic over bold and italic text', () => {
         setupDOM("This <strong>is </strong><em><strong>a strong</strong> text</em>!");
-        selectTextInElement("is a strong");
+        simulateSelectionIn("is a strong");
 
         textOperationService.execCommand('italic');
 
@@ -232,7 +232,7 @@ describe('Nested operations', () => {
     test('Removing bold from already bold text', () => {
         setupDOM("This is a <strong>strong</strong> text!");
 
-        selectTextInElement("strong");
+        simulateSelectionIn("strong");
         textOperationService.execCommand('bold');
 
         const after = document.querySelector("div")?.innerHTML;
@@ -242,7 +242,7 @@ describe('Nested operations', () => {
     test('Complex nested formatting with toggle', () => {
         setupDOM("<strong>This <em>is a strong</em> text!</strong>");
 
-        selectTextInElement("strong");
+        simulateSelectionIn("strong");
         textOperationService.execCommand('bold');
 
         const after = document.querySelector("div")?.innerHTML;
@@ -253,19 +253,19 @@ describe('Nested operations', () => {
     test('Toggle underline on selected text test', () => {
         setupDOM("This is a strong text!");
 
-        selectTextInElement("strong");
+        simulateSelectionIn("strong");
         textOperationService.execCommand('bold');
         //Expected: This is a <b>strong</b> text!
 
-        selectTextInElement("is a strong");
+        simulateSelectionIn("is a strong");
         textOperationService.execCommand('italic');
         //This <i>is a </i><b><i>strong</i></b> text!
 
-        selectTextInElement("This is a str");
+        simulateSelectionIn("This is a str");
         textOperationService.execCommand('underline');
         //<u>This </u><i><u>is a </u></i><b><i><u>str</u>ong</i></b> text!
 
-        selectTextInElement("This i");
+        simulateSelectionIn("This i");
         textOperationService.execCommand('underline');
         //This <i>i<u>s a </u></i><b><i><u>str</u>ong</i></b> text!
 
