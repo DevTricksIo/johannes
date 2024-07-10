@@ -21,10 +21,28 @@ abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
         parent.appendChild(this.htmlElement);
     }
 
-    get isVisible(): boolean {
-        return this.htmlElement.style.display !== 'none' &&
-            this.htmlElement.style.visibility !== 'hidden' &&
-            document.contains(this.htmlElement);
+    get isVisible() {
+        let element: HTMLElement = this.htmlElement;
+
+        if (element.style.display === 'none' || element.style.visibility === 'hidden' || !document.contains(element)) {
+            return false;
+        }
+
+        while (element) {
+            const style = window.getComputedStyle(element);
+
+            if (style.display === 'none' || style.visibility === 'hidden') {
+                return false;
+            }
+
+            if (element.parentElement) {
+                element = element.parentElement;
+            } else {
+                break;
+            }
+        }
+
+        return true;
     }
 
     show() {
@@ -51,6 +69,13 @@ abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
     focus() {
         this.htmlElement.focus();
     }
+
+    // reRender(): void {
+    //     if (this.isVisible) {
+    //         this.hide();
+    //         this.show();
+    //     }
+    // }
 }
 
 export default BaseUIComponent;

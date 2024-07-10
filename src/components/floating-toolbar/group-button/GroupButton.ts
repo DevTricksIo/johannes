@@ -10,6 +10,7 @@ class GroupButton extends BaseUIComponent {
         super({});
 
         this.display = "block";
+        // this.attachEvents();
     }
 
     init(): HTMLElement {
@@ -26,6 +27,7 @@ class GroupButton extends BaseUIComponent {
         //create a data structure to store the dom node element
         this.htmlElement.appendChild(toolButton.htmlElement);
     }
+
 }
 
 export default GroupButton;

@@ -1,10 +1,14 @@
+import ITextOperationService from "../../../services/text-operations/ITextOperationService";
 import BaseUIComponent from "../../common/BaseUIComponent";
 
 class DropdownMenuListItem extends BaseUIComponent {
 
-    display: string;
+    private readonly _textOperationService: ITextOperationService;
 
-    constructor(leftIcon: HTMLElement | SVGElement, title: string, dataType: string) {
+    display: string;
+    command: string;
+
+    constructor(textOperationService: ITextOperationService, command: string, leftIcon: HTMLElement | SVGElement, title: string, dataType: string) {
         super({
             leftIcon: leftIcon,
             title: title,
@@ -13,6 +17,10 @@ class DropdownMenuListItem extends BaseUIComponent {
         });
 
         this.display = 'block';
+        this._textOperationService = textOperationService;
+        this.command = command;
+
+        this.attachEvent();
     }
 
     init(): HTMLElement {
@@ -36,6 +44,17 @@ class DropdownMenuListItem extends BaseUIComponent {
         htmlElement.appendChild(textOption);
 
         return htmlElement;
+    }
+
+    attachEvent(): void {
+        this.htmlElement.addEventListener("click", () => {
+
+            setTimeout(() => {
+
+                this._textOperationService.execCommand(this.command);
+
+            }, 10);
+        });
     }
 
 }

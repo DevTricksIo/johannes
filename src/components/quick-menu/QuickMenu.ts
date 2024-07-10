@@ -171,8 +171,7 @@ class QuickMenu extends BaseUIComponent {
     }
 
     openMenu() {
-
-        // The timeout in necessary to wait the browser process the selection before show Quick Menu. 
+        
         setTimeout(() => {
 
             this.htmlFocusedElementBeforeOpenQuickMenu = document.activeElement as HTMLElement;

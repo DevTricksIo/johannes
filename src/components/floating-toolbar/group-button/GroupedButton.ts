@@ -1,11 +1,15 @@
 import SVGIcon from "../../common/SVGIcon";
 import BaseUIComponent from "../../common/BaseUIComponent";
+import ITextOperationService from "../../../services/text-operations/ITextOperationService";
 
 class GroupedButton extends BaseUIComponent {
 
-    display: string;
+    private readonly _textOperationService: ITextOperationService;
 
-    constructor(title: string, svgUseHref: string) {
+    display: string;
+    commandId: string;
+
+    constructor(textOperationService: ITextOperationService, title: string, commandId: string, svgUseHref: string) {
 
         super({
             title: title,
@@ -13,6 +17,10 @@ class GroupedButton extends BaseUIComponent {
         });
 
         this.display = "block";
+        this.commandId = commandId;
+        this._textOperationService = textOperationService;
+
+        this.attachEvents();
     }
 
     init(): HTMLElement {
@@ -28,6 +36,48 @@ class GroupedButton extends BaseUIComponent {
 
         return htmlElement;
     }
+
+
+    attachEvents(): void {
+        
+        this.htmlElement.addEventListener("click", (event) => {
+
+            const editableElement = this.getParentEditable();
+
+            this._textOperationService.execCommand(this.commandId);
+
+            setTimeout(() => {
+                editableElement?.normalize();
+            }, 10);
+        });
+
+        document.addEventListener('selectionchange', (event) => {
+
+            setTimeout(() => {
+                if (this._textOperationService.queryCommandState(this.commandId)) {
+                    this.htmlElement.style.color = "#2382e2";
+                } else {
+                    this.htmlElement.style.color = "";
+                }
+            }, 10);
+        });
+    }
+
+    getParentEditable() {
+
+        let currentBlockRange = window.getSelection()!.getRangeAt(0);
+
+        let commonAncestor = currentBlockRange.commonAncestorContainer;
+
+        if (commonAncestor.nodeType === 3) {
+            commonAncestor = commonAncestor.parentNode!;
+        }
+
+        const currentBlock = (commonAncestor as HTMLElement).closest('.editable');
+
+        return currentBlock;
+    }
+
 }
 
 export default GroupedButton;

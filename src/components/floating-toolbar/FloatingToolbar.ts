@@ -39,12 +39,12 @@ class FloatingToolbar extends BaseUIComponent {
 
             let range = selection!.getRangeAt(0);
             let rect = range.getBoundingClientRect();
-    
+
             this.htmlElement.style.display = 'flex';
             this.htmlElement.style.left = `${rect.left + window.scrollX - 50}px`;
             this.htmlElement.style.top = `${rect.top + window.scrollY - this.htmlElement.offsetHeight - 10}px`;
 
-            super.show();            
+            super.show();
         }, 10);
     }
 
