@@ -7,270 +7,444 @@ function setupDOM(htmlContent: string = 'This is a strong text!'): HTMLDivElemen
     return div;
 }
 
-function simulateSelectionIn(searchText: string): void {
+/**
+ * Simulates text selection in the DOM.
+ * Finds the first occurrence of the specified textToSelect and creates a Range object based on it.
+ *
+ * @param textToSelect The text to be simulated as selected within the DOM.
+ */
+function simulateSelectionIn(textToSelect: string): void {
     const element = document.querySelector('div');
     if (!element) return;
 
-    const range = document.createRange();
     const selection = window.getSelection();
     if (!selection) return;
+    selection.removeAllRanges();
 
-    let found = false;
+    const range = new Range();
+    let cumulativeText = '';
 
-    function recursiveSearch(node: Node): boolean {
-        if (node.nodeType === Node.TEXT_NODE && node.textContent) {
-            const startIdx = node.textContent.indexOf(searchText);
-            if (startIdx !== -1 && !found) {
-                range.setStart(node, startIdx);
-                range.setEnd(node, startIdx + searchText.length);
-                selection!.removeAllRanges();
-                selection!.addRange(range);
-                found = true;
+    let nodeInfo: any[] = [];
+
+    function processNode(node: Node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const textContent = node.textContent || '';
+            const start = cumulativeText.length;
+            cumulativeText += textContent;
+            nodeInfo.push({ node, start, end: cumulativeText.length });
+        }
+
+        node.childNodes.forEach(child => processNode(child));
+    }
+
+    function setRangeFromText(searchText: string) {
+        const index = cumulativeText.indexOf(searchText);
+        if (index !== -1) {
+            const startInfo = nodeInfo.find(info => index >= info.start && index < info.end);
+            const endInfo = nodeInfo.find(info => index + searchText.length <= info.end);
+
+            if (startInfo && endInfo) {
+                range.setStart(startInfo.node, index - startInfo.start);
+                range.setEnd(endInfo.node, (index + searchText.length) - endInfo.start);
+                selection?.addRange(range);
                 return true;
-            }
-        } else {
-            for (const child of Array.from(node.childNodes)) {
-                if (recursiveSearch(child)) return true;
             }
         }
         return false;
     }
 
-    recursiveSearch(element);
+    element.normalize();
+    processNode(element);
+
+    setRangeFromText(textToSelect);
 }
 
+/**
+ * Calls simulateSelectionIn and verifies if the intended text is selected.
+ * If the actual selection does not match the intended text, it throws an error.
+ *
+ * @param textToSelect The text that is intended to be simulated as selected in the DOM.
+ * @throws {Error} Throws an error if the simulated selection does not match the expected text.
+ *                 The error message specifies both the expected and the actual text.
+ */
+function simulateSelectionAndCheck(textToSelect: string): void {
+
+    simulateSelectionIn(textToSelect);
+
+    const selectedText = document.getSelection()?.toString();
+
+    if (textToSelect !== selectedText) {
+        throw new Error(`Failed to simulate selection. Expected: '${textToSelect}', but got: '${selectedText}'`);
+    }
+}
+
+function findContinuationIndex(mainString: string, searchString: string): number {
+    for (let i = 0; i < mainString.length; i++) {
+        const substring = mainString.substring(i);
+
+        if (searchString.startsWith(substring)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+function removeOverlap(mainString: string, searchString: string) {
+    for (let i = 0; i < mainString.length; i++) {
+        const substring = mainString.substring(i);
+
+        if (searchString.startsWith(substring)) {
+            return searchString.slice(substring.length);
+        }
+    }
+    return searchString;
+}
+
+
 describe('Base operations', () => {
-    let textOperationService: TextOperationService;
+    let sut: TextOperationService;
 
     beforeEach(() => {
-        textOperationService = new TextOperationService();
+        sut = new TextOperationService();
         document.body.innerHTML = '';
     });
 
     test('Applying bold to "strong"', () => {
-        setupDOM();
-        simulateSelectionIn("strong");
 
-        textOperationService.execCommand('bold');
+        setupDOM("This is a strong text!");
 
-        const after = document.querySelector("div")?.innerHTML;
-        expect(after).toEqual("This is a <strong>strong</strong> text!");
+        const textToSelect = "strong";
+        simulateSelectionAndCheck(textToSelect);
+
+        const expectedAfterExecCommand = "This is a <strong>strong</strong> text!";
+
+        sut.execCommand('bold');
+
+        const result = document.querySelector("div")?.innerHTML;
+
+        expect(result).toEqual(expectedAfterExecCommand);
     });
 
     test('Removing bold from "strong"', () => {
+
         setupDOM("This is a <strong>strong</strong> text!");
-        simulateSelectionIn("strong");
 
-        textOperationService.execCommand('bold');
+        const textToSelect = "strong";
+        simulateSelectionAndCheck(textToSelect);
 
-        const after = document.querySelector("div")?.innerHTML;
-        expect(after).toEqual("This is a strong text!");
+        const expectedAfterExecCommand = "This is a strong text!";
+
+        sut.execCommand('bold');
+
+        const result = document.querySelector("div")?.innerHTML;
+        expect(result).toEqual(expectedAfterExecCommand);
     });
 
     test('Adding multiples bold', () => {
+
         setupDOM("This is a <strong>strong</strong> text!");
 
-        simulateSelectionIn("text");
-        textOperationService.execCommand('bold');
+        const textToSelect = "text";
+        simulateSelectionAndCheck(textToSelect);
 
-        const after = document.querySelector("div")?.innerHTML;
-        expect(after).toEqual("This is a <strong>strong</strong> <strong>text</strong>!");
+        const expectedAfterExecCommand = "This is a <strong>strong</strong> <strong>text</strong>!";
+
+        sut.execCommand('bold');
+
+        const result = document.querySelector("div")?.innerHTML;
+        expect(result).toEqual(expectedAfterExecCommand);
     });
 
     test('Remove specific bold without remove previous', () => {
+
         setupDOM("This is a <strong>strong</strong> <strong>text</strong>!");
 
-        simulateSelectionIn("text");
-        textOperationService.execCommand('bold');
+        const textToSelect = "text";
+        simulateSelectionAndCheck(textToSelect);
 
-        const after = document.querySelector("div")?.innerHTML;
-        expect(after).toEqual("This is a <strong>strong</strong> text!");
+        const expectedAfterExecCommand = "This is a <strong>strong</strong> text!";
+
+        sut.execCommand('bold');
+
+        const result = document.querySelector("div")?.innerHTML;
+        expect(result).toEqual(expectedAfterExecCommand);
     });
 
     test('Applying bold to all text content', () => {
+
         setupDOM("This is a strong text!");
 
-        simulateSelectionIn("This is a strong text!");
-        textOperationService.execCommand('bold');
+        const textToSelect = "This is a strong text!";
+        simulateSelectionAndCheck(textToSelect);
 
-        const after = document.querySelector("div")?.innerHTML;
-        expect(after).toEqual("<strong>This is a strong text!</strong>");
+        const expectedAfterExecCommand = "<strong>This is a strong text!</strong>";
+
+        sut.execCommand('bold');
+
+        const result = document.querySelector("div")?.innerHTML;
+        expect(result).toEqual(expectedAfterExecCommand);
     });
 
     test('Remove bold from all text content', () => {
+
         setupDOM("<strong>This is a strong text!</strong>");
 
-        simulateSelectionIn("This is a strong text!");
-        textOperationService.execCommand('bold');
+        const textToSelect = "This is a strong text!";
+        simulateSelectionAndCheck(textToSelect);
 
-        const after = document.querySelector("div")?.innerHTML;
-        expect(after).toEqual("This is a strong text!");
+        const expectedAfterExecCommand = "This is a strong text!";
+
+        sut.execCommand('bold');
+
+        const result = document.querySelector("div")?.innerHTML;
+        expect(result).toEqual(expectedAfterExecCommand);
     });
 
     test('Restore original value applying execCommand two times', () => {
 
         setupDOM("This is a strong text!");
 
-        simulateSelectionIn("strong");
-        textOperationService.execCommand('bold');
+        const textToSelect = "strong";
+        simulateSelectionAndCheck(textToSelect);
 
-        const after1 = document.querySelector("div")?.innerHTML;
-        expect(after1).toEqual("This is a <strong>strong</strong> text!");
+        sut.execCommand('bold');
 
-        simulateSelectionIn("strong");
-        textOperationService.execCommand('bold');
+        const expected1AfterExecCommand = "This is a <strong>strong</strong> text!";
+        const expected2AfterExecCommand = "This is a strong text!";
 
-        const after2 = document.querySelector("div")?.innerHTML;
-        expect(after2).toEqual("This is a strong text!");
+        const result1 = document.querySelector("div")?.innerHTML;
+        expect(result1).toEqual(expected1AfterExecCommand);
+
+        simulateSelectionAndCheck(textToSelect);
+
+        sut.execCommand('bold');
+
+        const result2 = document.querySelector("div")?.innerHTML;
+        expect(result2).toEqual(expected2AfterExecCommand);
     });
 
     test('Partial toggle selection left', () => {
 
         setupDOM("This is a <strong>strong</strong> text!");
 
-        simulateSelectionIn("str");
-        textOperationService.execCommand('bold');
+        const textToSelect = "str";
+        simulateSelectionAndCheck(textToSelect);
 
-        const after = document.querySelector("div")?.innerHTML;
-        expect(after).toEqual("This is a str<strong>ong</strong> text!");
+        const expectedAfterExecCommand = "This is a str<strong>ong</strong> text!";
+
+        sut.execCommand('bold');
+
+        const result = document.querySelector("div")?.innerHTML;
+        expect(result).toEqual(expectedAfterExecCommand);
     });
 
     test('Partial toggle selection right', () => {
 
         setupDOM("This is a <strong>strong</strong> text!");
 
-        simulateSelectionIn("ong");
-        textOperationService.execCommand('bold');
+        simulateSelectionAndCheck("ong");
 
-        const after = document.querySelector("div")?.innerHTML;
-        expect(after).toEqual("This is a <strong>str</strong>ong text!");
+        const expectedAfterExecCommand = "This is a <strong>str</strong>ong text!";
+
+        sut.execCommand('bold');
+
+        const result = document.querySelector("div")?.innerHTML;
+        expect(result).toEqual(expectedAfterExecCommand);
     });
 
     test('Partial toggle selection left without side effect', () => {
 
         setupDOM("<strong>This is</strong> a <strong>strong</strong> - <strong>text</strong>!");
 
-        simulateSelectionIn("str");
-        textOperationService.execCommand('bold');
+        const textToSelect = "str";
+        simulateSelectionAndCheck(textToSelect);
 
-        const after = document.querySelector("div")?.innerHTML;
-        expect(after).toEqual("<strong>This is</strong> a str<strong>ong</strong> - <strong>text</strong>!");
+        const expectedAfterExecCommand = "<strong>This is</strong> a str<strong>ong</strong> - <strong>text</strong>!"
+
+        sut.execCommand('bold');
+
+        const result = document.querySelector("div")?.innerHTML;
+        expect(result).toEqual(expectedAfterExecCommand);
     });
 
     test('Partial toggle selection right without side effect', () => {
 
         setupDOM("<strong>This is</strong> a <strong>strong</strong> - <strong>text</strong>!");
 
-        simulateSelectionIn("ong");
-        textOperationService.execCommand('bold');
+        const textToSelect = "ong"
+        simulateSelectionAndCheck(textToSelect);
 
-        const after = document.querySelector("div")?.innerHTML;
-        expect(after).toEqual("<strong>This is</strong> a <strong>str</strong>ong - <strong>text</strong>!");
+        const expectedAfterExecCommand = "<strong>This is</strong> a <strong>str</strong>ong - <strong>text</strong>!";
+        sut.execCommand('bold');
+
+        const result = document.querySelector("div")?.innerHTML;
+        expect(result).toEqual(expectedAfterExecCommand);
     });
 
     test('Mixed content', () => {
 
         setupDOM("<u>This</u> is a <strong>strong</strong> text!");
 
-        simulateSelectionIn("text");
-        textOperationService.execCommand('bold');
+        const textToSelect = "text";
+        simulateSelectionAndCheck(textToSelect);
 
-        const after1 = document.querySelector("div")?.innerHTML;
-        expect(after1).toEqual("<u>This</u> is a <strong>strong</strong> <strong>text</strong>!");
+        const expectedAfterExecCommand = "<u>This</u> is a <strong>strong</strong> <strong>text</strong>!";
+
+        sut.execCommand('bold');
+
+        const result = document.querySelector("div")?.innerHTML;
+        expect(result).toEqual(expectedAfterExecCommand);
     });
 });
 
 describe('Nested operations', () => {
 
-    let textOperationService: TextOperationService;
+    let sut: TextOperationService;
 
     beforeEach(() => {
-        textOperationService = new TextOperationService();
+        sut = new TextOperationService();
         document.body.innerHTML = '';
     });
 
     test('Toggle bold on part of bold text', () => {
+
         setupDOM("This <strong>is a strong</strong> text!");
 
-        simulateSelectionIn("a");
-        textOperationService.execCommand('bold');
+        const textToSelect = "a";
+        simulateSelectionAndCheck(textToSelect);
 
-        const after = document.querySelector("div")?.innerHTML;
-        expect(after).toEqual("This <strong>is </strong>a<strong> strong</strong> text!");
+        sut.execCommand('bold');
+
+        const expectedAfterExecCommand = "This <strong>is </strong>a<strong> strong</strong> text!";
+
+        const result = document.querySelector("div")?.innerHTML;
+        expect(result).toEqual(expectedAfterExecCommand);
     });
 
     test('Applying bold surrounding italicized text', () => {
+
         setupDOM("This is <em>a strong text</em>!");
 
-        simulateSelectionIn("is a strong text");
-        textOperationService.execCommand('bold');
+        const textToSelect = "is a strong text";
+        simulateSelectionAndCheck(textToSelect);
 
-        const after = document.querySelector("div")?.innerHTML;
-        expect(after).toEqual("This <strong>is <em>a strong text</em></strong>!");
+        const expectedAfterExecCommand = "This <strong>is <em>a strong text</em></strong>!";
+
+        sut.execCommand('bold');
+
+        const result = document.querySelector("div")?.innerHTML;
+        expect(result).toEqual(expectedAfterExecCommand);
     });
 
     test('Applying bold within italicized text', () => {
+
         setupDOM("This is <em>a strong text</em>!");
 
-        simulateSelectionIn("is a strong");
-        textOperationService.execCommand('bold');
+        const textToSelect = "is a strong";
+        simulateSelectionAndCheck(textToSelect);
 
-        const after = document.querySelector("div")?.innerHTML;
-        expect(after).toEqual("This <strong>is </strong><em><strong>a strong</strong> text</em>!");
+        const expectedAfterExecCommand = "This <strong>is </strong><em><strong>a strong</strong> text</em>!";
+
+        sut.execCommand('bold');
+
+        const result = document.querySelector("div")?.innerHTML;
+        expect(result).toEqual(expectedAfterExecCommand);
     });
 
     test('Applying italic over bold and italic text', () => {
         setupDOM("This <strong>is </strong><em><strong>a strong</strong> text</em>!");
-        simulateSelectionIn("is a strong");
 
-        textOperationService.execCommand('italic');
+        const textToSelect = "is a strong";
+        simulateSelectionAndCheck(textToSelect);
 
-        const after = document.querySelector("div")?.innerHTML;
-        expect(after).toEqual("This <em><strong>is a strong</strong> text</em>!");
+        const expectedAfterExecCommand = "This <em><strong>is a strong</strong> text</em>!";
+
+        sut.execCommand('italic');
+
+        const result = document.querySelector("div")?.innerHTML;
+        expect(result).toEqual(expectedAfterExecCommand);
     });
 
     test('Removing bold from already bold text', () => {
         setupDOM("This is a <strong>strong</strong> text!");
 
-        simulateSelectionIn("strong");
-        textOperationService.execCommand('bold');
+        const textToSelect = "strong";
+        simulateSelectionAndCheck(textToSelect);
 
-        const after = document.querySelector("div")?.innerHTML;
-        expect(after).toEqual("This is a strong text!");
+        sut.execCommand('bold');
+
+        const expectedAfterExecCommand = "This is a strong text!";
+
+        const result = document.querySelector("div")?.innerHTML;
+        expect(result).toEqual(expectedAfterExecCommand);
     });
 
     test('Complex nested formatting with toggle', () => {
         setupDOM("<strong>This <em>is a strong</em> text!</strong>");
 
-        simulateSelectionIn("strong");
-        textOperationService.execCommand('bold');
+        const textToSelect = "strong";
+        simulateSelectionAndCheck(textToSelect);
 
-        const after = document.querySelector("div")?.innerHTML;
-        expect(after).toEqual("<strong>This <em>is a </em></strong><em>strong</em><strong> text!</strong>");
+        const expectedAfterExecCommand = "<strong>This <em>is a </em></strong><em>strong</em><strong> text!</strong>";
+
+        sut.execCommand('bold');
+
+        const result = document.querySelector("div")?.innerHTML;
+        expect(result).toEqual(expectedAfterExecCommand);
     });
 
 
     test('Toggle underline on selected text test', () => {
         setupDOM("This is a strong text!");
 
-        simulateSelectionIn("strong");
-        textOperationService.execCommand('bold');
-        //Expected: This is a <b>strong</b> text!
+        const expectedAfterAllExecCommand = "This <em>i<strong>s a </strong></em><strong><em><string>str</strong>ong</em></strong> text!";
 
-        simulateSelectionIn("is a strong");
-        textOperationService.execCommand('italic');
-        //This <i>is a </i><b><i>strong</i></b> text!
+        //T1
+        const textToSelect1 = "strong";
+        simulateSelectionAndCheck(textToSelect1);
 
-        simulateSelectionIn("This is a str");
-        textOperationService.execCommand('underline');
-        //<u>This </u><i><u>is a </u></i><b><i><u>str</u>ong</i></b> text!
+        const expected1AfterExecCommand = "This is a <b>strong</b> text!"
 
-        simulateSelectionIn("This i");
-        textOperationService.execCommand('underline');
-        //This <i>i<u>s a </u></i><b><i><u>str</u>ong</i></b> text!
+        sut.execCommand('bold');
 
-        const after = document.querySelector("div")?.innerHTML;
-        expect(after).toEqual("This <em>i<strong>s a </strong></em><strong><em><string>str</strong>ong</em></strong> text!");
+        const result1 = document.querySelector("div")?.innerHTML;
+        expect(result1).toEqual(expected1AfterExecCommand);
+
+        //T2
+        const textToSelect2 = "is a strong";
+        simulateSelectionAndCheck(textToSelect2);
+
+        const expected2AfterExecCommand = "This <i>is a </i><b><i>strong</i></b> text!"
+
+        sut.execCommand('italic');
+
+        const result2 = document.querySelector("div")?.innerHTML;
+        expect(result2).toEqual(expected2AfterExecCommand);
+
+        //T3
+        const textToSelect3 = "This is a str";
+        simulateSelectionAndCheck(textToSelect3);
+
+        const expected3AfterExecCommand = "<u>This </u><i><u>is a </u></i><b><i><u>str</u>ong</i></b> text!"
+
+        sut.execCommand('underline');
+
+        const result3 = document.querySelector("div")?.innerHTML;
+        expect(result3).toEqual(expected3AfterExecCommand);
+
+        //T4
+        const textToSelect4 = "This i";
+        simulateSelectionAndCheck(textToSelect4);
+
+        const expected4AfterExecCommand = "This <i>i<u>s a </u></i><b><i><u>str</u>ong</i></b> text!"
+
+        sut.execCommand('underline');
+
+        const result4 = document.querySelector("div")?.innerHTML;
+        expect(result4).toEqual(expected4AfterExecCommand);
+
+        //Final
+        const finalResult = document.querySelector("div")?.innerHTML;
+        expect(finalResult).toEqual(expectedAfterAllExecCommand);
     });
-
 });
