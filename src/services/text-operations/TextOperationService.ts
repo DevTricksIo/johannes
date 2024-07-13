@@ -5,7 +5,7 @@ type TargetNode = {
     classes?: string[];
 };
 
-class TextOperationService implements ITextOperationService  {
+class TextOperationService implements ITextOperationService {
 
     // selectedNodes: Node[] | null; //muito provavlemente eu vou ter que quebrar em n arrays um para cada no de bloco 
     // target: TargetNode | null;    //muito provavelmente eu vou ter um target para cada nó de bloco
@@ -27,7 +27,9 @@ class TextOperationService implements ITextOperationService  {
 
 
     queryCommandState(): boolean {
-        return document.queryCommandState(this.command);
+        const value = document.queryCommandState(this.command);
+
+        return value;
     }
 
     queryCommandState2(): boolean {
@@ -37,12 +39,12 @@ class TextOperationService implements ITextOperationService  {
 
     execCommand(): boolean {
 
-        if(this.command == "link"){
+        if (this.command == "link") {
             alert("delete");
 
             return true;
         }
-        
+
         if (this.command == "delete") {
             alert("delete");
 
@@ -61,12 +63,12 @@ class TextOperationService implements ITextOperationService  {
     execCommand2(): boolean {
 
 
-        if(this.command == "link"){
+        if (this.command == "link") {
             alert("delete");
 
             return true;
         }
-        
+
         if (this.command == "delete") {
             alert("delete");
 

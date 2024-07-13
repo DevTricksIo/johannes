@@ -89,9 +89,9 @@ class FloatingToolbar extends BaseUIComponent {
 
     attachEvents() {
 
-        document.addEventListener('selectionChangeAfterExecCommand', (event) => {
-            this.currentSelectionRange = getSelection()?.getRangeAt(0) || null;
-        });
+        // document.addEventListener('selectionChangeAfterExecCommand', (event) => {
+        //     this.currentSelectionRange = getSelection()?.getRangeAt(0) || null;
+        // });
 
         document.addEventListener('keydown', (event) => {
             if ((event.key === 'Escape' || event.key === 'Delete') && this.isVisible) {
@@ -135,6 +135,13 @@ class FloatingToolbar extends BaseUIComponent {
                 }, 10);
             }
         });
+
+        document.addEventListener('blockFormatted', () => {
+            if (this.canHide) {
+                this.hide();
+            }
+        });
+
     }
 }
 

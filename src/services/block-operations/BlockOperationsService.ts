@@ -11,7 +11,14 @@ class BlockOperationsService implements IBlockOperationsService {
         const element = BlockOperationsService.getDraggableElementFromSelection();
         const tagName = BlockOperationsService.getTagNameByCommandName(this.commandName);
 
-        this.transformBlock(element, tagName);
+        this.formatBlock(element, tagName);
+
+        const selectionEvent = new CustomEvent('blockFormatted', {
+            bubbles: true,
+            cancelable: true
+        });
+
+        document.dispatchEvent(selectionEvent);
 
         return true;
     }
@@ -26,7 +33,7 @@ class BlockOperationsService implements IBlockOperationsService {
         this.elementFactoryService = elementFactoryService;
     }
 
-    transformBlock(element: HTMLElement, contentType: string): void {
+    formatBlock(element: HTMLElement, contentType: string): void {
 
         let contentElement = element.querySelector('.swittable') as HTMLElement;
         let content = contentElement.innerText;

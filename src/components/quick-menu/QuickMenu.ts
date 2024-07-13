@@ -276,7 +276,7 @@ class QuickMenu extends BaseUIComponent {
         let element = this.htmlFocusedElementBeforeOpenQuickMenu?.closest('.draggable-block') as HTMLElement;
 
         if (element && dataType) {
-            this.blockOperations.transformBlock(element, dataType);
+            this.blockOperations.formatBlock(element, dataType);
         }
 
         this.closeMenu();
