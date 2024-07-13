@@ -1,10 +1,8 @@
-interface ITextOperationService {
+import ICommand from "../common/ICommand";
 
+interface ITextOperationService extends ICommand {
 
-    execCommand(command: string, showUI?: boolean | undefined, value?: string | undefined): boolean;
     execCommand2(): boolean;
-
-    // queryCommandState(commandId: string): boolean;
     queryCommandState2(): boolean;
 }
 

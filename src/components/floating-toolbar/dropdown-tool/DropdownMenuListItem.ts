@@ -1,24 +1,24 @@
-import ITextOperationService from "../../../services/text-operations/ITextOperationService";
+import ICommand from "../../../services/common/ICommand";
 import BaseUIComponent from "../../common/BaseUIComponent";
+import DropdownMenuList from "./DropdownMenuList";
 
 class DropdownMenuListItem extends BaseUIComponent {
 
-    private readonly _textOperationService: ITextOperationService;
+    private readonly _commandService: ICommand;
+
+    parentDropdownMenuList: DropdownMenuList;
 
     display: string;
-    command: string;
 
-    constructor(textOperationService: ITextOperationService, command: string, leftIcon: HTMLElement | SVGElement, title: string, dataType: string) {
+    constructor(parentDropdownMenuList: DropdownMenuList, commandService: ICommand, leftIcon: HTMLElement | SVGElement, title: string) {
         super({
             leftIcon: leftIcon,
-            title: title,
-            dataType: dataType,
-            // dataBlockOperationAttribute: dataBlockOperationAttribute,
+            title: title
         });
 
         this.display = 'block';
-        this._textOperationService = textOperationService;
-        this.command = command;
+        this._commandService = commandService;
+        this.parentDropdownMenuList = parentDropdownMenuList;
 
         this.attachEvent();
     }
@@ -27,8 +27,7 @@ class DropdownMenuListItem extends BaseUIComponent {
 
         const htmlElement = document.createElement('li');
         htmlElement.classList.add('option', 'option-hover', 'block-operation');
-        // htmlElement.setAttribute('data-block-operation', this.props.dataBlockOperationAttribute);
-        htmlElement.setAttribute('data-type', this.props.dataType);
+        // htmlElement.setAttribute('data-type', this.props.dataType);
         htmlElement.tabIndex = 2;
 
         const textOption = document.createElement('div');
@@ -51,12 +50,21 @@ class DropdownMenuListItem extends BaseUIComponent {
 
             setTimeout(() => {
 
-                this._textOperationService.execCommand(this.command);
+                this._commandService.execCommand();
+
+                // const selectionEvent = new CustomEvent('selectionChangeAfterExecCommand', {
+                //     detail: { message: 'selectionChangeAfterExecCommand' },
+                //     bubbles: true,
+                //     cancelable: true
+                // });
+
+                // document.dispatchEvent(selectionEvent);
+
+                this.parentDropdownMenuList.hide();
 
             }, 10);
         });
     }
-
 }
 
 export default DropdownMenuListItem;

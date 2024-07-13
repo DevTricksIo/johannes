@@ -1,3 +1,5 @@
+// import BaseUIComponent from "./BaseUIComponent";
+
 import BaseUIComponent from "./BaseUIComponent";
 
 class SVGIcon extends BaseUIComponent {

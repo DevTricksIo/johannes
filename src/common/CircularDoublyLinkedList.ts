@@ -1,5 +1,5 @@
-import JNode from './JNode';
-import BaseDoublyLinkedList from './BaseDoublyLinkedList';
+import BaseDoublyLinkedList from "./BaseDoublyLinkedList";
+import JNode from "./JNode";
 
 class CircularDoublyLinkedList<T> extends BaseDoublyLinkedList<T> {
 

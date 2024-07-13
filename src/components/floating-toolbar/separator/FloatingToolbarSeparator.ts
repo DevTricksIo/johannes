@@ -1,6 +1,6 @@
 import BaseUIComponent from "../../common/BaseUIComponent";
 
-class Separator extends BaseUIComponent {
+class FloatingToolbarSeparator extends BaseUIComponent {
 
     display: string;
 
@@ -24,4 +24,4 @@ class Separator extends BaseUIComponent {
     }
 }
 
-export default Separator;
+export default FloatingToolbarSeparator;

@@ -6,6 +6,9 @@ class DropdownMenu extends BaseUIComponent {
 
     display: string;
 
+    dropdownButton: TextFormattingBarButton;
+    dropdownList: DropdownMenuList;
+
     constructor(button: TextFormattingBarButton, dropdownList: DropdownMenuList) {
 
         super({});
@@ -13,6 +16,10 @@ class DropdownMenu extends BaseUIComponent {
         this.display = 'block';
 
         //add validation that verify if the arial target from button equals to id dropdown list
+
+        this.dropdownButton = button;
+        this.dropdownList = dropdownList;
+
 
         button.documentAppendTo(this.htmlElement);
         dropdownList.documentAppendTo(this.htmlElement);

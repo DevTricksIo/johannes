@@ -1,63 +1,65 @@
 import DropdownMenu from "../components/floating-toolbar/dropdown-tool/DropdownMenu";
-import DropdownMenuToggleButton from "../components/floating-toolbar/dropdown-tool/DropdownMenuButton";
 import FloatingToolbar from "../components/floating-toolbar/FloatingToolbar";
 import DropdownMenuList from "../components/floating-toolbar/dropdown-tool/DropdownMenuList";
 import DropdownMenuListItem from "../components/floating-toolbar/dropdown-tool/DropdownMenuListItem";
 import SVGIcon from "../components/common/SVGIcon";
-import Separator from "../components/floating-toolbar/separator/Separator";
+import FloatingToolbarSeparator from "../components/floating-toolbar/separator/FloatingToolbarSeparator";
 import GroupButton from "../components/floating-toolbar/group-button/GroupButton";
 import GroupedButton from "../components/floating-toolbar/group-button/GroupedButton";
 import ColorIcon from "../components/floating-toolbar/dropdown-tool/ColorIcon";
 import TextOperationService from "../services/text-operations/TextOperationService";
+import ElementFactoryService from "../services/element-factory/ElementFactoryService";
+import DropdownMenuButton from "../components/floating-toolbar/dropdown-tool/DropdownMenuButton";
+import BlockOperationsService, { BlockOperations } from "../services/block-operations/BlockOperationsService";
 
 class FloatingToolbarBuilder {
 
     static build(): FloatingToolbar {
 
-        const textFormattingBar = new FloatingToolbar();
+        const floatingBar = new FloatingToolbar();
 
-        textFormattingBar.appendDropdown(FloatingToolbarBuilder.turnIntoDropdown());
-        textFormattingBar.appendSeparator(FloatingToolbarBuilder.separator());
-        textFormattingBar.appendSeparator(FloatingToolbarBuilder.groupButton());
-        textFormattingBar.appendDropdown(FloatingToolbarBuilder.colorDropdown());
-        textFormattingBar.appendSeparator(FloatingToolbarBuilder.separator());
-        textFormattingBar.appendSeparator(FloatingToolbarBuilder.moreOptionsDropdown());
+        floatingBar.appendDropdown(FloatingToolbarBuilder.turnIntoDropdown());
+        floatingBar.appendSeparator(FloatingToolbarBuilder.separator());
+        floatingBar.appendSeparator(FloatingToolbarBuilder.groupButton());
+        floatingBar.appendDropdown(FloatingToolbarBuilder.colorDropdown());
+        floatingBar.appendSeparator(FloatingToolbarBuilder.separator());
+        floatingBar.appendDropdown(FloatingToolbarBuilder.moreOptionsDropdown());
 
-        return textFormattingBar;
+        return floatingBar;
     }
 
     static turnIntoDropdown(): DropdownMenu {
 
-        const textOperationService = new TextOperationService("bold");
+        const elementFactoryService = new ElementFactoryService();
 
         const turnIntoBarList = new DropdownMenuList("turnIntoSelect", "Turn into");
-        const turnIntoBarButton = new DropdownMenuToggleButton("turnIntoButton", "Text", turnIntoBarList);
+        const turnIntoBarButton = new DropdownMenuButton("turnIntoButton", "Text", turnIntoBarList);
         const turnIntoDropdown = new DropdownMenu(turnIntoBarButton, turnIntoBarList);
 
-        turnIntoBarList.append(new DropdownMenuListItem(textOperationService, "", SVGIcons.paragraph.htmlElement, "Text", "p"));
-        turnIntoBarList.append(new DropdownMenuListItem(textOperationService, "", SVGIcons.b_list.htmlElement, "Bulleted list", "p"));
-        turnIntoBarList.append(new DropdownMenuListItem(textOperationService, "", SVGIcons.n_list.htmlElement, "Numbered list", "p"));
-        turnIntoBarList.append(new DropdownMenuListItem(textOperationService, "", SVGIcons.code.htmlElement, "Code", "p"));
-        turnIntoBarList.append(new DropdownMenuListItem(textOperationService, "", SVGIcons.quote.htmlElement, "Quote", "p"));
-        turnIntoBarList.append(new DropdownMenuListItem(textOperationService, "", SVGIcons.head1.htmlElement, "Heading 1", "p"));
-        turnIntoBarList.append(new DropdownMenuListItem(textOperationService, "", SVGIcons.head2.htmlElement, "Heading 2", "p"));
-        turnIntoBarList.append(new DropdownMenuListItem(textOperationService, "", SVGIcons.head3.htmlElement, "Heading 3", "p"));
-        turnIntoBarList.append(new DropdownMenuListItem(textOperationService, "", SVGIcons.head4.htmlElement, "Heading 4", "p"));
-        turnIntoBarList.append(new DropdownMenuListItem(textOperationService, "", SVGIcons.head5.htmlElement, "Heading 5", "p"));
-        turnIntoBarList.append(new DropdownMenuListItem(textOperationService, "", SVGIcons.head6.htmlElement, "Heading 6", "p"));
+        turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, new BlockOperationsService(BlockOperations.TurnIntoParagraph, elementFactoryService), SVGIcons.paragraph.htmlElement, "Text"));
+        turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, new BlockOperationsService(BlockOperations.TurnIntoParagraph, elementFactoryService), SVGIcons.b_list.htmlElement, "Bulleted list"));
+        turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, new BlockOperationsService(BlockOperations.TurnIntoParagraph, elementFactoryService), SVGIcons.n_list.htmlElement, "Numbered list"));
+        turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, new BlockOperationsService(BlockOperations.TurnIntoParagraph, elementFactoryService), SVGIcons.code.htmlElement, "Code"));
+        turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, new BlockOperationsService(BlockOperations.TurnIntoParagraph, elementFactoryService), SVGIcons.quote.htmlElement, "Quote"));
+        turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, new BlockOperationsService(BlockOperations.TurnIntoH1, elementFactoryService), SVGIcons.head1.htmlElement, "Heading 1"));
+        turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, new BlockOperationsService(BlockOperations.TurnIntoH2, elementFactoryService), SVGIcons.head2.htmlElement, "Heading 2"));
+        turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, new BlockOperationsService(BlockOperations.TurnIntoH3, elementFactoryService), SVGIcons.head3.htmlElement, "Heading 3"));
+        turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, new BlockOperationsService(BlockOperations.TurnIntoH4, elementFactoryService), SVGIcons.head4.htmlElement, "Heading 4"));
+        turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, new BlockOperationsService(BlockOperations.TurnIntoH5, elementFactoryService), SVGIcons.head5.htmlElement, "Heading 5"));
+        turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, new BlockOperationsService(BlockOperations.TurnIntoH6, elementFactoryService), SVGIcons.head6.htmlElement, "Heading 6"));
 
         return turnIntoDropdown;
     }
 
-    static separator(): Separator {
-        return new Separator();
+    static separator(): FloatingToolbarSeparator {
+        return new FloatingToolbarSeparator();
     }
 
     static groupButton(): GroupButton {
 
         const groupButton = new GroupButton();
 
-        new GroupedButton(new TextOperationService("copy"), "Link", "icon-material-link").documentAppendTo(groupButton.htmlElement);
+        new GroupedButton(new TextOperationService("link"), "Link", "icon-material-link").documentAppendTo(groupButton.htmlElement);
         new GroupedButton(new TextOperationService("bold"), "Bold", "icon-wordpress-bold").documentAppendTo(groupButton.htmlElement);
         new GroupedButton(new TextOperationService("italic"), "Italic", "icon-material-italic").documentAppendTo(groupButton.htmlElement);
         new GroupedButton(new TextOperationService("underline"), "Underline", "icon-material-underline").documentAppendTo(groupButton.htmlElement);
@@ -71,15 +73,15 @@ class FloatingToolbarBuilder {
     static colorDropdown(): DropdownMenu {
 
         const colorDropdownList = new DropdownMenuList("colorTextOptionSelect", "Background");
-        const colorButton = new DropdownMenuToggleButton("colorTextButton", new ColorIcon("#FAF4D1").htmlElement, colorDropdownList);
+        const colorButton = new DropdownMenuButton("colorTextButton", new ColorIcon("#FAF4D1").htmlElement, colorDropdownList);
         const colorDropdown = new DropdownMenu(colorButton, colorDropdownList);
 
-        colorDropdownList.append(new DropdownMenuListItem(new TextOperationService("hiliteColor", "#FDDEDE"), "useCSS", new ColorIcon("#FDDEDE").htmlElement, "Red", "p"));
-        colorDropdownList.append(new DropdownMenuListItem(new TextOperationService("hiliteColor", "#D7F7DC"), "useCSS", new ColorIcon("#D7F7DC").htmlElement, "Green", "p"));
-        colorDropdownList.append(new DropdownMenuListItem(new TextOperationService("hiliteColor", "#D9EDF6"), "useCSS", new ColorIcon("#D9EDF6").htmlElement, "Blue", "p"));
-        colorDropdownList.append(new DropdownMenuListItem(new TextOperationService("hiliteColor", "#FAF4D1"), "useCSS", new ColorIcon("#FAF4D1").htmlElement, "Yellow", "p"));
-        colorDropdownList.append(new DropdownMenuListItem(new TextOperationService("hiliteColor", "#E1E0E0"), "useCSS", new ColorIcon("#E1E0E0").htmlElement, "Grey", "p"));
-        colorDropdownList.append(new DropdownMenuListItem(new TextOperationService("hiliteColor", "transparent"), "useCSS", new ColorIcon("transparent").htmlElement, "None", "p"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, new TextOperationService("hiliteColor", "#FDDEDE"), new ColorIcon("#FDDEDE").htmlElement, "Red"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, new TextOperationService("hiliteColor", "#D7F7DC"), new ColorIcon("#D7F7DC").htmlElement, "Green"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, new TextOperationService("hiliteColor", "#D9EDF6"), new ColorIcon("#D9EDF6").htmlElement, "Blue"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, new TextOperationService("hiliteColor", "#FAF4D1"), new ColorIcon("#FAF4D1").htmlElement, "Yellow"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, new TextOperationService("hiliteColor", "#E1E0E0"), new ColorIcon("#E1E0E0").htmlElement, "Grey"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, new TextOperationService("hiliteColor", "transparent"), new ColorIcon("transparent").htmlElement, "None"));
 
         return colorDropdown;
     }
@@ -88,13 +90,12 @@ class FloatingToolbarBuilder {
 
         const icon = new SVGIcon("icon-material-more", "24", "24");
 
-        const textOperationService = new TextOperationService("bold");
         const moreOptionsList = new DropdownMenuList("moreTextOptionSelect", "More options");
-        const moreOptionsButton = new DropdownMenuToggleButton("moreTextOptionButton", icon.htmlElement, moreOptionsList, false);
+        const moreOptionsButton = new DropdownMenuButton("moreTextOptionButton", icon.htmlElement, moreOptionsList, false);
         const moreOptionsDropdown = new DropdownMenu(moreOptionsButton, moreOptionsList);
 
-        moreOptionsList.append(new DropdownMenuListItem(textOperationService, "", SVGIcons.duplicate.htmlElement, "Duplicate", "p"));
-        moreOptionsList.append(new DropdownMenuListItem(textOperationService, "", SVGIcons.delete.htmlElement, "Delete", "p"));
+        moreOptionsList.append(new DropdownMenuListItem(moreOptionsList, new TextOperationService("duplicate"), SVGIcons.duplicate.htmlElement, "Duplicate"));
+        moreOptionsList.append(new DropdownMenuListItem(moreOptionsList, new TextOperationService("delete"), SVGIcons.delete.htmlElement, "Delete"));
 
         return moreOptionsDropdown;
     }

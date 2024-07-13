@@ -1,11 +1,13 @@
 import BaseUIComponent from '../common/BaseUIComponent';
 import DropdownMenu from './dropdown-tool/DropdownMenu';
-import Separator from './separator/Separator';
+import FloatingToolbarSeparator from './separator/FloatingToolbarSeparator';
 import TextFormattingBarToolBar from './group-button/GroupButton';
 
 class FloatingToolbar extends BaseUIComponent {
 
     display: string;
+    dropdowns: DropdownMenu[];
+    currentSelectionRange: Range | null;
 
     constructor() {
         super({});
@@ -13,6 +15,9 @@ class FloatingToolbar extends BaseUIComponent {
         this.display = 'flex';
 
         this.attachEvents();
+        this.dropdowns = [];
+        this.currentSelectionRange = null;
+
     }
 
     init(): HTMLElement {
@@ -37,6 +42,12 @@ class FloatingToolbar extends BaseUIComponent {
 
             const selection = window.getSelection();
 
+            if (!selection) {
+                throw new Error();
+            }
+
+            this.currentSelectionRange = selection.getRangeAt(0);
+
             let range = selection!.getRangeAt(0);
             let rect = range.getBoundingClientRect();
 
@@ -48,11 +59,17 @@ class FloatingToolbar extends BaseUIComponent {
         }, 10);
     }
 
+    hide(): void {
+        this.currentSelectionRange = null;
+        super.hide();
+    }
+
     appendDropdown(dropdown: DropdownMenu): void {
+        this.dropdowns.push(dropdown)
         this.htmlElement.appendChild(dropdown.htmlElement);
     }
 
-    appendSeparator(separator: Separator): void {
+    appendSeparator(separator: FloatingToolbarSeparator): void {
         this.htmlElement.appendChild(separator.htmlElement);
     }
 
@@ -60,7 +77,21 @@ class FloatingToolbar extends BaseUIComponent {
         this.htmlElement.appendChild(toolbar.htmlElement);
     }
 
+    anyDropdownVisible(): boolean {
+        for (const dropdown of this.dropdowns) {
+            if (dropdown.dropdownList.isVisible) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     attachEvents() {
+
+        document.addEventListener('selectionChangeAfterExecCommand', (event) => {
+            this.currentSelectionRange = getSelection()?.getRangeAt(0) || null;
+        });
 
         document.addEventListener('keydown', (event) => {
             if ((event.key === 'Escape' || event.key === 'Delete') && this.isVisible) {
@@ -83,8 +114,11 @@ class FloatingToolbar extends BaseUIComponent {
         });
 
         document.addEventListener('click', (event) => {
-            if (this.isVisible && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`)) {
+            if (this.isVisible && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`) && !this.anyDropdownVisible()) {
                 this.hide();
+            } else if (this.isVisible && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`)) {
+                document.getSelection()?.removeAllRanges();
+                document.getSelection()?.addRange(this.currentSelectionRange!);
             }
         });
 

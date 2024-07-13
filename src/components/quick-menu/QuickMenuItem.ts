@@ -1,7 +1,7 @@
 import SVGIcon from '../common/SVGIcon';
 import QuickMenuSection from './QuickMenuSection';
 import BaseUIComponent from '../common/BaseUIComponent';
-import JNode from 'common/JNode';
+import JNode from "../../common/JNode";
 
 class QuickMenuItem extends BaseUIComponent {
 

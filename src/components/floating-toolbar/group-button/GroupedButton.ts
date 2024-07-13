@@ -1,14 +1,14 @@
 import SVGIcon from "../../common/SVGIcon";
 import BaseUIComponent from "../../common/BaseUIComponent";
-import ITextOperationService from "../../../services/text-operations/ITextOperationService";
+import ICommand from "../../../services/common/ICommand";
 
 class GroupedButton extends BaseUIComponent {
 
-    private readonly _textOperationService: ITextOperationService;
+    private readonly _commandService: ICommand;
 
     display: string;
 
-    constructor(textOperationService: ITextOperationService, title: string, svgUseHref: string) {
+    constructor(commandService: ICommand, title: string, svgUseHref: string) {
 
         super({
             title: title,
@@ -16,7 +16,7 @@ class GroupedButton extends BaseUIComponent {
         });
 
         this.display = "block";
-        this._textOperationService = textOperationService;
+        this._commandService = commandService;
 
         this.attachEvents();
     }
@@ -42,7 +42,7 @@ class GroupedButton extends BaseUIComponent {
 
             const editableElement = this.getParentEditable();
 
-            this._textOperationService.execCommand2();
+            this._commandService.execCommand();
 
             setTimeout(() => {
                 editableElement?.normalize();
@@ -55,7 +55,7 @@ class GroupedButton extends BaseUIComponent {
                 const selection = window.getSelection();
 
                 if (!selection?.isCollapsed) {
-                    if (this._textOperationService.queryCommandState2()) {
+                    if (this._commandService.queryCommandState()) {
                         this.htmlElement.style.color = "#2382e2";
                     } else {
                         this.htmlElement.style.color = "";

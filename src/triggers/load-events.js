@@ -1,6 +1,6 @@
 //TODO use commands
 import BlockOperationsService from '../services/block-operations/BlockOperationsService';
-import ElementFactory from '../services/element-factory/ElementFactoryService';
+import ElementFactoryService from '../services/element-factory/ElementFactoryService';
 import QuickMenuBuilder from "../builders/QuickMenuBuilder";
 import FloatingToolbarBuilder from "../builders/FloatingToolbarBuilder";
 
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
 //TODO: use a DI Container
 document.addEventListener('DOMContentLoaded', function () {
 
-    let elementFactory = new ElementFactory();
+    let elementFactory = new ElementFactoryService();
     let blockOperations = new BlockOperationsService(elementFactory);
 
     let quickMenu = QuickMenuBuilder.build(blockOperations);

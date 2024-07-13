@@ -5,7 +5,7 @@ type TargetNode = {
     classes?: string[];
 };
 
-class TextOperationService implements ITextOperationService {
+class TextOperationService implements ITextOperationService  {
 
     // selectedNodes: Node[] | null; //muito provavlemente eu vou ter que quebrar em n arrays um para cada no de bloco 
     // target: TargetNode | null;    //muito provavelmente eu vou ter um target para cada nó de bloco
@@ -26,8 +26,8 @@ class TextOperationService implements ITextOperationService {
 
 
 
-    queryCommandState(command: string): boolean {
-        return document.queryCommandState(command);
+    queryCommandState(): boolean {
+        return document.queryCommandState(this.command);
     }
 
     queryCommandState2(): boolean {
@@ -35,11 +35,51 @@ class TextOperationService implements ITextOperationService {
         return aa;
     }
 
-    execCommand(command: string, showUI: boolean = false, value?: any): boolean {
-        return document.execCommand(this.command, showUI, this.value);
+    execCommand(): boolean {
+
+        if(this.command == "link"){
+            alert("delete");
+
+            return true;
+        }
+        
+        if (this.command == "delete") {
+            alert("delete");
+
+            return true;
+        }
+
+        if (this.command == "duplicate") {
+            alert("duplicate");
+
+            return true;
+        }
+
+        return document.execCommand(this.command, false, this.value);
     }
 
     execCommand2(): boolean {
+
+
+        if(this.command == "link"){
+            alert("delete");
+
+            return true;
+        }
+        
+        if (this.command == "delete") {
+            alert("delete");
+
+            return true;
+        }
+
+        if (this.command == "duplicate") {
+            alert("duplicate");
+
+            return true;
+        }
+
+
         return document.execCommand(this.command, false, this.value);
     }
 
