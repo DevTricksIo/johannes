@@ -7,9 +7,8 @@ class GroupedButton extends BaseUIComponent {
     private readonly _textOperationService: ITextOperationService;
 
     display: string;
-    commandId: string;
 
-    constructor(textOperationService: ITextOperationService, title: string, commandId: string, svgUseHref: string) {
+    constructor(textOperationService: ITextOperationService, title: string, svgUseHref: string) {
 
         super({
             title: title,
@@ -17,7 +16,6 @@ class GroupedButton extends BaseUIComponent {
         });
 
         this.display = "block";
-        this.commandId = commandId;
         this._textOperationService = textOperationService;
 
         this.attachEvents();
@@ -39,12 +37,12 @@ class GroupedButton extends BaseUIComponent {
 
 
     attachEvents(): void {
-        
+
         this.htmlElement.addEventListener("click", (event) => {
 
             const editableElement = this.getParentEditable();
 
-            this._textOperationService.execCommand(this.commandId);
+            this._textOperationService.execCommand2();
 
             setTimeout(() => {
                 editableElement?.normalize();
@@ -54,10 +52,14 @@ class GroupedButton extends BaseUIComponent {
         document.addEventListener('selectionchange', (event) => {
 
             setTimeout(() => {
-                if (this._textOperationService.queryCommandState(this.commandId)) {
-                    this.htmlElement.style.color = "#2382e2";
-                } else {
-                    this.htmlElement.style.color = "";
+                const selection = window.getSelection();
+
+                if (!selection?.isCollapsed) {
+                    if (this._textOperationService.queryCommandState2()) {
+                        this.htmlElement.style.color = "#2382e2";
+                    } else {
+                        this.htmlElement.style.color = "";
+                    }
                 }
             }, 10);
         });

@@ -28,7 +28,7 @@ class FloatingToolbarBuilder {
 
     static turnIntoDropdown(): DropdownMenu {
 
-        const textOperationService = new TextOperationService();
+        const textOperationService = new TextOperationService("bold");
 
         const turnIntoBarList = new DropdownMenuList("turnIntoSelect", "Turn into");
         const turnIntoBarButton = new DropdownMenuToggleButton("turnIntoButton", "Text", turnIntoBarList);
@@ -55,33 +55,31 @@ class FloatingToolbarBuilder {
 
     static groupButton(): GroupButton {
 
-        const textOperationService = new TextOperationService();
-
         const groupButton = new GroupButton();
 
-        new GroupedButton(textOperationService, "Link", "STRONG", "icon-material-link").documentAppendTo(groupButton.htmlElement);
-        new GroupedButton(textOperationService, "Bold", "bold", "icon-wordpress-bold").documentAppendTo(groupButton.htmlElement);
-        new GroupedButton(textOperationService, "Italic", "italic", "icon-material-italic").documentAppendTo(groupButton.htmlElement);
-        new GroupedButton(textOperationService, "Underline", "underline", "icon-material-underline").documentAppendTo(groupButton.htmlElement);
-        new GroupedButton(textOperationService, "Code", "code", "icon-wordpress-code-mark").documentAppendTo(groupButton.htmlElement);
-        new GroupedButton(textOperationService, "Strike-through", "strikeThrough", "icon-wordpress-strike-through").documentAppendTo(groupButton.htmlElement);
-        new GroupedButton(textOperationService, "Equation", "math", "icon-wordpress-equation-mark").documentAppendTo(groupButton.htmlElement);
+        new GroupedButton(new TextOperationService("copy"), "Link", "icon-material-link").documentAppendTo(groupButton.htmlElement);
+        new GroupedButton(new TextOperationService("bold"), "Bold", "icon-wordpress-bold").documentAppendTo(groupButton.htmlElement);
+        new GroupedButton(new TextOperationService("italic"), "Italic", "icon-material-italic").documentAppendTo(groupButton.htmlElement);
+        new GroupedButton(new TextOperationService("underline"), "Underline", "icon-material-underline").documentAppendTo(groupButton.htmlElement);
+        new GroupedButton(new TextOperationService("copy"), "Code", "icon-wordpress-code-mark").documentAppendTo(groupButton.htmlElement);
+        new GroupedButton(new TextOperationService("strikeThrough"), "Strike-through", "icon-wordpress-strike-through").documentAppendTo(groupButton.htmlElement);
+        new GroupedButton(new TextOperationService("copy"), "Equation", "icon-wordpress-equation-mark").documentAppendTo(groupButton.htmlElement);
 
         return groupButton;
     }
 
     static colorDropdown(): DropdownMenu {
 
-        const textOperationService = new TextOperationService();
         const colorDropdownList = new DropdownMenuList("colorTextOptionSelect", "Background");
         const colorButton = new DropdownMenuToggleButton("colorTextButton", new ColorIcon("#FAF4D1").htmlElement, colorDropdownList);
         const colorDropdown = new DropdownMenu(colorButton, colorDropdownList);
 
-        colorDropdownList.append(new DropdownMenuListItem(textOperationService, "useCSS", new ColorIcon("#FDDEDE").htmlElement, "Red", "p"));
-        colorDropdownList.append(new DropdownMenuListItem(textOperationService, "useCSS", new ColorIcon("#D7F7DC").htmlElement, "Green", "p"));
-        colorDropdownList.append(new DropdownMenuListItem(textOperationService, "useCSS", new ColorIcon("#D9EDF6").htmlElement, "Blue", "p"));
-        colorDropdownList.append(new DropdownMenuListItem(textOperationService, "useCSS", new ColorIcon("#FAF4D1").htmlElement, "Yellow", "p"));
-        colorDropdownList.append(new DropdownMenuListItem(textOperationService, "useCSS", new ColorIcon("#E1E0E0").htmlElement, "Grey", "p"));
+        colorDropdownList.append(new DropdownMenuListItem(new TextOperationService("hiliteColor", "#FDDEDE"), "useCSS", new ColorIcon("#FDDEDE").htmlElement, "Red", "p"));
+        colorDropdownList.append(new DropdownMenuListItem(new TextOperationService("hiliteColor", "#D7F7DC"), "useCSS", new ColorIcon("#D7F7DC").htmlElement, "Green", "p"));
+        colorDropdownList.append(new DropdownMenuListItem(new TextOperationService("hiliteColor", "#D9EDF6"), "useCSS", new ColorIcon("#D9EDF6").htmlElement, "Blue", "p"));
+        colorDropdownList.append(new DropdownMenuListItem(new TextOperationService("hiliteColor", "#FAF4D1"), "useCSS", new ColorIcon("#FAF4D1").htmlElement, "Yellow", "p"));
+        colorDropdownList.append(new DropdownMenuListItem(new TextOperationService("hiliteColor", "#E1E0E0"), "useCSS", new ColorIcon("#E1E0E0").htmlElement, "Grey", "p"));
+        colorDropdownList.append(new DropdownMenuListItem(new TextOperationService("hiliteColor", "transparent"), "useCSS", new ColorIcon("transparent").htmlElement, "None", "p"));
 
         return colorDropdown;
     }
@@ -90,7 +88,7 @@ class FloatingToolbarBuilder {
 
         const icon = new SVGIcon("icon-material-more", "24", "24");
 
-        const textOperationService = new TextOperationService();
+        const textOperationService = new TextOperationService("bold");
         const moreOptionsList = new DropdownMenuList("moreTextOptionSelect", "More options");
         const moreOptionsButton = new DropdownMenuToggleButton("moreTextOptionButton", icon.htmlElement, moreOptionsList, false);
         const moreOptionsDropdown = new DropdownMenu(moreOptionsButton, moreOptionsList);

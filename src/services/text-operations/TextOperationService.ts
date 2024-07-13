@@ -1,110 +1,289 @@
 import ITextOperationService from "./ITextOperationService";
 
+type TargetNode = {
+    nodeType: string;
+    classes?: string[];
+};
+
 class TextOperationService implements ITextOperationService {
 
-    queryCommandState(commandId: string): boolean {
-        return document.queryCommandState(commandId);
+    // selectedNodes: Node[] | null; //muito provavlemente eu vou ter que quebrar em n arrays um para cada no de bloco 
+    // target: TargetNode | null;    //muito provavelmente eu vou ter um target para cada nó de bloco
+    // intention: string | null;     //e um intention para cada nó de bloco.
+
+
+    command: string;
+    value: string | undefined;
+
+    constructor(command: string, value: string | undefined = undefined) {
+        // this.selectedNodes = null;
+        // this.target = null;
+        // this.intention = null;
+
+        this.command = command;
+        this.value = value;
     }
 
-    execCommand(commandId: string, showUI?: boolean, value?: any): boolean {
+
+
+    queryCommandState(command: string): boolean {
+        return document.queryCommandState(command);
+    }
+
+    queryCommandState2(): boolean {
+        let aa = document.queryCommandState(this.command);
+        return aa;
+    }
+
+    execCommand(command: string, showUI: boolean = false, value?: any): boolean {
+        return document.execCommand(this.command, showUI, this.value);
+    }
+
+    execCommand2(): boolean {
+        return document.execCommand(this.command, false, this.value);
+    }
+
+
+    // execCommand(command: string, showUI?: boolean, value?: any): boolean {
+
+    //     this.selectedNodes = this.getSelectedTextNodes();
+    //     this.target = { nodeType: command, classes: value };
+    //     this.setIntention(this.selectedNodes[0], this.target);
+
+
+    //     this.selectedNodes.forEach(node => {
+
+    //         if (node.nodeType !== Node.TEXT_NODE) {
+    //             throw new Error("Invalid node typed");
+    //         }
+
+    //         if (this.intention == "add") {
+
+    //             let alreadyAppliedStyle = this.findClosestMatchingParent(node, this.target!);
+
+    //             if (!alreadyAppliedStyle) {
+    //                 this.insertNewContent(node);
+    //             } else {
+    //                 // não faça nada por enquanto
+    //             }
+    //         }
+    //     });
+
+
+    //     return true;
+    // }
+
+
+    // insertNewContent(node: Node): void {
+    //     if (node.nodeType !== Node.TEXT_NODE) {
+    //         throw new Error("Node must be a text node.");
+    //     }
+
+    //     // Get the current selection
+    //     const selection = window.getSelection()!;
+
+    //     // Check if the selection is within the node
+    //     if (!selection.containsNode(node, true)) {
+    //         console.log("No text selected or selection does not intersect with the given node.");
+    //         return;
+    //     }
+
+    //     // Get the range of the selection
+    //     const range = selection.getRangeAt(0);
+
+    //     // Check if the selected range is within the text node
+    //     if (range.commonAncestorContainer !== node) {
+    //         console.log("Selection does not fully encompass the text node.");
+    //         return;
+    //     }
+
+    //     // Extract parts of the text node based on the selection
+    //     const startOffset = range.startOffset;
+    //     const endOffset = range.endOffset;
+
+    //     const beforeText = node.textContent.substring(0, startOffset);
+    //     const selectedText = range.toString();
+    //     const afterText = node.textContent.substring(endOffset);
+
+    //     // Create the wrapper element for the selected text
+    //     const wrapperElement = this.createWrapperElement();
+    //     wrapperElement.textContent = selectedText;
+
+    //     // Create document fragment to hold the new structure
+    //     let fragment = document.createDocumentFragment();
+
+    //     if (beforeText) {
+    //         fragment.appendChild(document.createTextNode(beforeText));
+    //     }
+
+    //     fragment.appendChild(wrapperElement);
+
+    //     if (afterText) {
+    //         fragment.appendChild(document.createTextNode(afterText));
+    //     }
+
+    //     // Replace the original node with the fragment
+    //     if (node.parentNode) {
+    //         node.parentNode.replaceChild(fragment, node);
+    //     }
+    // }
+
+
+
+    // createWrapperElement(textNode: Node): HTMLElement {
+    //     const element = document.createElement(this.target!.nodeType);
+    //     element.classList.add(...this.target!.classes!);
+    //     element.textContent = this.extractSelectedText(textNode);
+    //     return element;
+    // }
+
+
+    // setIntention(firstNode: Node, targetNode: TargetNode): string {
+
+    //     let hasTarget = this.findClosestMatchingParent(firstNode, targetNode);
+
+    //     if (!hasTarget) {
+    //         return this.intention = "add";
+    //     }
+
+    //     return "remove";
+    // }
+
+
+    getTargetElementMap(command: string): keyof HTMLElementTagNameMap {
+        switch (command) {
+
+            case "strong":
+            case "bold":
+            case "b":
+                return 'strong';
+
+            case "italic":
+            case "i":
+            case "em":
+                return "em";
+
+            case "underline":
+            case "u":
+                return "u";
+
+            case "strikethrough":
+            case "s":
+                return 's';
+
+            case "background":
+                return "span";
+
+            case "color":
+                return "span";
+
+            default:
+                throw new Error();
+        }
+    }
+
+
+    getSelectedTextNodes(): Node[] {
         const selection = window.getSelection();
-        if (!selection || !selection.rangeCount) return false;
+        if (!selection || selection.rangeCount === 0) {
+            return [];
+        }
 
-        const range = selection.getRangeAt(0);
-        if (range.collapsed) return false; // No text selected
+        const textNodes: Node[] = [];
 
-        const commandTag = this.getCommandTag(commandId);
-        if (!commandTag) return false;
+        for (let i = 0; i < selection.rangeCount; ++i) {
+            const range = selection.getRangeAt(i);
+            const nodeIterator = document.createNodeIterator(
+                range.commonAncestorContainer,
+                NodeFilter.SHOW_TEXT,
+                {
+                    acceptNode(node) {
+                        if (range.intersectsNode(node)) {
+                            return NodeFilter.FILTER_ACCEPT;
+                        }
+                        return NodeFilter.FILTER_REJECT;
+                    }
+                }
+            );
 
-        // Corrected part: Node type checking
-        let element: Node | null = range.commonAncestorContainer;
-        if (element.nodeType !== Node.ELEMENT_NODE) {
+            let node;
+            while ((node = nodeIterator.nextNode())) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const nodeRange = document.createRange();
+                    nodeRange.selectNodeContents(node);
+
+                    if (
+                        range.compareBoundaryPoints(Range.END_TO_START, nodeRange) === -1 &&
+                        range.compareBoundaryPoints(Range.START_TO_END, nodeRange) === 1
+                    ) {
+                        textNodes.push(node);
+                    }
+                }
+            }
+        }
+
+        return textNodes;
+    }
+
+    findClosestMatchingParent(element: Node | null, target: TargetNode): Element | null {
+        if (element && element.nodeType === Node.TEXT_NODE) {
             element = element.parentElement;
         }
-        if (!element || !(element instanceof Element)) return false;
 
-        // Modify or wrap based on whether the element or its children have the tag
-        if (this.isPartiallyOrFullyStyled(element, commandTag)) {
-            this.togglePartialStyle(element as HTMLElement, commandTag, range);
-        } else {
-            this.wrapSelection(range, commandTag);
+        while (element && element !== document.body) {
+            if (element.nodeType === Node.ELEMENT_NODE) {
+                const elem = element as Element;
+                if (elem.tagName.toLowerCase() === target.nodeType.toLowerCase()) {
+                    if (!target.classes || target.classes.every(cls => elem.classList.contains(cls))) {
+                        return elem;
+                    }
+                }
+            }
+            element = element.parentElement;
         }
-
-        return true;
+        return null;
     }
 
-    private getCommandTag(commandId: string): string | null {
-        switch (commandId) {
-            case 'bold':
-                return 'strong';
-            case 'italic':
-                return 'em';
-            case 'underline':
-                return 'u';
-            default:
-                return null;
-        }
-    }
+    extractSelectedText(textNode: Node): string {
+        const selection = window.getSelection();
 
-    private isPartiallyOrFullyStyled(element: Element, tag: string): boolean {
-        return element.nodeName.toLowerCase() === tag || element.querySelector(tag) !== null;
-    }
-
-    private wrapSelection(range: Range, tag: string): void {
-        const span = document.createElement(tag);
-        const content = range.extractContents();
-        span.appendChild(content);
-        range.insertNode(span);
-        range.selectNode(span);
-    }
-
-    private togglePartialStyle(element: HTMLElement, tag: string, range: Range): void {
-        // Find the closest styled element if any
-        const styledElement = element.closest(tag);
-        if (styledElement) {
-            this.splitAndToggle(styledElement as HTMLElement, tag, range);
-        } else {
-            this.wrapSelection(range, tag);
-        }
-    }
-
-    private splitAndToggle(element: HTMLElement, tag: string, range: Range): void {
-        const startOffset = range.startOffset;
-        const endOffset = range.endOffset;
-        const elementText = element.textContent || "";
-
-        const parent = element.parentNode!;
-        if (!parent) return;  // Ensure there is a parent
-
-        // Create document fragment to hold new nodes
-        const docFrag = document.createDocumentFragment();
-
-        // Before the selection
-        if (startOffset > 0) {
-            const beforeNode = document.createElement(tag);
-            beforeNode.textContent = elementText.substring(0, startOffset);
-            docFrag.appendChild(beforeNode);
+        if (!selection || selection.rangeCount === 0) {
+            return "";
         }
 
-        // Middle node: text inside the selection
-        const middleText = elementText.substring(startOffset, endOffset);
-        if (middleText.length > 0) {
-            const middleNode = document.createTextNode(middleText);
-            docFrag.appendChild(middleNode);
+        const range = selection.getRangeAt(0);
+
+        if (textNode.nodeType !== Node.TEXT_NODE) {
+            return "";
         }
 
-        // After the selection
-        if (endOffset < elementText.length) {
-            const afterNode = document.createElement(tag);
-            afterNode.textContent = elementText.substring(endOffset);
-            docFrag.appendChild(afterNode);
+        const textContent = textNode.textContent || "";
+
+        let start = 0;
+        let end = textContent.length;
+
+        if (!range.intersectsNode(textNode)) {
+            return "";
         }
 
-        // Insert the new nodes and remove the old element
-        parent.insertBefore(docFrag, element);
-        parent.removeChild(element);
+        if (range.startContainer === textNode) {
+            start = range.startOffset;
+        } else if (range.startContainer.contains(textNode)) {
+            start = 0;
+        }
+
+        if (range.endContainer === textNode) {
+            end = range.endOffset;
+        } else if (range.endContainer.contains(textNode)) {
+            end = textContent.length;
+        }
+
+        if (start < end) {
+            return textContent.substring(start, end);
+        }
+
+        return "";
     }
-
 }
 
 export default TextOperationService;

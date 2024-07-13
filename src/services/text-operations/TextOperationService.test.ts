@@ -59,6 +59,7 @@ function simulateSelectionIn(textToSelect: string): void {
     setRangeFromText(textToSelect);
 }
 
+
 /**
  * Calls simulateSelectionIn and verifies if the intended text is selected.
  * If the actual selection does not match the intended text, it throws an error.
@@ -105,7 +106,7 @@ describe('Base operations', () => {
     let sut: TextOperationService;
 
     beforeEach(() => {
-        sut = new TextOperationService();
+        sut = new TextOperationService("strong");
         document.body.innerHTML = '';
     });
 
@@ -118,7 +119,7 @@ describe('Base operations', () => {
 
         const expectedAfterExecCommand = "This is a <strong>strong</strong> text!";
 
-        sut.execCommand('bold');
+        sut.execCommand('strong');
 
         const result = document.querySelector("div")?.innerHTML;
 
@@ -302,7 +303,7 @@ describe('Nested operations', () => {
     let sut: TextOperationService;
 
     beforeEach(() => {
-        sut = new TextOperationService();
+        sut = new TextOperationService("strong");
         document.body.innerHTML = '';
     });
 
@@ -403,7 +404,7 @@ describe('Nested operations', () => {
         const textToSelect1 = "strong";
         simulateSelectionAndCheck(textToSelect1);
 
-        const expected1AfterExecCommand = "This is a <b>strong</b> text!"
+        const expected1AfterExecCommand = "This is a <strong>strong</strong> text!"
 
         sut.execCommand('bold');
 
@@ -446,5 +447,408 @@ describe('Nested operations', () => {
         //Final
         const finalResult = document.querySelector("div")?.innerHTML;
         expect(finalResult).toEqual(expectedAfterAllExecCommand);
+    });
+});
+
+
+describe('getSelectedNodes', () => {
+
+    let sut: TextOperationService;
+
+    beforeEach(() => {
+        sut = new TextOperationService("strong");
+        document.body.innerHTML = ''; // Limpa o conteúdo do body antes de cada teste
+    });
+
+    test('Should return an empty array when there is no selection', () => {
+        const result = sut.getSelectedTextNodes();
+        expect(result).toEqual([]);
+    });
+
+    test('Should correctly return the selected text nodes', () => {
+        setupDOM('<p>Hello <strong>world</strong>!</p>');
+        const textToSelect = 'world';
+        simulateSelectionAndCheck(textToSelect);
+        const result = sut.getSelectedTextNodes();
+        expect(result.length).toBe(1);
+        expect(result[0].nodeValue).toBe('world');
+    });
+
+    test('Should return multiple selected text nodes', () => {
+        setupDOM('<p>Hello <strong>world</strong>! <em>How are you</em>?</p>');
+
+        const textToSelect = 'world! How';
+        simulateSelectionAndCheck(textToSelect);
+
+        const result = sut.getSelectedTextNodes();
+
+        expect(result.length).toBe(3);
+
+        expect(result[0].nodeValue).toBe('world');
+        expect(result[1].nodeValue).toBe('! ');
+        expect(result[2].nodeValue?.startsWith("How")).toBe(true);
+    });
+
+    test('Should return partially selected text nodes', () => {
+        setupDOM('<p>Hello <strong>world</strong>!</p>');
+        const textToSelect = 'llo wo';
+        simulateSelectionAndCheck(textToSelect);
+        const result = sut.getSelectedTextNodes();
+        expect(result.length).toBe(2);
+        expect(result[0].nodeValue).toBe('Hello ');
+        expect(result[1].nodeValue).toBe('world');
+    });
+
+    test('Should return text nodes selected with complex nested elements', () => {
+        setupDOM('<div>Hello <p><strong>world</strong>! <em>How <u>are</u> you</em>?</p></div>');
+
+        const textToSelect = 'world! How are';
+        simulateSelectionAndCheck(textToSelect);
+
+        const result = sut.getSelectedTextNodes();
+
+        expect(result.length).toBe(4);
+
+        expect(result[0].nodeValue).toBe('world');
+        expect(result[1].nodeValue).toBe('! ');
+        expect(result[2].nodeValue).toBe('How ');
+        expect(result[3].nodeValue).toBe('are');
+    });
+
+    test('Should return text nodes spanning multiple elements', () => {
+        setupDOM('<div>Hello <p><strong>world</strong>!</p> <p>How are <em>you</em>?</p></div>');
+
+        const textToSelect = 'world! How are you';
+        simulateSelectionAndCheck(textToSelect);
+
+        const result = sut.getSelectedTextNodes();
+
+        expect(result.length).toBe(5);
+
+        expect(result[0].nodeValue).toBe('world');
+        expect(result[1].nodeValue).toBe('!');
+        expect(result[2].nodeValue).toBe(' ');
+        expect(result[3].nodeValue).toBe('How are ');
+        expect(result[4].nodeValue).toBe('you');
+    });
+
+    test('Should return an empty array when the selection is empty', () => {
+        setupDOM('<p>Hello <strong>world</strong>!</p>');
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        const result = sut.getSelectedTextNodes();
+        expect(result).toEqual([]);
+    });
+
+    test('Should return a text node for partial selection within the same text node', () => {
+        setupDOM('<p>Hello <strong>world</strong>!</p>');
+
+        const textToSelect = 'llo w';
+        simulateSelectionAndCheck(textToSelect);
+
+        const result = sut.getSelectedTextNodes();
+
+        expect(result.length).toBe(2);
+        expect(result[0].nodeValue?.endsWith('llo ')).toBe(true);
+        expect(result[1].nodeValue?.startsWith('w')).toBe(true);
+    });
+
+    test('Should correctly handle empty text nodes or those containing only whitespace', () => {
+        setupDOM('<p>Hello <strong>world</strong><span> </span>!</p>');
+
+        const textToSelect = 'world !';
+        simulateSelectionAndCheck(textToSelect);
+
+        const result = sut.getSelectedTextNodes();
+
+        expect(result.length).toBe(3);
+        expect(result[0].nodeValue).toBe('world');
+        expect(result[1].nodeValue).toBe(' ');
+        expect(result[2].nodeValue).toBe('!');
+    });
+
+    test('Should return text nodes in deeply nested DOM structures', () => {
+        setupDOM('<div>Hello <p><strong>world</strong>! <em><span>Deeply <u>nested</u> text</span></em></p></div>');
+
+        const textToSelect = 'world! Deeply nested text';
+        simulateSelectionAndCheck(textToSelect);
+
+        const result = sut.getSelectedTextNodes();
+
+        expect(result.length).toBe(5);
+        expect(result[0].nodeValue).toBe('world');
+        expect(result[1].nodeValue).toBe('! ');
+        expect(result[2].nodeValue).toBe('Deeply ');
+        expect(result[3].nodeValue).toBe('nested');
+        expect(result[4].nodeValue).toBe(' text');
+    });
+
+    test('Should return text nodes across different nesting levels', () => {
+        setupDOM('<div>Hello <div><p><strong>world</strong></p>! <em>How are <u>you</u>?</em></div></div>');
+
+        const textToSelect = 'world! How are you';
+        simulateSelectionAndCheck(textToSelect);
+
+        const result = sut.getSelectedTextNodes();
+
+        expect(result.length).toBe(4);
+        expect(result[0].nodeValue).toBe('world');
+        expect(result[1].nodeValue).toBe('! ');
+        expect(result[2].nodeValue).toBe('How are ');
+        expect(result[3].nodeValue).toBe('you');
+    });
+
+    test('Should return text nodes that span multiple block containers', () => {
+        setupDOM('<div>Hello <p><strong>world</strong>!</p><div>How are <em>you</em> today?</div></div>');
+
+        const textToSelect = 'world!How are you today';
+        simulateSelectionAndCheck(textToSelect);
+
+        const result = sut.getSelectedTextNodes();
+
+        expect(result.length).toBe(5);
+        expect(result[0].nodeValue).toBe('world');
+        expect(result[1].nodeValue).toBe('!');
+        expect(result[2].nodeValue).toBe('How are ');
+        expect(result[3].nodeValue).toBe('you');
+        expect(result[4].nodeValue?.startsWith(' today')).toBe(true);
+    });
+
+
+    test('Should exclude empty containers and correctly include valid text nodes', () => {
+        setupDOM('<div>Hello <p><strong>world</strong></p><div></div>! How are <em>you</em>?</div>');
+
+        const textToSelect = 'world! How are you';
+        simulateSelectionAndCheck(textToSelect);
+
+        const result = sut.getSelectedTextNodes();
+
+        expect(result.length).toBe(3);
+        expect(result[0].nodeValue).toBe('world');
+        expect(result[1].nodeValue).toBe('! How are ');
+        expect(result[2].nodeValue).toBe('you');
+    });
+});
+
+describe('findClosestMatchingParent', () => {
+
+    let sut: TextOperationService;
+
+    beforeEach(() => {
+        sut = new TextOperationService("strong");
+        document.body.innerHTML = '';
+    });
+
+    test('Should find the closest parent node by type only', () => {
+        setupDOM('<div>Hello <p><strong>world</strong><span class="highlight">!</span></p></div>');
+        const targetNode = { nodeType: 'p', class: [] };
+        const result = sut.findClosestMatchingParent(document.querySelector('.highlight'), targetNode);
+        expect(result?.tagName.toLowerCase()).toBe('p');
+    });
+
+    test('Should find the closest parent node by type and class', () => {
+        setupDOM('<div>Hello <p class="text"><strong class="highlight">world</strong>!</p></div>');
+        const targetNode = { nodeType: 'p', classes: ['text'] };
+        const result = sut.findClosestMatchingParent(document.querySelector('.highlight'), targetNode);
+        expect(result?.tagName.toLowerCase()).toBe('p');
+        expect(result?.classList.contains('text')).toBe(true);
+    });
+
+    test('Should return null if no matching parent is found', () => {
+        setupDOM('<div>Hello <p><strong>world</strong>!</p></div>');
+        const targetNode = { nodeType: 'span', classes: ['highlight'] };
+        const result = sut.findClosestMatchingParent(document.querySelector('strong'), targetNode);
+        expect(result).toBeNull();
+    });
+
+    test('Should handle multiple classes in target node', () => {
+        setupDOM('<div>Hello <p class="text important"><strong>world</strong>!</p></div>');
+        const targetNode = { nodeType: 'p', classes: ['text', 'important'] };
+        const result = sut.findClosestMatchingParent(document.querySelector('strong'), targetNode);
+        expect(result?.classList.contains('text')).toBe(true);
+        expect(result?.classList.contains('important')).toBe(true);
+    });
+
+    test('Should ignore nodes that do not have all specified classes', () => {
+        setupDOM('<div>Hello <p class="text"><strong>world</strong>!</p> <p class="text important">Hello again!</p></div>');
+        const targetNode = { nodeType: 'p', classes: ['text', 'important'] };
+        const result = sut.findClosestMatchingParent(document.querySelector('strong'), targetNode);
+        expect(result).toBeNull();
+    });
+
+    test('Should correctly identify nodes when nested deeply with mixed classes', () => {
+        setupDOM('<div><div class="text"><p class="text important"><span>world</span></p></div></div>');
+        const targetNode = { nodeType: 'div', classes: ['text'] };
+        const result = sut.findClosestMatchingParent(document.querySelector('span'), targetNode);
+        expect(result?.tagName.toLowerCase()).toBe('div');
+        expect(result?.classList.contains('text')).toBe(true);
+    });
+
+
+    test('Should correctly identify parent node from a TextNode with specified classes', () => {
+        setupDOM('<div class="text"><p class="important"><span>hello <strong>world</strong></span></p></div>');
+    
+        const targetNode = { nodeType: 'p', classes: ['important'] };
+    
+        const textNode = document.querySelector('strong')?.firstChild as Node;
+    
+        const result = sut.findClosestMatchingParent(textNode, targetNode);
+    
+        expect(result?.tagName.toLowerCase()).toBe('p');
+        expect(result?.classList.contains('important')).toBe(true);
+    });
+});
+
+describe('extractSelectedText', () => {
+    let pElement: HTMLElement;
+    let textNode: Node;
+    let sut: TextOperationService;
+
+    beforeEach(() => {
+
+        document.body.innerHTML = '<p id="testParagraph">Hello, this is a test paragraph.</p>';
+        pElement = document.getElementById('testParagraph') as HTMLElement;
+        textNode = pElement.firstChild as Node;
+
+        sut = new TextOperationService("string");
+    });
+
+    test('should extract selected text from a TextNode when fully selected', () => {
+        window.getSelection()!.selectAllChildren(pElement);
+
+        let a = document.getSelection()?.toString();
+
+        const selectedText = sut.extractSelectedText(textNode);
+        expect(selectedText).toBe('Hello, this is a test paragraph.');
+    });
+
+    test('should extract part of the text from a TextNode when partially selected', () => {
+        // Simula a seleção parcial do texto
+        const range = document.createRange();
+        range.setStart(textNode, 7);
+        range.setEnd(textNode, 22);
+        window.getSelection()!.removeAllRanges();
+        window.getSelection()!.addRange(range);
+
+
+        let a = document.getSelection()?.toString();
+
+        const selectedText = sut.extractSelectedText(textNode);
+        expect(selectedText).toBe('this is a test ');
+    });
+
+    test('should return an empty string if the TextNode is not within the selection', () => {
+        // Nenhuma seleção ativa
+        window.getSelection()!.removeAllRanges();
+
+        const selectedText = sut.extractSelectedText(textNode);
+        expect(selectedText).toBe('');
+    });
+
+    test('should handle selection that starts before and ends within the TextNode', () => {
+        // Seleção que começa antes e termina dentro do TextNode
+        const range = document.createRange();
+        range.setStartBefore(pElement);
+        range.setEnd(textNode, 12);
+        window.getSelection()!.removeAllRanges();
+        window.getSelection()!.addRange(range);
+
+        const selectedText = sut.extractSelectedText(textNode);
+        expect(selectedText).toBe('Hello, this ');
+    });
+
+    test('should handle selection that starts within and ends beyond the TextNode', () => {
+        // Seleção que começa dentro e termina fora do TextNode
+        const range = document.createRange();
+        range.setStart(textNode, 17);
+        range.setEndAfter(pElement);
+        window.getSelection()!.removeAllRanges();
+        window.getSelection()!.addRange(range);
+
+        const selectedText = sut.extractSelectedText(textNode);
+        expect(selectedText).toBe('test paragraph.');
+    });
+});
+
+describe('extractSelectedText multiples nodes selected', () => {
+    let container: HTMLElement;
+    let sut: TextOperationService;
+
+    beforeEach(() => {
+        document.body.innerHTML = '<div id="testContainer">Hello, <strong>this is</strong> a test <em>paragraph with</em> multiple elements.</div>';
+        container = document.getElementById('testContainer')! as HTMLElement;
+
+        sut = new TextOperationService("string");
+    });
+
+    test('should extract text spanning multiple child nodes', () => {
+        const range = document.createRange();
+        range.setStart(container.childNodes[0], 0);
+        range.setEnd(container.childNodes[3].firstChild!, 8);
+        window.getSelection()!.removeAllRanges();
+        window.getSelection()!.addRange(range);
+
+        let nodeToTest = container.childNodes[1].firstChild;
+
+        const selectedText = sut.extractSelectedText(nodeToTest as Node);
+
+        expect(selectedText).toBe('this is');
+    });
+
+    test('should handle complex selections crossing multiple types of elements', () => {
+
+        const range = document.createRange();
+
+        range.setStart(container.childNodes[1].firstChild!, 5);
+        range.setEnd(container.childNodes[3].firstChild!, 8);
+
+        window.getSelection()!.removeAllRanges();
+        window.getSelection()!.addRange(range);
+
+        const selectedText = sut.extractSelectedText(container.childNodes[1].firstChild as Node);
+        expect(selectedText).toBe('is');
+    });
+
+    test('should return empty string if selection is entirely outside the target node', () => {
+        const range = document.createRange();
+
+        range.setStart(container.childNodes[2], 1);
+        range.setEnd(container.childNodes[4], 15);
+
+        window.getSelection()!.removeAllRanges();
+        window.getSelection()!.addRange(range);
+
+        let a = document.getSelection()?.toString();
+
+        const selectedText = sut.extractSelectedText(container.firstChild as Node);
+        expect(selectedText).toBe('');
+    });
+
+    test('should extract correctly when selection starts before and ends inside the TextNode across elements', () => {
+
+        const range = document.createRange();
+
+        range.setStartBefore(container);
+        range.setEnd(container.childNodes[2], 3);
+
+        window.getSelection()!.removeAllRanges();
+        window.getSelection()!.addRange(range);
+
+        const selectedText = sut.extractSelectedText(container.firstChild as Node);
+        expect(selectedText).toBe('Hello, ');
+    });
+
+    test('AAAAshould extract correctly when selection starts before and ends inside the TextNode across elements', () => {
+
+        const range = document.createRange();
+
+        range.setStartBefore(container);
+        range.setEnd(container.childNodes[2], 3);
+
+        window.getSelection()!.removeAllRanges();
+        window.getSelection()!.addRange(range);
+
+        const selectedText = sut.extractSelectedText(container.lastChild as Node);
+        expect(selectedText).toBe('');
     });
 });
