@@ -10,34 +10,33 @@ class QuickMenu extends BaseUIComponent {
 
     display: string;
 
-    private readonly blockOperations: IBlockOperationsService;
+    private readonly _blockOperationsService: IBlockOperationsService;
+    private _currentFocusedMenuItem: JNode<QuickMenuItem> | null;
+    private _htmlFocusedElementBeforeOpenQuickMenu: HTMLElement | null;
+    private _menuSections: CircularDoublyLinkedList<QuickMenuSection>;
+    private _quickMenuEmpty: QuickMenuEmpty;
+    private _filterInput: string;
 
-    private static instance: QuickMenu | null;
+    private static _instance: QuickMenu | null;
 
-    private currentFocusedMenuItem: JNode<QuickMenuItem> | null;
-    private htmlFocusedElementBeforeOpenQuickMenu: HTMLElement | null;
-    private menuSections: CircularDoublyLinkedList<QuickMenuSection>;
-    private quickMenuEmpty: QuickMenuEmpty;
-    private filterInput: string;
-
-    constructor(blockOperations: IBlockOperationsService) {
+    constructor(blockOperationsService: IBlockOperationsService) {
 
         super({});
 
         this.display = 'block';
 
-        this.blockOperations = blockOperations;
-        this.currentFocusedMenuItem = null;
-        this.htmlFocusedElementBeforeOpenQuickMenu = null;
-        this.menuSections = new CircularDoublyLinkedList<QuickMenuSection>();
-        this.quickMenuEmpty = new QuickMenuEmpty();
+        this._blockOperationsService = blockOperationsService;
+        this._currentFocusedMenuItem = null;
+        this._htmlFocusedElementBeforeOpenQuickMenu = null;
+        this._menuSections = new CircularDoublyLinkedList<QuickMenuSection>();
+        this._quickMenuEmpty = new QuickMenuEmpty();
 
         let blockOptions = this.htmlElement.querySelector('.block-options') as HTMLElement;
 
-        this.quickMenuEmpty.documentAppendTo(blockOptions);
+        this._quickMenuEmpty.documentAppendTo(blockOptions);
         this.attachEvents();
 
-        this.filterInput = "";
+        this._filterInput = "";
     }
 
     init(): HTMLElement {
@@ -59,36 +58,36 @@ class QuickMenu extends BaseUIComponent {
 
     append(menuItem: QuickMenuSection): void {
 
-        this.menuSections.append(menuItem);
+        this._menuSections.append(menuItem);
         this.htmlElement.querySelector('.block-options')!.appendChild(menuItem.htmlElement);
     }
 
     public static getInstance(blockOperations: IBlockOperationsService): QuickMenu {
-        if (!QuickMenu.instance) {
-            QuickMenu.instance = new QuickMenu(blockOperations);
+        if (!QuickMenu._instance) {
+            QuickMenu._instance = new QuickMenu(blockOperations);
         }
 
-        return QuickMenu.instance;
+        return QuickMenu._instance;
     }
 
     switchVisualFocus(item: JNode<QuickMenuItem>): void {
 
-        if (this.currentFocusedMenuItem == item) {
+        if (this._currentFocusedMenuItem == item) {
             return;
         }
 
-        if (this.currentFocusedMenuItem) {
-            this.currentFocusedMenuItem.value.removeFocus();
+        if (this._currentFocusedMenuItem) {
+            this._currentFocusedMenuItem.value.removeFocus();
         }
 
-        this.currentFocusedMenuItem = item;
-        this.currentFocusedMenuItem.value.focus();
+        this._currentFocusedMenuItem = item;
+        this._currentFocusedMenuItem.value.focus();
 
-        this.htmlFocusedElementBeforeOpenQuickMenu?.focus();
+        this._htmlFocusedElementBeforeOpenQuickMenu?.focus();
     }
 
     focusOnTheFirstItem(): void {
-        const firstSectionNode: JNode<QuickMenuSection> | null = this.menuSections.getFirst();
+        const firstSectionNode: JNode<QuickMenuSection> | null = this._menuSections.getFirst();
 
         if (firstSectionNode) {
             const firstItemNode: JNode<QuickMenuItem> | null = firstSectionNode.value.menuItems.getFirst();
@@ -103,11 +102,11 @@ class QuickMenu extends BaseUIComponent {
 
         let previousVisibleItem: JNode<QuickMenuItem> | null;
 
-        if (this.currentFocusedMenuItem) {
-            previousVisibleItem = this.currentFocusedMenuItem.getPreviousSatisfying(item => item.isVisible);
+        if (this._currentFocusedMenuItem) {
+            previousVisibleItem = this._currentFocusedMenuItem.getPreviousSatisfying(item => item.isVisible);
             if (!previousVisibleItem) {
 
-                let previousVisibleSectionNode: JNode<QuickMenuSection> | null = this.menuSections.find(this.currentFocusedMenuItem.value.quickMenuSectionInstance)!.getPreviousSatisfying(section => section.isVisible);
+                let previousVisibleSectionNode: JNode<QuickMenuSection> | null = this._menuSections.find(this._currentFocusedMenuItem.value.quickMenuSectionInstance)!.getPreviousSatisfying(section => section.isVisible);
 
                 if (!previousVisibleSectionNode) {
                     return;
@@ -115,7 +114,7 @@ class QuickMenu extends BaseUIComponent {
                 previousVisibleItem = previousVisibleSectionNode.value.menuItems.findLast(item => item.isVisible);
             }
         } else {
-            let lastVisibleSectionNode: JNode<QuickMenuSection> | null = this.menuSections.findLast(section => section.isVisible);
+            let lastVisibleSectionNode: JNode<QuickMenuSection> | null = this._menuSections.findLast(section => section.isVisible);
 
             if (!lastVisibleSectionNode) {
                 return;
@@ -129,11 +128,11 @@ class QuickMenu extends BaseUIComponent {
 
         let nextVisibleItem: JNode<QuickMenuItem> | null;
 
-        if (this.currentFocusedMenuItem) {
-            nextVisibleItem = this.currentFocusedMenuItem.getNextSatisfying(item => item.isVisible);
+        if (this._currentFocusedMenuItem) {
+            nextVisibleItem = this._currentFocusedMenuItem.getNextSatisfying(item => item.isVisible);
             if (!nextVisibleItem) {
 
-                let nextVisibleSectionNode: JNode<QuickMenuSection> | null = this.menuSections.find(this.currentFocusedMenuItem.value.quickMenuSectionInstance)!.getPreviousSatisfying(section => section.isVisible);
+                let nextVisibleSectionNode: JNode<QuickMenuSection> | null = this._menuSections.find(this._currentFocusedMenuItem.value.quickMenuSectionInstance)!.getPreviousSatisfying(section => section.isVisible);
 
                 if (!nextVisibleSectionNode) {
                     return;
@@ -142,7 +141,7 @@ class QuickMenu extends BaseUIComponent {
             }
 
         } else {
-            let firstVisibleSectionNode: null | JNode<QuickMenuSection> = this.menuSections.findFirst(section => section.isVisible);
+            let firstVisibleSectionNode: null | JNode<QuickMenuSection> = this._menuSections.findFirst(section => section.isVisible);
             if (!firstVisibleSectionNode) {
                 return;
             }
@@ -153,37 +152,37 @@ class QuickMenu extends BaseUIComponent {
     }
 
     filterItems(): void {
-        this.menuSections.forEach(section => {
-            section.filterSection(this.filterInput);
+        this._menuSections.forEach(section => {
+            section.filterSection(this._filterInput);
         });
 
-        if (!this.menuSections.any(section => section.isVisible)) {
-            this.quickMenuEmpty.show();
+        if (!this._menuSections.any(section => section.isVisible)) {
+            this._quickMenuEmpty.show();
         } else {
-            this.quickMenuEmpty.hide();
+            this._quickMenuEmpty.hide();
         }
     }
 
     closeMenu() {
-        this.filterInput = "";
-        this.htmlFocusedElementBeforeOpenQuickMenu?.focus();
+        this._filterInput = "";
+        this._htmlFocusedElementBeforeOpenQuickMenu?.focus();
         this.hideMenu();
     }
 
     openMenu() {
-        
+
         setTimeout(() => {
 
-            this.htmlFocusedElementBeforeOpenQuickMenu = document.activeElement as HTMLElement;
+            this._htmlFocusedElementBeforeOpenQuickMenu = document.activeElement as HTMLElement;
 
-            if (!this.htmlFocusedElementBeforeOpenQuickMenu) {
+            if (!this._htmlFocusedElementBeforeOpenQuickMenu) {
                 throw new Error("Failed to capture the focused element before displaying the QuickMenu. Ensure an element is focused.");
             }
 
             this.show();
 
             this.focusOnTheFirstItem();
-            this.htmlFocusedElementBeforeOpenQuickMenu.focus();
+            this._htmlFocusedElementBeforeOpenQuickMenu.focus();
 
         }, 10);
     }
@@ -243,7 +242,7 @@ class QuickMenu extends BaseUIComponent {
                 this.filterItems();
             } else if (this.isVisible && event.key === 'Backspace') {
 
-                if (this.filterInput == "") {
+                if (this._filterInput == "") {
                     this.closeMenu();
                 } else {
                     this.removeLastFilterInputCharacter();
@@ -256,7 +255,7 @@ class QuickMenu extends BaseUIComponent {
                 event.preventDefault();
                 event.stopPropagation();
 
-                let dataType = this.currentFocusedMenuItem!.value.htmlElement.getAttribute('data-type');
+                let dataType = this._currentFocusedMenuItem!.value.htmlElement.getAttribute('data-type');
 
                 if (dataType) {
                     this.transformHtmlFocusedElementBeforeOpenQuickMenu(dataType);
@@ -271,24 +270,24 @@ class QuickMenu extends BaseUIComponent {
         });
     }
 
-    transformHtmlFocusedElementBeforeOpenQuickMenu(dataType: string): void {
+    transformHtmlFocusedElementBeforeOpenQuickMenu(blockType: string): void {
 
-        let element = this.htmlFocusedElementBeforeOpenQuickMenu?.closest('.draggable-block') as HTMLElement;
+        let element = this._htmlFocusedElementBeforeOpenQuickMenu?.closest('.draggable-block') as HTMLElement;
 
-        if (element && dataType) {
-            this.blockOperations.formatBlock(element, dataType);
+        if (element && blockType) {
+            this._blockOperationsService.formatBlock(element, blockType);
         }
 
         this.closeMenu();
     }
 
     private concatFilterInput(stg: string): void {
-        this.filterInput += stg.toLowerCase();
+        this._filterInput += stg.toLowerCase();
     }
 
     private removeLastFilterInputCharacter(): void {
-        if (this.filterInput.length > 0) {
-            this.filterInput = this.filterInput.slice(0, -1);
+        if (this._filterInput.length > 0) {
+            this._filterInput = this._filterInput.slice(0, -1);
         }
     }
 }
