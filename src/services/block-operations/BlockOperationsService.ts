@@ -1,6 +1,6 @@
 import IBlockOperationsService from "./IBlockOperationsService";
 import IElementFactoryService from "../element-factory/IElementFactoryService";
-import ElementFactoryService, { ELEMENT_FACTORY_TYPES } from "../element-factory/ElementFactoryService";
+import ElementFactoryService, { ELEMENT_TYPES } from "../element-factory/ElementFactoryService";
 
 class BlockOperationsService implements IBlockOperationsService {
 
@@ -134,6 +134,23 @@ class BlockOperationsService implements IBlockOperationsService {
 
 
 
+    // applySelectedBlockType(draggableBlock: HTMLElement, newBlockType: string) {
+
+    //     // const draggableBlock = realFocusedElement.closest('.draggable-block');
+    //     // const newBlockType = event.target.closest('.option') ?
+    //     //     event.target.closest('.option').getAttribute('data-type') :
+    //     //     currentFakeFocusedOption.getAttribute('data-type');
+
+    //     const lastSlashIndex = realFocusedElement.innerText.lastIndexOf('/');
+    //     realFocusedElement.innerText = lastSlashIndex !== -1 ? realFocusedElement.innerText.slice(0, lastSlashIndex) : realFocusedElement.innerText;
+
+
+    //     transformBlock(draggableBlock, newBlockType);
+
+    //     hideAndClearBlockOptions();
+    //     hideAllDependentBox();
+    //     hideTextFormattingBar();
+    // }
 
 
 
@@ -205,7 +222,7 @@ class BlockOperationsService implements IBlockOperationsService {
 
     createDefaultBlock(eventParagraph: HTMLElement | null): void {
 
-        const newBlock = this._elementFactoryService.create(ELEMENT_FACTORY_TYPES.BLOCK_PARAGRAPH, "");
+        const newBlock = this._elementFactoryService.create(ELEMENT_TYPES.BLOCK_PARAGRAPH, "");
 
         if (eventParagraph && eventParagraph.closest('.draggable-block')) {
             const sibling = eventParagraph.closest('.draggable-block')!;

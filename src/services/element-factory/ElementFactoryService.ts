@@ -12,16 +12,16 @@ class ElementFactoryService implements IElementFactoryService {
 
         this.creators = {};
 
-        this.register(ELEMENT_FACTORY_TYPES.BLOCK_PARAGRAPH, ElementFactoryService.blockParagraphCreator());
-        this.register(ELEMENT_FACTORY_TYPES.PARAGRAPH, ElementFactoryService.paragraphCreator());
-        this.register(ELEMENT_FACTORY_TYPES.CHECKBOX_ITEM, ElementFactoryService.checkboxItemCreator());
-        this.register(ELEMENT_FACTORY_TYPES.LIST_ITEM, ElementFactoryService.listItemCreator());
-        this.register(ELEMENT_FACTORY_TYPES.BLOCK_HEADER_1, ElementFactoryService.headingCreator(1));
-        this.register(ELEMENT_FACTORY_TYPES.BLOCK_HEADER_2, ElementFactoryService.headingCreator(2));
-        this.register(ELEMENT_FACTORY_TYPES.BLOCK_HEADER_3, ElementFactoryService.headingCreator(3));
-        this.register(ELEMENT_FACTORY_TYPES.BLOCK_HEADER_4, ElementFactoryService.headingCreator(4));
-        this.register(ELEMENT_FACTORY_TYPES.BLOCK_HEADER_5, ElementFactoryService.headingCreator(5));
-        this.register(ELEMENT_FACTORY_TYPES.BLOCK_HEADER_6, ElementFactoryService.headingCreator(6));
+        this.register(ELEMENT_TYPES.BLOCK_PARAGRAPH, ElementFactoryService.blockParagraphCreator());
+        this.register(ELEMENT_TYPES.PARAGRAPH, ElementFactoryService.paragraphCreator());
+        this.register(ELEMENT_TYPES.CHECKBOX_ITEM, ElementFactoryService.checkboxItemCreator());
+        this.register(ELEMENT_TYPES.LIST_ITEM, ElementFactoryService.listItemCreator());
+        this.register(ELEMENT_TYPES.BLOCK_HEADER_1, ElementFactoryService.headingCreator(1));
+        this.register(ELEMENT_TYPES.HEADER_2, ElementFactoryService.headingCreator(2));
+        this.register(ELEMENT_TYPES.HEADER_3, ElementFactoryService.headingCreator(3));
+        this.register(ELEMENT_TYPES.HEADER_4, ElementFactoryService.headingCreator(4));
+        this.register(ELEMENT_TYPES.HEADER_5, ElementFactoryService.headingCreator(5));
+        this.register(ELEMENT_TYPES.HEADER_6, ElementFactoryService.headingCreator(6));
     }
 
     private register(type: string, creator: ElementCreator): void {
@@ -175,17 +175,17 @@ class ElementFactoryService implements IElementFactoryService {
 
 }
 
-export const ELEMENT_FACTORY_TYPES = {
+export const ELEMENT_TYPES = {
     BLOCK_PARAGRAPH: "block-p",
     PARAGRAPH: "p",
     CHECKBOX_ITEM: "checkboxItem",
     LIST_ITEM: "listItem",
     BLOCK_HEADER_1: "h1",
-    BLOCK_HEADER_2: "h2",
-    BLOCK_HEADER_3: "h3",
-    BLOCK_HEADER_4: "h4",
-    BLOCK_HEADER_5: "h5",
-    BLOCK_HEADER_6: "h6",
+    HEADER_2: "h2",
+    HEADER_3: "h3",
+    HEADER_4: "h4",
+    HEADER_5: "h5",
+    HEADER_6: "h6",
 
 
 } as const;
