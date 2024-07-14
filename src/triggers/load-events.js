@@ -58,12 +58,14 @@ document.addEventListener('DOMContentLoaded', function () {
 //TODO: use a DI Container
 document.addEventListener('DOMContentLoaded', function () {
 
+    let elementFactoryService = new ElementFactoryService();
+    let blockOperationsService = new BlockOperationsService(elementFactoryService);
 
     let addBlock = new AddBlock();
 
     johannesEditor.appendChild(addBlock.htmlElement);
 
-    let quickMenu = QuickMenuBuilder.build();
+    let quickMenu = QuickMenuBuilder.build(blockOperationsService);
 
     johannesEditor.appendChild(quickMenu.htmlElement);
 
