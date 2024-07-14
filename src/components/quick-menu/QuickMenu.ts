@@ -11,6 +11,7 @@ class QuickMenu extends BaseUIComponent {
     display: string;
 
     private readonly _blockOperationsService: IBlockOperationsService;
+
     private _currentFocusedMenuItem: JNode<QuickMenuItem> | null;
     private _htmlFocusedElementBeforeOpenQuickMenu: HTMLElement | null;
     private _menuSections: CircularDoublyLinkedList<QuickMenuSection>;
@@ -18,7 +19,6 @@ class QuickMenu extends BaseUIComponent {
     private _filterInput: string;
 
     private static _instance: QuickMenu | null;
-
 
     constructor(blockOperationsService: IBlockOperationsService) {
 
@@ -58,7 +58,6 @@ class QuickMenu extends BaseUIComponent {
     }
 
     append(menuItem: QuickMenuSection): void {
-
         this._menuSections.append(menuItem);
         this.htmlElement.querySelector('.block-options')!.appendChild(menuItem.htmlElement);
     }
@@ -87,14 +86,25 @@ class QuickMenu extends BaseUIComponent {
         this._htmlFocusedElementBeforeOpenQuickMenu?.focus();
     }
 
-    focusOnTheFirstItem(): void {
+    focusOnTheFirstVisibleItem(): void {
+
         const firstSectionNode: JNode<QuickMenuSection> | null = this._menuSections.getFirst();
 
-        if (firstSectionNode) {
-            const firstItemNode: JNode<QuickMenuItem> | null = firstSectionNode.value.menuItems.getFirst();
+        let currentSectionNode: JNode<QuickMenuSection> | null = firstSectionNode;
 
-            if (firstItemNode) {
-                this.switchVisualFocus(firstItemNode);
+        while (currentSectionNode) {
+
+            const itemNode: JNode<QuickMenuItem> | null = currentSectionNode.value.menuItems.findFirst(item => item.isVisible);
+
+            if (itemNode) {
+                this.switchVisualFocus(itemNode);
+                return;
+            }
+
+            currentSectionNode = currentSectionNode.nextNode;
+
+            if (currentSectionNode == firstSectionNode) {
+                return;
             }
         }
     }
@@ -153,6 +163,7 @@ class QuickMenu extends BaseUIComponent {
     }
 
     filterItems(): void {
+
         this._menuSections.forEach(section => {
             section.filterSection(this._filterInput);
         });
@@ -162,6 +173,8 @@ class QuickMenu extends BaseUIComponent {
         } else {
             this._quickMenuEmpty.hide();
         }
+
+        this.focusOnTheFirstVisibleItem();
     }
 
     show() {
@@ -174,9 +187,6 @@ class QuickMenu extends BaseUIComponent {
             if (!this._htmlFocusedElementBeforeOpenQuickMenu) {
                 throw new Error("Failed to capture the focused element before displaying the QuickMenu. Ensure an element is focused.");
             }
-
-
-
 
 
             const range = document.getSelection()!.getRangeAt(0);
@@ -205,10 +215,7 @@ class QuickMenu extends BaseUIComponent {
 
 
 
-
-
-
-            this.focusOnTheFirstItem();
+            this.focusOnTheFirstVisibleItem();
             this._htmlFocusedElementBeforeOpenQuickMenu.focus();
 
         }, 10);
