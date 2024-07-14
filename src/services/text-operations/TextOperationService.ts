@@ -12,78 +12,156 @@ class TextOperationService implements ITextOperationService {
     // intention: string | null;     //e um intention para cada nó de bloco.
 
 
-    command: string;
-    value: string | undefined;
+    // command: string;
+    // value: string | undefined;
 
-    constructor(command: string, value: string | undefined = undefined) {
+    private static _instance: TextOperationService;
+
+    private constructor() {
         // this.selectedNodes = null;
         // this.target = null;
         // this.intention = null;
 
-        this.command = command;
-        this.value = value;
+        // this.command = command;
+        // this.value = value;
+
+        if (TextOperationService._instance) {
+            throw new Error();
+        }
     }
 
+    static getInstance(): TextOperationService {
 
 
-    queryCommandState(): boolean {
-        const value = document.queryCommandState(this.command);
+        if (!this._instance) {
+            this._instance = new TextOperationService();
+        }
 
-        return value;
+        return this._instance;
     }
 
-    queryCommandState2(): boolean {
-        let aa = document.queryCommandState(this.command);
-        return aa;
-    }
+    execCommand(command: string, value: string | null): boolean {
 
-    execCommand(): boolean {
+        let v: string | undefined = value || undefined;
 
-        if (this.command == "link") {
+
+
+        if (command == "link") {
+
             alert("delete");
 
             return true;
         }
 
-        if (this.command == "delete") {
+        if (command == "delete") {
+            throw new Error("move to Block operations exception");
+
             alert("delete");
 
             return true;
         }
 
-        if (this.command == "duplicate") {
+        if (command == "duplicate") {
+            throw new Error("move to Block operations exception");
+
             alert("duplicate");
 
             return true;
         }
 
-        return document.execCommand(this.command, false, this.value);
+        return document.execCommand(command, false, v);
     }
 
-    execCommand2(): boolean {
+    // execCommand2(): boolean {
 
 
-        if (this.command == "link") {
-            alert("delete");
+    //     if (this.command == "link") {
+    //         alert("delete");
 
-            return true;
-        }
+    //         return true;
+    //     }
 
-        if (this.command == "delete") {
-            alert("delete");
+    //     if (this.command == "delete") {
+    //         alert("delete");
 
-            return true;
-        }
+    //         return true;
+    //     }
 
-        if (this.command == "duplicate") {
-            alert("duplicate");
+    //     if (this.command == "duplicate") {
+    //         alert("duplicate");
 
-            return true;
-        }
+    //         return true;
+    //     }
 
 
-        return document.execCommand(this.command, false, this.value);
+    //     return document.execCommand(this.command, false, this.value);
+    // }
+
+    queryCommandState(command: string, value: string | null): boolean {
+        return document.queryCommandState(command);
     }
+
+
+
+
+    // queryCommandState(): boolean {
+    //     const value = document.queryCommandState(this.command);
+
+    //     return value;
+    // }
+
+    // queryCommandState2(): boolean {
+    //     let aa = document.queryCommandState(this.command);
+    //     return aa;
+    // }
+
+    // execCommand(): boolean {
+
+    //     if (this.command == "link") {
+    //         alert("delete");
+
+    //         return true;
+    //     }
+
+    //     if (this.command == "delete") {
+    //         alert("delete");
+
+    //         return true;
+    //     }
+
+    //     if (this.command == "duplicate") {
+    //         alert("duplicate");
+
+    //         return true;
+    //     }
+
+    //     return document.execCommand(this.command, false, this.value);
+    // }
+
+    // execCommand2(): boolean {
+
+
+    //     if (this.command == "link") {
+    //         alert("delete");
+
+    //         return true;
+    //     }
+
+    //     if (this.command == "delete") {
+    //         alert("delete");
+
+    //         return true;
+    //     }
+
+    //     if (this.command == "duplicate") {
+    //         alert("duplicate");
+
+    //         return true;
+    //     }
+
+
+    //     return document.execCommand(this.command, false, this.value);
+    // }
 
 
     // execCommand(command: string, showUI?: boolean, value?: any): boolean {

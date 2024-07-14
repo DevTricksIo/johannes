@@ -5,10 +5,11 @@ import ICommand from "../../../services/common/ICommand";
 class GroupedButton extends BaseUIComponent {
 
     private readonly _commandService: ICommand;
+    private readonly _command: string;
 
     display: string;
 
-    constructor(commandService: ICommand, title: string, svgUseHref: string) {
+    constructor(commandService: ICommand, command: string, title: string, svgUseHref: string) {
 
         super({
             title: title,
@@ -17,6 +18,7 @@ class GroupedButton extends BaseUIComponent {
 
         this.display = "block";
         this._commandService = commandService;
+        this._command = command;
 
         this.attachEvents();
     }
@@ -42,7 +44,7 @@ class GroupedButton extends BaseUIComponent {
 
             const editableElement = this.getParentEditable();
 
-            this._commandService.execCommand();
+            this._commandService.execCommand(this._command);
 
             setTimeout(() => {
                 editableElement?.normalize();
@@ -55,7 +57,7 @@ class GroupedButton extends BaseUIComponent {
                 const selection = window.getSelection();
 
                 if (!selection?.isCollapsed) {
-                    if (this._commandService.queryCommandState()) {
+                    if (this._commandService.queryCommandState(this._command)) {
                         this.htmlElement.style.color = "#2382e2";
                     } else {
                         this.htmlElement.style.color = "";

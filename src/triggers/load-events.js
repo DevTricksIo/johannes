@@ -3,6 +3,7 @@ import BlockOperationsService from '../services/block-operations/BlockOperations
 import ElementFactoryService from '../services/element-factory/ElementFactoryService';
 import QuickMenuBuilder from "../builders/QuickMenuBuilder";
 import FloatingToolbarBuilder from "../builders/FloatingToolbarBuilder";
+import AddBlock from "../components/add-block/AddBlock";
 
 //Focus on P when load
 document.addEventListener('DOMContentLoaded', function () {
@@ -57,14 +58,17 @@ document.addEventListener('DOMContentLoaded', function () {
 //TODO: use a DI Container
 document.addEventListener('DOMContentLoaded', function () {
 
-    let elementFactory = new ElementFactoryService();
-    let blockOperations = new BlockOperationsService(elementFactory);
 
-    let quickMenu = QuickMenuBuilder.build(blockOperations);
+    let addBlock = new AddBlock();
+
+    johannesEditor.appendChild(addBlock.htmlElement);
+
+    let quickMenu = QuickMenuBuilder.build();
 
     johannesEditor.appendChild(quickMenu.htmlElement);
 
     let floatingToolbar = FloatingToolbarBuilder.build();
+
 
     johannesEditor.appendChild(floatingToolbar.htmlElement);
 

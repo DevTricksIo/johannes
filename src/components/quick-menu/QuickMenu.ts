@@ -4,7 +4,7 @@ import QuickMenuItem from './QuickMenuItem';
 import BaseUIComponent from '../common/BaseUIComponent';
 import CircularDoublyLinkedList from '../../common/CircularDoublyLinkedList';
 import IBlockOperationsService from '../../services/block-operations/IBlockOperationsService';
-import JNode from 'common/JNode';
+import JNode from "../../common/JNode";
 
 class QuickMenu extends BaseUIComponent {
 

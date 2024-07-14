@@ -1,6 +1,6 @@
 interface ICommand {
-    execCommand(): boolean;
-    queryCommandState(): boolean;
+    execCommand(command: string, value?: string | null): boolean;
+    queryCommandState(command: string, value?: string | null): boolean;
 }
 
 export default ICommand;

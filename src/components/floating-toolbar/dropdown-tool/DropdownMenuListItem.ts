@@ -5,18 +5,22 @@ import DropdownMenuList from "./DropdownMenuList";
 class DropdownMenuListItem extends BaseUIComponent {
 
     private readonly _commandService: ICommand;
+    private readonly _command: string;
+    private readonly _value: string | null;
 
     parentDropdownMenuList: DropdownMenuList;
 
     display: string;
 
-    constructor(parentDropdownMenuList: DropdownMenuList, commandService: ICommand, leftIcon: HTMLElement | SVGElement, title: string) {
+    constructor(parentDropdownMenuList: DropdownMenuList, commandService: ICommand, command: string, value: string | null, leftIcon: HTMLElement | SVGElement, title: string) {
         super({
             leftIcon: leftIcon,
             title: title
         });
 
         this.display = 'block';
+        this._command = command;
+        this._value = value;
         this._commandService = commandService;
         this.parentDropdownMenuList = parentDropdownMenuList;
 
@@ -50,7 +54,7 @@ class DropdownMenuListItem extends BaseUIComponent {
 
             setTimeout(() => {
 
-                this._commandService.execCommand();
+                this._commandService.execCommand(this._command, this._value);
 
                 // const selectionEvent = new CustomEvent('selectionChangeAfterExecCommand', {
                 //     detail: { message: 'selectionChangeAfterExecCommand' },

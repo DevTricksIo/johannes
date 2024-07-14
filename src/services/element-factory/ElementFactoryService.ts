@@ -9,18 +9,22 @@ class ElementFactoryService implements IElementFactoryService {
     private creators: { [type: string]: ElementCreator };
 
     constructor() {
+
         this.creators = {};
 
-        this.register('p', ElementFactoryService.paragraphCreator());
-        this.register('h1', ElementFactoryService.headingCreator(1));
-        this.register('h2', ElementFactoryService.headingCreator(2));
-        this.register('h3', ElementFactoryService.headingCreator(3));
-        this.register('h4', ElementFactoryService.headingCreator(4));
-        this.register('h5', ElementFactoryService.headingCreator(5));
-        this.register('h6', ElementFactoryService.headingCreator(6));
+        this.register(ELEMENT_FACTORY_TYPES.BLOCK_PARAGRAPH, ElementFactoryService.blockParagraphCreator());
+        this.register(ELEMENT_FACTORY_TYPES.PARAGRAPH, ElementFactoryService.paragraphCreator());
+        this.register(ELEMENT_FACTORY_TYPES.CHECKBOX_ITEM, ElementFactoryService.checkboxItemCreator());
+        this.register(ELEMENT_FACTORY_TYPES.LIST_ITEM, ElementFactoryService.listItemCreator());
+        this.register(ELEMENT_FACTORY_TYPES.BLOCK_HEADER_1, ElementFactoryService.headingCreator(1));
+        this.register(ELEMENT_FACTORY_TYPES.BLOCK_HEADER_2, ElementFactoryService.headingCreator(2));
+        this.register(ELEMENT_FACTORY_TYPES.BLOCK_HEADER_3, ElementFactoryService.headingCreator(3));
+        this.register(ELEMENT_FACTORY_TYPES.BLOCK_HEADER_4, ElementFactoryService.headingCreator(4));
+        this.register(ELEMENT_FACTORY_TYPES.BLOCK_HEADER_5, ElementFactoryService.headingCreator(5));
+        this.register(ELEMENT_FACTORY_TYPES.BLOCK_HEADER_6, ElementFactoryService.headingCreator(6));
     }
 
-    register(type: string, creator: ElementCreator): void {
+    private register(type: string, creator: ElementCreator): void {
         this.creators[type] = creator;
     }
 
@@ -34,39 +38,156 @@ class ElementFactoryService implements IElementFactoryService {
         return creator(content);
     }
 
-    static paragraphCreator(): ElementCreator {
+    private static blockParagraphCreator(): ElementCreator {
         return content => {
-            const p = document.createElement('p');
-            p.innerText = content;
-
-            p.contentEditable = "true";
-            p.setAttribute('data-type', 'p');
-            p.classList.add('johannes-content-element');
-            p.classList.add('swittable');
-            p.classList.add('focusable');
-            p.classList.add('key-trigger');
-            p.setAttribute('data-placeholder', 'Write something or type / (slash) to choose a block...');
-
-            return p;
+            return ElementFactoryService.blockParagraph(content);
         };
     }
 
-    static headingCreator(level: number): ElementCreator {
+    private static paragraphCreator(): ElementCreator {
         return content => {
-            const h = document.createElement(`h${level}`);
-            h.innerText = content;
-
-            h.contentEditable = "true";
-            h.setAttribute('data-type', `h${level}`);
-            h.classList.add('johannes-content-element');
-            h.classList.add('swittable');
-            h.classList.add('focusable');
-            h.classList.add('focus');
-            h.classList.add('key-trigger');
-
-            return h;
+            return ElementFactoryService.paragraph(content);
         };
     }
+
+    private static headingCreator(level: number): ElementCreator {
+        return content => {
+            return ElementFactoryService.heading(level, content);
+        };
+    }
+
+    private static checkboxItemCreator(): ElementCreator {
+        return content => {
+            return ElementFactoryService.checkBoxItem(content);
+        };
+    }
+
+    private static listItemCreator(): ElementCreator {
+
+        return content => {
+            return ElementFactoryService.checkboxItem(content);
+        };
+    }
+
+
+    private static paragraph(content: string | null = null): HTMLElement {
+        const p = document.createElement('p');
+
+        p.innerText = content || "";
+        p.contentEditable = "true";
+        p.setAttribute('data-type', 'p');
+        p.classList.add('johannes-content-element');
+        p.classList.add('swittable');
+        p.classList.add('focusable');
+        p.classList.add('key-trigger');
+        p.setAttribute('data-placeholder', 'Write something or type / (slash) to choose a block...');
+
+        return p;
+    }
+
+    private static heading(level: number, content: string | null = null): HTMLElement {
+        const h = document.createElement(`h${level}`);
+
+        h.innerText = content || "";
+        h.contentEditable = "true";
+        h.setAttribute('data-type', `h${level}`);
+        h.classList.add('johannes-content-element');
+        h.classList.add('swittable');
+        h.classList.add('focusable');
+        h.classList.add('focus');
+        h.classList.add('key-trigger');
+
+        return h;
+    }
+
+    private static checkBoxItem(content: string | null = null): HTMLElement {
+        let li = document.createElement('li');
+        li.classList.add('deletable');
+        li.classList.add('list-item');
+
+        // initialItem.classList.add('key-trigger');
+
+        let checkbox = document.createElement('input');
+        checkbox.setAttribute('type', 'checkbox');
+
+        let span = document.createElement('span');
+        span.textContent = content || "";
+        span.setAttribute('data-placeholder', 'To-do');
+        // span.contentEditable = true;
+        span.setAttribute("contentEditable", "true");
+
+        span.classList.add('focusable');
+        span.classList.add('editable');
+        span.classList.add('focus');
+
+        li.appendChild(checkbox);
+        li.appendChild(span);
+
+        return li;
+    }
+
+    private static checkboxItem(content: string | null = null): HTMLElement {
+
+        let initialItem = document.createElement('li');
+
+        initialItem.classList.add('focusable');
+        initialItem.classList.add('deletable');
+        initialItem.classList.add('editable');
+        initialItem.classList.add('focus');
+        initialItem.classList.add('key-trigger');
+        initialItem.classList.add('list-item');
+
+        initialItem.innerText = content || "";
+
+        // initialItem.contentEditable = true;
+        initialItem.setAttribute("contentEditable", "true");
+        initialItem.setAttribute('data-placeholder', 'Item');
+
+        return initialItem;
+    }
+
+
+    static blockParagraph(content: string | null = null) {
+
+        let newDiv = document.createElement('div');
+        let newElement = ElementFactoryService.paragraph(content);
+
+        let newButton = document.createElement('button');
+        newButton.innerHTML = '<svg width="20" height="20" fill="currentColor"><use href="#icon-material-drag"></use></svg>';
+
+        newDiv.appendChild(newButton);
+        newDiv.appendChild(newElement);
+
+        newDiv.classList.add('draggable-block');
+        newDiv.classList.add('deletable');
+        newButton.classList.add('drag-handler');
+        newButton.classList.add('button-reset');
+        newButton.draggable = true;
+
+        return newDiv;
+    }
+
+
+
+
+
+
+
 }
+
+export const ELEMENT_FACTORY_TYPES = {
+    BLOCK_PARAGRAPH: "block-p",
+    PARAGRAPH: "p",
+    CHECKBOX_ITEM: "checkboxItem",
+    LIST_ITEM: "listItem",
+    BLOCK_HEADER_1: "h1",
+    BLOCK_HEADER_2: "h2",
+    BLOCK_HEADER_3: "h3",
+    BLOCK_HEADER_4: "h4",
+    BLOCK_HEADER_5: "h5",
+    BLOCK_HEADER_6: "h6",
+
+
+} as const;
 
 export default ElementFactoryService
