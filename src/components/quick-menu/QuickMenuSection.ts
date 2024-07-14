@@ -52,17 +52,17 @@ class QuickMenuSection extends BaseUIComponent {
 
     filterSection(text: string): void {
 
-        this.restoreSection();
+        this.restore();
 
         if (text !== "") {
             this.menuItems.forEach(menuItem => {
 
-                if (!(menuItem.title.toLocaleLowerCase().includes(text))) {
+                if (!(menuItem.filterValue.toLocaleLowerCase().includes(text))) {
                     menuItem.hide();
                 }
             });
 
-            let atLeadOneItem = this.menuItems.any(item => item.title.toLocaleLowerCase().includes(text));
+            let atLeadOneItem = this.menuItems.any(item => item.filterValue.toLocaleLowerCase().includes(text));
 
             if (!atLeadOneItem) {
                 this.hide();
@@ -70,7 +70,7 @@ class QuickMenuSection extends BaseUIComponent {
         }
     }
 
-    restoreSection() {
+    restore() {
         this.show();
 
         this.menuItems.forEach(menuItem => {

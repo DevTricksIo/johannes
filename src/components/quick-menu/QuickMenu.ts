@@ -19,6 +19,7 @@ class QuickMenu extends BaseUIComponent {
 
     private static _instance: QuickMenu | null;
 
+
     constructor(blockOperationsService: IBlockOperationsService) {
 
         super({});
@@ -163,13 +164,8 @@ class QuickMenu extends BaseUIComponent {
         }
     }
 
-    closeMenu() {
-        this._filterInput = "";
-        this._htmlFocusedElementBeforeOpenQuickMenu?.focus();
-        this.hideMenu();
-    }
+    show() {
 
-    openMenu() {
 
         setTimeout(() => {
 
@@ -179,41 +175,58 @@ class QuickMenu extends BaseUIComponent {
                 throw new Error("Failed to capture the focused element before displaying the QuickMenu. Ensure an element is focused.");
             }
 
-            this.show();
+
+
+
+
+            const range = document.getSelection()!.getRangeAt(0);
+            const cursorPos = range.getBoundingClientRect();
+
+            const remSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+            const menuWidth = 19 * remSize;
+
+            let xPosition = cursorPos.right;
+            let yPosition = cursorPos.bottom + window.scrollY;
+
+            const margin = remSize * 1.25;
+
+            let blockWidth = this.htmlElement.offsetWidth;
+
+            if (xPosition + blockWidth + margin > window.innerWidth) {
+                xPosition = cursorPos.left - menuWidth;
+                if (xPosition < 0) xPosition = 0;
+            }
+
+            this.htmlElement.style.left = `${xPosition}px`;
+            this.htmlElement.style.top = `${yPosition}px`;
+
+            super.show();
+
+
+
+
+
+
 
             this.focusOnTheFirstItem();
             this._htmlFocusedElementBeforeOpenQuickMenu.focus();
 
         }, 10);
+
     }
 
-    show() {
+    restore(): void {
+        this._filterInput = "";
 
-        const range = document.getSelection()!.getRangeAt(0);
-        const cursorPos = range.getBoundingClientRect();
-
-        const remSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
-        const menuWidth = 19 * remSize;
-
-        let xPosition = cursorPos.right;
-        let yPosition = cursorPos.bottom + window.scrollY;
-
-        const margin = remSize * 1.25;
-
-        let blockWidth = this.htmlElement.offsetWidth;
-
-        if (xPosition + blockWidth + margin > window.innerWidth) {
-            xPosition = cursorPos.left - menuWidth;
-            if (xPosition < 0) xPosition = 0;
-        }
-
-        this.htmlElement.style.left = `${xPosition}px`;
-        this.htmlElement.style.top = `${yPosition}px`;
-
-        super.show();
+        this._menuSections.forEach(section => {
+            section.restore();
+        });
     }
 
-    private hideMenu() {
+    hide() {
+
+        this.restore();
+        this._htmlFocusedElementBeforeOpenQuickMenu?.focus();
 
         super.hide();
     }
@@ -223,7 +236,7 @@ class QuickMenu extends BaseUIComponent {
         document.addEventListener('keydown', (event: KeyboardEvent) => {
 
             if (!this.isVisible && event.key === '/' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-                this.openMenu();
+                this.show();
             } else if (this.isVisible && event.key === 'ArrowLeft' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -237,19 +250,19 @@ class QuickMenu extends BaseUIComponent {
             } else if (this.isVisible && event.key === 'ArrowUp' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
                 event.preventDefault();
                 this.focusPreviousVisibleItem();
-            } else if (this.isVisible && /^[a-z0-9]$/i.test(event.key) && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+            } else if (this.isVisible && /^[a-z0-9 ]$/i.test(event.key) && !event.ctrlKey && !event.shiftKey && !event.altKey) {
                 this.concatFilterInput(event.key);
                 this.filterItems();
             } else if (this.isVisible && event.key === 'Backspace') {
 
                 if (this._filterInput == "") {
-                    this.closeMenu();
+                    this.hide();
                 } else {
                     this.removeLastFilterInputCharacter();
                     this.filterItems();
                 }
             } else if (this.isVisible && event.key === 'Escape' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-                this.closeMenu();
+                this.hide();
             } else if (event.key === 'Enter' && this.isVisible && !event.ctrlKey && !event.shiftKey && !event.altKey) {
 
                 event.preventDefault();
@@ -265,8 +278,21 @@ class QuickMenu extends BaseUIComponent {
 
         document.addEventListener('click', (event) => {
             if (this.isVisible && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`)) {
-                this.closeMenu();
+                this.hide();
             }
+        });
+
+        document.addEventListener('keydown', (event) => {
+
+            if (event.key === 'Enter' && this.isVisible) {
+
+                const blockType = this._currentFocusedMenuItem?.value.blockType;
+
+                if (blockType) {
+                    this.transformHtmlFocusedElementBeforeOpenQuickMenu(blockType);
+                }
+            }
+
         });
     }
 
@@ -278,7 +304,7 @@ class QuickMenu extends BaseUIComponent {
             this._blockOperationsService.formatBlock(element, blockType);
         }
 
-        this.closeMenu();
+        this.hide();
     }
 
     private concatFilterInput(stg: string): void {

@@ -56,7 +56,10 @@ abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
 
     hide() {
         if (!this._canHide) {
-            throw new Error("Attempted to hide the element before 100 milliseconds have passed since the last display.");
+
+            console.warn("Attempted to hide the element before 100 milliseconds have passed since the last display.");
+            // return;
+            // throw new Error("Attempted to hide the element before 100 milliseconds have passed since the last display.");
         }
 
         this.htmlElement.style.display = 'none';

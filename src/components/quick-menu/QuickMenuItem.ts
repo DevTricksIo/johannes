@@ -7,14 +7,15 @@ class QuickMenuItem extends BaseUIComponent {
 
     display: string;
 
-    private readonly _blockType: string;
+    readonly blockType: string;
 
     readonly title: string;
+    readonly filterValue: string;
     readonly description: string;
 
     quickMenuSectionInstance: QuickMenuSection;
 
-    constructor(quickMenuSectionInstance: QuickMenuSection, title: string, description: string, SVGHrefUseId: string, blockType: string) {
+    constructor(quickMenuSectionInstance: QuickMenuSection, title: string, description: string, SVGHrefUseId: string, blockType: string, filterValue: string) {
 
         super({
             title: title,
@@ -24,13 +25,14 @@ class QuickMenuItem extends BaseUIComponent {
 
         this.display = 'flex';
 
-        this._blockType = blockType;
+        this.blockType = blockType;
         this.title = title;
         this.description = description;
+        this.filterValue = filterValue;
 
         this.quickMenuSectionInstance = quickMenuSectionInstance;
 
-        this._blockType = blockType;
+        this.blockType = blockType;
 
         this.attachEvents();
     }
@@ -95,7 +97,7 @@ class QuickMenuItem extends BaseUIComponent {
 
         this.htmlElement.addEventListener('click', () => {
 
-            this.quickMenuSectionInstance.quickMenuInstance.transformHtmlFocusedElementBeforeOpenQuickMenu(this._blockType);
+            this.quickMenuSectionInstance.quickMenuInstance.transformHtmlFocusedElementBeforeOpenQuickMenu(this.blockType);
 
         });
     }
