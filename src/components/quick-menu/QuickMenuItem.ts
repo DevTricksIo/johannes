@@ -7,30 +7,30 @@ class QuickMenuItem extends BaseUIComponent {
 
     display: string;
 
+    private readonly _blockType: string;
+
     readonly title: string;
     readonly description: string;
-    readonly dataType: string;
 
     quickMenuSectionInstance: QuickMenuSection;
 
-    constructor(quickMenuSectionInstance: QuickMenuSection, title: string, description: string, SVGHrefUseId: string, dataType: string) {
+    constructor(quickMenuSectionInstance: QuickMenuSection, title: string, description: string, SVGHrefUseId: string, blockType: string) {
 
         super({
             title: title,
             description: description,
-            dataType: dataType,
             SVGHrefUseId: SVGHrefUseId
         });
 
         this.display = 'flex';
 
+        this._blockType = blockType;
         this.title = title;
         this.description = description;
-        this.dataType = dataType;
 
         this.quickMenuSectionInstance = quickMenuSectionInstance;
 
-        this.dataType = dataType;
+        this._blockType = blockType;
 
         this.attachEvents();
     }
@@ -41,7 +41,6 @@ class QuickMenuItem extends BaseUIComponent {
         htmlElement.classList.add('option', 'option-hover', 'block-operation');
 
         htmlElement.setAttribute('data-block-operation', 'apply-selected-block-type');
-        htmlElement.setAttribute('data-type', this.props.dataType);
         htmlElement.setAttribute('tabindex', '0');
         htmlElement.setAttribute('role', 'option');
 
@@ -86,6 +85,7 @@ class QuickMenuItem extends BaseUIComponent {
     }
 
     attachEvents(): void {
+
         this.htmlElement.addEventListener('mousemove', () => {
 
             const node: JNode<QuickMenuItem> = this.quickMenuSectionInstance.menuItems.find(this)!;
@@ -93,13 +93,9 @@ class QuickMenuItem extends BaseUIComponent {
             this.quickMenuSectionInstance.quickMenuInstance.switchVisualFocus(node!);
         });
 
-        this.htmlElement.addEventListener('click', (event) => {
+        this.htmlElement.addEventListener('click', () => {
 
-            const dataType: string = (event.target as HTMLElement).closest('.option')!.getAttribute('data-type')!;
-
-            if (dataType) {
-                this.quickMenuSectionInstance.quickMenuInstance.transformHtmlFocusedElementBeforeOpenQuickMenu(dataType);
-            }
+            this.quickMenuSectionInstance.quickMenuInstance.transformHtmlFocusedElementBeforeOpenQuickMenu(this._blockType);
 
         });
     }
