@@ -57,12 +57,12 @@ class QuickMenuSection extends BaseUIComponent {
         if (text !== "") {
             this.menuItems.forEach(menuItem => {
 
-                if (!(menuItem.title.toLocaleLowerCase().includes(text) || menuItem.dataType.includes(text))) {
+                if (!(menuItem.title.toLocaleLowerCase().includes(text))) {
                     menuItem.hide();
                 }
             });
 
-            let atLeadOneItem = this.menuItems.any(item => item.title.toLocaleLowerCase().includes(text) || item.dataType.includes(text));
+            let atLeadOneItem = this.menuItems.any(item => item.title.toLocaleLowerCase().includes(text));
 
             if (!atLeadOneItem) {
                 this.hide();
