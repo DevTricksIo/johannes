@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { clear } = require('console');
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   mode: "development",
@@ -43,6 +44,9 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       filename: 'style.css',
+    }),
+    new CopyWebpackPlugin({
+      patterns: [{from: "./src/assets/img/*.ico", to: "assets/img"}]
     })
     // new BundleAnalyzerPlugin()
   ],
