@@ -9,8 +9,7 @@
     "dev": "webpack --mode development && npm run copy-dist-to-src",
     "copy-dist-to-src": "copyfiles -u 1 dist/* demo/assets",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "test:specific": "jest path/to/your/test-file.ts -t 'Test Case Name'"
+    "test:watch": "jest --watch"
   },
   "keywords": [],
   "author": "",
@@ -25,7 +24,6 @@
     "jest-environment-jsdom": "^29.7.0",
     "jsdom": "^24.1.0",
     "mini-css-extract-plugin": "^2.9.0",
-    "svg-sprite-loader": "^6.0.11",
     "ts-jest": "^29.2.2",
     "ts-loader": "^9.5.1",
     "typescript": "^5.5.3",
@@ -33,5 +31,11 @@
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.4"
+  },
+  "dependencies": {
+    "braces": "^3.0.3",
+    "fix": "^0.0.3",
+    "micromatch": "^4.0.7",
+    "postcss": "^8.4.39"
   }
 }

@@ -4,7 +4,6 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { clear } = require('console');
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
-const SpriteLoaderPlugin = require("svg-sprite-loader/plugin");
 
 module.exports = {
   mode: "development",
@@ -34,15 +33,7 @@ module.exports = {
       },
       {
         test: /\.svg$/,
-        use: [
-          {
-            loader: 'svg-sprite-loader',
-            options: {
-              extract: false
-            }
-          }
-        ],
-        include: path.resolve('./src/images')
+        type: 'asset/source'
       }
     ]
   },
@@ -52,8 +43,7 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       filename: 'style.css',
-    }),
-    new SpriteLoaderPlugin()
+    })
     // new BundleAnalyzerPlugin()
   ],
   devServer: {
