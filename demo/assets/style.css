@@ -253,7 +253,7 @@ p {
 }
 
 
-.editor-wrapper {
+#johannesEditor {
     width: 60%;
     margin-left: auto;
     margin-right: auto;
@@ -762,3 +762,5 @@ ul .option-hover:not([disabled]):hover {
     align-items: center;
     gap: 10px;
 }
+
+/*# sourceMappingURL=style.css.map*/
