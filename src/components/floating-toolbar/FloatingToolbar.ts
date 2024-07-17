@@ -2,22 +2,28 @@ import BaseUIComponent from '../common/BaseUIComponent';
 import DropdownMenu from './dropdown-tool/DropdownMenu';
 import FloatingToolbarSeparator from './separator/FloatingToolbarSeparator';
 import TextFormattingBarToolBar from './group-button/GroupButton';
+import InputLinkBoxWrapper from './link-box/InputLinkBoxWrapper';
 
 class FloatingToolbar extends BaseUIComponent {
 
     display: string;
     dropdowns: DropdownMenu[];
     currentSelectionRange: Range | null;
+    inputLinkBoxWrapper: InputLinkBoxWrapper;
 
     constructor() {
-        super({});
+
+        const inputLinkBoxWrapper = new InputLinkBoxWrapper();
+
+        super({
+            inputLinkBoxWrapper: inputLinkBoxWrapper
+        });
 
         this.display = 'flex';
-
+        this.inputLinkBoxWrapper = inputLinkBoxWrapper;
         this.attachEvents();
         this.dropdowns = [];
         this.currentSelectionRange = null;
-
     }
 
     init(): HTMLElement {
@@ -32,6 +38,12 @@ class FloatingToolbar extends BaseUIComponent {
         selectWrapper.classList.add('select-wrapper');
 
         htmlElement.appendChild(selectWrapper);
+
+
+        const editor = document.getElementById("johannesEditor");
+
+        editor?.appendChild(this.props.inputLinkBoxWrapper.htmlElement);
+
 
         return htmlElement;
     }
