@@ -28,7 +28,7 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          MiniCssExtractPlugin.loader,
+          'style-loader',
           'css-loader'
         ]
       },
@@ -46,7 +46,7 @@ module.exports = {
       filename: 'style.css',
     }),
     new CopyWebpackPlugin({
-      patterns: [{from: "./src/assets/img/*.ico", to: "assets/img"}]
+      patterns: [{from: "./src/assets/img/*.ico", to: "assets/img/[name][ext]"}]
     })
     // new BundleAnalyzerPlugin()
   ],
