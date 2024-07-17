@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     content.addEventListener('dragstart', (e) => {
         if (e.target.classList.contains('drag-handler')) {
-            draggedItem = e.target.closest('.draggable-block');
+            draggedItem = e.target.closest('.block');
             draggedItem.setAttribute('draggable', 'true');
             setTimeout(() => {
                 draggedItem.style.opacity = '0.5';
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     content.addEventListener('dragover', (e) => {
         e.preventDefault();
-        let target = e.target.closest('.draggable-block');
+        let target = e.target.closest('.block');
 
         if (target && target !== draggedItem) {
             let bounding = target.getBoundingClientRect();

@@ -34,7 +34,7 @@ export const OPERATIONS = {
     BLOCK: {
         CREATE_LIST_ELEMENT: 'create-list-element',
         CREATE_NEW_ELEMENT: 'create-new-element',
-        DELETE_DRAGGABLE_BLOCK: 'delete-draggable-block',
+        DELETE_DRAGGABLE_BLOCK: 'delete-block',
         DELETE_AND_FOCUS_ON_NEXT: 'delete-and-focus-on-next',
         DELETE_AND_FOCUS_ON_PREVIOUS: 'delete-and-focus-on-previous',
         DUPLICATE_SELECTED_BLOCK: 'duplicate-selected-block',

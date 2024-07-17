@@ -1445,7 +1445,7 @@ class QuickMenu extends _common_BaseUIComponent__WEBPACK_IMPORTED_MODULE_1__["de
         });
     }
     transformHtmlFocusedElementBeforeOpenQuickMenu(blockType) {
-        let element = this._htmlFocusedElementBeforeOpenQuickMenu?.closest('.draggable-block');
+        let element = this._htmlFocusedElementBeforeOpenQuickMenu?.closest('.block');
         if (element && blockType) {
             this._blockOperationsService.formatBlock(element, blockType);
         }
@@ -1747,7 +1747,7 @@ class BlockOperationsService {
                 element = element.parentNode;
             }
             if (element) {
-                const draggable = element.closest('.draggable-block');
+                const draggable = element.closest('.block');
                 return draggable;
             }
         }
@@ -1775,7 +1775,7 @@ class BlockOperationsService {
     //     }
     // }
     // applySelectedBlockType(draggableBlock: HTMLElement, newBlockType: string) {
-    //     // const draggableBlock = realFocusedElement.closest('.draggable-block');
+    //     // const draggableBlock = realFocusedElement.closest('.block');
     //     // const newBlockType = event.target.closest('.option') ?
     //     //     event.target.closest('.option').getAttribute('data-type') :
     //     //     currentFakeFocusedOption.getAttribute('data-type');
@@ -1814,7 +1814,7 @@ class BlockOperationsService {
         //     parentBlock = contentElement;
         //     const textContent = activeElement.textContent.trim();
         //     if (textContent === '') {
-        //         parentBlock = element.closest('.draggable-block');
+        //         parentBlock = element.closest('.block');
         //         element.closest('.deletable').remove();
         //         newContentElement = createNewDraggableParagraphElement();
         //         parentBlock.insertAdjacentElement('afterend', newContentElement);
@@ -1823,7 +1823,7 @@ class BlockOperationsService {
         //         activeElement.insertAdjacentElement('afterend', newContentElement);
         //     }
         // } else {
-        //     parentBlock = element.closest('.draggable-block');
+        //     parentBlock = element.closest('.block');
         //     if (parentBlock) {
         //         if (parentBlock.nextSibling) {
         //             parentBlock.parentNode.insertBefore(newContentElement, parentBlock.nextSibling);
@@ -1836,8 +1836,8 @@ class BlockOperationsService {
     }
     createDefaultBlock(eventParagraph) {
         const newBlock = this._elementFactoryService.create(_element_factory_ElementFactoryService__WEBPACK_IMPORTED_MODULE_0__.ELEMENT_TYPES.BLOCK_PARAGRAPH, "");
-        if (eventParagraph && eventParagraph.closest('.draggable-block')) {
-            const sibling = eventParagraph.closest('.draggable-block');
+        if (eventParagraph && eventParagraph.closest('.block')) {
+            const sibling = eventParagraph.closest('.block');
             sibling.insertAdjacentElement('afterend', newBlock);
         }
         else {
@@ -1983,7 +1983,7 @@ class ElementFactoryService {
         newButton.innerHTML = '<svg width="20" height="20" fill="currentColor"><use href="#icon-material-drag"></use></svg>';
         newDiv.appendChild(newButton);
         newDiv.appendChild(newElement);
-        newDiv.classList.add('draggable-block');
+        newDiv.classList.add('block');
         newDiv.classList.add('deletable');
         newButton.classList.add('drag-handler');
         newButton.classList.add('button-reset');
@@ -2354,8 +2354,8 @@ function createADefaultBlock(eventParagraph) {
 
     const newBlock = _element_factory__WEBPACK_IMPORTED_MODULE_0__.createNewDraggableParagraphElement();
 
-    if (eventParagraph && eventParagraph.closest('.draggable-block')) {
-        const sibling = eventParagraph.closest('.draggable-block');
+    if (eventParagraph && eventParagraph.closest('.block')) {
+        const sibling = eventParagraph.closest('.block');
         sibling.insertAdjacentElement('afterend', newBlock);
     } else {
         document.querySelector('.johannes-editor > .content').appendChild(newBlock);
@@ -2392,7 +2392,7 @@ function createListItem(element) {
 
         if (textContent === '') {
 
-            parentBlock = element.closest('.draggable-block');
+            parentBlock = element.closest('.block');
 
             element.closest('.deletable').remove();
 
@@ -2405,7 +2405,7 @@ function createListItem(element) {
         }
 
     } else {
-        parentBlock = element.closest('.draggable-block');
+        parentBlock = element.closest('.block');
 
         if (parentBlock) {
             if (parentBlock.nextSibling) {
@@ -2419,13 +2419,13 @@ function createListItem(element) {
     (0,_j_window__WEBPACK_IMPORTED_MODULE_2__.focusOnTheEndOfTheText)(newContentElement);
 }
 
-//** Delete the closest draggable-block parent of a child. Take the current selection if a child is not passed. */
+//** Delete the closest block parent of a child. Take the current selection if a child is not passed. */
 function deleteDraggableParentBlock(child) {
 
     let draggableBlockToRemove = null;
 
-    if (child && child instanceof HTMLElement && child.closest('.draggable-block')) {
-        draggableBlockToRemove = child.closest('.draggable-block');
+    if (child && child instanceof HTMLElement && child.closest('.block')) {
+        draggableBlockToRemove = child.closest('.block');
     } else {
         draggableBlockToRemove = _j_selection__WEBPACK_IMPORTED_MODULE_1__.getCurrentDraggableBlockFocused();
     }
@@ -2456,10 +2456,10 @@ function deleteAndFocusOnNext() {
 }
 
 
-//** Delete the current element and the draggable-block parent if empty. A block is empty if has no editable element inside. */
+//** Delete the current element and the block parent if empty. A block is empty if has no editable element inside. */
 function deleteTheCurrentElementAndTheDraggableBlockIfEmpty(currentElement) {
 
-    const parentBlock = currentElement.closest('.draggable-block');
+    const parentBlock = currentElement.closest('.block');
     const actual = currentElement.closest('.deletable');
 
     actual.remove();
@@ -2681,7 +2681,7 @@ const OPERATIONS = {
     BLOCK: {
         CREATE_LIST_ELEMENT: 'create-list-element',
         CREATE_NEW_ELEMENT: 'create-new-element',
-        DELETE_DRAGGABLE_BLOCK: 'delete-draggable-block',
+        DELETE_DRAGGABLE_BLOCK: 'delete-block',
         DELETE_AND_FOCUS_ON_NEXT: 'delete-and-focus-on-next',
         DELETE_AND_FOCUS_ON_PREVIOUS: 'delete-and-focus-on-previous',
         DUPLICATE_SELECTED_BLOCK: 'duplicate-selected-block',
@@ -3719,7 +3719,7 @@ function hideAllDependentBox() {
 // }
 
 // export function setCurrentDraggableBlock(element) {
-//     if (!element.classList.contains('draggable-block')) {
+//     if (!element.classList.contains('block')) {
 //         throw new Error('The Element is Not a Draggable Block');
 //     }
 
@@ -3797,7 +3797,7 @@ function hideAllDependentBox() {
 //     setTimeout(() => {
 
 //         const realFocusedElement = document.activeElement;
-//         const currentDraggableBlock = realFocusedElement.closest('.draggable-block');
+//         const currentDraggableBlock = realFocusedElement.closest('.block');
 //         const firstBlockOption = getTheFirstVisibleBlockOption();
 
 //         setRealFocusedElement(realFocusedElement);
@@ -3988,7 +3988,7 @@ function hideAllDependentBox() {
 
 // export function applySelectedBlockType(event) {
 
-//     const draggableBlock = realFocusedElement.closest('.draggable-block');
+//     const draggableBlock = realFocusedElement.closest('.block');
 //     const newBlockType = event.target.closest('.option') ?
 //         event.target.closest('.option').getAttribute('data-type') :
 //         currentFakeFocusedOption.getAttribute('data-type');
@@ -4129,7 +4129,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     content.addEventListener('dragstart', (e) => {
         if (e.target.classList.contains('drag-handler')) {
-            draggedItem = e.target.closest('.draggable-block');
+            draggedItem = e.target.closest('.block');
             draggedItem.setAttribute('draggable', 'true');
             setTimeout(() => {
                 draggedItem.style.opacity = '0.5';
@@ -4150,7 +4150,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     content.addEventListener('dragover', (e) => {
         e.preventDefault();
-        let target = e.target.closest('.draggable-block');
+        let target = e.target.closest('.block');
 
         if (target && target !== draggedItem) {
             let bounding = target.getBoundingClientRect();
@@ -4247,7 +4247,7 @@ function createNewDraggableParagraphElement() {
     newDiv.appendChild(newButton);
     newDiv.appendChild(newElement);
 
-    newDiv.classList.add('draggable-block');
+    newDiv.classList.add('block');
     newDiv.classList.add('deletable');
     newButton.classList.add('drag-handler');
     newButton.classList.add('button-reset');
@@ -4577,7 +4577,7 @@ function getCurrentDraggableBlockFocused() {
         commonAncestor = commonAncestor.parentNode;
     }
 
-    const currentBlock = commonAncestor.closest('.draggable-block');
+    const currentBlock = commonAncestor.closest('.block');
 
     return currentBlock;
 }
@@ -4739,7 +4739,7 @@ function focusOnNext(actualElement, position) {
         }
     }
 
-    let parent = actualElement.closest('.draggable-block');
+    let parent = actualElement.closest('.block');
     let sibling = parent.nextElementSibling;
 
     while (sibling) {
@@ -4793,7 +4793,7 @@ function focusOnPrevious(actualElement, position) {
         }
     }
 
-    let parent = actualElement.closest('.draggable-block');
+    let parent = actualElement.closest('.block');
     let sibling = parent.previousElementSibling;
 
     while (sibling) {
@@ -5146,8 +5146,8 @@ document.addEventListener('DOMContentLoaded', function () {
 //             let selectedNode = selection.getRangeAt(0).startContainer;
 
 //             let currentDraggableBlock = selectedNode.nodeType === 3 ?
-//                 selectedNode.parentNode.closest('.draggable-block') :
-//                 selectedNode.closest('.draggable-block');
+//                 selectedNode.parentNode.closest('.block') :
+//                 selectedNode.closest('.block');
 //             if (currentDraggableBlock) {
 //                 transformBlock(currentDraggableBlock, type);
 //             }
@@ -5197,7 +5197,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             target.innerText = blocks[0];
 
-            let currentTarget = target.closest('.draggable-block');
+            let currentTarget = target.closest('.block');
 
             for (let i = 1; i < blocks.length; i++) {
                 const newParagraph = (0,_element_factory__WEBPACK_IMPORTED_MODULE_0__.createNewDraggableParagraphElement)();
@@ -5587,7 +5587,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const editor = document.querySelector('.johannes-editor');
 
     if (editor) {
-        let blocks = editor.querySelectorAll('.draggable-block');
+        let blocks = editor.querySelectorAll('.block');
 
         if (blocks.length == 1) {
 

@@ -13,7 +13,7 @@
 // }
 
 // export function setCurrentDraggableBlock(element) {
-//     if (!element.classList.contains('draggable-block')) {
+//     if (!element.classList.contains('block')) {
 //         throw new Error('The Element is Not a Draggable Block');
 //     }
 
@@ -91,7 +91,7 @@
 //     setTimeout(() => {
 
 //         const realFocusedElement = document.activeElement;
-//         const currentDraggableBlock = realFocusedElement.closest('.draggable-block');
+//         const currentDraggableBlock = realFocusedElement.closest('.block');
 //         const firstBlockOption = getTheFirstVisibleBlockOption();
 
 //         setRealFocusedElement(realFocusedElement);
@@ -282,7 +282,7 @@
 
 // export function applySelectedBlockType(event) {
 
-//     const draggableBlock = realFocusedElement.closest('.draggable-block');
+//     const draggableBlock = realFocusedElement.closest('.block');
 //     const newBlockType = event.target.closest('.option') ?
 //         event.target.closest('.option').getAttribute('data-type') :
 //         currentFakeFocusedOption.getAttribute('data-type');

@@ -158,7 +158,7 @@ class ElementFactoryService implements IElementFactoryService {
         newDiv.appendChild(newButton);
         newDiv.appendChild(newElement);
 
-        newDiv.classList.add('draggable-block');
+        newDiv.classList.add('block');
         newDiv.classList.add('deletable');
         newButton.classList.add('drag-handler');
         newButton.classList.add('button-reset');

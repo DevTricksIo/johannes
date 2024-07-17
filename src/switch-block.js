@@ -38,8 +38,8 @@
 //             let selectedNode = selection.getRangeAt(0).startContainer;
 
 //             let currentDraggableBlock = selectedNode.nodeType === 3 ?
-//                 selectedNode.parentNode.closest('.draggable-block') :
-//                 selectedNode.closest('.draggable-block');
+//                 selectedNode.parentNode.closest('.block') :
+//                 selectedNode.closest('.block');
 //             if (currentDraggableBlock) {
 //                 transformBlock(currentDraggableBlock, type);
 //             }

@@ -87,7 +87,7 @@ class BlockOperationsService implements IBlockOperationsService {
             }
 
             if (element) {
-                const draggable = element.closest('.draggable-block') as HTMLElement;
+                const draggable = element.closest('.block') as HTMLElement;
                 return draggable;
             }
         }
@@ -136,7 +136,7 @@ class BlockOperationsService implements IBlockOperationsService {
 
     // applySelectedBlockType(draggableBlock: HTMLElement, newBlockType: string) {
 
-    //     // const draggableBlock = realFocusedElement.closest('.draggable-block');
+    //     // const draggableBlock = realFocusedElement.closest('.block');
     //     // const newBlockType = event.target.closest('.option') ?
     //     //     event.target.closest('.option').getAttribute('data-type') :
     //     //     currentFakeFocusedOption.getAttribute('data-type');
@@ -192,7 +192,7 @@ class BlockOperationsService implements IBlockOperationsService {
 
         //     if (textContent === '') {
 
-        //         parentBlock = element.closest('.draggable-block');
+        //         parentBlock = element.closest('.block');
 
         //         element.closest('.deletable').remove();
 
@@ -205,7 +205,7 @@ class BlockOperationsService implements IBlockOperationsService {
         //     }
 
         // } else {
-        //     parentBlock = element.closest('.draggable-block');
+        //     parentBlock = element.closest('.block');
 
         //     if (parentBlock) {
         //         if (parentBlock.nextSibling) {
@@ -224,8 +224,8 @@ class BlockOperationsService implements IBlockOperationsService {
 
         const newBlock = this._elementFactoryService.create(ELEMENT_TYPES.BLOCK_PARAGRAPH, "");
 
-        if (eventParagraph && eventParagraph.closest('.draggable-block')) {
-            const sibling = eventParagraph.closest('.draggable-block')!;
+        if (eventParagraph && eventParagraph.closest('.block')) {
+            const sibling = eventParagraph.closest('.block')!;
             sibling.insertAdjacentElement('afterend', newBlock);
         } else {
             document.querySelector("#johannesEditor .content")!.appendChild(newBlock);

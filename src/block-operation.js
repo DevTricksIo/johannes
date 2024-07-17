@@ -31,8 +31,8 @@ function createADefaultBlock(eventParagraph) {
 
     const newBlock = factory.createNewDraggableParagraphElement();
 
-    if (eventParagraph && eventParagraph.closest('.draggable-block')) {
-        const sibling = eventParagraph.closest('.draggable-block');
+    if (eventParagraph && eventParagraph.closest('.block')) {
+        const sibling = eventParagraph.closest('.block');
         sibling.insertAdjacentElement('afterend', newBlock);
     } else {
         document.querySelector('.johannes-editor > .content').appendChild(newBlock);
@@ -69,7 +69,7 @@ export function createListItem(element) {
 
         if (textContent === '') {
 
-            parentBlock = element.closest('.draggable-block');
+            parentBlock = element.closest('.block');
 
             element.closest('.deletable').remove();
 
@@ -82,7 +82,7 @@ export function createListItem(element) {
         }
 
     } else {
-        parentBlock = element.closest('.draggable-block');
+        parentBlock = element.closest('.block');
 
         if (parentBlock) {
             if (parentBlock.nextSibling) {
@@ -96,13 +96,13 @@ export function createListItem(element) {
     focusOnTheEndOfTheText(newContentElement);
 }
 
-//** Delete the closest draggable-block parent of a child. Take the current selection if a child is not passed. */
+//** Delete the closest block parent of a child. Take the current selection if a child is not passed. */
 export function deleteDraggableParentBlock(child) {
 
     let draggableBlockToRemove = null;
 
-    if (child && child instanceof HTMLElement && child.closest('.draggable-block')) {
-        draggableBlockToRemove = child.closest('.draggable-block');
+    if (child && child instanceof HTMLElement && child.closest('.block')) {
+        draggableBlockToRemove = child.closest('.block');
     } else {
         draggableBlockToRemove = jSelection.getCurrentDraggableBlockFocused();
     }
@@ -133,10 +133,10 @@ export function deleteAndFocusOnNext() {
 }
 
 
-//** Delete the current element and the draggable-block parent if empty. A block is empty if has no editable element inside. */
+//** Delete the current element and the block parent if empty. A block is empty if has no editable element inside. */
 function deleteTheCurrentElementAndTheDraggableBlockIfEmpty(currentElement) {
 
-    const parentBlock = currentElement.closest('.draggable-block');
+    const parentBlock = currentElement.closest('.block');
     const actual = currentElement.closest('.deletable');
 
     actual.remove();

@@ -114,7 +114,7 @@ ol.johannes-content-element:not(.checkbox-list) {
 
 
 
-.draggable-block>.drag-handler {
+.block>.drag-handler {
     color: #84888d;
     visibility: hidden;
     cursor: grab;
@@ -136,7 +136,7 @@ ol.johannes-content-element:not(.checkbox-list) {
     cursor: grabbing;
 }
 
-.draggable-block {
+.block {
     display: flex;
     flex-direction: row;
     margin-bottom: 1rem;
@@ -145,7 +145,7 @@ ol.johannes-content-element:not(.checkbox-list) {
     /* background-color: purple; */
 }
 
-.draggable-block:hover .drag-handler {
+.block:hover .drag-handler {
     visibility: visible;
     vertical-align: top;
     justify-content: start;
@@ -236,8 +236,8 @@ p {
 }
 
 
-.draggable-block,
-.draggable-block * {
+.block,
+.block * {
     user-select: text;
 }
 

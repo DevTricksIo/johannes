@@ -80,7 +80,7 @@ export function focusOnNext(actualElement, position) {
         }
     }
 
-    let parent = actualElement.closest('.draggable-block');
+    let parent = actualElement.closest('.block');
     let sibling = parent.nextElementSibling;
 
     while (sibling) {
@@ -134,7 +134,7 @@ export function focusOnPrevious(actualElement, position) {
         }
     }
 
-    let parent = actualElement.closest('.draggable-block');
+    let parent = actualElement.closest('.block');
     let sibling = parent.previousElementSibling;
 
     while (sibling) {

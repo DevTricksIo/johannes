@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             target.innerText = blocks[0];
 
-            let currentTarget = target.closest('.draggable-block');
+            let currentTarget = target.closest('.block');
 
             for (let i = 1; i < blocks.length; i++) {
                 const newParagraph = createNewDraggableParagraphElement();

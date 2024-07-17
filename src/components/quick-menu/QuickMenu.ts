@@ -305,7 +305,7 @@ class QuickMenu extends BaseUIComponent {
 
     transformHtmlFocusedElementBeforeOpenQuickMenu(blockType: string): void {
 
-        let element = this._htmlFocusedElementBeforeOpenQuickMenu?.closest('.draggable-block') as HTMLElement;
+        let element = this._htmlFocusedElementBeforeOpenQuickMenu?.closest('.block') as HTMLElement;
 
         if (element && blockType) {
             this._blockOperationsService.formatBlock(element, blockType);

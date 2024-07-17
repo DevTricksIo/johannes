@@ -82,7 +82,7 @@ class DOMSelectionFocusManager {
             commonAncestor = commonAncestor.parentNode;
         }
 
-        const currentBlock = commonAncestor.closest('.draggable-block');
+        const currentBlock = commonAncestor.closest('.block');
 
         return currentBlock;
     }

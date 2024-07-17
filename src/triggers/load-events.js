@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const editor = document.querySelector('.johannes-editor');
 
     if (editor) {
-        let blocks = editor.querySelectorAll('.draggable-block');
+        let blocks = editor.querySelectorAll('.block');
 
         if (blocks.length == 1) {
 
