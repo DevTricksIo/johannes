@@ -9,9 +9,11 @@ import './switch-block.js';
 import './keyboard-navigation.js';
 import './text-blocks-from-newlines.js';
 import './memento.js';
+import './images/icons.svg'
 
+import Editor from './Editor';
 
-
+export default Editor;
 
 // default style
-import './style/style.css';
+import './css/main.css';

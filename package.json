@@ -2,8 +2,9 @@
   "name": "johannes",
   "version": "1.0.0",
   "description": "Johannes Editor",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
+    "start": "webpack serve",
     "build": "webpack --mode production && npm run copy-dist-to-src",
     "dev": "webpack --mode development && npm run copy-dist-to-src",
     "copy-dist-to-src": "copyfiles -u 1 dist/* demo/assets",
@@ -19,14 +20,18 @@
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "css-loader": "^7.1.2",
+    "html-webpack-plugin": "^5.6.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jsdom": "^24.1.0",
     "mini-css-extract-plugin": "^2.9.0",
+    "svg-sprite-loader": "^6.0.11",
     "ts-jest": "^29.2.2",
     "ts-loader": "^9.5.1",
     "typescript": "^5.5.3",
     "webpack": "^5.93.0",
-    "webpack-cli": "^5.1.4"
+    "webpack-bundle-analyzer": "^4.10.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.4"
   }
 }
