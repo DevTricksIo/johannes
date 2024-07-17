@@ -4,7 +4,7 @@ import ElementFactoryService from '../services/element-factory/ElementFactorySer
 import QuickMenuBuilder from "../builders/QuickMenuBuilder";
 import FloatingToolbarBuilder from "../builders/FloatingToolbarBuilder";
 import AddBlock from "../components/add-block/AddBlock";
-import iconsSVG from '../images/icons.svg';
+import iconsSVG from '../assets/img/icons.svg';
 
 //Focus on P when load
 document.addEventListener('DOMContentLoaded', function () {
@@ -78,11 +78,11 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const svgContainer = document.createElement('div');
     svgContainer.innerHTML = iconsSVG;
-    
+
     svgContainer.className = 'svg-icons-container';
-  
+
     document.body.appendChild(svgContainer);
-  });
+});
