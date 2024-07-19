@@ -1,7 +1,7 @@
 import BaseUIComponent from '../common/BaseUIComponent';
 import DropdownMenu from './dropdown-tool/DropdownMenu';
 import FloatingToolbarSeparator from './separator/FloatingToolbarSeparator';
-import TextFormattingBarToolBar from './group-button/GroupButton';
+import GroupButton from './group-button/GroupButton';
 import InputLinkBoxWrapper from './link-box/InputLinkBoxWrapper';
 
 class FloatingToolbar extends BaseUIComponent {
@@ -30,7 +30,7 @@ class FloatingToolbar extends BaseUIComponent {
 
         const htmlElement = document.createElement('div');
 
-        htmlElement.id = 'textFormattingBar';
+        htmlElement.id = 'floatingToolbar';
         htmlElement.style.display = 'none';
         htmlElement.classList.add('soft-box-shadow');
 
@@ -39,11 +39,9 @@ class FloatingToolbar extends BaseUIComponent {
 
         htmlElement.appendChild(selectWrapper);
 
-
         const editor = document.getElementById("johannesEditor");
 
         editor?.appendChild(this.props.inputLinkBoxWrapper.htmlElement);
-
 
         return htmlElement;
     }
@@ -85,8 +83,8 @@ class FloatingToolbar extends BaseUIComponent {
         this.htmlElement.appendChild(separator.htmlElement);
     }
 
-    appendTextToolbar(toolbar: TextFormattingBarToolBar): void {
-        this.htmlElement.appendChild(toolbar.htmlElement);
+    appendTextToolbar(button: GroupButton): void {
+        this.htmlElement.appendChild(button.htmlElement);
     }
 
     anyDropdownVisible(): boolean {

@@ -1,21 +1,19 @@
 import BaseUIComponent from "../../common/BaseUIComponent";
-import TextFormattingBarButton from "./DropdownMenuButton";
+import DropdownMenuButton from "./DropdownMenuButton";
 import DropdownMenuList from "./DropdownMenuList";
 
 class DropdownMenu extends BaseUIComponent {
 
     display: string;
 
-    dropdownButton: TextFormattingBarButton;
+    dropdownButton: DropdownMenuButton;
     dropdownList: DropdownMenuList;
 
-    constructor(button: TextFormattingBarButton, dropdownList: DropdownMenuList) {
+    constructor(button: DropdownMenuButton, dropdownList: DropdownMenuList) {
 
         super({});
 
         this.display = 'block';
-
-        //add validation that verify if the arial target from button equals to id dropdown list
 
         this.dropdownButton = button;
         this.dropdownList = dropdownList;

@@ -1,5 +1,4 @@
 import BaseUIComponent from "../../common/BaseUIComponent";
-import TextFormattingBarToolbarButton from "./GroupedButton";
 
 class GroupButton extends BaseUIComponent {
 
@@ -21,11 +20,6 @@ class GroupButton extends BaseUIComponent {
         htmlElement.style.marginRight = "10px";
 
         return htmlElement;
-    }
-
-    append(toolButton: TextFormattingBarToolbarButton): void {
-        //create a data structure to store the dom node element
-        this.htmlElement.appendChild(toolButton.htmlElement);
     }
 
 }
