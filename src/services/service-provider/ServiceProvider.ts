@@ -22,11 +22,17 @@ class ServiceProvider {
         return service as T;
     }
 
-    register<T>(key: string, instance: T): void {
+    registerService<T>(key: string, instance: T): void {
         if (this.services.has(key)) {
             throw new ServiceAlreadyRegisteredException(key);
         }
         this.services.set(key, instance);
+    }
+
+    registerServices(services: Map<string, any>): void {
+        services.forEach((instance, key) => {
+            this.registerService(key, instance);
+        });
     }
 
     reset(): void {
