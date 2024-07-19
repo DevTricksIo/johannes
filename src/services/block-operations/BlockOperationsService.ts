@@ -1,20 +1,19 @@
 import IBlockOperationsService from "./IBlockOperationsService";
 import IElementFactoryService from "../element-factory/IElementFactoryService";
-import { ELEMENT_TYPES } from "../element-factory/ElementFactoryService";
-import ServiceProvider from "services/service-provider/ServiceProvider";
+import ElementFactoryService from "../element-factory/ElementFactoryService";
 
 class BlockOperationsService implements IBlockOperationsService {
 
     private readonly elementFactoryService: IElementFactoryService;
     private static instance: BlockOperationsService;
 
-    private constructor() {
+    private constructor(elementFactoryService: IElementFactoryService) {
 
         if (BlockOperationsService.instance) {
             throw new Error("Use BlockOperationsService.getInstance() to get instance.");
         }
 
-        this.elementFactoryService = ServiceProvider.getInstance().getInstanceOf("IElementFactoryService");
+        this.elementFactoryService = elementFactoryService;
         BlockOperationsService.instance = this;
     }
 
@@ -49,10 +48,10 @@ class BlockOperationsService implements IBlockOperationsService {
         throw new Error("Method not implemented.");
     }
 
-    static getInstance(): BlockOperationsService {
+    static getInstance(elementFactoryService: IElementFactoryService | null = null): BlockOperationsService {
 
         if (!this.instance) {
-            this.instance = new BlockOperationsService();
+            this.instance = new BlockOperationsService(elementFactoryService || ElementFactoryService.getInstance());
         }
 
         return this.instance;
@@ -223,7 +222,7 @@ class BlockOperationsService implements IBlockOperationsService {
 
     createDefaultBlock(eventParagraph: HTMLElement | null): void {
 
-        const newBlock = this.elementFactoryService.create(ELEMENT_TYPES.BLOCK_PARAGRAPH, "");
+        const newBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.BLOCK_PARAGRAPH, "");
 
         if (eventParagraph && eventParagraph.closest('.block')) {
             const sibling = eventParagraph.closest('.block')!;
