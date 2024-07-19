@@ -41,7 +41,7 @@ describe('ServiceProvider register functionality', () => {
 
         const serviceToRegister = TextOperationService.getInstance();
 
-        sut.register("ITextOperationService", serviceToRegister);
+        sut.registerService("ITextOperationService", serviceToRegister);
 
         const registeredService = sut.getInstanceOf("ITextOperationService");
 
@@ -55,8 +55,8 @@ describe('ServiceProvider register functionality', () => {
         const textOperationService = TextOperationService.getInstance();
         const blockOperationService = BlockOperationsService.getInstance();
 
-        sut.register("ITextOperationService", textOperationService);
-        sut.register("IBlockOperationsService", blockOperationService);
+        sut.registerService("ITextOperationService", textOperationService);
+        sut.registerService("IBlockOperationsService", blockOperationService);
 
         const textOperationRegisteredService = sut.getInstanceOf("ITextOperationService");
         const blockOperationRegisteredService = sut.getInstanceOf("IBlockOperationsService");
@@ -79,9 +79,9 @@ describe('ServiceProvider register functionality', () => {
         const serviceInstance1 = TextOperationService.getInstance();
         const serviceInstance2 = BlockOperationsService.getInstance();
 
-        sut.register("IAmazingService", serviceInstance1);
+        sut.registerService("IAmazingService", serviceInstance1);
 
-        expect(() => sut.register("IAmazingService", serviceInstance2)).toThrow(ServiceAlreadyRegisteredException);
+        expect(() => sut.registerService("IAmazingService", serviceInstance2)).toThrow(ServiceAlreadyRegisteredException);
     });
 });
 
@@ -99,12 +99,48 @@ describe('ServiceProvider reset functionality', () => {
 
     test('Reset should clear all registered services in ServiceProvider', () => {
         const textOperationService = TextOperationService.getInstance();
-        sut.register("ITextOperationService", textOperationService);
+        sut.registerService("ITextOperationService", textOperationService);
 
         expect(sut.getInstanceOf("ITextOperationService")).toBe(textOperationService);
 
         sut.reset();
 
         expect(() => sut.getInstanceOf("ITextOperationService")).toThrow(ServiceNotFoundException);
+    });
+});
+
+
+describe('ServiceProvider addServices functionality', () => {
+    let sut : ServiceProvider;
+
+    beforeEach(() => {
+        sut = ServiceProvider.getInstance();
+    });
+
+    afterEach(() => {
+        sut.reset();
+    });
+
+    test('Add multiple services via Map', () => {
+        const services = new Map();
+        const textOperationService = TextOperationService.getInstance();
+        const blockOperationService = BlockOperationsService.getInstance();
+
+        services.set("ITextOperationService", textOperationService);
+        services.set("IBlockOperationsService", blockOperationService);
+
+        sut.registerServices(services);
+
+        const textOperationRegisteredService = sut.getInstanceOf("ITextOperationService");
+        const blockOperationRegisteredService = sut.getInstanceOf("IBlockOperationsService");
+
+        expect(textOperationRegisteredService).toEqual(textOperationService);
+        expect(blockOperationRegisteredService).toEqual(blockOperationService);
+    });
+
+    test('Add empty Map should not change ServiceProvider', () => {
+        const services = new Map();
+        sut.registerServices(services);
+        expect(() => sut.getInstanceOf("AnyService")).toThrow(ServiceNotFoundException);
     });
 });
