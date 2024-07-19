@@ -1,11 +1,22 @@
 import IBlockOperationsService from "./IBlockOperationsService";
 import IElementFactoryService from "../element-factory/IElementFactoryService";
-import ElementFactoryService, { ELEMENT_TYPES } from "../element-factory/ElementFactoryService";
+import { ELEMENT_TYPES } from "../element-factory/ElementFactoryService";
+import ServiceProvider from "services/service-provider/ServiceProvider";
 
 class BlockOperationsService implements IBlockOperationsService {
 
-    private readonly _elementFactoryService: IElementFactoryService;
-    private static _instance: BlockOperationsService;
+    private readonly elementFactoryService: IElementFactoryService;
+    private static instance: BlockOperationsService;
+
+    private constructor() {
+
+        if (BlockOperationsService.instance) {
+            throw new Error("Use BlockOperationsService.getInstance() to get instance.");
+        }
+
+        this.elementFactoryService = ServiceProvider.getInstance().getInstanceOf("IElementFactoryService");
+        BlockOperationsService.instance = this;
+    }
 
     execCommand(command: string, value: string | null = null): boolean {
 
@@ -38,23 +49,13 @@ class BlockOperationsService implements IBlockOperationsService {
         throw new Error("Method not implemented.");
     }
 
-    private constructor(elementFactoryService: IElementFactoryService) {
+    static getInstance(): BlockOperationsService {
 
-        if (BlockOperationsService._instance) {
-            throw new Error("Use BlockOperationsService.getInstance() para obter a instância.");
+        if (!this.instance) {
+            this.instance = new BlockOperationsService();
         }
 
-        this._elementFactoryService = elementFactoryService;
-        BlockOperationsService._instance = this;
-    }
-
-    static getInstance(elementFactoryService: IElementFactoryService | null = null): BlockOperationsService {
-
-        if (!this._instance) {
-            this._instance = new BlockOperationsService(elementFactoryService || new ElementFactoryService());
-        }
-
-        return this._instance;
+        return this.instance;
     }
 
     formatBlock(element: HTMLElement, contentType: string): void {
@@ -62,7 +63,7 @@ class BlockOperationsService implements IBlockOperationsService {
         let contentElement = element.querySelector('.swittable') as HTMLElement;
         let content = contentElement.innerText;
 
-        let newContentBlock = this._elementFactoryService.create(contentType, content);
+        let newContentBlock = this.elementFactoryService.create(contentType, content);
 
         element.replaceChild(newContentBlock, contentElement);
 
@@ -149,7 +150,7 @@ class BlockOperationsService implements IBlockOperationsService {
 
     //     hideAndClearBlockOptions();
     //     hideAllDependentBox();
-    //     hideTextFormattingBar();
+    //     hidefloatingToolbar();
     // }
 
 
@@ -175,9 +176,9 @@ class BlockOperationsService implements IBlockOperationsService {
         let contentElement = element.closest('.johannes-content-element') as HTMLElement;
 
         if (contentElement.classList.contains('checkbox-list')) {
-            newContentElement = this._elementFactoryService.create("checkboxItem", "");
+            newContentElement = this.elementFactoryService.create("checkboxItem", "");
         } else if (contentElement.classList.contains('list')) {
-            newContentElement = this._elementFactoryService.create("listItem", "");
+            newContentElement = this.elementFactoryService.create("listItem", "");
         } else {
             // newContentElement = createNewDraggableParagraphElement();
         }
@@ -222,7 +223,7 @@ class BlockOperationsService implements IBlockOperationsService {
 
     createDefaultBlock(eventParagraph: HTMLElement | null): void {
 
-        const newBlock = this._elementFactoryService.create(ELEMENT_TYPES.BLOCK_PARAGRAPH, "");
+        const newBlock = this.elementFactoryService.create(ELEMENT_TYPES.BLOCK_PARAGRAPH, "");
 
         if (eventParagraph && eventParagraph.closest('.block')) {
             const sibling = eventParagraph.closest('.block')!;
