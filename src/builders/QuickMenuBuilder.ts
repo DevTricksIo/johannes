@@ -1,14 +1,13 @@
 import QuickMenu from "../components/quick-menu/QuickMenu";
 import QuickMenuSection from "../components/quick-menu/QuickMenuSection";
 import QuickMenuItem from "../components/quick-menu/QuickMenuItem";
-import IBlockOperationsService from "../services/block-operations/IBlockOperationsService";
 import { ELEMENT_TYPES } from "../services/element-factory/ElementFactoryService";
 
 class QuickMenuBuilder {
 
-    static build(blockOperationsService: IBlockOperationsService): QuickMenu {
+    static build(): QuickMenu {
 
-        const quickMenu: QuickMenu = new QuickMenu(blockOperationsService);
+        const quickMenu: QuickMenu = new QuickMenu();
 
         const basicBlocksSection: QuickMenuSection = new QuickMenuSection(quickMenu, 'Basic blocks', 'basic-section');
 
