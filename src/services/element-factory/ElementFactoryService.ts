@@ -1,41 +1,74 @@
 import IElementFactoryService from "./IElementFactoryService";
 
 interface ElementCreator {
-    (content: string): HTMLElement;
+    (content: string | null): HTMLElement;
 }
 
 class ElementFactoryService implements IElementFactoryService {
 
     private creators: { [type: string]: ElementCreator };
 
-    constructor() {
+    private static _instance: ElementFactoryService;
+
+    static ELEMENT_TYPES = {
+        BLOCK_PARAGRAPH: "block-p",
+        PARAGRAPH: "p",
+        CHECKBOX_ITEM: "checkboxItem",
+        LIST_ITEM: "listItem",
+        BLOCK_HEADER_1: "h1",
+        HEADER_2: "h2",
+        HEADER_3: "h3",
+        HEADER_4: "h4",
+        HEADER_5: "h5",
+        HEADER_6: "h6",
+        DRAG_HANDLE_BUTTON: "drag-handle-button"
+    }
+
+    private constructor() {
+
+        if (ElementFactoryService._instance) {
+            throw new Error("Use ElementFactoryService.getInstance() to get instance.");
+        }
 
         this.creators = {};
 
-        this.register(ELEMENT_TYPES.BLOCK_PARAGRAPH, ElementFactoryService.blockParagraphCreator());
-        this.register(ELEMENT_TYPES.PARAGRAPH, ElementFactoryService.paragraphCreator());
-        this.register(ELEMENT_TYPES.CHECKBOX_ITEM, ElementFactoryService.checkboxItemCreator());
-        this.register(ELEMENT_TYPES.LIST_ITEM, ElementFactoryService.listItemCreator());
-        this.register(ELEMENT_TYPES.BLOCK_HEADER_1, ElementFactoryService.headingCreator(1));
-        this.register(ELEMENT_TYPES.HEADER_2, ElementFactoryService.headingCreator(2));
-        this.register(ELEMENT_TYPES.HEADER_3, ElementFactoryService.headingCreator(3));
-        this.register(ELEMENT_TYPES.HEADER_4, ElementFactoryService.headingCreator(4));
-        this.register(ELEMENT_TYPES.HEADER_5, ElementFactoryService.headingCreator(5));
-        this.register(ELEMENT_TYPES.HEADER_6, ElementFactoryService.headingCreator(6));
+        this.register(ElementFactoryService.ELEMENT_TYPES.BLOCK_PARAGRAPH, ElementFactoryService.blockParagraphCreator());
+        this.register(ElementFactoryService.ELEMENT_TYPES.PARAGRAPH, ElementFactoryService.paragraphCreator());
+        this.register(ElementFactoryService.ELEMENT_TYPES.CHECKBOX_ITEM, ElementFactoryService.checkboxItemCreator());
+        this.register(ElementFactoryService.ELEMENT_TYPES.LIST_ITEM, ElementFactoryService.listItemCreator());
+        this.register(ElementFactoryService.ELEMENT_TYPES.BLOCK_HEADER_1, ElementFactoryService.headingCreator(1));
+        this.register(ElementFactoryService.ELEMENT_TYPES.HEADER_2, ElementFactoryService.headingCreator(2));
+        this.register(ElementFactoryService.ELEMENT_TYPES.HEADER_3, ElementFactoryService.headingCreator(3));
+        this.register(ElementFactoryService.ELEMENT_TYPES.HEADER_4, ElementFactoryService.headingCreator(4));
+        this.register(ElementFactoryService.ELEMENT_TYPES.HEADER_5, ElementFactoryService.headingCreator(5));
+        this.register(ElementFactoryService.ELEMENT_TYPES.HEADER_6, ElementFactoryService.headingCreator(6));
+        this.register(ElementFactoryService.ELEMENT_TYPES.DRAG_HANDLE_BUTTON, ElementFactoryService.dragHandleButtonCreator());
+
+
+        ElementFactoryService._instance = this;
+    }
+
+    static getInstance(): ElementFactoryService {
+
+        if (!this._instance) {
+            this._instance = new ElementFactoryService();
+        }
+
+        return this._instance;
     }
 
     private register(type: string, creator: ElementCreator): void {
         this.creators[type] = creator;
     }
 
-    create(type: string, content: string): HTMLElement {
+    create(type: string, content?: string): HTMLElement {
         const creator = this.creators[type];
 
         if (!creator) {
             throw new TypeError(`No creator registered for type: ${type}`);
         }
 
-        return creator(content);
+        return creator(content || "");
     }
 
     private static blockParagraphCreator(): ElementCreator {
@@ -69,6 +102,12 @@ class ElementFactoryService implements IElementFactoryService {
         };
     }
 
+    private static dragHandleButtonCreator(): ElementCreator {
+
+        return () => {
+            return ElementFactoryService.dragHandleButton();
+        };
+    }
 
     private static paragraph(content: string | null = null): HTMLElement {
         const p = document.createElement('p');
@@ -155,7 +194,7 @@ class ElementFactoryService implements IElementFactoryService {
         let newButton = document.createElement('button');
         newButton.innerHTML = '<svg width="20" height="20" fill="currentColor"><use href="#icon-material-drag"></use></svg>';
 
-        newDiv.appendChild(newButton);
+        // newDiv.appendChild(newButton);
         newDiv.appendChild(newElement);
 
         newDiv.classList.add('block');
@@ -167,6 +206,18 @@ class ElementFactoryService implements IElementFactoryService {
         return newDiv;
     }
 
+    static dragHandleButton() {
+
+        let button = document.createElement('button');
+        button.innerHTML = '<svg width="20" height="20" fill="currentColor"><use href="#icon-material-drag"></use></svg>';
+
+        button.classList.add('drag-handler');
+        button.classList.add('button-reset');
+        button.draggable = true;
+
+        return button;
+    }
+
 
 
 
@@ -175,19 +226,20 @@ class ElementFactoryService implements IElementFactoryService {
 
 }
 
-export const ELEMENT_TYPES = {
-    BLOCK_PARAGRAPH: "block-p",
-    PARAGRAPH: "p",
-    CHECKBOX_ITEM: "checkboxItem",
-    LIST_ITEM: "listItem",
-    BLOCK_HEADER_1: "h1",
-    HEADER_2: "h2",
-    HEADER_3: "h3",
-    HEADER_4: "h4",
-    HEADER_5: "h5",
-    HEADER_6: "h6",
+// export const ELEMENT_TYPES = {
+//     BLOCK_PARAGRAPH: "block-p",
+//     PARAGRAPH: "p",
+//     CHECKBOX_ITEM: "checkboxItem",
+//     LIST_ITEM: "listItem",
+//     BLOCK_HEADER_1: "h1",
+//     HEADER_2: "h2",
+//     HEADER_3: "h3",
+//     HEADER_4: "h4",
+//     HEADER_5: "h5",
+//     HEADER_6: "h6",
+//     DRAG_HANDLE_BUTTON: "drag-handle-button"
 
 
-} as const;
+// } as const;
 
 export default ElementFactoryService
