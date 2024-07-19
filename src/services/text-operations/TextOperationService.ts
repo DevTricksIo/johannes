@@ -7,25 +7,11 @@ type TargetNode = {
 
 class TextOperationService implements ITextOperationService {
 
-    // selectedNodes: Node[] | null; //muito provavlemente eu vou ter que quebrar em n arrays um para cada no de bloco 
-    // target: TargetNode | null;    //muito provavelmente eu vou ter um target para cada nó de bloco
-    // intention: string | null;     //e um intention para cada nó de bloco.
-
-
-    // command: string;
-    // value: string | undefined;
-
-    private static _instance: TextOperationService;
+    private static instance: TextOperationService;
 
     private constructor() {
-        // this.selectedNodes = null;
-        // this.target = null;
-        // this.intention = null;
 
-        // this.command = command;
-        // this.value = value;
-
-        if (TextOperationService._instance) {
+        if (TextOperationService.instance) {
             throw new Error();
         }
     }
@@ -33,11 +19,11 @@ class TextOperationService implements ITextOperationService {
     static getInstance(): TextOperationService {
 
 
-        if (!this._instance) {
-            this._instance = new TextOperationService();
+        if (!this.instance) {
+            this.instance = new TextOperationService();
         }
 
-        return this._instance;
+        return this.instance;
     }
 
     execCommand(command: string, value: string | null): boolean {
@@ -72,203 +58,9 @@ class TextOperationService implements ITextOperationService {
         return document.execCommand(command, false, v);
     }
 
-    // execCommand2(): boolean {
-
-
-    //     if (this.command == "link") {
-    //         alert("delete");
-
-    //         return true;
-    //     }
-
-    //     if (this.command == "delete") {
-    //         alert("delete");
-
-    //         return true;
-    //     }
-
-    //     if (this.command == "duplicate") {
-    //         alert("duplicate");
-
-    //         return true;
-    //     }
-
-
-    //     return document.execCommand(this.command, false, this.value);
-    // }
-
     queryCommandState(command: string, value: string | null): boolean {
         return document.queryCommandState(command);
     }
-
-
-
-
-    // queryCommandState(): boolean {
-    //     const value = document.queryCommandState(this.command);
-
-    //     return value;
-    // }
-
-    // queryCommandState2(): boolean {
-    //     let aa = document.queryCommandState(this.command);
-    //     return aa;
-    // }
-
-    // execCommand(): boolean {
-
-    //     if (this.command == "link") {
-    //         alert("delete");
-
-    //         return true;
-    //     }
-
-    //     if (this.command == "delete") {
-    //         alert("delete");
-
-    //         return true;
-    //     }
-
-    //     if (this.command == "duplicate") {
-    //         alert("duplicate");
-
-    //         return true;
-    //     }
-
-    //     return document.execCommand(this.command, false, this.value);
-    // }
-
-    // execCommand2(): boolean {
-
-
-    //     if (this.command == "link") {
-    //         alert("delete");
-
-    //         return true;
-    //     }
-
-    //     if (this.command == "delete") {
-    //         alert("delete");
-
-    //         return true;
-    //     }
-
-    //     if (this.command == "duplicate") {
-    //         alert("duplicate");
-
-    //         return true;
-    //     }
-
-
-    //     return document.execCommand(this.command, false, this.value);
-    // }
-
-
-    // execCommand(command: string, showUI?: boolean, value?: any): boolean {
-
-    //     this.selectedNodes = this.getSelectedTextNodes();
-    //     this.target = { nodeType: command, classes: value };
-    //     this.setIntention(this.selectedNodes[0], this.target);
-
-
-    //     this.selectedNodes.forEach(node => {
-
-    //         if (node.nodeType !== Node.TEXT_NODE) {
-    //             throw new Error("Invalid node typed");
-    //         }
-
-    //         if (this.intention == "add") {
-
-    //             let alreadyAppliedStyle = this.findClosestMatchingParent(node, this.target!);
-
-    //             if (!alreadyAppliedStyle) {
-    //                 this.insertNewContent(node);
-    //             } else {
-    //                 // não faça nada por enquanto
-    //             }
-    //         }
-    //     });
-
-
-    //     return true;
-    // }
-
-
-    // insertNewContent(node: Node): void {
-    //     if (node.nodeType !== Node.TEXT_NODE) {
-    //         throw new Error("Node must be a text node.");
-    //     }
-
-    //     // Get the current selection
-    //     const selection = window.getSelection()!;
-
-    //     // Check if the selection is within the node
-    //     if (!selection.containsNode(node, true)) {
-    //         console.log("No text selected or selection does not intersect with the given node.");
-    //         return;
-    //     }
-
-    //     // Get the range of the selection
-    //     const range = selection.getRangeAt(0);
-
-    //     // Check if the selected range is within the text node
-    //     if (range.commonAncestorContainer !== node) {
-    //         console.log("Selection does not fully encompass the text node.");
-    //         return;
-    //     }
-
-    //     // Extract parts of the text node based on the selection
-    //     const startOffset = range.startOffset;
-    //     const endOffset = range.endOffset;
-
-    //     const beforeText = node.textContent.substring(0, startOffset);
-    //     const selectedText = range.toString();
-    //     const afterText = node.textContent.substring(endOffset);
-
-    //     // Create the wrapper element for the selected text
-    //     const wrapperElement = this.createWrapperElement();
-    //     wrapperElement.textContent = selectedText;
-
-    //     // Create document fragment to hold the new structure
-    //     let fragment = document.createDocumentFragment();
-
-    //     if (beforeText) {
-    //         fragment.appendChild(document.createTextNode(beforeText));
-    //     }
-
-    //     fragment.appendChild(wrapperElement);
-
-    //     if (afterText) {
-    //         fragment.appendChild(document.createTextNode(afterText));
-    //     }
-
-    //     // Replace the original node with the fragment
-    //     if (node.parentNode) {
-    //         node.parentNode.replaceChild(fragment, node);
-    //     }
-    // }
-
-
-
-    // createWrapperElement(textNode: Node): HTMLElement {
-    //     const element = document.createElement(this.target!.nodeType);
-    //     element.classList.add(...this.target!.classes!);
-    //     element.textContent = this.extractSelectedText(textNode);
-    //     return element;
-    // }
-
-
-    // setIntention(firstNode: Node, targetNode: TargetNode): string {
-
-    //     let hasTarget = this.findClosestMatchingParent(firstNode, targetNode);
-
-    //     if (!hasTarget) {
-    //         return this.intention = "add";
-    //     }
-
-    //     return "remove";
-    // }
-
 
     getTargetElementMap(command: string): keyof HTMLElementTagNameMap {
         switch (command) {
