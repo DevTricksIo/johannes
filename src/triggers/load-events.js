@@ -6,6 +6,9 @@ import FloatingToolbarBuilder from "../builders/FloatingToolbarBuilder";
 import AddBlock from "../components/add-block/AddBlock";
 import iconsSVG from '../assets/img/icons.svg';
 
+import UIBuilder from "../builders/UIBuilder";
+
+
 //Focus on P when load
 document.addEventListener('DOMContentLoaded', function () {
     const editor = document.querySelector('.johannes-editor');
@@ -56,25 +59,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-// TODO: use a DI Container
 document.addEventListener('DOMContentLoaded', function () {
-
-    let elementFactoryService = new ElementFactoryService();
-    let blockOperationsService = new BlockOperationsService(elementFactoryService);
-
-    let addBlock = new AddBlock();
-
-    johannesEditor.appendChild(addBlock.htmlElement);
-
-    let quickMenu = QuickMenuBuilder.build(blockOperationsService);
-
-    johannesEditor.appendChild(quickMenu.htmlElement);
-
-    let floatingToolbar = FloatingToolbarBuilder.build();
-
-
-    johannesEditor.appendChild(floatingToolbar.htmlElement);
-
+    UIBuilder.build().start();
 });
 
 
