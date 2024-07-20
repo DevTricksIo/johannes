@@ -72,13 +72,6 @@ abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
     focus() {
         this.htmlElement.focus();
     }
-
-    // reRender(): void {
-    //     if (this.isVisible) {
-    //         this.hide();
-    //         this.show();
-    //     }
-    // }
 }
 
 export default BaseUIComponent;
