@@ -1,7 +1,7 @@
-import BaseUIComponent from "../../common/BaseUIComponent";
-import InputLinkBox from "./InputLinkBox";
+import { BaseUIComponent } from "../../common/BaseUIComponent";
+import { InputLinkBox } from "./InputLinkBox";
 
-class InputLinkBoxWrapper extends BaseUIComponent {
+export class InputLinkBoxWrapper extends BaseUIComponent {
 
     display: string;
     inputLinkBox: InputLinkBox;
@@ -30,5 +30,3 @@ class InputLinkBoxWrapper extends BaseUIComponent {
         return htmlElement;
     }
 }
-
-export default InputLinkBoxWrapper;

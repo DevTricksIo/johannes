@@ -1,7 +1,7 @@
-import BaseDoublyLinkedList from './BaseDoublyLinkedList';
-import JNode from './JNode';
+import { BaseDoublyLinkedList } from './BaseDoublyLinkedList';
+import { JNode } from './JNode';
 
-class DoublyLinkedList<T> extends BaseDoublyLinkedList<T> {
+export class DoublyLinkedList<T> extends BaseDoublyLinkedList<T> {
 
     constructor() {
         super();
@@ -24,5 +24,3 @@ class DoublyLinkedList<T> extends BaseDoublyLinkedList<T> {
         this.length++;
     }
 }
-
-export default DoublyLinkedList;

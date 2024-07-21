@@ -1,6 +1,6 @@
-import BaseUIComponent from "../../common/BaseUIComponent";
+import { BaseUIComponent } from "../../common/BaseUIComponent";
 
-class GroupButton extends BaseUIComponent {
+export class GroupButton extends BaseUIComponent {
 
     display: string;
 
@@ -23,5 +23,3 @@ class GroupButton extends BaseUIComponent {
     }
 
 }
-
-export default GroupButton;

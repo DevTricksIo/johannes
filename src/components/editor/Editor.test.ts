@@ -1,6 +1,18 @@
 // import Editor from "./Editor";
 // import ElementNotFoundError from "../../errors/ElementNotFoundError";
 
+import { Editor } from "./Editor";
+
+
+describe("Editor", () => {
+    test("getInstance with success", () => {
+        const editor = Editor.getInstance();
+
+        expect(editor).toBeInstanceOf(Editor);
+    });
+});
+
+
 // describe('EditorInitializer', () => {
 
 //     beforeEach(() => {

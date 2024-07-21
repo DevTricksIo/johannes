@@ -12,10 +12,10 @@ module.exports = {
     moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1'
     },
-    // collectCoverage: true,
-    // collectCoverageFrom: [
-    //     'src/**/*.{js,ts}',
-    //     '!src/**/*.d.ts'
-    // ],
-    // coverageReporters: ['html', 'text-summary']
+    collectCoverage: true,
+    collectCoverageFrom: [
+        'src/**/*.{js,ts}',
+        '!src/**/*.d.ts'
+    ],
+    coverageReporters: ['html', 'text-summary']
 };

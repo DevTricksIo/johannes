@@ -1,16 +1,15 @@
-import QuickMenu from "../components/quick-menu/QuickMenu";
-import QuickMenuSection from "../components/quick-menu/QuickMenuSection";
-import QuickMenuItem from "../components/quick-menu/QuickMenuItem";
-import ElementFactoryService from "../services/element-factory/ElementFactoryService";
-// import { ELEMENT_TYPES } from "../services/element-factory/ElementFactoryService";
+import { QuickMenu } from "../components/quick-menu/QuickMenu";
+import { QuickMenuSection } from "../components/quick-menu/QuickMenuSection";
+import { QuickMenuItem } from "../components/quick-menu/QuickMenuItem";
+import { ElementFactoryService } from "../services/element-factory/ElementFactoryService";
 
-class QuickMenuBuilder {
+export class QuickMenuBuilder {
 
     static build(): QuickMenu {
 
         const quickMenu: QuickMenu = new QuickMenu();
 
-        const basicBlocksSection: QuickMenuSection = new QuickMenuSection(quickMenu, 'Basic blocks', 'basic-section');
+        const basicBlocksSection: QuickMenuSection = new QuickMenuSection({ quickMenuInstance: quickMenu, title: 'Basic blocks', classList: 'basic-section' });
 
         basicBlocksSection.appendQuickMenuItems([
             new QuickMenuItem(basicBlocksSection, 'Paragraph', 'Just start writing with plain text.', 'icon-wordpress-paragraph', ElementFactoryService.ELEMENT_TYPES.PARAGRAPH, "paragraph text p"),
@@ -26,7 +25,7 @@ class QuickMenuBuilder {
 
         quickMenu.append(basicBlocksSection);
 
-        const headingBlocksSection = new QuickMenuSection(quickMenu, 'Heading', 'heading-section');
+        const headingBlocksSection = new QuickMenuSection({ quickMenuInstance: quickMenu, title: 'Heading', classList: 'heading-section' });
 
         headingBlocksSection.appendQuickMenuItems([
             new QuickMenuItem(headingBlocksSection, 'Heading 1', 'Large header to organize content.', 'icon-julia-head-1', ElementFactoryService.ELEMENT_TYPES.BLOCK_HEADER_1, "header 1 heading 1 h1"),
@@ -40,7 +39,7 @@ class QuickMenuBuilder {
         quickMenu.append(headingBlocksSection);
 
 
-        const listBlocksSection = new QuickMenuSection(quickMenu, 'List', 'list-section');
+        const listBlocksSection = new QuickMenuSection({ quickMenuInstance: quickMenu, title: 'List', classList: 'list-section' });
 
         listBlocksSection.appendQuickMenuItems([
             new QuickMenuItem(listBlocksSection, 'Todo list', 'Organize items with bullet points.', 'icon-material-check-list', 'todo-list', "todo list task list checklist"),
@@ -54,5 +53,3 @@ class QuickMenuBuilder {
         return quickMenu;
     }
 }
-
-export default QuickMenuBuilder;

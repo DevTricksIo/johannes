@@ -1,6 +1,6 @@
-import BaseUIComponent from "../../common/BaseUIComponent";
+import { BaseUIComponent } from "../../common/BaseUIComponent";
 
-class InputLinkBox extends BaseUIComponent {
+export class InputLinkBox extends BaseUIComponent {
 
     display: string;
 
@@ -22,5 +22,3 @@ class InputLinkBox extends BaseUIComponent {
         return htmlElement;
     }
 }
-
-export default InputLinkBox;

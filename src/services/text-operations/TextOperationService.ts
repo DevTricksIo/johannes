@@ -1,11 +1,11 @@
-import ITextOperationService from "./ITextOperationService";
+import { ITextOperationService } from "./ITextOperationService";
 
 type TargetNode = {
     nodeType: string;
     classes?: string[];
 };
 
-class TextOperationService implements ITextOperationService {
+export class TextOperationService implements ITextOperationService {
 
     private static instance: TextOperationService;
 
@@ -197,5 +197,3 @@ class TextOperationService implements ITextOperationService {
         return "";
     }
 }
-
-export default TextOperationService;

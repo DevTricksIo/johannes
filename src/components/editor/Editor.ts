@@ -1,57 +1,106 @@
-import ElementNotFoundError from "../../errors/ElementNotFoundError";
-import FloatingToolbarBuilder from "../../builders/FloatingToolbarBuilder";
-import QuickMenuBuilder from "../../builders/QuickMenuBuilder";
-import AddBlock from "../add-block/AddBlock";
-import BlockOperationsService from "../../services/block-operations/BlockOperationsService";
-import ElementFactoryService from "../../services/element-factory/ElementFactoryService";
-import IEditorConfig from "./IEditorConfig";
+import { ElementFactoryService } from "../../services/element-factory/ElementFactoryService";
+import { BaseUIComponent } from "../common/BaseUIComponent";
+import { IElementFactoryService } from "../../services/element-factory/IElementFactoryService";
+import { ServiceProvider } from "../../services/service-provider/ServiceProvider";
 
-class Editor {
+export class Editor extends BaseUIComponent {
 
-    editorId: string = "#johannesEditor";
+    display: string;
+    editorId: string = "johannesEditor";
 
-    constructor(configuration: Partial<IEditorConfig> = {}) {
+    private readonly elementFactoryService: IElementFactoryService;
 
-        const defaults: IEditorConfig = {
-            enableFloatingToolbar: false,
-            enableQuickMenu: false,
-            enableAddBlock: false,
-            includeHeader: false,
-            includeFirstParagraph: false
-        };
+    private static instance: Editor;
 
-        const config = { ...defaults, ...configuration };
+    private constructor() {
 
-        const editor = document.getElementById(this.editorId);
-
-        if (!editor) {
-            throw new ElementNotFoundError(this.editorId);
+        if (Editor.instance) {
+            throw new Error("Use BlockOperationsService.getInstance() to get instance.");
         }
 
-        editor.innerHTML = '';
+        const editorId = "johannesEditor";
 
-        /* Dependencies */
-        const elementFactoryService = new ElementFactoryService();
-        const blockOperationsService = BlockOperationsService.getInstance(elementFactoryService);
+        super({
+            editorId: editorId
+        });
 
-        /* Main components */
-        const quickMenu = QuickMenuBuilder.build(blockOperationsService);
-        const floatingToolbar = FloatingToolbarBuilder.build();
+        this.elementFactoryService = ServiceProvider.getInstance().getInstanceOf("IElementFactoryService");
+        this.display = "block";
+        this.attachEvents();
 
-        if (config.enableAddBlock) {
-            const addBlock = new AddBlock();
-            editor.appendChild(addBlock.htmlElement);
+        Editor.instance = this;
+    }
+
+    init(): HTMLElement {
+
+        const htmlElement = document.getElementById(this.props.editorId) || document.createElement("div");
+
+        if (htmlElement) {
+            htmlElement?.classList.add("johannes-editor");
         }
 
-        if (config.enableQuickMenu) {
-            editor.appendChild(quickMenu.htmlElement);
+        return htmlElement;
+    }
+
+    static getInstance() {
+
+        if (!Editor.instance) {
+            Editor.instance = new Editor();
         }
 
-        if (config.enableFloatingToolbar) {
-            editor.appendChild(floatingToolbar.htmlElement);
-        }
+        return Editor.instance;
+    }
 
+    attachEvents() {
+
+        const container = document.getElementById(this.editorId);
+
+        container?.addEventListener('mouseover', (event) => {
+
+            const element = (event.target as HTMLElement);
+
+            if (element.closest('.block')) {
+                this.appendDragHandler(element);
+            }
+        });
+
+
+        //Focus on the first paragraph
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                const firstParagraph = document.querySelector("#johannesEditor > .content .block p") as HTMLElement;
+                if (firstParagraph) {
+                    firstParagraph.focus();
+                }
+            });
+        } else {
+            const firstParagraph = document.querySelector("#johannesEditor > .content .block p") as HTMLElement;
+            if (firstParagraph) {
+                firstParagraph.focus();
+            }
+        }
+    }
+
+    appendDragHandler(element: HTMLElement): void {
+        const parent = element.closest('.block');
+        let dragHandler = parent?.querySelector(".drag-handler");
+
+        if (!dragHandler && parent) {
+            dragHandler = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.DRAG_HANDLE_BUTTON);
+            parent.prepend(dragHandler);
+        }
+    }
+
+    removeDragHandler(element: HTMLElement): void {
+        const parent = element.closest('.block');
+
+        if (parent) {
+            const dragHandler = parent.querySelector(".drag-handler");
+            dragHandler?.remove();
+        }
+    }
+
+    extractContent() {
+        throw new Error("Not implemented Exception");
     }
 }
-
-export default Editor;

@@ -1,10 +1,10 @@
-import IElementFactoryService from "./IElementFactoryService";
+import { IElementFactoryService } from "./IElementFactoryService";
 
 interface ElementCreator {
     (content: string | null): HTMLElement;
 }
 
-class ElementFactoryService implements IElementFactoryService {
+export class ElementFactoryService implements IElementFactoryService {
 
     private creators: { [type: string]: ElementCreator };
 
@@ -241,5 +241,3 @@ class ElementFactoryService implements IElementFactoryService {
 
 
 // } as const;
-
-export default ElementFactoryService

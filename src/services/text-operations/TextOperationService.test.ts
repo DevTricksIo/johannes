@@ -1,4 +1,4 @@
-import TextOperationService from "./TextOperationService"
+import { TextOperationService } from "./TextOperationService"
 
 describe("textOperationService", () => {
     test("getInstance with success", () => {

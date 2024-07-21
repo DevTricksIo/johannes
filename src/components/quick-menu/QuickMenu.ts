@@ -1,13 +1,13 @@
-import QuickMenuSection from './QuickMenuSection';
-import QuickMenuEmpty from './QuickMenuEmpty';
-import QuickMenuItem from './QuickMenuItem';
-import BaseUIComponent from '../common/BaseUIComponent';
-import CircularDoublyLinkedList from '../../common/CircularDoublyLinkedList';
-import IBlockOperationsService from '../../services/block-operations/IBlockOperationsService';
-import JNode from "../../common/JNode";
-import ServiceProvider from "../../services/service-provider/ServiceProvider";
+import { QuickMenuSection } from './QuickMenuSection';
+import {QuickMenuEmpty} from './QuickMenuEmpty';
+import { QuickMenuItem } from './QuickMenuItem';
+import {BaseUIComponent} from '../common/BaseUIComponent';
+import {CircularDoublyLinkedList} from '../../common/CircularDoublyLinkedList';
+import { IBlockOperationsService } from '../../services/block-operations/IBlockOperationsService';
+import {JNode} from "../../common/JNode";
+import { ServiceProvider } from "../../services/service-provider/ServiceProvider";
 
-class QuickMenu extends BaseUIComponent {
+export class QuickMenu extends BaseUIComponent {
 
     display: string;
 
@@ -19,7 +19,7 @@ class QuickMenu extends BaseUIComponent {
     private quickMenuEmpty: QuickMenuEmpty;
     private filterInput: string;
 
-    private static _instance: QuickMenu | null;
+    private static instance: QuickMenu | null;
 
     constructor() {
 
@@ -27,7 +27,7 @@ class QuickMenu extends BaseUIComponent {
 
         this.display = 'block';
 
-        this.blockOperationsService =  ServiceProvider.getInstance().getInstanceOf("IBlockOperationsService");
+        this.blockOperationsService = ServiceProvider.getInstance().getInstanceOf("IBlockOperationsService");
         this.currentFocusedMenuItem = null;
         this.htmlFocusedElementBeforeOpenQuickMenu = null;
         this.menuSections = new CircularDoublyLinkedList<QuickMenuSection>();
@@ -64,11 +64,11 @@ class QuickMenu extends BaseUIComponent {
     }
 
     public static getInstance(): QuickMenu {
-        if (!QuickMenu._instance) {
-            QuickMenu._instance = new QuickMenu();
+        if (!QuickMenu.instance) {
+            QuickMenu.instance = new QuickMenu();
         }
 
-        return QuickMenu._instance;
+        return QuickMenu.instance;
     }
 
     switchVisualFocus(item: JNode<QuickMenuItem>): void {
@@ -325,5 +325,3 @@ class QuickMenu extends BaseUIComponent {
         }
     }
 }
-
-export default QuickMenu;

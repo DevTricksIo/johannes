@@ -1,6 +1,6 @@
-import BaseUIComponent from "../../common/BaseUIComponent";;
+import { BaseUIComponent } from "../../common/BaseUIComponent";;
 
-class ColorIcon extends BaseUIComponent {
+export class ColorIcon extends BaseUIComponent {
 
     display: string;
 
@@ -26,5 +26,3 @@ class ColorIcon extends BaseUIComponent {
     }
 
 }
-
-export default ColorIcon;

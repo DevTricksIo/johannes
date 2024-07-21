@@ -1,8 +1,8 @@
 // import BaseUIComponent from "./BaseUIComponent";
 
-import BaseUIComponent from "./BaseUIComponent";
+import { BaseUIComponent } from "./BaseUIComponent";
 
-class SVGIcon extends BaseUIComponent {
+export class SVGIcon extends BaseUIComponent {
 
     display: string;
 
@@ -40,5 +40,3 @@ class SVGIcon extends BaseUIComponent {
         return new SVGIcon(this.props.hrefUseId, this.props.width, this.props.height);
     }
 }
-
-export default SVGIcon;

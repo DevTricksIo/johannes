@@ -1,8 +1,8 @@
-import SVGIcon from "../../common/SVGIcon";
-import BaseUIComponent from "../../common/BaseUIComponent";
-import ICommand from "../../../services/common/ICommand";
+import { SVGIcon } from "../../common/SVGIcon";
+import { BaseUIComponent } from "../../common/BaseUIComponent";
+import { ICommand } from "../../../services/common/ICommand";
 
-class GroupedButton extends BaseUIComponent {
+export class GroupedButton extends BaseUIComponent {
 
     private readonly _commandService: ICommand;
     private readonly _command: string;
@@ -83,5 +83,3 @@ class GroupedButton extends BaseUIComponent {
     }
 
 }
-
-export default GroupedButton;

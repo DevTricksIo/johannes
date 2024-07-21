@@ -1,16 +1,19 @@
-import BaseUIComponent from "../common/BaseUIComponent";
-import AddBlockButton from "./AddBlockButton";
+import { BaseUIComponent } from "../common/BaseUIComponent";
+import { AddBlockButton } from "./AddBlockButton";
 
-class AddBlock extends BaseUIComponent {
+export class AddBlock extends BaseUIComponent {
 
     display: string;
 
     constructor() {
+
         super({});
+
         this.display = "block"
     }
 
     init(): HTMLElement {
+
         const htmlElement = document.createElement("div");
 
         htmlElement.classList.add("add-block-wrapper");
@@ -21,7 +24,4 @@ class AddBlock extends BaseUIComponent {
 
         return htmlElement;
     }
-
 }
-
-export default AddBlock;

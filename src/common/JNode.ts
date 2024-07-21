@@ -1,6 +1,6 @@
-import BaseDoublyLinkedList from "./BaseDoublyLinkedList";
+import { BaseDoublyLinkedList } from "./BaseDoublyLinkedList";
 
-class JNode<T> {
+export class JNode<T> {
 
     parentList: BaseDoublyLinkedList<T>;
 
@@ -53,5 +53,3 @@ class JNode<T> {
         return null;
     }
 }
-
-export default JNode;

@@ -1,9 +1,9 @@
-import SVGIcon from '../common/SVGIcon';
-import QuickMenuSection from './QuickMenuSection';
-import BaseUIComponent from '../common/BaseUIComponent';
-import JNode from "../../common/JNode";
+import { SVGIcon } from '../common/SVGIcon';
+import { BaseUIComponent } from '../common/BaseUIComponent';
+import { JNode } from "../../common/JNode";
+import { QuickMenuSection } from './QuickMenuSection';
 
-class QuickMenuItem extends BaseUIComponent {
+export class QuickMenuItem extends BaseUIComponent {
 
     display: string;
 
@@ -102,5 +102,3 @@ class QuickMenuItem extends BaseUIComponent {
         });
     }
 }
-
-export default QuickMenuItem;

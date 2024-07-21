@@ -1,9 +1,9 @@
-import QuickMenu from './QuickMenu';
-import QuickMenuItem from "./QuickMenuItem";
-import DoublyLinkedList from '../../common/DoublyLinkedList';
-import BaseUIComponent from '../common/BaseUIComponent';
+import { QuickMenu } from './QuickMenu';
+import { QuickMenuItem } from "./QuickMenuItem";
+import { DoublyLinkedList } from '../../common/DoublyLinkedList';
+import { BaseUIComponent } from '../common/BaseUIComponent';
 
-class QuickMenuSection extends BaseUIComponent {
+export class QuickMenuSection extends BaseUIComponent {
 
     display: string;
 
@@ -11,14 +11,14 @@ class QuickMenuSection extends BaseUIComponent {
 
     menuItems = new DoublyLinkedList<QuickMenuItem>();
 
-    constructor(quickMenuInstance: QuickMenu, title: string, classList: string) {
+    constructor(options: QuickMenuSectionOptions) {
 
         super({
-            title: title,
-            classList: classList
+            title: options.title,
+            classList: options.classList
         });
 
-        this.quickMenuInstance = quickMenuInstance;
+        this.quickMenuInstance = options.quickMenuInstance;
 
         this.display = 'block';
     }
@@ -79,4 +79,8 @@ class QuickMenuSection extends BaseUIComponent {
     }
 }
 
-export default QuickMenuSection;
+export interface QuickMenuSectionOptions {
+    quickMenuInstance: QuickMenu;
+    title: string;
+    classList: string;
+}

@@ -1,8 +1,8 @@
-import SVGIcon from "../../common/SVGIcon";
-import BaseUIComponent from "../../common/BaseUIComponent";
-import DropdownMenuList from "./DropdownMenuList";
+import { SVGIcon } from "../../common/SVGIcon";
+import { BaseUIComponent } from "../../common/BaseUIComponent";
+import { DropdownMenuList } from "./DropdownMenuList";
 
-class DropdownMenuButton extends BaseUIComponent {
+export class DropdownMenuButton extends BaseUIComponent {
 
     display: string;
     dropdownList: DropdownMenuList;
@@ -58,5 +58,3 @@ class DropdownMenuButton extends BaseUIComponent {
 
     }
 }
-
-export default DropdownMenuButton;

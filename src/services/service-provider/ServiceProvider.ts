@@ -1,7 +1,6 @@
-import ServiceAlreadyRegisteredException from "../errors/ServiceAlreadyRegisteredException";
-import ServiceNotFoundException from "../errors/ServiceNotFoundException";
+import { ServiceNotFoundException } from "../errors/ServiceNotFoundException";
 
-class ServiceProvider {
+export class ServiceProvider {
     private static instance: ServiceProvider;
     private services: Map<string, any> = new Map();
 
@@ -23,9 +22,6 @@ class ServiceProvider {
     }
 
     registerService<T>(key: string, instance: T): void {
-        if (this.services.has(key)) {
-            throw new ServiceAlreadyRegisteredException(key);
-        }
         this.services.set(key, instance);
     }
 
@@ -39,5 +35,3 @@ class ServiceProvider {
         this.services.clear();
     }
 }
-
-export default ServiceProvider;

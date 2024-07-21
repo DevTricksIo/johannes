@@ -1,18 +1,17 @@
 
-import ServiceNotFoundException from "../errors/ServiceNotFoundException";
-import ServiceAlreadyRegisteredException from "../errors/ServiceAlreadyRegisteredException";
-import BlockOperationsService from "../block-operations/BlockOperationsService";
-import TextOperationService from "../text-operations/TextOperationService";
-import ServiceProvider from "./ServiceProvider";
+import { ServiceNotFoundException } from "../errors/ServiceNotFoundException";
+import { BlockOperationsService } from "../block-operations/BlockOperationsService";
+import { TextOperationService } from "../text-operations/TextOperationService";
+import { ServiceProvider } from "./ServiceProvider";
 
-describe("Service getInstance functionality", () => {
+describe("ServiceProvider getInstance functionality", () => {
 
     afterEach(() => {
         const sut = ServiceProvider.getInstance();
         sut.reset();
     });
 
-    test('Create a ServiceProvider', () => {
+    test('Create with success empty', () => {
 
         const result = ServiceProvider.getInstance();
 
@@ -80,8 +79,11 @@ describe('ServiceProvider register functionality', () => {
         const serviceInstance2 = BlockOperationsService.getInstance();
 
         sut.registerService("IAmazingService", serviceInstance1);
+        sut.registerService("IAmazingService", serviceInstance2);
 
-        expect(() => sut.registerService("IAmazingService", serviceInstance2)).toThrow(ServiceAlreadyRegisteredException);
+        const resultInstance = sut.getInstanceOf("IAmazingService");
+
+        expect(resultInstance).toBe(serviceInstance2);
     });
 });
 
@@ -111,7 +113,7 @@ describe('ServiceProvider reset functionality', () => {
 
 
 describe('ServiceProvider addServices functionality', () => {
-    let sut : ServiceProvider;
+    let sut: ServiceProvider;
 
     beforeEach(() => {
         sut = ServiceProvider.getInstance();

@@ -1,6 +1,6 @@
-import JNode from "./JNode";
+import { JNode } from "./JNode";
 
-abstract class BaseDoublyLinkedList<T> {
+export abstract class BaseDoublyLinkedList<T> {
 
     head: JNode<T> | null = null;
     tail: JNode<T> | null = null;
@@ -91,5 +91,3 @@ abstract class BaseDoublyLinkedList<T> {
         return null;
     }
 }
-
-export default BaseDoublyLinkedList;

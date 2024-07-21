@@ -1,11 +1,16 @@
-import IBlockOperationsService from "./IBlockOperationsService";
-import IElementFactoryService from "../element-factory/IElementFactoryService";
-import ElementFactoryService from "../element-factory/ElementFactoryService";
+import { IBlockOperationsService } from "./IBlockOperationsService";
+import { IElementFactoryService } from "../element-factory/IElementFactoryService";
+import { ElementFactoryService } from "../element-factory/ElementFactoryService";
 
-class BlockOperationsService implements IBlockOperationsService {
+export class BlockOperationsService implements IBlockOperationsService {
 
     private readonly elementFactoryService: IElementFactoryService;
     private static instance: BlockOperationsService;
+
+    static BLOCK_OPERATIONS = {
+        TURN_INTO: "turnInto",
+        CREATE_DEFAULT_BLOCK: "CreateDefaultBlock"
+    };
 
     private constructor(elementFactoryService: IElementFactoryService) {
 
@@ -19,11 +24,11 @@ class BlockOperationsService implements IBlockOperationsService {
 
     execCommand(command: string, value: string | null = null): boolean {
 
-        if (command == BLOCK_OPERATIONS.CREATE_DEFAULT_BLOCK) {
+        if (command == BlockOperationsService.BLOCK_OPERATIONS.CREATE_DEFAULT_BLOCK) {
             this.createDefaultBlock(null);
         }
 
-        if (command == BLOCK_OPERATIONS.TURN_INTO) {
+        if (command == BlockOperationsService.BLOCK_OPERATIONS.TURN_INTO) {
 
             if (!value) {
                 throw new Error();
@@ -238,10 +243,3 @@ class BlockOperationsService implements IBlockOperationsService {
     }
 
 }
-
-export const BLOCK_OPERATIONS = {
-    TURN_INTO: "turnInto",
-    CREATE_DEFAULT_BLOCK: "CreateDefaultBlock"
-} as const;
-
-export default BlockOperationsService;

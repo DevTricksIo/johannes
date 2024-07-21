@@ -1,6 +1,6 @@
-import BaseUIComponent from '../common/BaseUIComponent';
+import { BaseUIComponent } from '../common/BaseUIComponent';
 
-class QuickMenuEmpty extends BaseUIComponent {
+export class QuickMenuEmpty extends BaseUIComponent {
 
     display: string;
 
@@ -24,5 +24,3 @@ class QuickMenuEmpty extends BaseUIComponent {
         return htmlEmptyIndicator;
     }
 }
-
-export default QuickMenuEmpty;

@@ -11,9 +11,5 @@ import './text-blocks-from-newlines.js';
 import './memento.js';
 import './assets/img/icons.svg'
 
-import Editor from './components/editor/Editor';
-
-export default Editor;
-
 // default style
 import './assets/css/main.css';

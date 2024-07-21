@@ -1,18 +1,17 @@
-import DropdownMenu from "../components/floating-toolbar/dropdown-tool/DropdownMenu";
-import FloatingToolbar from "../components/floating-toolbar/FloatingToolbar";
-import DropdownMenuList from "../components/floating-toolbar/dropdown-tool/DropdownMenuList";
-import DropdownMenuListItem from "../components/floating-toolbar/dropdown-tool/DropdownMenuListItem";
-import SVGIcon from "../components/common/SVGIcon";
-import FloatingToolbarSeparator from "../components/floating-toolbar/separator/FloatingToolbarSeparator";
-import GroupButton from "../components/floating-toolbar/group-button/GroupButton";
-import GroupedButton from "../components/floating-toolbar/group-button/GroupedButton";
-import ColorIcon from "../components/floating-toolbar/dropdown-tool/ColorIcon";
-import TextOperationService from "../services/text-operations/TextOperationService";
-import ElementFactoryService from "../services/element-factory/ElementFactoryService";
-import DropdownMenuButton from "../components/floating-toolbar/dropdown-tool/DropdownMenuButton";
-import BlockOperationsService, { BLOCK_OPERATIONS } from "../services/block-operations/BlockOperationsService";
+import { DropdownMenu } from "../components/floating-toolbar/dropdown-tool/DropdownMenu";
+import { FloatingToolbar } from "../components/floating-toolbar/FloatingToolbar";
+import { DropdownMenuList } from "../components/floating-toolbar/dropdown-tool/DropdownMenuList";
+import { DropdownMenuListItem } from "../components/floating-toolbar/dropdown-tool/DropdownMenuListItem";
+import { SVGIcon } from "../components/common/SVGIcon";
+import { FloatingToolbarSeparator } from "../components/floating-toolbar/separator/FloatingToolbarSeparator";
+import { GroupButton } from "../components/floating-toolbar/group-button/GroupButton";
+import { GroupedButton } from "../components/floating-toolbar/group-button/GroupedButton";
+import { ColorIcon } from "../components/floating-toolbar/dropdown-tool/ColorIcon";
+import { TextOperationService } from "../services/text-operations/TextOperationService";
+import { DropdownMenuButton } from "../components/floating-toolbar/dropdown-tool/DropdownMenuButton";
+import { BlockOperationsService } from "../services/block-operations/BlockOperationsService";
 
-class FloatingToolbarBuilder {
+export class FloatingToolbarBuilder {
 
     static build(): FloatingToolbar {
 
@@ -37,7 +36,7 @@ class FloatingToolbarBuilder {
         turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, BlockOperationsService.getInstance(), "p", null, SVGIcons.paragraph.htmlElement, "Text"));
         turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, BlockOperationsService.getInstance(), "bulleted-list", null, SVGIcons.b_list.htmlElement, "Bulleted list"));
         turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, BlockOperationsService.getInstance(), "numbered-list", null, SVGIcons.n_list.htmlElement, "Numbered list"));
-        turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, BlockOperationsService.getInstance(),"code", null, SVGIcons.code.htmlElement, "Code"));
+        turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, BlockOperationsService.getInstance(), "code", null, SVGIcons.code.htmlElement, "Code"));
         turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, BlockOperationsService.getInstance(), "quote", null, SVGIcons.quote.htmlElement, "Quote"));
         turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, BlockOperationsService.getInstance(), "h1", null, SVGIcons.head1.htmlElement, "Heading 1"));
         turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, BlockOperationsService.getInstance(), "h2", null, SVGIcons.head2.htmlElement, "Heading 2"));
@@ -57,7 +56,7 @@ class FloatingToolbarBuilder {
 
         const groupButton = new GroupButton();
 
-        new GroupedButton(TextOperationService.getInstance(),"link", "Link", "icon-material-link").documentAppendTo(groupButton.htmlElement);
+        new GroupedButton(TextOperationService.getInstance(), "link", "Link", "icon-material-link").documentAppendTo(groupButton.htmlElement);
         new GroupedButton(TextOperationService.getInstance(), "bold", "Bold", "icon-wordpress-bold").documentAppendTo(groupButton.htmlElement);
         new GroupedButton(TextOperationService.getInstance(), "italic", "Italic", "icon-material-italic").documentAppendTo(groupButton.htmlElement);
         new GroupedButton(TextOperationService.getInstance(), "underline", "Underline", "icon-material-underline").documentAppendTo(groupButton.htmlElement);
@@ -115,5 +114,3 @@ const SVGIcons: any = {
     duplicate: new SVGIcon("icon-material-duplicate", "22", "22"),
     delete: new SVGIcon("icon-material-trash", "22", "22"),
 }
-
-export default FloatingToolbarBuilder;

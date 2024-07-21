@@ -1,4 +1,4 @@
-abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
+export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
 
     private _canHide: boolean;
 
@@ -73,5 +73,3 @@ abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
         this.htmlElement.focus();
     }
 }
-
-export default BaseUIComponent;

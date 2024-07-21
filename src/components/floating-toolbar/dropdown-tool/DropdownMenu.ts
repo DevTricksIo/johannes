@@ -1,8 +1,8 @@
-import BaseUIComponent from "../../common/BaseUIComponent";
-import DropdownMenuButton from "./DropdownMenuButton";
-import DropdownMenuList from "./DropdownMenuList";
+import { BaseUIComponent } from "../../common/BaseUIComponent";
+import { DropdownMenuButton } from "./DropdownMenuButton";
+import { DropdownMenuList } from "./DropdownMenuList";
 
-class DropdownMenu extends BaseUIComponent {
+export class DropdownMenu extends BaseUIComponent {
 
     display: string;
 
@@ -31,5 +31,3 @@ class DropdownMenu extends BaseUIComponent {
         return htmlElement;
     }
 }
-
-export default DropdownMenu;

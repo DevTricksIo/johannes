@@ -1,8 +1,8 @@
-import BaseUIComponent from "../../common/BaseUIComponent";
-import CircularDoublyLinkedList from "../../../common/CircularDoublyLinkedList";
-import DropdownMenuListItem from "./DropdownMenuListItem";
+import { BaseUIComponent } from "../../common/BaseUIComponent";
+import { CircularDoublyLinkedList } from "../../../common/CircularDoublyLinkedList";
+import { DropdownMenuListItem } from "./DropdownMenuListItem";
 
-class DropdownMenuList extends BaseUIComponent {
+export class DropdownMenuList extends BaseUIComponent {
 
     display: string;
     dropdownItems: CircularDoublyLinkedList<DropdownMenuListItem>;
@@ -53,5 +53,3 @@ class DropdownMenuList extends BaseUIComponent {
         });
     }
 }
-
-export default DropdownMenuList;

@@ -1,8 +1,6 @@
-import ICommand from "../common/ICommand";
+import { ICommand } from "../common/ICommand";
 
-interface ITextOperationService extends ICommand {
+export interface ITextOperationService extends ICommand {
 
-    
+
 }
-
-export default ITextOperationService;

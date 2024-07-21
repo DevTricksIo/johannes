@@ -1,24 +1,18 @@
 import { ServiceProvider } from "../../services/service-provider/ServiceProvider";
-import { QuickMenu } from "./QuickMenu";
-import { QuickMenuItem } from "./QuickMenuItem"
-import { QuickMenuSection } from "./QuickMenuSection";
+import { QuickMenu } from "./QuickMenu"
 import { TextOperationService } from "../../services/text-operations/TextOperationService";
-import { ElementFactoryService } from "../../services/element-factory/ElementFactoryService";
 import { BlockOperationsService } from "../../services/block-operations/BlockOperationsService";
+import { ElementFactoryService } from "../../services/element-factory/ElementFactoryService";
 
-describe("QuickMenuItem", () => {
+describe("QuickMenu", () => {
 
     ServiceProvider.getInstance().registerService("ITextOperationService", TextOperationService.getInstance());
     ServiceProvider.getInstance().registerService("IBlockOperationsService", BlockOperationsService.getInstance());
     ServiceProvider.getInstance().registerService("IElementFactoryService", ElementFactoryService.getInstance());
 
-    test("Create QuickMenuItem with success", () => {
-
+    test("Create a new QuickMenu with success", () => {
         const quickMenu = new QuickMenu();
-        const quickMenuSection = new QuickMenuSection({ quickMenuInstance: quickMenu, title: "", classList: "a" });
 
-        const quickMenuItem = new QuickMenuItem(quickMenuSection, "a", "b", "c", "d", "e");
-
-        expect(quickMenuItem).toBeInstanceOf(QuickMenuItem);
+        expect(quickMenu).toBeInstanceOf(QuickMenu);
     });
 });

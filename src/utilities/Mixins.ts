@@ -1,4 +1,4 @@
-class Mixins {
+export class Mixins {
 
     private constructor() { };
 
@@ -11,5 +11,3 @@ class Mixins {
         });
     }
 }
-
-export default Mixins;

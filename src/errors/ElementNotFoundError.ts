@@ -1,4 +1,4 @@
-class ElementNotFoundError extends Error {
+export class ElementNotFoundError extends Error {
 
     elementId: string;
 
@@ -8,5 +8,3 @@ class ElementNotFoundError extends Error {
         this.elementId = elementId;
     }
 }
-
-export default ElementNotFoundError;

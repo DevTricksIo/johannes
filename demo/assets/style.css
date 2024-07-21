@@ -369,7 +369,7 @@ p {
 
 
 
-#textFormattingBar {
+#floatingToolbar {
     justify-content: space-between;
     padding: 8px 16px;
     background-color: #f9f9f9;
@@ -385,21 +385,21 @@ span {
 }
 
 
-#textFormattingBar .item {
+#floatingToolbar .item {
     color: rgb(120, 119, 116);
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-#textFormattingBar .item>button {
+#floatingToolbar .item>button {
 
     display: inline-flex;
     align-items: center;
 }
 
 
-#textFormattingBar select {
+#floatingToolbar select {
     color: rgb(120, 119, 116);
     border: none;
     font-size: 0.85rem;
@@ -659,7 +659,7 @@ mark {
 #turnIntoButton:not([disabled]):hover,
 #colorTextButton:not([disabled]):hover,
 #moreTextOptionButton:not([disabled]):hover,
-#textFormattingBar .item>button:not([disabled]):hover {
+#floatingToolbar .item>button:not([disabled]):hover {
     background-color: #e9e9e9;
     box-shadow: 0px 0px 0px 2px #e9e9e9;
     border-radius: 1px;

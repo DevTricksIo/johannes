@@ -1,4 +1,4 @@
-import BlockOperationsService from "./BlockOperationsService"
+import { BlockOperationsService } from "./BlockOperationsService"
 
 describe("BlockOperationService", () => {
     test("getInstance with success", () => {

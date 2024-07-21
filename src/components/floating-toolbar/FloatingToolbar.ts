@@ -1,10 +1,10 @@
-import BaseUIComponent from '../common/BaseUIComponent';
-import DropdownMenu from './dropdown-tool/DropdownMenu';
-import FloatingToolbarSeparator from './separator/FloatingToolbarSeparator';
-import GroupButton from './group-button/GroupButton';
-import InputLinkBoxWrapper from './link-box/InputLinkBoxWrapper';
+import { BaseUIComponent } from '../common/BaseUIComponent';
+import { DropdownMenu } from './dropdown-tool/DropdownMenu';
+import { FloatingToolbarSeparator } from './separator/FloatingToolbarSeparator';
+import { GroupButton } from './group-button/GroupButton';
+import { InputLinkBoxWrapper } from './link-box/InputLinkBoxWrapper';
 
-class FloatingToolbar extends BaseUIComponent {
+export class FloatingToolbar extends BaseUIComponent {
 
     display: string;
     dropdowns: DropdownMenu[];
@@ -154,5 +154,3 @@ class FloatingToolbar extends BaseUIComponent {
 
     }
 }
-
-export default FloatingToolbar;

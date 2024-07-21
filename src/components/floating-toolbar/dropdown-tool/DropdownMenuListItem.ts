@@ -1,8 +1,8 @@
-import ICommand from "../../../services/common/ICommand";
-import BaseUIComponent from "../../common/BaseUIComponent";
-import DropdownMenuList from "./DropdownMenuList";
+import { ICommand } from "../../../services/common/ICommand";
+import { BaseUIComponent } from "../../common/BaseUIComponent";
+import { DropdownMenuList } from "./DropdownMenuList";
 
-class DropdownMenuListItem extends BaseUIComponent {
+export class DropdownMenuListItem extends BaseUIComponent {
 
     private readonly _commandService: ICommand;
     private readonly _command: string;
@@ -70,5 +70,3 @@ class DropdownMenuListItem extends BaseUIComponent {
         });
     }
 }
-
-export default DropdownMenuListItem;
