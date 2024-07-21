@@ -3,6 +3,7 @@ import { DropdownMenu } from './dropdown-tool/DropdownMenu';
 import { FloatingToolbarSeparator } from './separator/FloatingToolbarSeparator';
 import { GroupButton } from './group-button/GroupButton';
 import { InputLinkBoxWrapper } from './link-box/InputLinkBoxWrapper';
+import { Utils } from "../../utilities/Utils";
 
 export class FloatingToolbar extends BaseUIComponent {
 
@@ -114,6 +115,11 @@ export class FloatingToolbar extends BaseUIComponent {
 
                 setTimeout(() => {
                     if (window.getSelection()!.toString().trim() !== '') {
+
+                        if (Utils.isSelectedTextDescendantOf(".title")) {
+                            return;
+                        }
+
                         event.preventDefault();
                         event.stopPropagation();
 
@@ -135,8 +141,15 @@ export class FloatingToolbar extends BaseUIComponent {
         document.addEventListener('mouseup', (event) => {
             if (!this.isVisible) {
 
+                // wait the selection to be reflected in the DOM
                 setTimeout(() => {
+
                     if (window.getSelection()!.toString().trim() !== '') {
+
+                        if (Utils.isSelectedTextDescendantOf(".title")) {
+                            return;
+                        }
+
                         event.preventDefault();
                         event.stopPropagation();
 
@@ -154,3 +167,5 @@ export class FloatingToolbar extends BaseUIComponent {
 
     }
 }
+
+
