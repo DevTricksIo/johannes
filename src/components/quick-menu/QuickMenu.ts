@@ -1,10 +1,10 @@
 import { QuickMenuSection } from './QuickMenuSection';
-import {QuickMenuEmpty} from './QuickMenuEmpty';
+import { QuickMenuEmpty } from './QuickMenuEmpty';
 import { QuickMenuItem } from './QuickMenuItem';
-import {BaseUIComponent} from '../common/BaseUIComponent';
-import {CircularDoublyLinkedList} from '../../common/CircularDoublyLinkedList';
+import { BaseUIComponent } from '../common/BaseUIComponent';
+import { CircularDoublyLinkedList } from '../../common/CircularDoublyLinkedList';
 import { IBlockOperationsService } from '../../services/block-operations/IBlockOperationsService';
-import {JNode} from "../../common/JNode";
+import { JNode } from "../../common/JNode";
 import { ServiceProvider } from "../../services/service-provider/ServiceProvider";
 
 export class QuickMenu extends BaseUIComponent {
