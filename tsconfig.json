@@ -9,10 +9,7 @@
         "outDir": "./dist", // Diretório para arquivos compilados
         "baseUrl": "./", // Base para resolução de módulos
         "paths": { // Mapeamento de caminhos para módulos
-            "*": [
-                "node_modules/*",
-                "src/*",
-            ]
+            "@/*": ["src/*"]
         },
         "sourceMap": true // Gera mapas de código fonte para debugging
     },
