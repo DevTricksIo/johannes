@@ -12,24 +12,23 @@
 
 <body>
 
-    <div id="johannesEditor" >
-
-        
-
-        <!-- <div class="title">
-            <h1 contenteditable="true" data-placeholder="Untitled"></h1>
-        </div> -->
-
-        <div class="content">
-            <div class="block deletable">
-                <p class="johannes-content-element focusable swittable key-trigger editable" data-type="p"
-                    contenteditable="true" data-placeholder="Write something or type / (slash) to choose a block..."
-                    tabindex="0"></p>
-            </div>
-        </div>
-
-    </div>
+    <div id="johannesEditor"></div>
 
 </body>
+
+<script>
+
+    const editorConfig = {
+        enableFloatingToolbar: true,
+        enableQuickMenu: true,
+        enableAddBlock: true,
+        includeHeader: true,
+        includeFirstParagraph: true,
+        enableTitle: true,
+        title: undefined
+    };
+
+    window.editorConfig = editorConfig;
+</script>
 
 </html>
