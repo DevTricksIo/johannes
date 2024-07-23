@@ -8,12 +8,15 @@ import { FloatingToolbarBuilder } from "./FloatingToolbarBuilder";
 import { FloatingToolbar } from "../components/floating-toolbar/FloatingToolbar";
 import { QuickMenu } from "../components/quick-menu/QuickMenu";
 import { AddBlock } from "../components/add-block/AddBlock";
+import { EditorConfig } from "../components/editor/EditorConfig";
+import { Title } from "../components/title/Title";
 
 export class UIBuilder {
 
     private static instance: UIBuilder;
 
     private editor: Editor;
+    // private title: Title;
     private addBlock: AddBlock;
     private floatingToolbar: FloatingToolbar;
     private quickMenu: QuickMenu;
@@ -23,13 +26,15 @@ export class UIBuilder {
         editor: Editor,
         addBock: AddBlock,
         floatingToolbar: FloatingToolbar,
-        quickMenu: QuickMenu) {
+        quickMenu: QuickMenu,
+        title: Title) {
 
         if (UIBuilder.instance) {
             throw new Error();
         }
 
         this.editor = editor;
+        // this.title = title;
         this.addBlock = addBock;
         this.floatingToolbar = floatingToolbar;
         this.quickMenu = quickMenu;
@@ -57,21 +62,36 @@ export class UIBuilder {
             serviceProvider.registerService("ITextOperationService", TextOperationService.getInstance());
         }
 
-        const editor = Editor.getInstance();
-        const addBlock = new AddBlock();
+        const editor = Editor.getInstance(serviceProvider.getInstanceOf("IElementFactoryService"), serviceProvider.getInstanceOf("IBlockOperationsService"));
+
+        const title = new Title();
+        const addBlock = new AddBlock(serviceProvider.getInstanceOf("IBlockOperationsService"));
         const floatingToolbar = FloatingToolbarBuilder.build();
         const quickMenu = QuickMenuBuilder.build();
 
-        const builder = new UIBuilder(editor, addBlock, floatingToolbar, quickMenu);
+        const builder = new UIBuilder(editor, addBlock, floatingToolbar, quickMenu, title);
 
         return builder;
     }
 
     start(): Editor {
 
-        this.editor.htmlElement.appendChild(this.addBlock.htmlElement);
-        this.editor.htmlElement.appendChild(this.floatingToolbar.htmlElement);
-        this.editor.htmlElement.appendChild(this.quickMenu.htmlElement);
+        // if (window.editorConfig?.enableTitle) {
+        //     this.editor.htmlElement.appendChild(this.title.htmlElement);
+        // }
+
+        if (window.editorConfig?.enableAddBlock || true) {
+            this.editor.htmlElement.appendChild(this.addBlock.htmlElement);
+        }
+
+        if (window.editorConfig?.enableFloatingToolbar || true) {
+            this.editor.htmlElement.appendChild(this.floatingToolbar.htmlElement);
+        }
+
+        if (window.editorConfig?.enableQuickMenu || true) {
+            this.editor.htmlElement.appendChild(this.quickMenu.htmlElement);
+        }
+
 
         return this.editor;
     }
