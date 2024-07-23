@@ -30,7 +30,9 @@ export class BlockOperationsService implements IBlockOperationsService {
     execCommand(command: string, value: string | null = null): boolean {
 
         if (command == BlockOperationsService.BLOCK_OPERATIONS.CREATE_DEFAULT_BLOCK) {
-            this.createDefaultBlock(null);
+            const element = document.activeElement || null;
+            
+            this.createDefaultBlock(element);
             return true;
         }
 
@@ -261,7 +263,7 @@ export class BlockOperationsService implements IBlockOperationsService {
     }
 
 
-    createDefaultBlock(eventParagraph: HTMLElement | null): void {
+    createDefaultBlock(eventParagraph: Element | null): void {
 
         const newBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.BLOCK_PARAGRAPH, "");
 
@@ -272,8 +274,8 @@ export class BlockOperationsService implements IBlockOperationsService {
             document.querySelector("#johannesEditor .content")!.appendChild(newBlock);
         }
 
-        const focusable = newBlock.querySelector('.johannes-content-element');
-        // focusable.focus();
+        const focusable = newBlock.querySelector('.johannes-content-element') as HTMLElement;
+        focusable.focus();
 
         // focusOnTheEndOfTheText(focusable);
     }
