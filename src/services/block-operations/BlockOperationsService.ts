@@ -12,6 +12,7 @@ export class BlockOperationsService implements IBlockOperationsService {
         CREATE_DEFAULT_BLOCK: "CreateDefaultBlock",
         DELETE_FOCUS_ON_PREVIOUS: "DeleteAndFocusOnPrevious",
         DELETE_FOCUS_ON_NEXT: "DeleteAndFocusOnNext",
+        FOCUS_ON_FIRST: "FocusOnFirst",
         FOCUS_ON_PREVIOUS: "FocusOnPrevious",
         FOCUS_ON_NEXT: "FocusOnNext"
     };
@@ -31,9 +32,21 @@ export class BlockOperationsService implements IBlockOperationsService {
 
         if (command == BlockOperationsService.BLOCK_OPERATIONS.CREATE_DEFAULT_BLOCK) {
             const element = document.activeElement || null;
-            
+
             this.createDefaultBlock(element);
             return true;
+        }
+
+        if (command == BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_FIRST) {
+
+            const element = document.querySelector(".focusable");
+
+            if (element) {
+                (element as HTMLElement).focus();
+                return true;
+            }
+
+            return false;
         }
 
         if (command == BlockOperationsService.BLOCK_OPERATIONS.DELETE_FOCUS_ON_PREVIOUS) {
@@ -49,7 +62,7 @@ export class BlockOperationsService implements IBlockOperationsService {
         if (command == BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_PREVIOUS) {
             const element = document.activeElement;
 
-            if(element){
+            if (element) {
                 this.focusOnPrevious(element);
                 return true;
             }
@@ -59,7 +72,7 @@ export class BlockOperationsService implements IBlockOperationsService {
         if (command == BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_NEXT) {
             const element = document.activeElement;
 
-            if(element){
+            if (element) {
                 this.focusOnNext(element);
                 return true;
             }
