@@ -10,6 +10,7 @@ import { ColorIcon } from "../components/floating-toolbar/dropdown-tool/ColorIco
 import { TextOperationService } from "../services/text-operations/TextOperationService";
 import { DropdownMenuButton } from "../components/floating-toolbar/dropdown-tool/DropdownMenuButton";
 import { BlockOperationsService } from "../services/block-operations/BlockOperationsService";
+import { DropdownMenuListItemTitle } from "@/components/floating-toolbar/dropdown-tool/DropdownMenuListItemTitle";
 
 export class FloatingToolbarBuilder {
 
@@ -32,6 +33,9 @@ export class FloatingToolbarBuilder {
         const turnIntoBarList = new DropdownMenuList("turnIntoSelect", "Turn into");
         const turnIntoBarButton = new DropdownMenuButton("turnIntoButton", "Text", turnIntoBarList);
         const turnIntoDropdown = new DropdownMenu(turnIntoBarButton, turnIntoBarList);
+
+
+        turnIntoBarList.append(new DropdownMenuListItemTitle(turnIntoBarList, "Turn into"));
 
         turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, BlockOperationsService.getInstance(), "p", null, SVGIcons.paragraph.htmlElement, "Text"));
         turnIntoBarList.append(new DropdownMenuListItem(turnIntoBarList, BlockOperationsService.getInstance(), "bulleted-list", null, SVGIcons.b_list.htmlElement, "Bulleted list"));
@@ -73,13 +77,28 @@ export class FloatingToolbarBuilder {
         const colorButton = new DropdownMenuButton("colorTextButton", new ColorIcon("#FAF4D1").htmlElement, colorDropdownList);
         const colorDropdown = new DropdownMenu(colorButton, colorDropdownList);
 
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, TextOperationService.getInstance(), TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR, "#FDDEDE", new ColorIcon("#FDDEDE").htmlElement, "Red"));
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, TextOperationService.getInstance(), TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR, "#D7F7DC", new ColorIcon("#D7F7DC").htmlElement, "Green"));
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, TextOperationService.getInstance(), TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR, "#D9EDF6", new ColorIcon("#D9EDF6").htmlElement, "Blue"));
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, TextOperationService.getInstance(), TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR, "#FAF4D1", new ColorIcon("#FAF4D1").htmlElement, "Yellow"));
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, TextOperationService.getInstance(), TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR, "#E1E0E0", new ColorIcon("#E1E0E0").htmlElement, "Grey"));
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, TextOperationService.getInstance(), TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR, "transparent", new ColorIcon("transparent").htmlElement, "None"));
+        colorDropdownList.append(new DropdownMenuListItemTitle(colorDropdownList, "Background"));
 
+        const textOperationService = TextOperationService.getInstance();
+        
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR, "#FDDEDE", new ColorIcon("#FDDEDE").htmlElement, "Red"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR, "#D7F7DC", new ColorIcon("#D7F7DC").htmlElement, "Green"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR, "#D9EDF6", new ColorIcon("#D9EDF6").htmlElement, "Blue"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR, "#FAF4D1", new ColorIcon("#FAF4D1").htmlElement, "Yellow"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR, "#E1E0E0", new ColorIcon("#E1E0E0").htmlElement, "Grey"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR, "transparent", new ColorIcon("transparent").htmlElement, "None"));
+
+        
+        colorDropdownList.append(new DropdownMenuListItemTitle(colorDropdownList, "Color"));
+
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#D44C47", new SVGIcon("icon-material-letter", "22", "22").htmlElement, "Red"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#448361", new SVGIcon("icon-material-letter", "22", "22").htmlElement, "Green"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#337EA9", new SVGIcon("icon-material-letter", "22", "22").htmlElement, "Blue"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#CB912F", new SVGIcon("icon-material-letter", "22", "22").htmlElement, "Yellow"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#787774", new SVGIcon("icon-material-letter", "22", "22").htmlElement, "Grey"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#D9730D", new SVGIcon("icon-material-letter", "22", "22").htmlElement, "Orange"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "inherit", new SVGIcon("icon-material-letter", "22", "22").htmlElement, "None"));
+        
         return colorDropdown;
     }
 
@@ -90,6 +109,8 @@ export class FloatingToolbarBuilder {
         const moreOptionsList = new DropdownMenuList("moreTextOptionSelect", "More options");
         const moreOptionsButton = new DropdownMenuButton("moreTextOptionButton", icon.htmlElement, moreOptionsList, false);
         const moreOptionsDropdown = new DropdownMenu(moreOptionsButton, moreOptionsList);
+
+        moreOptionsList.append(new DropdownMenuListItemTitle(moreOptionsList, "More options"));
 
         moreOptionsList.append(new DropdownMenuListItem(moreOptionsList, BlockOperationsService.getInstance(), "duplicate", null, SVGIcons.duplicate.htmlElement, "Duplicate"));
         moreOptionsList.append(new DropdownMenuListItem(moreOptionsList, BlockOperationsService.getInstance(), "delete", null, SVGIcons.delete.htmlElement, "Delete"));
@@ -112,5 +133,5 @@ const SVGIcons: any = {
     head5: new SVGIcon("icon-julia-head-5", "22", "22"),
     head6: new SVGIcon("icon-julia-head-6", "22", "22"),
     duplicate: new SVGIcon("icon-material-duplicate", "22", "22"),
-    delete: new SVGIcon("icon-material-trash", "22", "22"),
+    delete: new SVGIcon("icon-material-trash", "22", "22")
 }

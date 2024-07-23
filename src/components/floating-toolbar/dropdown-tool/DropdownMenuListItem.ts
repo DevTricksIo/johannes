@@ -3,8 +3,9 @@ import { BaseUIComponent } from "../../common/BaseUIComponent";
 import { DropdownMenuList } from "./DropdownMenuList";
 import { SVGIcon } from "@/components/common/SVGIcon";
 import { TextOperationService } from "@/services/text-operations/TextOperationService";
+import { IDropdownMenuItem } from "./IDropdownMenuItem";
 
-export class DropdownMenuListItem extends BaseUIComponent {
+export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMenuItem {
 
     private readonly textOperationService: ITextOperationService;
     private readonly command: string;
@@ -17,6 +18,10 @@ export class DropdownMenuListItem extends BaseUIComponent {
 
         const icon = new SVGIcon("icon-material-small-check");
         icon.htmlElement.style.display = "none";
+
+        if (value) {
+            leftIcon.style.color = value;
+        }
 
         super({
             leftIcon: leftIcon,
@@ -71,7 +76,9 @@ export class DropdownMenuListItem extends BaseUIComponent {
 
         document.addEventListener("selectionchange", () => {
 
-            if (this.command == TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR) {
+            if (
+                this.command == TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR || 
+                this.command == TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR) {
 
                 setTimeout(() => {
 

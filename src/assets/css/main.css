@@ -519,9 +519,7 @@ a:not([href]) {
 }
 
 
-
-
-.select-wrapper ul>h3 {
+.select-wrapper ul li>h3 {
     font-size: small !important;
     color: #37352fa6;
     margin: 0;

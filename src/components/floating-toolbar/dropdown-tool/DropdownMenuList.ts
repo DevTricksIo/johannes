@@ -1,10 +1,11 @@
 import { BaseUIComponent } from "../../common/BaseUIComponent";
 import { CircularDoublyLinkedList } from "../../../common/CircularDoublyLinkedList";
 import { DropdownMenuListItem } from "./DropdownMenuListItem";
+import { IDropdownMenuItem } from "./IDropdownMenuItem";
 
 export class DropdownMenuList extends BaseUIComponent {
 
-    dropdownItems: CircularDoublyLinkedList<DropdownMenuListItem>;
+    dropdownItems: CircularDoublyLinkedList<IDropdownMenuItem>;
 
     constructor(id: string, title: string) {
         super({
@@ -29,16 +30,16 @@ export class DropdownMenuList extends BaseUIComponent {
         htmlElement.style.display = 'none';
         htmlElement.classList.add('soft-box-shadow', 'dependent-box', 'checkable-items');
 
-        const title = document.createElement('h3');
-        title.innerText = this.props.title;
-        title.style.marginLeft = '5px';
+        // const title = document.createElement('h3');
+        // title.innerText = this.props.title;
+        // title.style.marginLeft = '5px';
 
-        htmlElement.appendChild(title);
+        // htmlElement.appendChild(title);
 
         return htmlElement;
     }
 
-    append(dropdownItem: DropdownMenuListItem): void {
+    append(dropdownItem: IDropdownMenuItem): void {
 
         this.dropdownItems.append(dropdownItem);
         this.htmlElement.appendChild(dropdownItem.htmlElement)
@@ -50,6 +51,23 @@ export class DropdownMenuList extends BaseUIComponent {
             if (this.canHide && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`)) {
 
                 this.hide();
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (this.canHide && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`)) {
+
+                if(event.key == "ArrowDown"){
+                    event.preventDefault();
+                    this.dropdownItems.head;
+
+                    alert("key down pressed");
+                }
+
+                if(event.key == "ArrowUp"){
+                    event.preventDefault();
+                    alert("key up pressed");
+                }
             }
         });
     }
