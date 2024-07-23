@@ -30,8 +30,6 @@ export class TextOperationService implements ITextOperationService {
 
         let v: string | undefined = value || undefined;
 
-
-
         if (command == "link") {
 
             alert("delete");
@@ -58,8 +56,52 @@ export class TextOperationService implements ITextOperationService {
         return document.execCommand(command, false, v);
     }
 
+
+    static QUERY_TEXT_OPERATIONS = {
+        HILITE_COLOR: "hiliteColor"
+    };
+
     queryCommandState(command: string, value: string | null): boolean {
+
+        if (command === TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR) {
+            return this.execHiliteColor(value!);
+        }
+
         return document.queryCommandState(command);
+    }
+
+
+    private execHiliteColor(expectedColor: string) {
+        const selection = window.getSelection();
+
+        if (!selection) {
+            return false;
+        }
+        if (!selection.rangeCount) return false;
+
+        let element : Node | null= selection.getRangeAt(0).commonAncestorContainer;
+
+        if (element.nodeType === Node.TEXT_NODE) {
+            element = element.parentNode;
+        }
+
+        const spanWithBackground = (element as HTMLElement).closest("span[style*='background-color']");
+        if (!spanWithBackground) return false;
+
+        const style = window.getComputedStyle(spanWithBackground);
+        const rgbColor = style.backgroundColor;
+
+        const hexColor = this.rgbToHex(rgbColor);
+
+        return hexColor.toUpperCase() === expectedColor.toUpperCase();
+    }
+
+    rgbToHex(rgb : string): string {
+        const rgbArray = rgb.match(/\d+/g)!.map(Number);
+        return "#" + rgbArray.map(x => {
+            const hex = x.toString(16);
+            return hex.length === 1 ? "0" + hex : hex;
+        }).join("");
     }
 
     getTargetElementMap(command: string): keyof HTMLElementTagNameMap {

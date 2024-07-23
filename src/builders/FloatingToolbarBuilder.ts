@@ -73,12 +73,12 @@ export class FloatingToolbarBuilder {
         const colorButton = new DropdownMenuButton("colorTextButton", new ColorIcon("#FAF4D1").htmlElement, colorDropdownList);
         const colorDropdown = new DropdownMenu(colorButton, colorDropdownList);
 
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, TextOperationService.getInstance(), "hiliteColor", "#FDDEDE", new ColorIcon("#FDDEDE").htmlElement, "Red"));
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, TextOperationService.getInstance(), "hiliteColor", "#D7F7DC", new ColorIcon("#D7F7DC").htmlElement, "Green"));
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, TextOperationService.getInstance(), "hiliteColor", "#D9EDF6", new ColorIcon("#D9EDF6").htmlElement, "Blue"));
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, TextOperationService.getInstance(), "hiliteColor", "#FAF4D1", new ColorIcon("#FAF4D1").htmlElement, "Yellow"));
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, TextOperationService.getInstance(), "hiliteColor", "#E1E0E0", new ColorIcon("#E1E0E0").htmlElement, "Grey"));
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, TextOperationService.getInstance(), "hiliteColor", "transparent", new ColorIcon("transparent").htmlElement, "None"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, TextOperationService.getInstance(), TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR, "#FDDEDE", new ColorIcon("#FDDEDE").htmlElement, "Red"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, TextOperationService.getInstance(), TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR, "#D7F7DC", new ColorIcon("#D7F7DC").htmlElement, "Green"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, TextOperationService.getInstance(), TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR, "#D9EDF6", new ColorIcon("#D9EDF6").htmlElement, "Blue"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, TextOperationService.getInstance(), TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR, "#FAF4D1", new ColorIcon("#FAF4D1").htmlElement, "Yellow"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, TextOperationService.getInstance(), TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR, "#E1E0E0", new ColorIcon("#E1E0E0").htmlElement, "Grey"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, TextOperationService.getInstance(), TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR, "transparent", new ColorIcon("transparent").htmlElement, "None"));
 
         return colorDropdown;
     }
