@@ -58,20 +58,51 @@ export class TextOperationService implements ITextOperationService {
 
 
     static QUERY_TEXT_OPERATIONS = {
-        HILITE_COLOR: "hiliteColor"
+        HILITE_COLOR: "hiliteColor",
+        FORE_COLOR: "foreColor",
     };
 
     queryCommandState(command: string, value: string | null): boolean {
 
         if (command === TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR) {
-            return this.execHiliteColor(value!);
+            return this.queryHiliteColor(value!);
+        }
+
+        if (command === TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR) {
+            return this.queryForeColor(value!);
         }
 
         return document.queryCommandState(command);
     }
 
 
-    private execHiliteColor(expectedColor: string) {
+    private queryForeColor(expectedColor: string) {
+        const selection = window.getSelection();
+
+        if (!selection) {
+            return false;
+        }
+        if (!selection.rangeCount) return false;
+
+        let element : Node | null= selection.getRangeAt(0).commonAncestorContainer;
+
+        if (element.nodeType === Node.TEXT_NODE) {
+            element = element.parentNode;
+        }
+
+        const fontColor = (element as HTMLElement).closest("font[color]");
+        if (!fontColor) return false;
+
+        const style = window.getComputedStyle(fontColor);
+        const rgbColor = style.color;
+
+        const hexColor = this.rgbToHex(rgbColor);
+
+        return hexColor.toUpperCase() === expectedColor.toUpperCase();
+    }
+
+
+    private queryHiliteColor(expectedColor: string) {
         const selection = window.getSelection();
 
         if (!selection) {
