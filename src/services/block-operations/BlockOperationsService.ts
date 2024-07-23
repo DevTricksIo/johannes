@@ -11,7 +11,9 @@ export class BlockOperationsService implements IBlockOperationsService {
         TURN_INTO: "turnInto",
         CREATE_DEFAULT_BLOCK: "CreateDefaultBlock",
         DELETE_FOCUS_ON_PREVIOUS: "DeleteAndFocusOnPrevious",
-        DELETE_FOCUS_ON_NEXT: "DeleteAndFocusOnNext"
+        DELETE_FOCUS_ON_NEXT: "DeleteAndFocusOnNext",
+        FOCUS_ON_PREVIOUS: "FocusOnPrevious",
+        FOCUS_ON_NEXT: "FocusOnNext"
     };
 
     private constructor(elementFactoryService: IElementFactoryService) {
@@ -29,20 +31,37 @@ export class BlockOperationsService implements IBlockOperationsService {
 
         if (command == BlockOperationsService.BLOCK_OPERATIONS.CREATE_DEFAULT_BLOCK) {
             this.createDefaultBlock(null);
-
             return true;
         }
 
         if (command == BlockOperationsService.BLOCK_OPERATIONS.DELETE_FOCUS_ON_PREVIOUS) {
             this.deleteAndFocusOnPrevious();
-
             return true;
         }
 
         if (command == BlockOperationsService.BLOCK_OPERATIONS.DELETE_FOCUS_ON_NEXT) {
             this.deleteAndFocusOnNext();
-
             return true;
+        }
+
+        if (command == BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_PREVIOUS) {
+            const element = document.activeElement;
+
+            if(element){
+                this.focusOnPrevious(element);
+                return true;
+            }
+            return false;
+        }
+
+        if (command == BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_NEXT) {
+            const element = document.activeElement;
+
+            if(element){
+                this.focusOnNext(element);
+                return true;
+            }
+            return false;
         }
 
         if (command == BlockOperationsService.BLOCK_OPERATIONS.TURN_INTO) {
@@ -280,7 +299,7 @@ export class BlockOperationsService implements IBlockOperationsService {
         this.deleteTheCurrentElementAndTheDraggableBlockIfEmpty(currentActiveElement);
     }
 
-    focusOnPrevious(actualElement: Element, position: number | null = null): void {
+    private focusOnPrevious(actualElement: Element, position: number | null = null): void {
 
         let tag = actualElement.tagName.toUpperCase();
         let focusedElement = null;
@@ -347,7 +366,7 @@ export class BlockOperationsService implements IBlockOperationsService {
         return;
     }
 
-    focusOnNext(actualElement: Element, position: number | null = null) {
+    private focusOnNext(actualElement: Element, position: number | null = null) {
         let tag = actualElement.tagName.toUpperCase();
         let focusedElement = null;
 
