@@ -5,8 +5,6 @@ import { BaseUIComponent } from '../common/BaseUIComponent';
 
 export class QuickMenuSection extends BaseUIComponent {
 
-    display: string;
-
     quickMenuInstance: QuickMenu;
 
     menuItems = new DoublyLinkedList<QuickMenuItem>();
@@ -19,8 +17,6 @@ export class QuickMenuSection extends BaseUIComponent {
         });
 
         this.quickMenuInstance = options.quickMenuInstance;
-
-        this.display = 'block';
     }
 
     init(): HTMLElement {

@@ -1,15 +1,14 @@
 import { BaseUIComponent } from "../common/BaseUIComponent";
 import { AddBlockButton } from "./AddBlockButton";
+import { IBlockOperationsService } from "@/services/block-operations/IBlockOperationsService";
 
 export class AddBlock extends BaseUIComponent {
 
-    display: string;
+    constructor(blockOperationService: IBlockOperationsService) {
 
-    constructor() {
-
-        super({});
-
-        this.display = "block"
+        super({
+            blockOperationService: blockOperationService
+        });
     }
 
     init(): HTMLElement {
@@ -18,7 +17,7 @@ export class AddBlock extends BaseUIComponent {
 
         htmlElement.classList.add("add-block-wrapper");
 
-        const button = new AddBlockButton();
+        const button = new AddBlockButton(this.props.blockOperationService);
 
         htmlElement.appendChild(button.htmlElement);
 

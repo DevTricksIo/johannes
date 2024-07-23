@@ -2,13 +2,10 @@ import { BaseUIComponent } from "../../common/BaseUIComponent";
 
 export class GroupButton extends BaseUIComponent {
 
-    display: string;
-
     constructor() {
 
         super({});
 
-        this.display = "block";
         // this.attachEvents();
     }
 

@@ -9,8 +9,6 @@ import { ServiceProvider } from "../../services/service-provider/ServiceProvider
 
 export class QuickMenu extends BaseUIComponent {
 
-    display: string;
-
     private readonly blockOperationsService: IBlockOperationsService;
 
     private currentFocusedMenuItem: JNode<QuickMenuItem> | null;
@@ -24,8 +22,6 @@ export class QuickMenu extends BaseUIComponent {
     constructor() {
 
         super({});
-
-        this.display = 'block';
 
         this.blockOperationsService = ServiceProvider.getInstance().getInstanceOf("IBlockOperationsService");
         this.currentFocusedMenuItem = null;

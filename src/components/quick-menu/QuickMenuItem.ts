@@ -5,8 +5,6 @@ import { QuickMenuSection } from './QuickMenuSection';
 
 export class QuickMenuItem extends BaseUIComponent {
 
-    display: string;
-
     readonly blockType: string;
 
     readonly title: string;
@@ -22,8 +20,6 @@ export class QuickMenuItem extends BaseUIComponent {
             description: description,
             SVGHrefUseId: SVGHrefUseId
         });
-
-        this.display = 'flex';
 
         this.blockType = blockType;
         this.title = title;
@@ -75,6 +71,10 @@ export class QuickMenuItem extends BaseUIComponent {
         htmlElement.appendChild(optionText);
 
         return htmlElement;
+    }
+
+    get display(): string {
+        return 'flex';
     }
 
     focus(): void {

@@ -4,7 +4,6 @@ import { DropdownMenuListItem } from "./DropdownMenuListItem";
 
 export class DropdownMenuList extends BaseUIComponent {
 
-    display: string;
     dropdownItems: CircularDoublyLinkedList<DropdownMenuListItem>;
 
     constructor(id: string, title: string) {
@@ -13,11 +12,13 @@ export class DropdownMenuList extends BaseUIComponent {
             title: title
         });
 
-        this.display = 'flex';
-
         this.dropdownItems = new CircularDoublyLinkedList<DropdownMenuListItem>();
 
         this.attachEvents();
+    }
+
+    get display(): string {
+        return 'flex';
     }
 
     init(): HTMLElement {

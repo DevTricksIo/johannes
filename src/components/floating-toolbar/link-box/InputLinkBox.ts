@@ -2,13 +2,8 @@ import { BaseUIComponent } from "../../common/BaseUIComponent";
 
 export class InputLinkBox extends BaseUIComponent {
 
-    display: string;
-
     constructor() {
         super({});
-
-        this.display = "block";
-
     }
 
     init(): HTMLElement {

@@ -4,16 +4,12 @@ import { DropdownMenuList } from "./DropdownMenuList";
 
 export class DropdownMenu extends BaseUIComponent {
 
-    display: string;
-
     dropdownButton: DropdownMenuButton;
     dropdownList: DropdownMenuList;
 
     constructor(button: DropdownMenuButton, dropdownList: DropdownMenuList) {
 
         super({});
-
-        this.display = 'block';
 
         this.dropdownButton = button;
         this.dropdownList = dropdownList;

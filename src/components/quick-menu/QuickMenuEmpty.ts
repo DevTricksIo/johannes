@@ -2,13 +2,9 @@ import { BaseUIComponent } from '../common/BaseUIComponent';
 
 export class QuickMenuEmpty extends BaseUIComponent {
 
-    display: string;
-
     constructor() {
 
         super({});
-
-        this.display = 'block';
     }
 
     init(): HTMLElement {

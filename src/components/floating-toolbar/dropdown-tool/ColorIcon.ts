@@ -2,14 +2,10 @@ import { BaseUIComponent } from "../../common/BaseUIComponent";;
 
 export class ColorIcon extends BaseUIComponent {
 
-    display: string;
-
     constructor(color: string) {
         super({
             color: color
         });
-
-        this.display = "block";
     }
 
     init(): HTMLElement {

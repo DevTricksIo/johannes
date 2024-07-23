@@ -7,7 +7,6 @@ import { Utils } from "../../utilities/Utils";
 
 export class FloatingToolbar extends BaseUIComponent {
 
-    display: string;
     dropdowns: DropdownMenu[];
     currentSelectionRange: Range | null;
     inputLinkBoxWrapper: InputLinkBoxWrapper;
@@ -20,7 +19,6 @@ export class FloatingToolbar extends BaseUIComponent {
             inputLinkBoxWrapper: inputLinkBoxWrapper
         });
 
-        this.display = 'flex';
         this.inputLinkBoxWrapper = inputLinkBoxWrapper;
         this.attachEvents();
         this.dropdowns = [];
@@ -45,6 +43,10 @@ export class FloatingToolbar extends BaseUIComponent {
         editor?.appendChild(this.props.inputLinkBoxWrapper.htmlElement);
 
         return htmlElement;
+    }
+
+    get display(): string {
+        return 'flex';
     }
 
     show(): void {

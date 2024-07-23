@@ -2,13 +2,8 @@ import { BaseUIComponent } from "../../common/BaseUIComponent";
 
 export class FloatingToolbarSeparator extends BaseUIComponent {
 
-    display: string;
-
     constructor() {
-
         super({});
-
-        this.display = "block";
     }
 
     init(): HTMLElement {

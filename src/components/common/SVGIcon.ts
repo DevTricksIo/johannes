@@ -4,8 +4,6 @@ import { BaseUIComponent } from "./BaseUIComponent";
 
 export class SVGIcon extends BaseUIComponent {
 
-    display: string;
-
     useElement: SVGUseElement;
 
     constructor(hrefUseId: string, width = "16", height = "16") {
@@ -17,7 +15,6 @@ export class SVGIcon extends BaseUIComponent {
 
         })
 
-        this.display = "block";
         this.useElement = this.htmlElement.querySelector('use') as SVGUseElement;
     }
 

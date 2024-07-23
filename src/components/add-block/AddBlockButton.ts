@@ -2,18 +2,16 @@ import { BaseUIComponent } from "../common/BaseUIComponent";
 import { SVGIcon } from "../common/SVGIcon";
 import { BlockOperationsService } from "../../services/block-operations/BlockOperationsService";
 import { IBlockOperationsService } from "../../services/block-operations/IBlockOperationsService";
-import { ServiceProvider } from "../../services/service-provider/ServiceProvider";
 
 export class AddBlockButton extends BaseUIComponent {
 
     private readonly blockOperationsService: IBlockOperationsService;
 
-    display: string;
+    constructor(blockOperationsService: IBlockOperationsService) {
 
-    constructor() {
         super({});
-        this.display = "block";
-        this.blockOperationsService = ServiceProvider.getInstance().getInstanceOf("IBlockOperationsService");
+
+        this.blockOperationsService = blockOperationsService;
         this.attachEvents();
     }
 
@@ -31,8 +29,9 @@ export class AddBlockButton extends BaseUIComponent {
     }
 
     attachEvents(): void {
+
         this.htmlElement.addEventListener("click", () => {
             this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.CREATE_DEFAULT_BLOCK);
-        })
+        });
     }
 }

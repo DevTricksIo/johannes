@@ -4,13 +4,11 @@ import { DropdownMenuList } from "./DropdownMenuList";
 
 export class DropdownMenuListItem extends BaseUIComponent {
 
-    private readonly _commandService: ICommand;
-    private readonly _command: string;
-    private readonly _value: string | null;
+    private readonly commandService: ICommand;
+    private readonly command: string;
+    private readonly value: string | null;
 
     parentDropdownMenuList: DropdownMenuList;
-
-    display: string;
 
     constructor(parentDropdownMenuList: DropdownMenuList, commandService: ICommand, command: string, value: string | null, leftIcon: HTMLElement | SVGElement, title: string) {
         super({
@@ -18,10 +16,9 @@ export class DropdownMenuListItem extends BaseUIComponent {
             title: title
         });
 
-        this.display = 'block';
-        this._command = command;
-        this._value = value;
-        this._commandService = commandService;
+        this.command = command;
+        this.value = value;
+        this.commandService = commandService;
         this.parentDropdownMenuList = parentDropdownMenuList;
 
         this.attachEvent();
@@ -54,7 +51,7 @@ export class DropdownMenuListItem extends BaseUIComponent {
 
             setTimeout(() => {
 
-                this._commandService.execCommand(this._command, this._value);
+                this.commandService.execCommand(this.command, this.value);
 
                 // const selectionEvent = new CustomEvent('selectionChangeAfterExecCommand', {
                 //     detail: { message: 'selectionChangeAfterExecCommand' },

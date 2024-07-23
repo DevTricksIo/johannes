@@ -3,7 +3,6 @@ import { InputLinkBox } from "./InputLinkBox";
 
 export class InputLinkBoxWrapper extends BaseUIComponent {
 
-    display: string;
     inputLinkBox: InputLinkBox;
 
     constructor() {
@@ -13,7 +12,6 @@ export class InputLinkBoxWrapper extends BaseUIComponent {
             inputLinkBox: inputLinkBox
         });
 
-        this.display = "block";
         this.inputLinkBox = inputLinkBox;
 
     }

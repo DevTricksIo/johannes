@@ -1,31 +1,35 @@
 import { ElementFactoryService } from "../../services/element-factory/ElementFactoryService";
 import { BaseUIComponent } from "../common/BaseUIComponent";
 import { IElementFactoryService } from "../../services/element-factory/IElementFactoryService";
-import { ServiceProvider } from "../../services/service-provider/ServiceProvider";
+import { Content } from "../content/Content";
+import { Title } from "../title/Title";
+import { BlockOperationsService } from "@/services/block-operations/BlockOperationsService";
+import { IBlockOperationsService } from "@/services/block-operations/IBlockOperationsService";
 
 export class Editor extends BaseUIComponent {
 
-    display: string;
-    editorId: string = "johannesEditor";
-
     private readonly elementFactoryService: IElementFactoryService;
-
+    private static readonly editorId: string = "johannesEditor";
     private static instance: Editor;
+    
+    private title?: Title;
+    private content?: Content;
 
-    private constructor() {
+    private constructor(
+        elementFactoryService: IElementFactoryService, 
+        blockOperationsService: IBlockOperationsService) {
+
+        super({
+            elementFactoryService: elementFactoryService,
+            blockOperationsService: blockOperationsService
+        });
 
         if (Editor.instance) {
             throw new Error("Use BlockOperationsService.getInstance() to get instance.");
         }
 
-        const editorId = "johannesEditor";
+        this.elementFactoryService = elementFactoryService;
 
-        super({
-            editorId: editorId
-        });
-
-        this.elementFactoryService = ServiceProvider.getInstance().getInstanceOf("IElementFactoryService");
-        this.display = "block";
         this.attachEvents();
 
         Editor.instance = this;
@@ -33,19 +37,29 @@ export class Editor extends BaseUIComponent {
 
     init(): HTMLElement {
 
-        const htmlElement = document.getElementById(this.props.editorId) || document.createElement("div");
+        const htmlElement = document.getElementById(Editor.editorId) || document.createElement("div");
 
-        if (htmlElement) {
-            htmlElement?.classList.add("johannes-editor");
+        htmlElement.classList.add("johannes-editor");
+
+        if (window.editorConfig?.enableTitle || true) {
+            this.title = new Title();
+
+            htmlElement.appendChild(this.title.htmlElement);
         }
+
+        this.content = new Content(this.props.elementFactoryService, this.props.blockOperationsService);
+
+        htmlElement.appendChild(this.content.htmlElement);
+
+        // htmlElement.appendChild(this.props.content.htmlElement);
 
         return htmlElement;
     }
 
-    static getInstance() {
+    static getInstance(elementFactoryService: IElementFactoryService, blockOperationsService: IBlockOperationsService) {
 
         if (!Editor.instance) {
-            Editor.instance = new Editor();
+            Editor.instance = new Editor(elementFactoryService, blockOperationsService);
         }
 
         return Editor.instance;
@@ -53,7 +67,7 @@ export class Editor extends BaseUIComponent {
 
     attachEvents() {
 
-        const container = document.getElementById(this.editorId);
+        const container = document.getElementById(Editor.editorId);
 
         container?.addEventListener('mouseover', (event) => {
 
@@ -63,7 +77,6 @@ export class Editor extends BaseUIComponent {
                 this.appendDragHandler(element);
             }
         });
-
 
         //Focus on the first paragraph
         if (document.readyState === 'loading') {

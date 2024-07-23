@@ -4,7 +4,6 @@ import { DropdownMenuList } from "./DropdownMenuList";
 
 export class DropdownMenuButton extends BaseUIComponent {
 
-    display: string;
     dropdownList: DropdownMenuList;
 
     constructor(id: string, title: string | HTMLElement, dropdownList: DropdownMenuList, includeChevronIcon: boolean = true) {
@@ -16,7 +15,6 @@ export class DropdownMenuButton extends BaseUIComponent {
             includeChevronIcon: includeChevronIcon
         });
 
-        this.display = "block";
         this.dropdownList = dropdownList;
 
         this.attachEvents();

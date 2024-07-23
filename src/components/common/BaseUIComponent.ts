@@ -15,7 +15,9 @@ export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
 
     abstract init(): HTMLElement;
 
-    abstract display: string;
+    get display(): string {
+        return 'block';
+    }
 
     documentAppendTo(parent: HTMLElement): void {
         parent.appendChild(this.htmlElement);
