@@ -16,7 +16,6 @@ export class UIBuilder {
     private static instance: UIBuilder;
 
     private editor: Editor;
-    // private title: Title;
     private addBlock: AddBlock;
     private floatingToolbar: FloatingToolbar;
     private quickMenu: QuickMenu;
@@ -26,15 +25,13 @@ export class UIBuilder {
         editor: Editor,
         addBock: AddBlock,
         floatingToolbar: FloatingToolbar,
-        quickMenu: QuickMenu,
-        title: Title) {
+        quickMenu: QuickMenu) {
 
         if (UIBuilder.instance) {
             throw new Error();
         }
 
         this.editor = editor;
-        // this.title = title;
         this.addBlock = addBock;
         this.floatingToolbar = floatingToolbar;
         this.quickMenu = quickMenu;
@@ -64,12 +61,11 @@ export class UIBuilder {
 
         const editor = Editor.getInstance(serviceProvider.getInstanceOf("IElementFactoryService"), serviceProvider.getInstanceOf("IBlockOperationsService"));
 
-        const title = new Title();
         const addBlock = new AddBlock(serviceProvider.getInstanceOf("IBlockOperationsService"));
         const floatingToolbar = FloatingToolbarBuilder.build();
         const quickMenu = QuickMenuBuilder.build();
 
-        const builder = new UIBuilder(editor, addBlock, floatingToolbar, quickMenu, title);
+        const builder = new UIBuilder(editor, addBlock, floatingToolbar, quickMenu);
 
         return builder;
     }
