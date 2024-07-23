@@ -42,7 +42,7 @@ export class Editor extends BaseUIComponent {
         htmlElement.classList.add("johannes-editor");
 
         if (window.editorConfig?.enableTitle || true) {
-            this.title = new Title();
+            this.title = new Title(this.props.blockOperationsService);
 
             htmlElement.appendChild(this.title.htmlElement);
         }
