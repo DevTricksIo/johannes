@@ -1,6 +1,7 @@
 module.exports = {
+    
     preset: 'ts-jest',
-    testEnvironment: 'jsdom',
+    testEnvironment: 'jest-environment-jsdom',
     roots: ['<rootDir>/src'],
     testMatch: [
         '**/__tests__/**/*.ts',
@@ -12,10 +13,13 @@ module.exports = {
     moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1'
     },
-    collectCoverage: true,
-    collectCoverageFrom: [
-        'src/**/*.{js,ts}',
-        '!src/**/*.d.ts'
-    ],
-    coverageReporters: ['html', 'text-summary']
+    resetModules: true,
+    clearMocks: true,
+    resetMocks: true,
+    // collectCoverage: true,
+    // collectCoverageFrom: [
+    //     'src/**/*.{js,ts}',
+    //     '!src/**/*.d.ts'
+    // ],
+    // coverageReporters: ['html', 'text-summary']
 };
