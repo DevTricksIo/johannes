@@ -9,7 +9,8 @@ import './switch-block.js';
 import './keyboard-navigation.js';
 import './text-blocks-from-newlines.js';
 import './memento.js';
-import './assets/img/icons.svg'
+import './assets/img/icons.svg';
+
 
 // default style
 import './assets/css/main.css';
