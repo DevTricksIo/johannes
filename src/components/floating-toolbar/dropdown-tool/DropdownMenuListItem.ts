@@ -1,16 +1,16 @@
-import { ICommand } from "../../../services/common/ICommand";
+import { ITextOperationService } from "@/services/text-operations/ITextOperationService";
 import { BaseUIComponent } from "../../common/BaseUIComponent";
 import { DropdownMenuList } from "./DropdownMenuList";
 
 export class DropdownMenuListItem extends BaseUIComponent {
 
-    private readonly commandService: ICommand;
+    private readonly textOperationService: ITextOperationService;
     private readonly command: string;
     private readonly value: string | null;
 
     parentDropdownMenuList: DropdownMenuList;
 
-    constructor(parentDropdownMenuList: DropdownMenuList, commandService: ICommand, command: string, value: string | null, leftIcon: HTMLElement | SVGElement, title: string) {
+    constructor(parentDropdownMenuList: DropdownMenuList, textOperationsService: ITextOperationService, command: string, value: string | null, leftIcon: HTMLElement | SVGElement, title: string) {
         super({
             leftIcon: leftIcon,
             title: title
@@ -18,7 +18,7 @@ export class DropdownMenuListItem extends BaseUIComponent {
 
         this.command = command;
         this.value = value;
-        this.commandService = commandService;
+        this.textOperationService = textOperationsService;
         this.parentDropdownMenuList = parentDropdownMenuList;
 
         this.attachEvent();
@@ -51,7 +51,7 @@ export class DropdownMenuListItem extends BaseUIComponent {
 
             setTimeout(() => {
 
-                this.commandService.execCommand(this.command, this.value);
+                this.textOperationService.execCommand(this.command, this.value);
 
                 // const selectionEvent = new CustomEvent('selectionChangeAfterExecCommand', {
                 //     detail: { message: 'selectionChangeAfterExecCommand' },
