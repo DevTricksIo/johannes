@@ -78,12 +78,12 @@ export class QuickMenuItem extends BaseUIComponent {
     }
 
     focus(): void {
-        this.htmlElement.classList.add('block-options-focused');
+        this.htmlElement.classList.add('option-focused');
         this.htmlElement.focus();
     }
 
     removeFocus(): void {
-        this.htmlElement.classList.remove('block-options-focused');
+        this.htmlElement.classList.remove('option-focused');
     }
 
     attachEvents(): void {
