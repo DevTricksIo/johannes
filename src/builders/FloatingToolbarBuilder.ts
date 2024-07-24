@@ -91,12 +91,12 @@ export class FloatingToolbarBuilder {
         
         colorDropdownList.append(new DropdownMenuListItemTitle(colorDropdownList, "Color"));
 
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#D44C47", new SVGIcon("icon-material-letter", "22", "22").htmlElement, "Red"));
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#448361", new SVGIcon("icon-material-letter", "22", "22").htmlElement, "Green"));
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#337EA9", new SVGIcon("icon-material-letter", "22", "22").htmlElement, "Blue"));
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#CB912F", new SVGIcon("icon-material-letter", "22", "22").htmlElement, "Yellow"));
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#787774", new SVGIcon("icon-material-letter", "22", "22").htmlElement, "Grey"));
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "initial", new SVGIcon("icon-material-letter", "22", "22").htmlElement, "None"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#D44C47", new SVGIcon("icon-material-format", "22", "22").htmlElement, "Red"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#448361", new SVGIcon("icon-material-format", "22", "22").htmlElement, "Green"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#337EA9", new SVGIcon("icon-material-format", "22", "22").htmlElement, "Blue"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#CB912F", new SVGIcon("icon-material-format", "22", "22").htmlElement, "Yellow"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#787774", new SVGIcon("icon-material-format", "22", "22").htmlElement, "Grey"));
+        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "initial", new SVGIcon("icon-material-format", "22", "22").htmlElement, "None"));
         
         return colorDropdown;
     }
