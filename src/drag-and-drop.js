@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     dropLine.style.display = 'none';
 
     content.addEventListener('dragstart', (e) => {
-        if (e.target.classList.contains('drag-handler')) {
+        if (e.target.classList?.contains('drag-handler')) {
             draggedItem = e.target.closest('.block');
             draggedItem.setAttribute('draggable', 'true');
             setTimeout(() => {
