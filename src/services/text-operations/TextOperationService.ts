@@ -28,6 +28,12 @@ export class TextOperationService implements ITextOperationService {
 
     execCommand(command: string, value: string | null): boolean {
 
+
+        if(command == TextOperationService.QUERY_TEXT_OPERATIONS.INLINE_CODE){
+            this.toggleCodeExecCommand();
+            return true;
+        }
+
         let v: string | undefined = value || undefined;
 
         if (v == "initial") {
@@ -48,6 +54,7 @@ export class TextOperationService implements ITextOperationService {
     static QUERY_TEXT_OPERATIONS = {
         HILITE_COLOR: "hiliteColor",
         FORE_COLOR: "foreColor",
+        INLINE_CODE: "inlineCode"
     };
 
     queryCommandState(command: string, value: string | null): boolean {
@@ -62,6 +69,43 @@ export class TextOperationService implements ITextOperationService {
 
         return document.queryCommandState(command);
     }
+
+    private toggleCodeExecCommand() {
+        const selection = window.getSelection();
+        if (!selection || selection.rangeCount === 0) return;
+    
+        const range = selection.getRangeAt(0);
+        let containerNode : Node | null = range.commonAncestorContainer;
+    
+        while (containerNode && containerNode.nodeName !== 'CODE') {
+            containerNode = containerNode.parentNode;
+        }
+    
+        if (containerNode && containerNode.nodeName === 'CODE') {
+            const codeElement = containerNode as HTMLElement;
+            const rangeOfCode = document.createRange();
+            rangeOfCode.selectNodeContents(codeElement);
+    
+            if (range.toString() === rangeOfCode.toString()) {
+                const parent : Node | null = codeElement.parentNode;
+                while (parent && codeElement.firstChild) {
+                    parent.insertBefore(codeElement.firstChild, codeElement);
+                }
+                parent?.removeChild(codeElement);
+            } else {
+                const textContent = range.toString();
+                document.execCommand('insertHTML', false, textContent);
+            }
+            document.getSelection()?.removeAllRanges();
+        } else {
+            const contentAsString = new XMLSerializer().serializeToString(range.cloneContents());
+            document.execCommand('insertHTML', false, `<code>${contentAsString}</code>`);
+        }
+    }
+    
+    
+    
+    
 
 
     private queryForeColor(expectedColor: string) {
