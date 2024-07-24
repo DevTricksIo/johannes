@@ -341,7 +341,7 @@
 
 //     if (elementToApplyFakeFocus) {
 //         elementToApplyFakeFocus.focus();
-//         elementToApplyFakeFocus.classList.add('block-options-focused');
+//         elementToApplyFakeFocus.classList.add('option-focused');
 //     }
 
 //     realFocusedElement.focus();
@@ -351,15 +351,15 @@
 
 //     if (elementToApplyFakeFocus) {
 //         elementToApplyFakeFocus.focus();
-//         elementToApplyFakeFocus.classList.add('block-options-focused');
+//         elementToApplyFakeFocus.classList.add('option-focused');
 //     }
 // }
 
 // function removeAllVisualFakeFocus() {
-//     let focusedElements = document.querySelectorAll('.block-options-focused');
+//     let focusedElements = document.querySelectorAll('.option-focused');
 
 //     focusedElements.forEach(element => {
-//         element.classList.remove('block-options-focused');
+//         element.classList.remove('option-focused');
 //     });
 // }
 

@@ -1,12 +1,12 @@
 //TODO use commands
-import BlockOperationsService from '../services/block-operations/BlockOperationsService';
-import ElementFactoryService from '../services/element-factory/ElementFactoryService';
-import QuickMenuBuilder from "../builders/QuickMenuBuilder";
-import FloatingToolbarBuilder from "../builders/FloatingToolbarBuilder";
-import AddBlock from "../components/add-block/AddBlock";
+import { BlockOperationsService } from '../services/block-operations/BlockOperationsService';
+import { ElementFactoryService } from '../services/element-factory/ElementFactoryService';
+import { QuickMenuBuilder } from "../builders/QuickMenuBuilder";
+import { FloatingToolbarBuilder } from "../builders/FloatingToolbarBuilder";
+import { AddBlock } from "../components/add-block/AddBlock";
 import iconsSVG from '../assets/img/icons.svg';
 
-import UIBuilder from "../builders/UIBuilder";
+import { UIBuilder } from "../builders/UIBuilder";
 
 
 //Focus on P when load
