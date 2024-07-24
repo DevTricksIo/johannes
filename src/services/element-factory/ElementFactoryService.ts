@@ -218,12 +218,6 @@ export class ElementFactoryService implements IElementFactoryService {
         return button;
     }
 
-
-
-
-
-
-
 }
 
 // export const ELEMENT_TYPES = {

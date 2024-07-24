@@ -14,7 +14,9 @@ export class BlockOperationsService implements IBlockOperationsService {
         DELETE_FOCUS_ON_NEXT: "DeleteAndFocusOnNext",
         FOCUS_ON_FIRST: "FocusOnFirst",
         FOCUS_ON_PREVIOUS: "FocusOnPrevious",
-        FOCUS_ON_NEXT: "FocusOnNext"
+        FOCUS_ON_NEXT: "FocusOnNext",
+        DELETE: "delete",
+        DUPLICATE: "duplicate"
     };
 
     private constructor(elementFactoryService: IElementFactoryService) {
@@ -29,6 +31,25 @@ export class BlockOperationsService implements IBlockOperationsService {
     }
 
     execCommand(command: string, value: string | null = null): boolean {
+
+        if (command == BlockOperationsService.BLOCK_OPERATIONS.DELETE) {
+
+            const currentActiveElement = this.getCurrentEEEE();
+
+            if(currentActiveElement){
+                this.deleteTheCurrentElementAndTheDraggableBlockIfEmpty(currentActiveElement);
+                return true;
+            }
+
+            return false;
+        }
+
+        if (command == BlockOperationsService.BLOCK_OPERATIONS.DUPLICATE) {
+
+            alert("duplicate");
+
+            return true;
+        }
 
         if (command == BlockOperationsService.BLOCK_OPERATIONS.CREATE_DEFAULT_BLOCK) {
             const element = document.activeElement || null;
@@ -589,6 +610,24 @@ export class BlockOperationsService implements IBlockOperationsService {
 
             contentBlock.focus();
         }, 10);
+    }
+
+
+
+    getCurrentEEEE(): Element | null {
+        const selection = window.getSelection();
+        if (!selection || selection.rangeCount === 0) return null;
+
+        const range = selection.getRangeAt(0);
+        let container: Node | null = range.commonAncestorContainer;
+
+        if (container.nodeType === Node.TEXT_NODE) {
+            container = container.parentNode;
+        }
+
+        const focusableParent = (container as HTMLElement).closest(".focusable");
+
+        return focusableParent;
     }
 
 }

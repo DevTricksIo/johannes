@@ -41,22 +41,6 @@ export class TextOperationService implements ITextOperationService {
             return true;
         }
 
-        if (command == "delete") {
-            throw new Error("move to Block operations exception");
-
-            alert("delete");
-
-            return true;
-        }
-
-        if (command == "duplicate") {
-            throw new Error("move to Block operations exception");
-
-            alert("duplicate");
-
-            return true;
-        }
-
         return document.execCommand(command, false, v);
     }
 
