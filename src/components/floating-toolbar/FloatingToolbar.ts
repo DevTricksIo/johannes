@@ -100,17 +100,38 @@ export class FloatingToolbar extends BaseUIComponent {
         return false;
     }
 
+    hideAllDropdownVisible(): boolean {
+        for (const dropdown of this.dropdowns) {
+            if (dropdown.dropdownList.canHide) {
+                dropdown.dropdownList.hide();
+            }
+        }
+
+        return false;
+    }
+
     attachEvents() {
 
-        // document.addEventListener('selectionChangeAfterExecCommand', (event) => {
-        //     this.currentSelectionRange = getSelection()?.getRangeAt(0) || null;
-        // });
 
         document.addEventListener('keydown', (event) => {
-            if ((event.key === 'Escape' || event.key === 'Delete') && this.isVisible) {
-                this.hide();
+            if (this.canHide && (event.key === 'Escape')) {
+
+                if (this.anyDropdownVisible()) {
+                    this.hideAllDropdownVisible();
+                } else {
+                    this.hide();
+                }
             }
         });
+
+        // document.addEventListener('keydown', (event) => {
+        //     if ((event.key === 'Escape' || event.key === 'Delete') && this.isVisible) {
+        //         if(this.canHide){
+        //             this.hideAllDropdownVisible();
+        //             this.hide();
+        //         }
+        //     }
+        // });
 
         document.addEventListener('keyup', (event) => {
             if (event.key === "Shift" || event.key === "Control") {
@@ -162,12 +183,9 @@ export class FloatingToolbar extends BaseUIComponent {
         });
 
         document.addEventListener('selectedBlockDeleted', (event) => {
-            setTimeout(() => {
-                if (this.canHide) {
-                    this.hide();
-                }
-            }, 0);
-
+            if (this.canHide) {
+                this.hide();
+            }
         });
 
         document.addEventListener('blockFormatted', () => {
@@ -175,7 +193,6 @@ export class FloatingToolbar extends BaseUIComponent {
                 this.hide();
             }
         });
-
     }
 }
 

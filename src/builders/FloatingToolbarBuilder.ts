@@ -30,7 +30,7 @@ export class FloatingToolbarBuilder {
 
     static turnIntoDropdown(): DropdownMenu {
 
-        const turnIntoBarList = new DropdownMenuList("turnIntoSelect", "Turn into");
+        const turnIntoBarList = new DropdownMenuList("turnIntoSelect");
         const turnIntoBarButton = new DropdownMenuButton("turnIntoButton", "Text", turnIntoBarList);
         const turnIntoDropdown = new DropdownMenu(turnIntoBarButton, turnIntoBarList);
 
@@ -73,7 +73,7 @@ export class FloatingToolbarBuilder {
 
     static colorDropdown(): DropdownMenu {
 
-        const colorDropdownList = new DropdownMenuList("colorTextOptionSelect", "Background");
+        const colorDropdownList = new DropdownMenuList("colorTextOptionSelect");
         const colorButton = new DropdownMenuButton("colorTextButton", new ColorIcon("#FAF4D1").htmlElement, colorDropdownList);
         const colorDropdown = new DropdownMenu(colorButton, colorDropdownList);
 
@@ -105,7 +105,7 @@ export class FloatingToolbarBuilder {
 
         const icon = new SVGIcon("icon-material-more", "24", "24");
 
-        const moreOptionsList = new DropdownMenuList("moreTextOptionSelect", "More options");
+        const moreOptionsList = new DropdownMenuList("moreTextOptionSelect");
         const moreOptionsButton = new DropdownMenuButton("moreTextOptionButton", icon.htmlElement, moreOptionsList, false);
         const moreOptionsDropdown = new DropdownMenu(moreOptionsButton, moreOptionsList);
 

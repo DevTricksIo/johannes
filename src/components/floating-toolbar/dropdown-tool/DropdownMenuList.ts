@@ -2,18 +2,20 @@ import { BaseUIComponent } from "../../common/BaseUIComponent";
 import { CircularDoublyLinkedList } from "../../../common/CircularDoublyLinkedList";
 import { DropdownMenuListItem } from "./DropdownMenuListItem";
 import { IDropdownMenuItem } from "./IDropdownMenuItem";
+import { JNode } from "@/common/JNode";
 
 export class DropdownMenuList extends BaseUIComponent {
 
     dropdownItems: CircularDoublyLinkedList<IDropdownMenuItem>;
+    currentFocusedMenuItem: JNode<IDropdownMenuItem> | null;
 
-    constructor(id: string, title: string) {
+    constructor(id: string) {
         super({
-            id: id,
-            title: title
+            id: id
         });
 
         this.dropdownItems = new CircularDoublyLinkedList<DropdownMenuListItem>();
+        this.currentFocusedMenuItem = null;
 
         this.attachEvents();
     }
@@ -30,12 +32,6 @@ export class DropdownMenuList extends BaseUIComponent {
         htmlElement.style.display = 'none';
         htmlElement.classList.add('soft-box-shadow', 'dependent-box', 'checkable-items');
 
-        // const title = document.createElement('h3');
-        // title.innerText = this.props.title;
-        // title.style.marginLeft = '5px';
-
-        // htmlElement.appendChild(title);
-
         return htmlElement;
     }
 
@@ -47,28 +43,87 @@ export class DropdownMenuList extends BaseUIComponent {
 
     attachEvents(): void {
 
-        document.addEventListener('click', (event) => {
-            if (this.canHide && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`)) {
+        document.addEventListener('keydown', (event) => {
 
+            if (this.isVisible && this.currentFocusedMenuItem && event.key === "Enter") {
+                this.currentFocusedMenuItem.value.performAction();
+            }
+        });
+
+        document.addEventListener('click', (event) => {
+            if (this.clickedOutsideTheDropdownWhileDropdownIsVisible(event)) {
                 this.hide();
             }
         });
 
         document.addEventListener('keydown', (event) => {
-            if (this.canHide && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`)) {
+            if (this.keyPressedOutsideTheDropdownWhileDropdownIsVisible(event)) {
 
-                if(event.key == "ArrowDown"){
+                if (event.key == "ArrowDown") {
                     event.preventDefault();
-                    this.dropdownItems.head;
 
-                    alert("key down pressed");
+                    this.focusNextVisibleItem();
                 }
 
-                if(event.key == "ArrowUp"){
+                if (event.key == "ArrowUp") {
                     event.preventDefault();
-                    alert("key up pressed");
+                    this.focusPreviousVisibleItem();
                 }
             }
         });
+    }
+
+    hide(): void {
+        this.currentFocusedMenuItem?.value.removeFocus();
+        this.currentFocusedMenuItem = null;
+        super.hide();
+    }
+
+    switchVisualFocus(item: JNode<IDropdownMenuItem>): void {
+
+        if (this.currentFocusedMenuItem == item) {
+            return;
+        }
+
+        if (this.currentFocusedMenuItem) {
+            this.currentFocusedMenuItem.value.removeFocus();
+        }
+
+        this.currentFocusedMenuItem = item;
+        this.currentFocusedMenuItem.value.focus();
+    }
+
+    private focusNextVisibleItem(): void {
+
+        let nextVisibleItem: JNode<IDropdownMenuItem> | null;
+
+        if (this.currentFocusedMenuItem) {
+            nextVisibleItem = this.currentFocusedMenuItem.getNextSatisfying(item => item instanceof DropdownMenuListItem);
+        } else {
+            nextVisibleItem = this.dropdownItems.findFirst(item => item instanceof DropdownMenuListItem);
+        }
+
+        this.switchVisualFocus(nextVisibleItem!);
+    }
+
+    focusPreviousVisibleItem(): void {
+
+        let previousVisibleItem: JNode<IDropdownMenuItem> | null;
+
+        if (this.currentFocusedMenuItem) {
+            previousVisibleItem = this.currentFocusedMenuItem.getPreviousSatisfying(item => item instanceof DropdownMenuListItem);
+        } else {
+            previousVisibleItem = this.dropdownItems.findFirst(item => item instanceof DropdownMenuListItem);
+        }
+
+        this.switchVisualFocus(previousVisibleItem!);
+    }
+
+    private clickedOutsideTheDropdownWhileDropdownIsVisible(event: MouseEvent): boolean {
+        return this.canHide && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`);
+    }
+
+    private keyPressedOutsideTheDropdownWhileDropdownIsVisible(event: KeyboardEvent): boolean {
+        return this.canHide && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`);
     }
 }

@@ -17,6 +17,18 @@ export class DropdownMenuListItemTitle extends BaseUIComponent implements IDropd
 
     }
 
+    performAction(): void {
+        throw new Error("Method not implemented.");
+    }
+
+    removeFocus(): void {
+        throw new Error("Method not implemented.");
+    }
+
+    focus(): void {
+        throw new Error("Method not implemented.");
+    }
+
     init(): HTMLElement {
 
         const htmlElement = document.createElement('li');
