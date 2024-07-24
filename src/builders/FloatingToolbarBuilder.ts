@@ -96,7 +96,6 @@ export class FloatingToolbarBuilder {
         colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#337EA9", new SVGIcon("icon-material-letter", "22", "22").htmlElement, "Blue"));
         colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#CB912F", new SVGIcon("icon-material-letter", "22", "22").htmlElement, "Yellow"));
         colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#787774", new SVGIcon("icon-material-letter", "22", "22").htmlElement, "Grey"));
-        colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#D9730D", new SVGIcon("icon-material-letter", "22", "22").htmlElement, "Orange"));
         colorDropdownList.append(new DropdownMenuListItem(colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "initial", new SVGIcon("icon-material-letter", "22", "22").htmlElement, "None"));
         
         return colorDropdown;
