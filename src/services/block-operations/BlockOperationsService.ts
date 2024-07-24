@@ -34,7 +34,7 @@ export class BlockOperationsService implements IBlockOperationsService {
 
         if (command == BlockOperationsService.BLOCK_OPERATIONS.DELETE) {
 
-            const currentActiveElement = this.getCurrentEEEE();
+            const currentActiveElement = this.getCurrentSelectedFocusable();
 
             if(currentActiveElement){
                 this.deleteTheCurrentElementAndTheDraggableBlockIfEmpty(currentActiveElement);
@@ -46,7 +46,7 @@ export class BlockOperationsService implements IBlockOperationsService {
 
         if (command == BlockOperationsService.BLOCK_OPERATIONS.DUPLICATE) {
 
-            alert("duplicate");
+            this.duplicateSelectedBlock();
 
             return true;
         }
@@ -614,7 +614,7 @@ export class BlockOperationsService implements IBlockOperationsService {
 
 
 
-    getCurrentEEEE(): Element | null {
+    getCurrentSelectedFocusable(): Element | null {
         const selection = window.getSelection();
         if (!selection || selection.rangeCount === 0) return null;
 
@@ -628,6 +628,40 @@ export class BlockOperationsService implements IBlockOperationsService {
         const focusableParent = (container as HTMLElement).closest(".focusable");
 
         return focusableParent;
+    }
+
+    getCurrentSelectedBlock(): Element | null {
+        const selection = window.getSelection();
+        if (!selection || selection.rangeCount === 0) return null;
+
+        const range = selection.getRangeAt(0);
+        let container: Node | null = range.commonAncestorContainer;
+
+        if (container.nodeType === Node.TEXT_NODE) {
+            container = container.parentNode;
+        }
+
+        const focusableParent = (container as HTMLElement).closest(".block");
+
+        return focusableParent;
+    }
+
+
+    duplicateSelectedBlock() {
+
+        let element = this.getCurrentSelectedBlock();
+    
+        if (!element || !element.parentNode) {
+            console.error('O elemento fornecido é inválido ou não está no DOM.');
+            return;
+        }
+    
+        const clone = element.cloneNode(true);
+    
+        const nextElement = element.nextSibling;
+    
+        element.parentNode.insertBefore(clone, nextElement);
+    
     }
 
 }
