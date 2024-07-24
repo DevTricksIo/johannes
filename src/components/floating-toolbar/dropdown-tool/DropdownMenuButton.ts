@@ -5,19 +5,24 @@ import { DropdownMenuList } from "./DropdownMenuList";
 export class DropdownMenuButton extends BaseUIComponent {
 
     dropdownList: DropdownMenuList;
+    svgIcon?: SVGIcon;
 
     constructor(id: string, title: string | HTMLElement, dropdownList: DropdownMenuList, includeChevronIcon: boolean = true) {
+
+        const svgIcon = new SVGIcon("icon-wordpress-chevron-down");
 
         super({
             id: id,
             title: title,
             dropdownList: dropdownList,
-            includeChevronIcon: includeChevronIcon
+            svgIcon: includeChevronIcon ? svgIcon : null
         });
 
         this.dropdownList = dropdownList;
-
+        this.svgIcon = svgIcon;
         this.attachEvents();
+
+        dropdownList.setParentDropdownMenuButton(this);
     }
 
     init(): HTMLElement {
@@ -38,9 +43,8 @@ export class DropdownMenuButton extends BaseUIComponent {
             htmlElement.appendChild(this.props.title);
         }
 
-        if (this.props.includeChevronIcon) {
-            const svg = new SVGIcon("icon-wordpress-chevron-down");
-            htmlElement.appendChild(svg.htmlElement);
+        if (this.props.svgIcon) {
+            htmlElement.appendChild(this.props.svgIcon.htmlElement);
         }
 
         return htmlElement;

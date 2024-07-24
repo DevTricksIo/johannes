@@ -181,6 +181,10 @@
         <path d="M17.5 11.6L12 16l-5.5-4.4.9-1.2L12 14l4.5-3.6 1 1.2z"></path>
     </symbol>
 
+    <symbol id="icon-wordpress-chevron-up" viewBox="0 0 24 24">
+        <path d="M6.5 12.4L12 8l5.5 4.4-.9 1.2L12 10l-4.5 3.6-1-1.2z"></path>
+    </symbol>
+
 
     <symbol id="icon-material-trash" viewBox="0 -960 960 960">
 

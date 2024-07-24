@@ -3,8 +3,11 @@ import { CircularDoublyLinkedList } from "../../../common/CircularDoublyLinkedLi
 import { DropdownMenuListItem } from "./DropdownMenuListItem";
 import { IDropdownMenuItem } from "./IDropdownMenuItem";
 import { JNode } from "@/common/JNode";
+import { DropdownMenuButton } from "./DropdownMenuButton";
 
 export class DropdownMenuList extends BaseUIComponent {
+
+    private parentDropdownParentButton?: DropdownMenuButton;
 
     dropdownItems: CircularDoublyLinkedList<IDropdownMenuItem>;
     currentFocusedMenuItem: JNode<IDropdownMenuItem> | null;
@@ -41,6 +44,10 @@ export class DropdownMenuList extends BaseUIComponent {
         this.htmlElement.appendChild(dropdownItem.htmlElement)
     }
 
+    setParentDropdownMenuButton(dropdownParentButton: DropdownMenuButton): void{
+        this.parentDropdownParentButton = dropdownParentButton;
+    }
+
     attachEvents(): void {
 
         document.addEventListener('keydown', (event) => {
@@ -73,7 +80,13 @@ export class DropdownMenuList extends BaseUIComponent {
         });
     }
 
+    show(): void {
+        this.parentDropdownParentButton?.svgIcon?.setUseTo("icon-wordpress-chevron-up");
+        super.show();
+    }
+
     hide(): void {
+        this.parentDropdownParentButton?.svgIcon?.setUseTo("icon-wordpress-chevron-down");
         this.currentFocusedMenuItem?.value.removeFocus();
         this.currentFocusedMenuItem = null;
         super.hide();

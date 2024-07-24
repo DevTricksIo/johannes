@@ -36,4 +36,8 @@ export class SVGIcon extends BaseUIComponent {
     clone(): SVGIcon {
         return new SVGIcon(this.props.hrefUseId, this.props.width, this.props.height);
     }
+
+    setUseTo(value: string): void {
+        this.useElement.setAttributeNS("http://www.w3.org/1999/xlink", "href", `#${value}`);
+    }
 }
