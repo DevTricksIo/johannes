@@ -8,8 +8,6 @@ import { FloatingToolbarBuilder } from "./FloatingToolbarBuilder";
 import { FloatingToolbar } from "../components/floating-toolbar/FloatingToolbar";
 import { QuickMenu } from "../components/quick-menu/QuickMenu";
 import { AddBlock } from "../components/add-block/AddBlock";
-import { EditorConfig } from "../components/editor/EditorConfig";
-import { Title } from "../components/title/Title";
 
 export class UIBuilder {
 

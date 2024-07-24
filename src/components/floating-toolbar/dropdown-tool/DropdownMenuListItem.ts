@@ -68,6 +68,24 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
 
                 this.textOperationService.execCommand(this.command, this.value);
 
+                const selection = window.getSelection();
+                if (!selection || selection.rangeCount === 0) return;
+
+                const range = selection.getRangeAt(0);
+                let container : Node | null = range.commonAncestorContainer;
+
+                if (container.nodeType === Node.TEXT_NODE) {
+                    container = container.parentNode;
+                }
+
+                const focusableParent = (container as HTMLElement).closest(".focusable");
+
+                if (focusableParent) {
+                   this.normalizeAndMergeElements(focusableParent as HTMLElement);
+                }
+                
+
+
                 this.parentDropdownMenuList.hide();
 
             }, 10);
@@ -77,7 +95,7 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
         document.addEventListener("selectionchange", () => {
 
             if (
-                this.command == TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR || 
+                this.command == TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR ||
                 this.command == TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR) {
 
                 setTimeout(() => {
@@ -95,5 +113,38 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
             }
 
         });
+
+    }
+
+    normalizeAndMergeElements(element: HTMLElement | null): void {
+        if (!element) return;
+    
+        let child = element.firstChild;
+        while (child) {
+            if (child.nodeType === Node.ELEMENT_NODE) {
+                this.normalizeAndMergeElements(child as HTMLElement);
+            }
+    
+            let nextSibling = child.nextSibling;
+            while (nextSibling && this.shouldMerge(child, nextSibling)) {
+                (child as HTMLElement).innerHTML += (nextSibling as HTMLElement).innerHTML;
+                const next = nextSibling.nextSibling;
+                nextSibling.parentNode!.removeChild(nextSibling);
+                nextSibling = next;
+            }
+    
+            child = child.nextSibling;
+        }
+
+        element.normalize();
+    }
+    
+    shouldMerge(node1: ChildNode, node2: ChildNode): boolean {
+        if (node1.nodeType !== Node.ELEMENT_NODE || node2.nodeType !== Node.ELEMENT_NODE) return false;
+        const elem1 = node1 as HTMLElement;
+        const elem2 = node2 as HTMLElement;
+        return elem1.tagName === elem2.tagName &&
+               elem1.style.cssText === elem2.style.cssText &&
+               window.getComputedStyle(elem1).color === window.getComputedStyle(elem2).color;
     }
 }

@@ -30,6 +30,10 @@ export class TextOperationService implements ITextOperationService {
 
         let v: string | undefined = value || undefined;
 
+        if (v == "initial") {
+            v = this.getInitialColorAsHex();
+        }
+
         if (command == "link") {
 
             alert("delete");
@@ -84,7 +88,7 @@ export class TextOperationService implements ITextOperationService {
         }
         if (!selection.rangeCount) return false;
 
-        let element : Node | null= selection.getRangeAt(0).commonAncestorContainer;
+        let element: Node | null = selection.getRangeAt(0).commonAncestorContainer;
 
         if (element.nodeType === Node.TEXT_NODE) {
             element = element.parentNode;
@@ -110,7 +114,7 @@ export class TextOperationService implements ITextOperationService {
         }
         if (!selection.rangeCount) return false;
 
-        let element : Node | null= selection.getRangeAt(0).commonAncestorContainer;
+        let element: Node | null = selection.getRangeAt(0).commonAncestorContainer;
 
         if (element.nodeType === Node.TEXT_NODE) {
             element = element.parentNode;
@@ -127,12 +131,25 @@ export class TextOperationService implements ITextOperationService {
         return hexColor.toUpperCase() === expectedColor.toUpperCase();
     }
 
-    rgbToHex(rgb : string): string {
+    private rgbToHex(rgb: string): string {
         const rgbArray = rgb.match(/\d+/g)!.map(Number);
         return "#" + rgbArray.map(x => {
             const hex = x.toString(16);
             return hex.length === 1 ? "0" + hex : hex;
         }).join("");
+    }
+
+    private getInitialColorAsHex() {
+        const tempElement = document.createElement("div");
+        document.body.appendChild(tempElement);
+
+        tempElement.style.color = 'initial';
+
+        const computedColor = window.getComputedStyle(tempElement).color;
+
+        document.body.removeChild(tempElement);
+
+        return this.rgbToHex(computedColor);
     }
 
     getTargetElementMap(command: string): keyof HTMLElementTagNameMap {
