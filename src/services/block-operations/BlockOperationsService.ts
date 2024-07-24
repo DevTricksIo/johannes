@@ -36,8 +36,16 @@ export class BlockOperationsService implements IBlockOperationsService {
 
             const currentActiveElement = this.getCurrentSelectedFocusable();
 
-            if(currentActiveElement){
+            if (currentActiveElement) {
                 this.deleteTheCurrentElementAndTheDraggableBlockIfEmpty(currentActiveElement);
+
+                const deletedEvent = new CustomEvent('selectedBlockDeleted', {
+                    bubbles: true,
+                    cancelable: true
+                });
+    
+                document.dispatchEvent(deletedEvent);
+                
                 return true;
             }
 
@@ -650,18 +658,18 @@ export class BlockOperationsService implements IBlockOperationsService {
     duplicateSelectedBlock() {
 
         let element = this.getCurrentSelectedBlock();
-    
+
         if (!element || !element.parentNode) {
             console.error('O elemento fornecido é inválido ou não está no DOM.');
             return;
         }
-    
+
         const clone = element.cloneNode(true);
-    
+
         const nextElement = element.nextSibling;
-    
+
         element.parentNode.insertBefore(clone, nextElement);
-    
+
     }
 
 }

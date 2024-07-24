@@ -161,6 +161,15 @@ export class FloatingToolbar extends BaseUIComponent {
             }
         });
 
+        document.addEventListener('selectedBlockDeleted', (event) => {
+            setTimeout(() => {
+                if (this.canHide) {
+                    this.hide();
+                }
+            }, 0);
+
+        });
+
         document.addEventListener('blockFormatted', () => {
             if (this.canHide) {
                 this.hide();

@@ -42,7 +42,6 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
 
         const htmlElement = document.createElement('li');
         htmlElement.classList.add('option', 'option-hover', 'block-operation');
-        // htmlElement.setAttribute('data-type', this.props.dataType);
         htmlElement.tabIndex = 2;
 
         const textOption = document.createElement('div');
@@ -83,8 +82,6 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
                 if (focusableParent) {
                    this.normalizeAndMergeElements(focusableParent as HTMLElement);
                 }
-                
-
 
                 this.parentDropdownMenuList.hide();
 
