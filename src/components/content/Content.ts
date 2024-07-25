@@ -3,6 +3,7 @@ import { ElementFactoryService } from "@/services/element-factory/ElementFactory
 import { BaseUIComponent } from "../common/BaseUIComponent";
 import { IBlockOperationsService } from "@/services/block-operations/IBlockOperationsService";
 import { BlockOperationsService } from "@/services/block-operations/BlockOperationsService";
+import { TextOperationService } from "@/services/text-operations/TextOperationService";
 
 export class Content extends BaseUIComponent {
 
@@ -38,6 +39,45 @@ export class Content extends BaseUIComponent {
     }
 
     attachEvent(): void {
+
+        document.addEventListener("copiedText", () => {
+
+            const copyElementItem = document.querySelector("#copyOption .text-option span") as HTMLSpanElement;
+
+            if (copyElementItem) {
+
+                copyElementItem.textContent = "Copied!";
+
+                setTimeout(() => {
+                    copyElementItem.textContent = "Copy";
+                }, 1500);
+            }
+        });
+
+        //Shortcuts
+        document.addEventListener("keydown", (event) => {
+
+            if ((event.key == "D" || event.key == "d") && event.ctrlKey) {
+                // Duplicate block shortcut
+                event.preventDefault();
+                event.stopPropagation();
+
+                setTimeout(() => {
+                    this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.DUPLICATE, false);
+                }, 10);
+            } else if (event.key == "Delete" && event.shiftKey) {
+                // Delete block shortcut
+                event.preventDefault();
+                event.stopPropagation();
+
+                setTimeout(() => {
+                    this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.DELETE, false);
+                }, 10);
+            } else if (event.key == "\\" && event.ctrlKey) {
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.REMOVE_FORMAT, false);
+            }
+
+        });
 
         this.htmlElement.addEventListener("keydown", async (event) => {
 
