@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     content.addEventListener('drop', (e) => {
         e.preventDefault();
-        if (dropLine.parentElement) {
+        if (draggedItem && dropLine && dropLine.parentElement) {
             dropLine.parentElement.insertBefore(draggedItem, dropLine);
             dropLine.remove();
         }
