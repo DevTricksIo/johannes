@@ -633,6 +633,13 @@ mark {
     border: none;
 }
 
+#deleteOption.option-focused {
+    color: #EB5757 !important;
+}
+
+#deleteOption.option-focused svg{
+    color: #EB5757 !important;
+}
 
 
 
@@ -730,10 +737,6 @@ mark {
 #deleteBlockButton:hover {
     color: rgb(235, 87, 87) !important;
 }
-
-
-
-
 
 
 
