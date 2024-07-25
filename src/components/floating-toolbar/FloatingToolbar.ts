@@ -130,6 +130,13 @@ export class FloatingToolbar extends BaseUIComponent {
                 } else {
                     this.hide();
                 }
+            } if (this.canHide && (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
+
+                setTimeout(() => {
+                    if (this.isSelectionEmpty()) {
+                        this.hide();
+                    }
+                }, 10);
             }
         });
 
@@ -196,13 +203,23 @@ export class FloatingToolbar extends BaseUIComponent {
             }
         });
 
-        document.addEventListener('blockFormatted', () => {
+        document.addEventListener('requestHideFloatingToolbar', () => {
             if (this.canHide) {
+
+                if (this.anyDropdownVisible()) {
+                    this.hideAllDropdownVisible();
+                }
+
                 this.hide();
             }
         });
     }
 
+
+    isSelectionEmpty() {
+        const selection = document.getSelection();
+        return !selection || selection.rangeCount === 0 || selection.toString().trim() === '';
+    }
 
     restoreRangeSelection(): void {
         document.getSelection()?.removeAllRanges();
