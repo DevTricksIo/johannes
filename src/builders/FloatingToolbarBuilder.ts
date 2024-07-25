@@ -111,8 +111,9 @@ export class FloatingToolbarBuilder {
 
         moreOptionsList.append(new DropdownMenuListItemTitle(moreOptionsList, "More options"));
 
-        moreOptionsList.append(new DropdownMenuListItem(moreOptionsList, BlockOperationsService.getInstance(), "duplicate", null, SVGIcons.duplicate.htmlElement, "Duplicate"));
-        moreOptionsList.append(new DropdownMenuListItem(moreOptionsList, BlockOperationsService.getInstance(), "delete", null, SVGIcons.delete.htmlElement, "Delete"));
+        moreOptionsList.append(new DropdownMenuListItem(moreOptionsList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.DUPLICATE, null, SVGIcons.duplicate.htmlElement, "Duplicate"));
+        moreOptionsList.append(new DropdownMenuListItem(moreOptionsList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.REMOVE_FORMAT, null, SVGIcons.eraser.htmlElement, "Clear Formatting"));
+        moreOptionsList.append(new DropdownMenuListItem(moreOptionsList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.DELETE, null, SVGIcons.delete.htmlElement, "Delete"));
 
         return moreOptionsDropdown;
     }
@@ -132,5 +133,6 @@ const SVGIcons: any = {
     head5: new SVGIcon("icon-julia-head-5", "22", "22"),
     head6: new SVGIcon("icon-julia-head-6", "22", "22"),
     duplicate: new SVGIcon("icon-material-duplicate", "22", "22"),
-    delete: new SVGIcon("icon-material-trash", "22", "22")
+    delete: new SVGIcon("icon-material-trash", "22", "22"),
+    eraser: new SVGIcon("icon-material-eraser", "22", "22")
 }

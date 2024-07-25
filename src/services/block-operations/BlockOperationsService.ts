@@ -16,7 +16,8 @@ export class BlockOperationsService implements IBlockOperationsService {
         FOCUS_ON_PREVIOUS: "FocusOnPrevious",
         FOCUS_ON_NEXT: "FocusOnNext",
         DELETE: "delete",
-        DUPLICATE: "duplicate"
+        DUPLICATE: "duplicate",
+        REMOVE_FORMAT: "removeFormat"
     };
 
     private constructor(elementFactoryService: IElementFactoryService) {
@@ -31,6 +32,11 @@ export class BlockOperationsService implements IBlockOperationsService {
     }
 
     execCommand(command: string, showUI: boolean, value: string | null = null): boolean {
+
+
+        if(command == BlockOperationsService.BLOCK_OPERATIONS.REMOVE_FORMAT){
+            return document.execCommand(BlockOperationsService.BLOCK_OPERATIONS.REMOVE_FORMAT, false);
+        }
 
         if (command == BlockOperationsService.BLOCK_OPERATIONS.DELETE) {
 
