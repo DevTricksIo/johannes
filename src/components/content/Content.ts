@@ -47,12 +47,12 @@ export class Content extends BaseUIComponent {
 
             if (event.key === 'Enter') {
                 event.preventDefault();
-                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.CREATE_DEFAULT_BLOCK);
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.CREATE_DEFAULT_BLOCK, false);
             } else if (event.key === 'Backspace') {
                 const target = event.target as HTMLElement;
 
                 if (target.classList.contains('johannes-content-element') && target.textContent?.trim() === '') {
-                    this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.DELETE_FOCUS_ON_PREVIOUS);
+                    this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.DELETE_FOCUS_ON_PREVIOUS, false);
                 } else if (target.classList.contains('johannes-content-element') && target.textContent?.trim() !== '') {
                     //TODO: Replace the delete and focus by merge
                 }
@@ -61,18 +61,18 @@ export class Content extends BaseUIComponent {
                 const target = event.target as HTMLElement;
 
                 if (target.classList.contains('johannes-content-element') && target.textContent?.trim() === '') {
-                    this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.DELETE_FOCUS_ON_NEXT);
+                    this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.DELETE_FOCUS_ON_NEXT, false);
                 } else if (target.classList.contains('johannes-content-element') && target.textContent?.trim() !== '') {
                     //TODO: Replace the delete and focus by merge
                 }
             } else if (event.key === 'ArrowRight' && Content.isCursorAtEnd(event.target as HTMLElement)) {
-                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_NEXT);
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_NEXT, false);
             } else if (event.key === 'ArrowLeft' && Content.isCursorAtStart(event.target as HTMLElement)) {
-                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_PREVIOUS);
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_PREVIOUS, false);
             } else if (event.key === 'ArrowDown' && Content.isCursorOnLastLine()) {
-                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_NEXT);
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_NEXT, false);
             } else if (event.key === 'ArrowUp' && Content.isCursorOnFirstLine()) {
-                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_PREVIOUS);
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_PREVIOUS, false);
             }
         });
     }
@@ -161,18 +161,18 @@ export class Content extends BaseUIComponent {
     static isCursorOnFirstLine(): boolean {
         const selection = window.getSelection();
         if (!selection || !selection.rangeCount) return false;
-      
+
         const range = selection.getRangeAt(0);
-      
+
         return range.startOffset === 0 && range.startContainer === range.commonAncestorContainer;
-      }
+    }
 
     static isCursorOnLastLine(): boolean {
         const selection = window.getSelection();
         if (!selection || !selection.rangeCount) return false;
-      
+
         const range = selection.getRangeAt(0);
-      
+
         return range.endOffset === range.endContainer.textContent?.length && range.endContainer === range.commonAncestorContainer;
-      }
+    }
 }

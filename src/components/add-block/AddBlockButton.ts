@@ -31,7 +31,7 @@ export class AddBlockButton extends BaseUIComponent {
     attachEvents(): void {
 
         this.htmlElement.addEventListener("click", () => {
-            this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.CREATE_DEFAULT_BLOCK);
+            this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.CREATE_DEFAULT_BLOCK, false);
         });
     }
 }

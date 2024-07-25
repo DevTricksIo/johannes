@@ -26,10 +26,10 @@ export class TextOperationService implements ITextOperationService {
         return this.instance;
     }
 
-    execCommand(command: string, value: string | null): boolean {
+    execCommand(command: string, showUi: boolean, value: string | null): boolean {
 
 
-        if(command == TextOperationService.QUERY_TEXT_OPERATIONS.INLINE_CODE){
+        if (command == TextOperationService.QUERY_TEXT_OPERATIONS.INLINE_CODE) {
             this.toggleCodeExecCommand();
             return true;
         }
@@ -40,11 +40,26 @@ export class TextOperationService implements ITextOperationService {
             v = this.getInitialColorAsHex();
         }
 
-        if (command == "link") {
+        if (command == TextOperationService.QUERY_TEXT_OPERATIONS.CREATE_LINK) {
 
-            alert("delete");
+            const element = TextOperationService.getSelectedHTMLElement();
 
-            return true;
+            if (element?.closest("a")) {
+                return document.execCommand("unlink", false, v);
+            }
+
+            if (showUi) {
+
+                const showInputLinkBox = new CustomEvent('showInputLinkBoxRequested', {
+                    bubbles: true,
+                    cancelable: true
+                });
+
+                document.dispatchEvent(showInputLinkBox);
+
+                return true;
+            }
+
         }
 
         return document.execCommand(command, false, v);
@@ -54,10 +69,23 @@ export class TextOperationService implements ITextOperationService {
     static QUERY_TEXT_OPERATIONS = {
         HILITE_COLOR: "hiliteColor",
         FORE_COLOR: "foreColor",
-        INLINE_CODE: "inlineCode"
+        INLINE_CODE: "inlineCode",
+        CREATE_LINK: "createLink",
+        UNDERLINE: "underline"
+        // CREATE_LINK: "createLink"
+
     };
 
     queryCommandState(command: string, value: string | null): boolean {
+
+        if (command === TextOperationService.QUERY_TEXT_OPERATIONS.UNDERLINE) {
+
+            const element = TextOperationService.getSelectedHTMLElement();
+
+            if (element?.closest("a")) {
+                return false;
+            }
+        }
 
         if (command === TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR) {
             return this.queryHiliteColor(value!);
@@ -67,27 +95,38 @@ export class TextOperationService implements ITextOperationService {
             return this.queryForeColor(value!);
         }
 
+        if (command === TextOperationService.QUERY_TEXT_OPERATIONS.CREATE_LINK) {
+
+            const element = TextOperationService.getSelectedHTMLElement();
+
+            if (element?.closest("a")) {
+                return true;
+            }
+
+            return false;;
+        }
+
         return document.queryCommandState(command);
     }
 
     private toggleCodeExecCommand() {
         const selection = window.getSelection();
         if (!selection || selection.rangeCount === 0) return;
-    
+
         const range = selection.getRangeAt(0);
-        let containerNode : Node | null = range.commonAncestorContainer;
-    
+        let containerNode: Node | null = range.commonAncestorContainer;
+
         while (containerNode && containerNode.nodeName !== 'CODE') {
             containerNode = containerNode.parentNode;
         }
-    
+
         if (containerNode && containerNode.nodeName === 'CODE') {
             const codeElement = containerNode as HTMLElement;
             const rangeOfCode = document.createRange();
             rangeOfCode.selectNodeContents(codeElement);
-    
+
             if (range.toString() === rangeOfCode.toString()) {
-                const parent : Node | null = codeElement.parentNode;
+                const parent: Node | null = codeElement.parentNode;
                 while (parent && codeElement.firstChild) {
                     parent.insertBefore(codeElement.firstChild, codeElement);
                 }
@@ -102,10 +141,10 @@ export class TextOperationService implements ITextOperationService {
             document.execCommand('insertHTML', false, `<code>${contentAsString}</code>`);
         }
     }
-    
-    
-    
-    
+
+
+
+
 
 
     private queryForeColor(expectedColor: string) {
@@ -210,6 +249,29 @@ export class TextOperationService implements ITextOperationService {
             default:
                 throw new Error();
         }
+    }
+
+    static getSelectedHTMLElement(): HTMLElement | null {
+        const selection = window.getSelection();
+
+        if (selection && selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            let element: Node | null = range.commonAncestorContainer;
+
+            if (element.nodeType === Node.TEXT_NODE) {
+                element = element.parentNode as HTMLElement;
+            }
+
+            while (element && !(element instanceof HTMLElement)) {
+                element = element.parentNode as HTMLElement | null;
+            }
+
+            if (element) {
+                return element;
+            }
+        }
+
+        return null;
     }
 
 

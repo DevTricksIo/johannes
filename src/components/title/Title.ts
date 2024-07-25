@@ -36,7 +36,7 @@ export class Title extends BaseUIComponent {
             if (event.key == "Enter") {
                 event.preventDefault();
 
-                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_FIRST);
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_FIRST, false);
             }
         });
     }

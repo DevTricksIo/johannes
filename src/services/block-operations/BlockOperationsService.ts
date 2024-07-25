@@ -30,7 +30,7 @@ export class BlockOperationsService implements IBlockOperationsService {
         BlockOperationsService.instance = this;
     }
 
-    execCommand(command: string, value: string | null = null): boolean {
+    execCommand(command: string, showUI: boolean, value: string | null = null): boolean {
 
         if (command == BlockOperationsService.BLOCK_OPERATIONS.DELETE) {
 

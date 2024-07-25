@@ -71,6 +71,10 @@ export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
         return this._canHide && this.isVisible;
     }
 
+    set canHide(value: boolean) {
+        this._canHide = value;
+    }
+
     focus() {
         this.htmlElement.focus();
     }

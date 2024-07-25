@@ -1,11 +1,13 @@
 import { SVGIcon } from "../../common/SVGIcon";
 import { BaseUIComponent } from "../../common/BaseUIComponent";
 import { ICommand } from "../../../services/common/ICommand";
+import { TextOperationService } from "@/services/text-operations/TextOperationService";
 
 export class GroupedButton extends BaseUIComponent {
 
     private readonly commandService: ICommand;
     private readonly command: string;
+    private readonly showUI: boolean;
 
     constructor(commandService: ICommand, command: string, title: string, svgUseHref: string) {
 
@@ -16,7 +18,7 @@ export class GroupedButton extends BaseUIComponent {
 
         this.commandService = commandService;
         this.command = command;
-
+        this.showUI = command == TextOperationService.QUERY_TEXT_OPERATIONS.CREATE_LINK;
         this.attachEvents();
     }
 
@@ -39,12 +41,15 @@ export class GroupedButton extends BaseUIComponent {
 
         this.htmlElement.addEventListener("click", (event) => {
 
-            const editableElement = this.getParentEditable();
-
-            this.commandService.execCommand(this.command);
-
             setTimeout(() => {
-                editableElement?.normalize();
+                const editableElement = this.getParentEditable();
+
+                this.commandService.execCommand(this.command, this.showUI);
+
+                setTimeout(() => {
+                    editableElement?.normalize();
+                }, 10);
+
             }, 10);
         });
 
@@ -78,5 +83,4 @@ export class GroupedButton extends BaseUIComponent {
 
         return currentBlock;
     }
-
 }

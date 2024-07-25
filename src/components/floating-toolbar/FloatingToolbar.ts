@@ -113,6 +113,15 @@ export class FloatingToolbar extends BaseUIComponent {
     attachEvents() {
 
 
+        document.addEventListener("showInputLinkBoxRequested", () => {
+            this.canHide = false;
+        });
+
+        document.addEventListener("showInputLinkBoxFinished", () => {
+            this.canHide = true;
+            this.restoreRangeSelection();
+        });
+
         document.addEventListener('keydown', (event) => {
             if (this.canHide && (event.key === 'Escape')) {
 
@@ -153,11 +162,10 @@ export class FloatingToolbar extends BaseUIComponent {
         });
 
         document.addEventListener('click', (event) => {
-            if (this.isVisible && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`) && !this.anyDropdownVisible()) {
+            if (this.canHide && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`) && !this.anyDropdownVisible()) {
                 this.hide();
-            } else if (this.isVisible && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`)) {
-                document.getSelection()?.removeAllRanges();
-                document.getSelection()?.addRange(this.currentSelectionRange!);
+            } else if (this.isVisible && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`) && !this.inputLinkBoxWrapper.isVisible) {
+                this.restoreRangeSelection();
             }
         });
 
@@ -193,6 +201,12 @@ export class FloatingToolbar extends BaseUIComponent {
                 this.hide();
             }
         });
+    }
+
+
+    restoreRangeSelection(): void {
+        document.getSelection()?.removeAllRanges();
+        document.getSelection()?.addRange(this.currentSelectionRange!);
     }
 }
 

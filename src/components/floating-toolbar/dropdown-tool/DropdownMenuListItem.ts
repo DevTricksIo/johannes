@@ -73,7 +73,7 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
 
         setTimeout(() => {
 
-            this.textOperationService.execCommand(this.command, this.value);
+            this.textOperationService.execCommand(this.command, false, this.value);
 
             const selection = window.getSelection();
             if (!selection || selection.rangeCount === 0) return;
@@ -81,7 +81,7 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
             const range = selection.getRangeAt(0);
             let container: Node | null = range.commonAncestorContainer;
 
-            if (container.nodeType === Node.TEXT_NODE) {
+            if (container?.nodeType === Node.TEXT_NODE) {
                 container = container.parentNode;
             }
 
@@ -111,7 +111,6 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
 
 
         document.addEventListener("selectionchange", () => {
-
             if (
                 this.command == TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR ||
                 this.command == TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR) {
@@ -129,7 +128,6 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
 
                 }, 10);
             }
-
         });
 
     }
@@ -158,7 +156,7 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
     }
 
     shouldMerge(node1: ChildNode, node2: ChildNode): boolean {
-        if (node1.nodeType !== Node.ELEMENT_NODE || node2.nodeType !== Node.ELEMENT_NODE) return false;
+        if (node1?.nodeType !== Node.ELEMENT_NODE || node2?.nodeType !== Node.ELEMENT_NODE) return false;
         const elem1 = node1 as HTMLElement;
         const elem2 = node2 as HTMLElement;
         return elem1.tagName === elem2.tagName &&

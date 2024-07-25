@@ -60,10 +60,10 @@ export class FloatingToolbarBuilder {
 
         const groupButton = new GroupButton();
 
-        new GroupedButton(TextOperationService.getInstance(), "link", "Link", "icon-material-link").documentAppendTo(groupButton.htmlElement);
+        new GroupedButton(TextOperationService.getInstance(), TextOperationService.QUERY_TEXT_OPERATIONS.CREATE_LINK, "Link", "icon-material-link").documentAppendTo(groupButton.htmlElement);
         new GroupedButton(TextOperationService.getInstance(), "bold", "Bold", "icon-wordpress-bold").documentAppendTo(groupButton.htmlElement);
         new GroupedButton(TextOperationService.getInstance(), "italic", "Italic", "icon-material-italic").documentAppendTo(groupButton.htmlElement);
-        new GroupedButton(TextOperationService.getInstance(), "underline", "Underline", "icon-material-underline").documentAppendTo(groupButton.htmlElement);
+        new GroupedButton(TextOperationService.getInstance(), TextOperationService.QUERY_TEXT_OPERATIONS.UNDERLINE, "Underline", "icon-material-underline").documentAppendTo(groupButton.htmlElement);
         new GroupedButton(TextOperationService.getInstance(), TextOperationService.QUERY_TEXT_OPERATIONS.INLINE_CODE, "Code", "icon-wordpress-code-mark").documentAppendTo(groupButton.htmlElement);
         new GroupedButton(TextOperationService.getInstance(), "strikeThrough", "Strike-through", "icon-wordpress-strike-through").documentAppendTo(groupButton.htmlElement);
         // new GroupedButton(TextOperationService.getInstance(), "copy", "Equation", "icon-wordpress-equation-mark").documentAppendTo(groupButton.htmlElement);
