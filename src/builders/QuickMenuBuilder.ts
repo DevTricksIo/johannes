@@ -28,7 +28,7 @@ export class QuickMenuBuilder {
         const headingBlocksSection = new QuickMenuSection({ quickMenuInstance: quickMenu, title: 'Heading', classList: 'heading-section' });
 
         headingBlocksSection.appendQuickMenuItems([
-            new QuickMenuItem(headingBlocksSection, 'Heading 1', 'Large header to organize content.', 'icon-julia-head-1', ElementFactoryService.ELEMENT_TYPES.BLOCK_HEADER_1, "header 1 heading 1 h1"),
+            new QuickMenuItem(headingBlocksSection, 'Heading 1', 'Large header to organize content.', 'icon-julia-head-1', ElementFactoryService.ELEMENT_TYPES.HEADER_1, "header 1 heading 1 h1"),
             new QuickMenuItem(headingBlocksSection, 'Heading 2', 'Medium header for subsections.', 'icon-julia-head-2', ElementFactoryService.ELEMENT_TYPES.HEADER_2, "header 2 heading 2 h2"),
             new QuickMenuItem(headingBlocksSection, 'Heading 3', 'Small header for detailed sections.', 'icon-julia-head-3', ElementFactoryService.ELEMENT_TYPES.HEADER_3, "header 3 heading 3 h3"),
             new QuickMenuItem(headingBlocksSection, 'Heading 4', 'Small header for detailed sections.', 'icon-julia-head-4', ElementFactoryService.ELEMENT_TYPES.HEADER_4, "header 4 heading 4 h4"),
