@@ -15,7 +15,12 @@ export class ElementFactoryService implements IElementFactoryService {
         PARAGRAPH: "p",
         CHECKBOX_ITEM: "checkboxItem",
         LIST_ITEM: "listItem",
-        BLOCK_HEADER_1: "h1",
+        CODE: "code",
+        QUOTE: "blockquote",
+        BULLETED_LIST: "ul",
+        NUMBERED_LIST: "ol",
+        CHECK_LIST: "checkLists",
+        HEADER_1: "h1",
         HEADER_2: "h2",
         HEADER_3: "h3",
         HEADER_4: "h4",
@@ -36,7 +41,12 @@ export class ElementFactoryService implements IElementFactoryService {
         this.register(ElementFactoryService.ELEMENT_TYPES.PARAGRAPH, ElementFactoryService.paragraphCreator());
         this.register(ElementFactoryService.ELEMENT_TYPES.CHECKBOX_ITEM, ElementFactoryService.checkboxItemCreator());
         this.register(ElementFactoryService.ELEMENT_TYPES.LIST_ITEM, ElementFactoryService.listItemCreator());
-        this.register(ElementFactoryService.ELEMENT_TYPES.BLOCK_HEADER_1, ElementFactoryService.headingCreator(1));
+        this.register(ElementFactoryService.ELEMENT_TYPES.CODE, ElementFactoryService.codeCreator());
+        this.register(ElementFactoryService.ELEMENT_TYPES.QUOTE, ElementFactoryService.quoteCreator());
+        this.register(ElementFactoryService.ELEMENT_TYPES.CHECK_LIST, ElementFactoryService.checkListCreator());
+        this.register(ElementFactoryService.ELEMENT_TYPES.BULLETED_LIST, ElementFactoryService.bulletedListCreator());
+        this.register(ElementFactoryService.ELEMENT_TYPES.NUMBERED_LIST, ElementFactoryService.numberedListCreator());
+        this.register(ElementFactoryService.ELEMENT_TYPES.HEADER_1, ElementFactoryService.headingCreator(1));
         this.register(ElementFactoryService.ELEMENT_TYPES.HEADER_2, ElementFactoryService.headingCreator(2));
         this.register(ElementFactoryService.ELEMENT_TYPES.HEADER_3, ElementFactoryService.headingCreator(3));
         this.register(ElementFactoryService.ELEMENT_TYPES.HEADER_4, ElementFactoryService.headingCreator(4));
@@ -91,14 +101,14 @@ export class ElementFactoryService implements IElementFactoryService {
 
     private static checkboxItemCreator(): ElementCreator {
         return content => {
-            return ElementFactoryService.checkBoxItem(content);
+            return ElementFactoryService.checkboxItem(content || "");
         };
     }
 
     private static listItemCreator(): ElementCreator {
 
         return content => {
-            return ElementFactoryService.checkboxItem(content);
+            return ElementFactoryService.listItem_2(content);
         };
     }
 
@@ -108,6 +118,89 @@ export class ElementFactoryService implements IElementFactoryService {
             return ElementFactoryService.dragHandleButton();
         };
     }
+
+    private static codeCreator(): ElementCreator {
+        return content => {
+            const pre = document.createElement('pre');
+            const code = document.createElement('code');
+            code.textContent = content || "";
+            pre.appendChild(code);
+
+            code.contentEditable = "true";
+            pre.classList.add('johannes-content-element');
+            code.classList.add('johannes-code');
+
+            return pre;
+        };
+    }
+
+    private static quoteCreator(): ElementCreator {
+        return content => {
+            const blockquote = document.createElement('blockquote');
+            blockquote.textContent = content || "";
+            blockquote.contentEditable = "true";
+            blockquote.classList.add('johannes-content-element');
+            return blockquote;
+        };
+    }
+
+    private static checkListCreator(): ElementCreator {
+        return content => {
+            const ul = document.createElement('ul');
+            ul.contentEditable = "true";
+            ul.classList.add('johannes-content-element');
+            ul.classList.add('swittable');
+            ul.classList.add('list');
+            ul.classList.add('checkbox-list');
+
+            const initialItem = ElementFactoryService.checkboxItem(content || "");
+
+            ul.appendChild(initialItem);
+
+            return ul;
+        };
+    }
+
+    private static bulletedListCreator(): ElementCreator {
+        return content => {
+            const ul = document.createElement('ul');
+            ul.contentEditable = "true";
+            ul.classList.add('johannes-content-element');
+            ul.classList.add('swittable');
+            ul.classList.add('list');
+
+            const initialItem = ElementFactoryService.listItem(content || "");
+
+            ul.appendChild(initialItem);
+
+            return ul;
+        };
+    }
+
+    private static numberedListCreator(): ElementCreator {
+        return content => {
+            const ul = document.createElement('ol');
+            ul.contentEditable = "true";
+            ul.classList.add('johannes-content-element');
+            ul.classList.add('swittable');
+            ul.classList.add('list');
+
+            const initialItem = ElementFactoryService.listItem(content || "");
+
+            ul.appendChild(initialItem);
+
+            return ul;
+        };
+    }
+
+    // private static numberedListCreator(): ElementCreator {
+    //     return () => {
+    //         const ol = document.createElement('ol');
+    //         ol.contentEditable = "true";
+    //         ol.classList.add('johannes-content-element');
+    //         return ol;
+    //     };
+    // }
 
     private static paragraph(content: string | null = null): HTMLElement {
         const p = document.createElement('p');
@@ -122,6 +215,26 @@ export class ElementFactoryService implements IElementFactoryService {
         p.setAttribute('data-placeholder', 'Write something or type / (slash) to choose a block...');
 
         return p;
+    }
+
+    private static listItem(text: string): HTMLElement {
+
+        let initialItem = document.createElement('li');
+
+        initialItem.classList.add('focusable');
+        initialItem.classList.add('deletable');
+        initialItem.classList.add('editable');
+        initialItem.classList.add('focus');
+        initialItem.classList.add('key-trigger');
+        initialItem.classList.add('list-item');
+
+        initialItem.innerText = text;
+
+        initialItem.contentEditable = "true";
+        initialItem.setAttribute('data-placeholder', 'Item');
+
+        return initialItem;
+
     }
 
     private static heading(level: number, content: string | null = null): HTMLElement {
@@ -139,7 +252,7 @@ export class ElementFactoryService implements IElementFactoryService {
         return h;
     }
 
-    private static checkBoxItem(content: string | null = null): HTMLElement {
+    private static checkboxItem(content: string): HTMLElement {
         let li = document.createElement('li');
         li.classList.add('deletable');
         li.classList.add('list-item');
@@ -150,7 +263,7 @@ export class ElementFactoryService implements IElementFactoryService {
         checkbox.setAttribute('type', 'checkbox');
 
         let span = document.createElement('span');
-        span.textContent = content || "";
+        span.textContent = content;
         span.setAttribute('data-placeholder', 'To-do');
         // span.contentEditable = true;
         span.setAttribute("contentEditable", "true");
@@ -165,7 +278,7 @@ export class ElementFactoryService implements IElementFactoryService {
         return li;
     }
 
-    private static checkboxItem(content: string | null = null): HTMLElement {
+    private static listItem_2(content: string | null = null): HTMLElement {
 
         let initialItem = document.createElement('li');
 
@@ -219,19 +332,3 @@ export class ElementFactoryService implements IElementFactoryService {
     }
 
 }
-
-// export const ELEMENT_TYPES = {
-//     BLOCK_PARAGRAPH: "block-p",
-//     PARAGRAPH: "p",
-//     CHECKBOX_ITEM: "checkboxItem",
-//     LIST_ITEM: "listItem",
-//     BLOCK_HEADER_1: "h1",
-//     HEADER_2: "h2",
-//     HEADER_3: "h3",
-//     HEADER_4: "h4",
-//     HEADER_5: "h5",
-//     HEADER_6: "h6",
-//     DRAG_HANDLE_BUTTON: "drag-handle-button"
-
-
-// } as const;
