@@ -15,7 +15,7 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
 
     parentDropdownMenuList: DropdownMenuList;
 
-    constructor(parentDropdownMenuList: DropdownMenuList, textOperationsService: ITextOperationService, command: string, value: string | null, leftIcon: HTMLElement | SVGElement, title: string) {
+    constructor(id: string, parentDropdownMenuList: DropdownMenuList, textOperationsService: ITextOperationService, command: string, value: string | null, leftIcon: HTMLElement | SVGElement, title: string, shortcut: string | null = null) {
 
         const icon = new SVGIcon("icon-material-small-check");
         icon.htmlElement.style.display = "none";
@@ -25,9 +25,11 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
         }
 
         super({
+            id: id,
             leftIcon: leftIcon,
             title: title,
-            icon: icon
+            icon: icon,
+            shortcut: shortcut
         });
 
         this.command = command;
@@ -50,8 +52,11 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
     init(): HTMLElement {
 
         const htmlElement = document.createElement('li');
+        htmlElement.id = this.props.id;
         htmlElement.classList.add('option', 'option-hover', 'block-operation');
         htmlElement.tabIndex = 2;
+
+        htmlElement.style.color = "#37352F";
 
         const textOption = document.createElement('div');
         textOption.classList.add('text-option');
@@ -65,6 +70,14 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
 
         htmlElement.appendChild(textOption);
         htmlElement.appendChild(this.props.icon.htmlElement);
+
+        if (this.props.shortcut) {
+            const shortCut = document.createElement("span");
+            shortCut.innerText = this.props.shortcut;
+            shortCut.style.color = "rgba(55, 53, 47, 0.5)"
+
+            htmlElement.appendChild(shortCut);
+        }
 
         return htmlElement;
     }
@@ -90,8 +103,6 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
             if (focusableParent) {
                 this.normalizeAndMergeElements(focusableParent as HTMLElement);
             }
-
-            this.parentDropdownMenuList.hide();
 
         }, 10);
     }
