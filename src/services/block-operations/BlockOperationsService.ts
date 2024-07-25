@@ -17,7 +17,11 @@ export class BlockOperationsService implements IBlockOperationsService {
         FOCUS_ON_NEXT: "FocusOnNext",
         DELETE: "delete",
         DUPLICATE: "duplicate",
-        REMOVE_FORMAT: "removeFormat"
+        COPY: "copy",
+        PASTE: "pates",
+        CUT: "cut",
+        REMOVE_FORMAT: "removeFormat",
+        TRANSFORM_BLOCK: "transformBlock"
     };
 
     private constructor(elementFactoryService: IElementFactoryService) {
@@ -33,29 +37,120 @@ export class BlockOperationsService implements IBlockOperationsService {
 
     execCommand(command: string, showUI: boolean, value: string | null = null): boolean {
 
+        if (command == BlockOperationsService.BLOCK_OPERATIONS.COPY) {
 
-        if(command == BlockOperationsService.BLOCK_OPERATIONS.REMOVE_FORMAT){
+            if (document.getSelection && navigator.clipboard && navigator.clipboard.writeText) {
+                const selection = document.getSelection();
+
+                if (selection && selection.toString().length > 0) {
+                    const selectedText = selection.toString();
+
+                    navigator.clipboard.writeText(selectedText).then(() => {
+
+                        const copiedEvent = new CustomEvent('copiedText', {
+                            bubbles: true,
+                            cancelable: true
+                        });
+
+                        document.dispatchEvent(copiedEvent);
+
+                        return true;
+
+                    }).catch((err: any) => {
+                        console.error('Error when copy text', err);
+                    });
+                }
+            }
+
+            return false;
+        }
+
+        if (command == BlockOperationsService.BLOCK_OPERATIONS.CUT) {
+
+            if (document.getSelection && navigator.clipboard && navigator.clipboard.writeText) {
+                const selection = document.getSelection();
+
+                if (selection && selection.toString().length > 0) {
+                    const selectedText = selection.toString();
+
+                    selection.deleteFromDocument();
+
+                    const hideEvent = new CustomEvent('requestHideFloatingToolbar', {
+                        bubbles: true,
+                        cancelable: true
+                    });
+
+                    document.dispatchEvent(hideEvent);
+
+                    navigator.clipboard.writeText(selectedText).then(() => {
+
+                        return true;
+
+                    }).catch((err: any) => {
+                        console.error('Error when cut text: ', err);
+                    });
+                }
+            }
+
+            return false;
+        }
+
+        if (command == BlockOperationsService.BLOCK_OPERATIONS.PASTE) {
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                navigator.clipboard.readText().then((pastedText: string) => {
+                    const selection = document.getSelection();
+        
+                    if (selection && selection.rangeCount > 0) {
+                        const range = selection.getRangeAt(0);
+                        range.deleteContents();
+                        range.insertNode(document.createTextNode(pastedText));
+        
+                        const selectionEvent = new CustomEvent('requestUpdateFloatingToolbar', {
+                            bubbles: true,
+                            cancelable: true
+                        });
+        
+                        document.dispatchEvent(selectionEvent);
+        
+                        return true;
+                    } else {
+                        console.error('No text selected or clipboard empty.');
+                    }
+                }).catch((err: any) => {
+                    console.error('Error when pasting text: ', err);
+                });
+            }
+        
+            return false;
+        }
+
+
+        
+
+        if (command == BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK) {
+
+            const block = this.getCurrentSelectedBlock() as HTMLElement;
+            if (block && value) {
+                this.transformBlock(block, value);
+            }
+        }
+
+        if (command == BlockOperationsService.BLOCK_OPERATIONS.REMOVE_FORMAT) {
             return document.execCommand(BlockOperationsService.BLOCK_OPERATIONS.REMOVE_FORMAT, false);
         }
 
         if (command == BlockOperationsService.BLOCK_OPERATIONS.DELETE) {
 
-            const currentActiveElement = this.getCurrentSelectedFocusable();
+            this.deleteAndFocusOnNext();
 
-            if (currentActiveElement) {
-                this.deleteTheCurrentElementAndTheDraggableBlockIfEmpty(currentActiveElement);
+            const hideEvent = new CustomEvent('requestHideFloatingToolbar', {
+                bubbles: true,
+                cancelable: true
+            });
 
-                const deletedEvent = new CustomEvent('selectedBlockDeleted', {
-                    bubbles: true,
-                    cancelable: true
-                });
-    
-                document.dispatchEvent(deletedEvent);
-                
-                return true;
-            }
+            document.dispatchEvent(hideEvent);
 
-            return false;
+            return true;
         }
 
         if (command == BlockOperationsService.BLOCK_OPERATIONS.DUPLICATE) {
@@ -125,7 +220,7 @@ export class BlockOperationsService implements IBlockOperationsService {
             this.formatBlock(element, value);
         }
 
-        const selectionEvent = new CustomEvent('blockFormatted', {
+        const selectionEvent = new CustomEvent('requestHideFloatingToolbar', {
             bubbles: true,
             cancelable: true
         });
@@ -243,6 +338,122 @@ export class BlockOperationsService implements IBlockOperationsService {
     //     hidefloatingToolbar();
     // }
 
+    transformBlock(blockElement: HTMLElement, type: string) {
+
+        //blockElement, type
+
+
+        let contentElement = blockElement.querySelector('.swittable') as HTMLElement;
+        let content = contentElement?.innerText;
+
+        // if (content.endsWith('/')) {
+        //     content = content.slice(0, -1); // Remove the last '/'
+        // }
+
+        let newContentBlock;
+
+        switch (type) {
+            case 'p':
+                {
+                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.PARAGRAPH);
+                    newContentBlock.innerText = content;
+                    break;
+                }
+            case 'h1':
+                {
+                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_1);
+                    newContentBlock.innerText = content;
+                    break;
+                }
+            case 'h2':
+                {
+                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_2);
+                    newContentBlock.innerText = content;
+                    break;
+                }
+            case 'h3':
+                {
+                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_3);
+                    newContentBlock.innerText = content;
+                    break;
+                }
+            case 'h4':
+                {
+                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_4);
+                    newContentBlock.innerText = content;
+                    break;
+                }
+            case 'h5':
+                {
+                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_5);
+                    newContentBlock.innerText = content;
+                    break;
+                }
+            case 'h6':
+                {
+                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_6);
+                    newContentBlock.innerText = content;
+                    break;
+                }
+            case 'code':
+                newContentBlock = document.createElement('pre');
+                const code = document.createElement('code');
+                code.innerText = content;
+                newContentBlock.appendChild(code);
+                break;
+            case 'image':
+                newContentBlock = document.createElement('img');
+                newContentBlock.src = content;
+                newContentBlock.alt = "Descriptive text";
+                break;
+            case 'quote':
+                {
+                    // newContentBlock = factory.createNewQuoteElement(content);
+
+                    break;
+                }
+            case 'bulleted-list':
+                {
+                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.BULLETED_LIST, content);
+
+                    break;
+                }
+
+            case 'numbered-list':
+                {
+                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.NUMBERED_LIST, content);
+
+                    break;
+                }
+            case 'todo-list':
+                {
+                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.CHECK_LIST, content);
+
+                    break;
+                }
+
+            case 'separator':
+                {
+                    // newContentBlock = factory.createNewSeparatorElement();
+                    break;
+                }
+
+            default:
+                console.error('Unsupported type');
+                return;
+        }
+
+        if (!newContentBlock) {
+            return;
+        }
+
+        blockElement.replaceChild(newContentBlock, contentElement);
+
+        const focusable = newContentBlock.closest('.focusable') || blockElement.querySelector('.focusable');
+
+        // focusOnTheEndOfTheText(focusable);
+    }
+
 
 
     createNewElement(event: Event) {
@@ -339,7 +550,7 @@ export class BlockOperationsService implements IBlockOperationsService {
 
     private deleteAndFocusOnNext() {
 
-        const currentActiveElement = document.activeElement;
+        let currentActiveElement = this.getCurrentSelectedBlock() || this.getCurrentActiveBlock();
 
         if (!currentActiveElement) {
             return;
@@ -660,10 +871,21 @@ export class BlockOperationsService implements IBlockOperationsService {
         return focusableParent;
     }
 
+    getCurrentActiveBlock(): Element | null {
+
+        let container = document.activeElement;
+
+        if (container) {
+            return container.closest(".block");
+        }
+
+        return null;
+    }
+
 
     duplicateSelectedBlock() {
 
-        let element = this.getCurrentSelectedBlock();
+        let element = this.getCurrentSelectedBlock() || this.getCurrentActiveBlock();
 
         if (!element || !element.parentNode) {
             console.error('O elemento fornecido é inválido ou não está no DOM.');
@@ -675,7 +897,6 @@ export class BlockOperationsService implements IBlockOperationsService {
         const nextElement = element.nextSibling;
 
         element.parentNode.insertBefore(clone, nextElement);
-
     }
 
 }
