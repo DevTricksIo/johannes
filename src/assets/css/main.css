@@ -120,7 +120,7 @@ ol.johannes-content-element:not(.checkbox-list) {
 
     /* background-color: pink; */
     padding-top: 0.33rem;
-    position: absolute;    
+    position: absolute;
 }
 
 .drag-handler svg {
@@ -142,7 +142,7 @@ ol.johannes-content-element:not(.checkbox-list) {
     position: relative;
 }
 
-.block > *:not(.drag-handler) {
+.block>*:not(.drag-handler) {
     padding-left: 1.25rem;
 }
 
@@ -440,9 +440,9 @@ span {
     font-weight: 500;
 }
 
-.select-wrapper ul li span{
-   display: inline-block;
-   width: max-content;
+.select-wrapper ul li span {
+    display: inline-block;
+    width: max-content;
 }
 
 .select-wrapper ul li .option-image {
@@ -484,7 +484,9 @@ span {
 }
 
 
-
+.select-wrapper > button {
+    color: rgba(55, 53, 47, 0.85);
+}
 
 
 
@@ -641,7 +643,7 @@ mark {
     color: #EB5757 !important;
 }
 
-#deleteOption.option-focused svg{
+#deleteOption.option-focused svg {
     color: #EB5757 !important;
 }
 

@@ -35,6 +35,8 @@ export class DropdownMenuList extends BaseUIComponent {
         htmlElement.style.display = 'none';
         htmlElement.classList.add('soft-box-shadow', 'dependent-box', 'checkable-items');
         htmlElement.style.position = "absolute";
+        htmlElement.style.maxHeight = "25vmax";
+        htmlElement.style.overflowY = "auto";
 
         return htmlElement;
     }
