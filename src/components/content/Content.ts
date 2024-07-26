@@ -57,27 +57,66 @@ export class Content extends BaseUIComponent {
         //Shortcuts
         document.addEventListener("keydown", (event) => {
 
-            if ((event.key == "D" || event.key == "d") && event.ctrlKey) {
+            
+            console.log(`Key: ${event.key}, Code: ${event.code}, Ctrl: ${event.ctrlKey}, Alt: ${event.altKey}, AltGr: ${event.key === 'AltGraph'}, NumLock: ${event.getModifierState('NumLock')}`);
+        
+            const isNumPad = event.code.startsWith("Numpad");
+            const numLockOn = event.getModifierState("NumLock");
+        
+            if ((event.ctrlKey && event.altKey && ((event.code === "Digit1") || (isNumPad && numLockOn && event.code === "Numpad1")))) {
+                // Convert to h1
+                event.preventDefault();
+                event.stopPropagation();
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, false, ElementFactoryService.ELEMENT_TYPES.HEADER_1);
+            }
+            else if ((event.ctrlKey && event.altKey && ((event.code === "Digit2") || (isNumPad && numLockOn && event.code === "Numpad2")))) {
+                // Convert to h2
+                event.preventDefault();
+                event.stopPropagation();
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, false, ElementFactoryService.ELEMENT_TYPES.HEADER_2);
+            }else if ((event.ctrlKey && event.altKey && ((event.code === "Digit3") || (isNumPad && numLockOn && event.code === "Numpad3")))) {
+                // Convert to h3
+                event.preventDefault();
+                event.stopPropagation();
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, false, ElementFactoryService.ELEMENT_TYPES.HEADER_3);
+            }else if ((event.ctrlKey && event.altKey && ((event.code === "Digit4") || (isNumPad && numLockOn && event.code === "Numpad4")))) {
+                // Convert to h4
+                event.preventDefault();
+                event.stopPropagation();
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, false, ElementFactoryService.ELEMENT_TYPES.HEADER_4);
+            }else if ((event.ctrlKey && event.altKey && ((event.code === "Digit5") || (isNumPad && numLockOn && event.code === "Numpad5")))) {
+                // Convert to h5
+                event.preventDefault();
+                event.stopPropagation();
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, false, ElementFactoryService.ELEMENT_TYPES.HEADER_5);
+            }else if ((event.ctrlKey && event.altKey && ((event.code === "Digit6") || (isNumPad && numLockOn && event.code === "Numpad6")))) {
+                // Convert to h6
+                event.preventDefault();
+                event.stopPropagation();
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, false, ElementFactoryService.ELEMENT_TYPES.HEADER_6);
+            } else if ((event.key === "D" || event.key === "d") && event.ctrlKey) {
                 // Duplicate block shortcut
                 event.preventDefault();
                 event.stopPropagation();
-
                 setTimeout(() => {
                     this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.DUPLICATE, false);
                 }, 10);
-            } else if (event.key == "Delete" && event.shiftKey) {
+            } else if (event.key === "Delete" && event.shiftKey) {
                 // Delete block shortcut
                 event.preventDefault();
                 event.stopPropagation();
-
                 setTimeout(() => {
                     this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.DELETE, false);
                 }, 10);
-            } else if (event.key == "\\" && event.ctrlKey) {
+            } else if (event.key === "\\" && event.ctrlKey) {
+                // Clear formatting
                 this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.REMOVE_FORMAT, false);
+            } else if (event.ctrlKey && event.altKey && event.code === "Digit1") {
+                // Prevent character insertion when using top row '1'
+                event.preventDefault();
             }
-
         });
+        
 
         this.htmlElement.addEventListener("keydown", async (event) => {
 
