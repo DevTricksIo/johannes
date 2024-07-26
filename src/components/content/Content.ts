@@ -101,14 +101,14 @@ export class Content extends BaseUIComponent {
                 setTimeout(() => {
                     this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.DUPLICATE, false);
                 }, 10);
-            } else if (event.key === "Delete" && event.shiftKey) {
+            } else if ((event.key === "Delete" || event.key === "Backspace") && event.shiftKey) {
                 // Delete block shortcut
                 event.preventDefault();
                 event.stopPropagation();
                 setTimeout(() => {
                     this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.DELETE, false);
                 }, 10);
-            } else if (event.key === "\\" && event.ctrlKey) {
+            } else if (event.key === "\\" && (event.ctrlKey || event.metaKey)) {
                 // Clear formatting
                 this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.REMOVE_FORMAT, false);
             } else if (event.ctrlKey && event.altKey && event.code === "Digit1") {
