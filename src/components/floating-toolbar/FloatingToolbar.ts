@@ -50,24 +50,37 @@ export class FloatingToolbar extends BaseUIComponent {
     }
 
     show(): void {
-
         setTimeout(() => {
-
             const selection = window.getSelection();
-
-            if (!selection) {
-                throw new Error();
+    
+            if (!selection || selection.rangeCount === 0) {
+                throw new Error('Nenhuma seleção encontrada');
             }
-
+    
             this.currentSelectionRange = selection.getRangeAt(0);
-
-            let range = selection!.getRangeAt(0);
-            let rect = range.getBoundingClientRect();
-
+    
+            const range = selection.getRangeAt(0);
+            const rect = range.getBoundingClientRect();
+    
             this.htmlElement.style.display = 'flex';
-            this.htmlElement.style.left = `${rect.left + window.scrollX - 50}px`;
-            this.htmlElement.style.top = `${rect.top + window.scrollY - this.htmlElement.offsetHeight - 10}px`;
-
+    
+            const elementWidth = this.htmlElement.offsetWidth;
+            let leftPosition = rect.left + window.scrollX - 50;
+    
+            if (leftPosition + elementWidth > window.innerWidth) {
+                leftPosition = window.innerWidth - elementWidth - 20;
+            }
+    
+            const elementHeight = this.htmlElement.offsetHeight;
+            let topPosition = rect.top + window.scrollY - elementHeight - 10;
+    
+            if (topPosition < 0) {
+                topPosition = rect.bottom + window.scrollY + 10;
+            }
+    
+            this.htmlElement.style.left = `${leftPosition}px`;
+            this.htmlElement.style.top = `${topPosition}px`;
+    
             super.show();
         }, 10);
     }
