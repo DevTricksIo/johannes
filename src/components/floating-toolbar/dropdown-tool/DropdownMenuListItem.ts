@@ -18,7 +18,7 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
     constructor(id: string, parentDropdownMenuList: DropdownMenuList, textOperationsService: ITextOperationService, command: string, value: string | null, leftIcon: HTMLElement | SVGElement, title: string, shortcut: string | null = null) {
 
         const icon = new SVGIcon("icon-material-small-check");
-        icon.htmlElement.style.display = "none";
+        icon.htmlElement.style.visibility = "hidden";
 
         if (value) {
             leftIcon.style.color = value;
@@ -132,9 +132,9 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
 
                     if (value) {
 
-                        this.activeIcon?.show();
+                        this.activeIcon?.changeVisibilityToVisible();
                     } else {
-                        this.activeIcon?.hide();
+                        this.activeIcon?.changeVisibilityToHidden();
                     }
 
                 }, 10);

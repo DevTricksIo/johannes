@@ -420,6 +420,7 @@ span {
     padding-right: 5px;
     top: 2.2rem;
     color: rgb(55, 53, 47);
+    padding-right: 0.3125rem;
 }
 
 
@@ -762,7 +763,7 @@ mark {
     flex-direction: row;
     justify-content: start;
     align-items: center;
-    gap: 10px;
+    gap: 0.625rem;
 }
 
 

@@ -78,4 +78,12 @@ export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
     focus() {
         this.htmlElement.focus();
     }
+
+    changeVisibilityToVisible(): void {
+        this.htmlElement.style.visibility = "visible";
+    }
+
+    changeVisibilityToHidden(): void {
+        this.htmlElement.style.visibility = "hidden";
+    }
 }
