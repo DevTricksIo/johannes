@@ -10,12 +10,12 @@ export class Editor extends BaseUIComponent {
     private readonly elementFactoryService: IElementFactoryService;
     private static readonly editorId: string = "johannesEditor";
     private static instance: Editor;
-    
+
     private title?: Title;
     private content?: Content;
 
     private constructor(
-        elementFactoryService: IElementFactoryService, 
+        elementFactoryService: IElementFactoryService,
         blockOperationsService: IBlockOperationsService) {
 
         super({
@@ -71,17 +71,17 @@ export class Editor extends BaseUIComponent {
         container?.addEventListener('mouseover', (event) => {
 
             const target = event.target;
-        
+
             if (target instanceof Node) {
                 let element = target as Node;
-        
+
                 if (element.nodeType === Node.TEXT_NODE) {
                     element = element.parentElement as HTMLElement;
                 }
-        
+
                 if (element instanceof Element) {
                     const blockElement = element.closest('.block');
-                    
+
                     if (blockElement) {
                         this.appendDragHandler(blockElement);
                     }
@@ -107,21 +107,55 @@ export class Editor extends BaseUIComponent {
                 firstParagraph.focus();
             }
         }
+
+        document.addEventListener('paste', function (event: ClipboardEvent) {
+            const target = event.target as HTMLElement;
+            if (target.getAttribute('contenteditable') === 'true') {
+                event.preventDefault();
+
+                const clipboardData = event.clipboardData;
+                if (clipboardData) {
+                    const text = clipboardData.getData('text/plain');
+
+                    Editor.insertTextAtCursor(text);
+                }
+            }
+        }, true);
+
+    }
+
+    static insertTextAtCursor(text: string): void {
+        const sel = window.getSelection();
+
+        if (sel) {
+            if (sel.rangeCount > 0) {
+                const range = sel.getRangeAt(0);
+                range.deleteContents();
+
+                const textNode = document.createTextNode(text);
+                range.insertNode(textNode);
+
+                range.setStartAfter(textNode);
+                range.setEndAfter(textNode);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+        }
     }
 
     appendDragHandler(element: Node): void {
         if (element.nodeType === Node.TEXT_NODE) {
             element = element.parentNode as HTMLElement;
         }
-    
+
         if (!(element instanceof HTMLElement)) {
             console.error('Provided element is not an HTMLElement:', element);
             return;
         }
-    
+
         const parent = element.closest('.block');
         let dragHandler = parent?.querySelector(".drag-handler");
-    
+
         if (!dragHandler && parent) {
             dragHandler = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.DRAG_HANDLE_BUTTON);
             parent.prepend(dragHandler);
@@ -132,12 +166,12 @@ export class Editor extends BaseUIComponent {
         if (element.nodeType === Node.TEXT_NODE) {
             element = element.parentNode as HTMLElement;
         }
-    
+
         if (!(element instanceof HTMLElement)) {
             console.error('Provided element is not an HTMLElement:', element);
             return;
         }
-    
+
         const parent = element.closest('.block');
         if (parent) {
             const dragHandler = parent.querySelector(".drag-handler");
