@@ -33,6 +33,7 @@ export class DropdownMenuButton extends BaseUIComponent {
         htmlElement.role = "button";
         htmlElement.classList.add("button-reset", "text-formatting-select-button", "text-formatting-operation", "option-hover");
         htmlElement.tabIndex = 1;
+        htmlElement.style.position = "relative";
         htmlElement.setAttribute("aria-controls", this.props.dropdownList.htmlElement.id);
 
         if (typeof this.props.title === "string") {
