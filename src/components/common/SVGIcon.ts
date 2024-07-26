@@ -6,7 +6,7 @@ export class SVGIcon extends BaseUIComponent {
 
     useElement: SVGUseElement;
 
-    constructor(hrefUseId: string, width = "16", height = "16") {
+    constructor(hrefUseId: string, width = "1rem", height = "1rem") {
 
         super({
             hrefUseId: hrefUseId,

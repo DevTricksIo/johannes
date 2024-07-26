@@ -35,7 +35,6 @@ export class FloatingToolbarBuilder {
         const turnIntoBarButton = new DropdownMenuButton("turnIntoButton", "Text", turnIntoBarList);
         const turnIntoDropdown = new DropdownMenu(turnIntoBarButton, turnIntoBarList);
 
-
         turnIntoBarList.append(new DropdownMenuListItemTitle(turnIntoBarList, "Turn into"));
 
         turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionText", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.PARAGRAPH, SVGIcons.paragraph.htmlElement, "Text"));
@@ -93,19 +92,19 @@ export class FloatingToolbarBuilder {
         
         colorDropdownList.append(new DropdownMenuListItemTitle(colorDropdownList, "Color"));
 
-        colorDropdownList.append(new DropdownMenuListItem("colorOptionRed",colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#D44C47", new SVGIcon("icon-material-format", "22", "22").htmlElement, "Red"));
-        colorDropdownList.append(new DropdownMenuListItem("colorOptionGreen", colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#448361", new SVGIcon("icon-material-format", "22", "22").htmlElement, "Green"));
-        colorDropdownList.append(new DropdownMenuListItem("colorOptionBlue", colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#337EA9", new SVGIcon("icon-material-format", "22", "22").htmlElement, "Blue"));
-        colorDropdownList.append(new DropdownMenuListItem("colorOptionYellow", colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#CB912F", new SVGIcon("icon-material-format", "22", "22").htmlElement, "Yellow"));
-        colorDropdownList.append(new DropdownMenuListItem("colorOptionGrey", colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#787774", new SVGIcon("icon-material-format", "22", "22").htmlElement, "Grey"));
-        colorDropdownList.append(new DropdownMenuListItem("colorOptionNone", colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "initial", new SVGIcon("icon-material-format", "22", "22").htmlElement, "None"));
+        colorDropdownList.append(new DropdownMenuListItem("colorOptionRed",colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#D44C47", new SVGIcon("icon-material-format", "1.25rem", "1.25rem").htmlElement, "Red"));
+        colorDropdownList.append(new DropdownMenuListItem("colorOptionGreen", colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#448361", new SVGIcon("icon-material-format", "1.25rem", "1.25rem").htmlElement, "Green"));
+        colorDropdownList.append(new DropdownMenuListItem("colorOptionBlue", colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#337EA9", new SVGIcon("icon-material-format", "1.25rem", "1.25rem").htmlElement, "Blue"));
+        colorDropdownList.append(new DropdownMenuListItem("colorOptionYellow", colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#CB912F", new SVGIcon("icon-material-format", "1.25rem", "1.25rem").htmlElement, "Yellow"));
+        colorDropdownList.append(new DropdownMenuListItem("colorOptionGrey", colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "#787774", new SVGIcon("icon-material-format", "1.25rem", "1.25rem").htmlElement, "Grey"));
+        colorDropdownList.append(new DropdownMenuListItem("colorOptionNone", colorDropdownList, textOperationService, TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR, "initial", new SVGIcon("icon-material-format", "1.25rem", "1.25rem").htmlElement, "None"));
         
         return colorDropdown;
     }
 
     static moreOptionsDropdown(): DropdownMenu {
 
-        const icon = new SVGIcon("icon-material-more", "24", "24");
+        const icon = new SVGIcon("icon-material-more", "1.5rem", "1.5rem");
 
         const moreOptionsList = new DropdownMenuList("moreTextOptionSelect");
         const moreOptionsButton = new DropdownMenuButton("moreTextOptionButton", icon.htmlElement, moreOptionsList, false);
@@ -126,22 +125,22 @@ export class FloatingToolbarBuilder {
 
 const SVGIcons: any = {
 
-    paragraph: new SVGIcon("icon-wordpress-paragraph", "22", "22"),
-    todo_list: new SVGIcon("icon-material-check-list", "22", "22"),
-    b_list: new SVGIcon("icon-wordpress-bulleted-list", "22", "22"),
-    n_list: new SVGIcon("icon-wordpress-numbered-list", "22", "22"),
-    code: new SVGIcon("icon-wordpress-numbered-list", "22", "22"),
-    quote: new SVGIcon("icon-wordpress-quote", "22", "22"),
-    head1: new SVGIcon("icon-julia-head-1", "22", "22"),
-    head2: new SVGIcon("icon-julia-head-2", "22", "22"),
-    head3: new SVGIcon("icon-julia-head-3", "22", "22"),
-    head4: new SVGIcon("icon-julia-head-4", "22", "22"),
-    head5: new SVGIcon("icon-julia-head-5", "22", "22"),
-    head6: new SVGIcon("icon-julia-head-6", "22", "22"),
-    duplicate: new SVGIcon("icon-material-duplicate", "22", "22"),
-    delete: new SVGIcon("icon-material-trash", "18", "18"),
-    eraser: new SVGIcon("icon-material-clear", "22", "22"),
-    copy: new SVGIcon("icon-material-copy", "22", "22"),
-    cut: new SVGIcon("icon-material-cut", "22", "22"),
-    paste: new SVGIcon("icon-material-paste", "22", "22"),
+    paragraph: new SVGIcon("icon-wordpress-paragraph", "1.375rem", "1.375rem"),
+    todo_list: new SVGIcon("icon-material-check-list", "1.375rem", "1.375rem"),
+    b_list: new SVGIcon("icon-wordpress-bulleted-list", "1.375rem", "1.375rem"),
+    n_list: new SVGIcon("icon-wordpress-numbered-list", "1.375rem", "1.375rem"),
+    code: new SVGIcon("icon-wordpress-numbered-list", "1.375rem", "1.375rem"),
+    quote: new SVGIcon("icon-wordpress-quote", "1.375rem", "1.375rem"),
+    head1: new SVGIcon("icon-julia-head-1", "1.375rem", "1.375rem"),
+    head2: new SVGIcon("icon-julia-head-2", "1.375rem", "1.375rem"),
+    head3: new SVGIcon("icon-julia-head-3", "1.375rem", "1.375rem"),
+    head4: new SVGIcon("icon-julia-head-4", "1.375rem", "1.375rem"),
+    head5: new SVGIcon("icon-julia-head-5", "1.375rem", "1.375rem"),
+    head6: new SVGIcon("icon-julia-head-6", "1.375rem", "1.375rem"),
+    duplicate: new SVGIcon("icon-material-duplicate", "1.25rem", "1.25rem"),
+    delete: new SVGIcon("icon-material-trash", "1.25rem", "1.25rem"),
+    eraser: new SVGIcon("icon-material-clear", "1.25rem", "1.25rem"),
+    copy: new SVGIcon("icon-material-copy", "1.25rem", "1.25rem"),
+    cut: new SVGIcon("icon-material-cut", "1.25rem", "1.25rem"),
+    paste: new SVGIcon("icon-material-paste", "1.25rem", "1.25rem")
 }

@@ -18,10 +18,11 @@ export class AddBlockButton extends BaseUIComponent {
     init(): HTMLElement {
 
         const htmlElement = document.createElement("button");
+        htmlElement.title = "Add a new block";
 
         htmlElement.classList.add("add-block", "block-operation");
 
-        const svg = new SVGIcon("icon-add-block", "24", "24");
+        const svg = new SVGIcon("icon-add-block", "1.5rem", "1.5rem");
 
         htmlElement.appendChild(svg.htmlElement);
 

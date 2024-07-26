@@ -305,7 +305,7 @@ export class ElementFactoryService implements IElementFactoryService {
         let newElement = ElementFactoryService.paragraph(content);
 
         let newButton = document.createElement('button');
-        newButton.innerHTML = '<svg width="20" height="20" fill="currentColor"><use href="#icon-material-drag"></use></svg>';
+        newButton.innerHTML = '<svg width="1.375rem" height="1.375rem" fill="currentColor"><use href="#icon-material-drag"></use></svg>';
 
         // newDiv.appendChild(newButton);
         newDiv.appendChild(newElement);
@@ -322,7 +322,7 @@ export class ElementFactoryService implements IElementFactoryService {
     static dragHandleButton() {
 
         let button = document.createElement('button');
-        button.innerHTML = '<svg width="20" height="20" fill="currentColor"><use href="#icon-material-drag"></use></svg>';
+        button.innerHTML = '<svg width="1.375rem" height="1.375rem" fill="currentColor"><use href="#icon-material-drag"></use></svg>';
 
         button.classList.add('drag-handler');
         button.classList.add('button-reset');

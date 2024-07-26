@@ -31,7 +31,7 @@ export class GroupedButton extends BaseUIComponent {
         htmlElement.title = this.props.title;
         htmlElement.tabIndex = 1;
 
-        new SVGIcon(this.props.svgUseHref, "22", "22").documentAppendTo(htmlElement);
+        new SVGIcon(this.props.svgUseHref, "1.5rem", "1.5rem").documentAppendTo(htmlElement);
 
         return htmlElement;
     }

@@ -12,8 +12,8 @@ export class ColorIcon extends BaseUIComponent {
 
         const htmlElement = document.createElement("div");
 
-        htmlElement.style.width = "20px";
-        htmlElement.style.height = "20px";
+        htmlElement.style.width = "1.25rem";
+        htmlElement.style.height = "1.25rem";
         htmlElement.style.borderRadius = "50%";
         htmlElement.style.backgroundColor = this.props.color;
         htmlElement.style.border = "1px solid #d0d0d0";

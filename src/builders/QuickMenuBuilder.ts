@@ -49,7 +49,6 @@ export class QuickMenuBuilder {
 
         quickMenu.append(listBlocksSection);
 
-
         return quickMenu;
     }
 }

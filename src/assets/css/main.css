@@ -21,8 +21,6 @@
 .add-block {
     margin: 0;
     padding: 0;
-    width: 24px;
-    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -72,7 +70,7 @@ ul.johannes-content-element {
 }
 
 .johannes-content-element li::before {
-    margin-left: 4px;
+    margin-left: 0.3125rem;
 }
 
 .johannes-content-element li:hover>button {
@@ -141,13 +139,11 @@ ol.johannes-content-element:not(.checkbox-list) {
     display: flex;
     flex-direction: row;
     margin-bottom: 1rem;
-    /* margin-left: 20px; */
     position: relative;
 }
 
 .block > *:not(.drag-handler) {
-    /* Propriedade desejada */
-    padding-left: 20px;
+    padding-left: 1.25rem;
 }
 
 .block:hover .drag-handler {
@@ -418,13 +414,15 @@ span {
     position: absolute;
     background: #f9f9f9;
     flex-direction: column;
-    width: 180px;
+    width: fit-content;
     padding-bottom: 0.5rem;
     padding-left: 5px;
     padding-right: 5px;
     top: 2.2rem;
     color: rgb(55, 53, 47);
 }
+
+
 
 .select-wrapper ul li {
     /* display: flex;
@@ -433,18 +431,23 @@ span {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 10px;
-    padding: 3px 5px;
-    border-radius: 3px;
+    gap: 0.625rem;
+    padding: 0.1875rem 0.3125rem;
+    border-radius: 0.1875rem;
     user-select: none !important;
 
     font-size: small !important;
     font-weight: 500;
 }
 
+.select-wrapper ul li span{
+   display: inline-block;
+   width: max-content;
+}
+
 .select-wrapper ul li .option-image {
-    width: 22px;
-    height: 22px;
+    width: 1.375rem;
+    height: 1.375rem;
     color: #242424;
     padding: 0 !important;
     margin: 0 !important;
@@ -520,13 +523,14 @@ a:not([href]) {
 
 
 .select-wrapper ul li>h3 {
+    margin: 0;
     font-size: small !important;
     color: #37352fa6;
     margin: 0;
     padding: 0;
     font-weight: 600 !important;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-top: 0.3125rem;
+    margin-bottom: 0.3125rem;
 }
 
 
@@ -594,7 +598,7 @@ mark {
 }
 
 .block-options {
-    padding: 0 10px;
+    padding: 0 0.625rem;
     background: #f9f9f9;
 }
 
@@ -604,9 +608,9 @@ mark {
     margin: 0;
     padding: 0;
     font-weight: 600 !important;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    padding-left: 5px;
+    margin-top: 0.3125rem;
+    margin-bottom: 0.3125rem;
+    padding-left: 0.3125rem;
 }
 
 .block-options .option {
@@ -686,12 +690,10 @@ mark {
 .option-image {
     width: 2.875rem;
     height: 2.875rem;
-    border-radius: 3px;
+    border-radius: 0.1875rem;
     border: 1px solid #ccc;
     color: #4f4f4f;
 
-    /* color: #84888d; */
-    /* color: #242424; */
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -765,7 +767,7 @@ mark {
 
 
 :root {
-    font-size: 16px;
+    /* font-size: 16px; */
     /* Tamanho padrão */
 }
 

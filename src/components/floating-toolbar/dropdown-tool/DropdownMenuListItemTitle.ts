@@ -14,7 +14,6 @@ export class DropdownMenuListItemTitle extends BaseUIComponent implements IDropd
         });
 
         this.parentDropdownMenuList = parentDropdownMenuList;
-
     }
 
     performAction(): void {
@@ -32,12 +31,9 @@ export class DropdownMenuListItemTitle extends BaseUIComponent implements IDropd
     init(): HTMLElement {
 
         const htmlElement = document.createElement('li');
-        // htmlElement.classList.add('option', 'option-hover', 'block-operation');
-        
 
         const title = document.createElement('h3');
         title.innerText = this.props.title;
-        title.style.marginLeft = '5px';
 
         htmlElement.appendChild(title);
 
