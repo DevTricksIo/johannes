@@ -9,6 +9,8 @@ import { ServiceProvider } from "../../services/service-provider/ServiceProvider
 
 export class QuickMenu extends BaseUIComponent {
 
+    static id = "quickMenu";
+
     private readonly blockOperationsService: IBlockOperationsService;
 
     private currentFocusedMenuItem: JNode<QuickMenuItem> | null;
@@ -40,7 +42,7 @@ export class QuickMenu extends BaseUIComponent {
     init(): HTMLElement {
 
         const htmlElement = document.createElement('div');
-        htmlElement.id = 'quickMenu';
+        htmlElement.id = QuickMenu.id;
 
         htmlElement.classList.add('block-options-wrapper', 'soft-box-shadow');
         htmlElement.style.display = 'none';
@@ -176,7 +178,6 @@ export class QuickMenu extends BaseUIComponent {
 
     show() {
 
-
         setTimeout(() => {
 
             this.htmlFocusedElementBeforeOpenQuickMenu = document.activeElement as HTMLElement;
@@ -186,31 +187,35 @@ export class QuickMenu extends BaseUIComponent {
             }
 
 
-            const range = document.getSelection()!.getRangeAt(0);
-            const cursorPos = range.getBoundingClientRect();
-
-            const remSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
-            const menuWidth = 19 * remSize;
-
-            let xPosition = cursorPos.right;
-            let yPosition = cursorPos.bottom + window.scrollY;
-
-            const margin = remSize * 1.25;
-
-            let blockWidth = this.htmlElement.offsetWidth;
-
-            if (xPosition + blockWidth + margin > window.innerWidth) {
-                xPosition = cursorPos.left - menuWidth;
-                if (xPosition < 0) xPosition = 0;
+            const selection = window.getSelection();
+    
+            if (!selection || selection.rangeCount === 0) {
+                throw new Error('Nenhuma seleção encontrada');
             }
-
-            this.htmlElement.style.left = `${xPosition}px`;
-            this.htmlElement.style.top = `${yPosition}px`;
+    
+            const range = selection.getRangeAt(0);
+            const rect = range.getBoundingClientRect();
+    
+            this.htmlElement.style.display = 'flex';
+    
+            const elementWidth = this.htmlElement.offsetWidth;
+            let leftPosition = rect.left + window.scrollX;
+    
+            if (leftPosition + elementWidth > window.innerWidth) {
+                leftPosition = window.innerWidth - elementWidth - 20;
+            }
+    
+            const elementHeight = this.htmlElement.offsetHeight;
+            let topPosition = rect.top + window.scrollY - elementHeight - 10;
+    
+            if (topPosition < 0) {
+                topPosition = rect.bottom + window.scrollY + 10;
+            }
+    
+            this.htmlElement.style.left = `${leftPosition}px`;
+            this.htmlElement.style.top = `${topPosition}px`;
 
             super.show();
-
-
-
 
             this.focusOnTheFirstVisibleItem();
             this.htmlFocusedElementBeforeOpenQuickMenu.focus();
@@ -290,9 +295,13 @@ export class QuickMenu extends BaseUIComponent {
 
             if (event.key === 'Enter' && this.isVisible) {
 
+                event.preventDefault();
+                event.stopPropagation();
+
                 const blockType = this.currentFocusedMenuItem?.value.blockType;
 
                 if (blockType) {
+
                     this.transformHtmlFocusedElementBeforeOpenQuickMenu(blockType);
                 }
             }
