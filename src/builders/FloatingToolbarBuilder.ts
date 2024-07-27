@@ -41,7 +41,7 @@ export class FloatingToolbarBuilder {
         turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionTodoList", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.CHECK_LIST, SVGIcons.todo_list.htmlElement, "Todo list", "Ctrl+1"));
         turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionBulletedList", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.BULLETED_LIST, SVGIcons.b_list.htmlElement, "Bulleted list", "Ctrl+."));
         turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionNumberedList", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.NUMBERED_LIST, SVGIcons.n_list.htmlElement, "Numbered list", "Ctrl+/"));
-        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionBlockCode", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.CODE, SVGIcons.code.htmlElement, "Block Code"));
+        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionBlockCode", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.CODE, SVGIcons.code.htmlElement, "Block code"));
         turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionQuote", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.QUOTE, SVGIcons.quote.htmlElement, "Quote"));
         turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionHeading1", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.HEADER_1, SVGIcons.head1.htmlElement, "Heading 1", "Ctrl+Alt+1"));
         turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionHeading2", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.HEADER_2, SVGIcons.head2.htmlElement, "Heading 2", "Ctrl+Alt+2"));
@@ -65,7 +65,7 @@ export class FloatingToolbarBuilder {
         new GroupedButton(TextOperationService.getInstance(), "bold", "Bold", "icon-wordpress-bold").documentAppendTo(groupButton.htmlElement);
         new GroupedButton(TextOperationService.getInstance(), "italic", "Italic", "icon-material-italic").documentAppendTo(groupButton.htmlElement);
         new GroupedButton(TextOperationService.getInstance(), TextOperationService.QUERY_TEXT_OPERATIONS.UNDERLINE, "Underline", "icon-material-underline").documentAppendTo(groupButton.htmlElement);
-        new GroupedButton(TextOperationService.getInstance(), TextOperationService.QUERY_TEXT_OPERATIONS.INLINE_CODE, "Code", "icon-wordpress-code-mark").documentAppendTo(groupButton.htmlElement);
+        new GroupedButton(TextOperationService.getInstance(), TextOperationService.QUERY_TEXT_OPERATIONS.INLINE_CODE, "Code", "icon-material-code-inline").documentAppendTo(groupButton.htmlElement);
         new GroupedButton(TextOperationService.getInstance(), "strikeThrough", "Strike-through", "icon-wordpress-strike-through").documentAppendTo(groupButton.htmlElement);
         // new GroupedButton(TextOperationService.getInstance(), "copy", "Equation", "icon-wordpress-equation-mark").documentAppendTo(groupButton.htmlElement);
 
@@ -104,7 +104,7 @@ export class FloatingToolbarBuilder {
 
     static moreOptionsDropdown(): DropdownMenu {
 
-        const icon = new SVGIcon("icon-material-more", "1.5rem", "1.5rem");
+        const icon = new SVGIcon("icon-material-more", "1.25rem", "1.25rem");
 
         const moreOptionsList = new DropdownMenuList("moreTextOptionSelect");
         const moreOptionsButton = new DropdownMenuButton("moreTextOptionButton", icon.htmlElement, moreOptionsList, false);
@@ -126,10 +126,10 @@ export class FloatingToolbarBuilder {
 const SVGIcons: any = {
 
     paragraph: new SVGIcon("icon-material-format", "1.25rem", "1.25rem"),
-    todo_list: new SVGIcon("icon-material-check-list", "1.25rem", "1.25rem"),
+    todo_list: new SVGIcon("icon-material-check-list-2", "1.25rem", "1.25rem"),
     b_list: new SVGIcon("icon-wordpress-bulleted-list", "1.25rem", "1.25rem"),
     n_list: new SVGIcon("icon-wordpress-numbered-list", "1.25rem", "1.25rem"),
-    code: new SVGIcon("icon-material-code-block", "1.25rem", "1.25rem"),
+    code: new SVGIcon("icon-wordpress-code-mark", "1.25rem", "1.25rem"),
     quote: new SVGIcon("icon-wordpress-quote", "1.25rem", "1.25rem"),
     head1: new SVGIcon("icon-julia-head-1", "1.25rem", "1.25rem"),
     head2: new SVGIcon("icon-julia-head-2", "1.25rem", "1.25rem"),
