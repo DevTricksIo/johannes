@@ -17,8 +17,8 @@ export class ColorIcon extends BaseUIComponent {
         htmlElement.style.borderRadius = "50%";
         htmlElement.style.backgroundColor = this.props.color;
         htmlElement.style.border = "1px solid #d0d0d0";
+        htmlElement.style.boxSizing = "border-box";
 
         return htmlElement;
     }
-
 }

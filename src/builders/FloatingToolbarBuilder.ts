@@ -37,12 +37,12 @@ export class FloatingToolbarBuilder {
 
         turnIntoBarList.append(new DropdownMenuListItemTitle(turnIntoBarList, "Turn into"));
 
-        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionText", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.PARAGRAPH, SVGIcons.paragraph.htmlElement, "Text"));
-        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionTodoList", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.CHECKBOX_ITEM, SVGIcons.todo_list.htmlElement, "Todo list", "Ctrl+1"));
+        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionText", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.PARAGRAPH, SVGIcons.paragraph.htmlElement, "Text", "Ctrl+Shift+Enter"));
+        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionTodoList", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.CHECK_LIST, SVGIcons.todo_list.htmlElement, "Todo list", "Ctrl+1"));
         turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionBulletedList", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.BULLETED_LIST, SVGIcons.b_list.htmlElement, "Bulleted list", "Ctrl+."));
         turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionNumberedList", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.NUMBERED_LIST, SVGIcons.n_list.htmlElement, "Numbered list", "Ctrl+/"));
-        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionBlockCode", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, "code", SVGIcons.code.htmlElement, "Block Code"));
-        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionQuote", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, "quote", SVGIcons.quote.htmlElement, "Quote"));
+        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionBlockCode", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.CODE, SVGIcons.code.htmlElement, "Block Code"));
+        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionQuote", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.QUOTE, SVGIcons.quote.htmlElement, "Quote"));
         turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionHeading1", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.HEADER_1, SVGIcons.head1.htmlElement, "Heading 1", "Ctrl+Alt+1"));
         turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionHeading2", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.HEADER_2, SVGIcons.head2.htmlElement, "Heading 2", "Ctrl+Alt+2"));
         turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionHeading3", turnIntoBarList, BlockOperationsService.getInstance(), BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.HEADER_3, SVGIcons.head3.htmlElement, "Heading 3", "Ctrl+Alt+3"));
@@ -125,18 +125,18 @@ export class FloatingToolbarBuilder {
 
 const SVGIcons: any = {
 
-    paragraph: new SVGIcon("icon-wordpress-paragraph", "1.375rem", "1.375rem"),
-    todo_list: new SVGIcon("icon-material-check-list", "1.375rem", "1.375rem"),
-    b_list: new SVGIcon("icon-wordpress-bulleted-list", "1.375rem", "1.375rem"),
-    n_list: new SVGIcon("icon-wordpress-numbered-list", "1.375rem", "1.375rem"),
-    code: new SVGIcon("icon-wordpress-numbered-list", "1.375rem", "1.375rem"),
-    quote: new SVGIcon("icon-wordpress-quote", "1.375rem", "1.375rem"),
-    head1: new SVGIcon("icon-julia-head-1", "1.375rem", "1.375rem"),
-    head2: new SVGIcon("icon-julia-head-2", "1.375rem", "1.375rem"),
-    head3: new SVGIcon("icon-julia-head-3", "1.375rem", "1.375rem"),
-    head4: new SVGIcon("icon-julia-head-4", "1.375rem", "1.375rem"),
-    head5: new SVGIcon("icon-julia-head-5", "1.375rem", "1.375rem"),
-    head6: new SVGIcon("icon-julia-head-6", "1.375rem", "1.375rem"),
+    paragraph: new SVGIcon("icon-material-format", "1.25rem", "1.25rem"),
+    todo_list: new SVGIcon("icon-material-check-list", "1.25rem", "1.25rem"),
+    b_list: new SVGIcon("icon-wordpress-bulleted-list", "1.25rem", "1.25rem"),
+    n_list: new SVGIcon("icon-wordpress-numbered-list", "1.25rem", "1.25rem"),
+    code: new SVGIcon("icon-material-code-block", "1.25rem", "1.25rem"),
+    quote: new SVGIcon("icon-wordpress-quote", "1.25rem", "1.25rem"),
+    head1: new SVGIcon("icon-julia-head-1", "1.25rem", "1.25rem"),
+    head2: new SVGIcon("icon-julia-head-2", "1.25rem", "1.25rem"),
+    head3: new SVGIcon("icon-julia-head-3", "1.25rem", "1.25rem"),
+    head4: new SVGIcon("icon-julia-head-4", "1.25rem", "1.25rem"),
+    head5: new SVGIcon("icon-julia-head-5", "1.25rem", "1.25rem"),
+    head6: new SVGIcon("icon-julia-head-6", "1.25rem", "1.25rem"),
     duplicate: new SVGIcon("icon-material-duplicate", "1.25rem", "1.25rem"),
     delete: new SVGIcon("icon-material-trash", "1.25rem", "1.25rem"),
     eraser: new SVGIcon("icon-material-clear", "1.25rem", "1.25rem"),
