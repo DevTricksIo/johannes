@@ -18,7 +18,7 @@ export class QuickMenuBuilder {
             new QuickMenuItem(basicBlocksSection, 'Numbered list', 'List items in a numbered format.', 'icon-wordpress-numbered-list', 'numbered-list', "numbered list number list sequential list ol enumerated list ordered list"),
             new QuickMenuItem(basicBlocksSection, 'Code', 'Include code snippet.', 'icon-wordpress-code-mark', 'code', "code script source markup"),
             new QuickMenuItem(basicBlocksSection, 'Quote', 'Highlight text as a quote.', 'icon-wordpress-quote', 'quote', "quote blockquote citation quotation"),
-            new QuickMenuItem(basicBlocksSection, 'Heading 2', 'Medium header for sections', 'icon-julia-head-2', ElementFactoryService.ELEMENT_TYPES.HEADER_2, "header 2 heading 2 h2"),
+            new QuickMenuItem(basicBlocksSection, 'Heading 2', 'Medium header for sections.', 'icon-julia-head-2', ElementFactoryService.ELEMENT_TYPES.HEADER_2, "header 2 heading 2 h2"),
             new QuickMenuItem(basicBlocksSection, 'Heading 3', 'Small header for subsections.', 'icon-julia-head-2', ElementFactoryService.ELEMENT_TYPES.HEADER_3, "header 3 heading 3 h3"),
             new QuickMenuItem(basicBlocksSection, 'Separator', 'Visually divide blocks.', 'icon-wordpress-separator', 'separator', "separator divider rule line")
         ]);
