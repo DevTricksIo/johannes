@@ -57,13 +57,33 @@ export class Content extends BaseUIComponent {
         //Shortcuts
         document.addEventListener("keydown", (event) => {
 
-            
+
             console.log(`Key: ${event.key}, Code: ${event.code}, Ctrl: ${event.ctrlKey}, Alt: ${event.altKey}, AltGr: ${event.key === 'AltGraph'}, NumLock: ${event.getModifierState('NumLock')}`);
-        
+
             const isNumPad = event.code.startsWith("Numpad");
             const numLockOn = event.getModifierState("NumLock");
-        
-            if ((event.ctrlKey && event.altKey && ((event.code === "Digit1") || (isNumPad && numLockOn && event.code === "Numpad1")))) {
+
+            if ((event.ctrlKey || event.metaKey) && event.shiftKey && (event.key === "Enter")) {
+                // Convert to check list
+                event.preventDefault();
+                event.stopPropagation();
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, false, ElementFactoryService.ELEMENT_TYPES.PARAGRAPH);
+            }else if ((event.ctrlKey || event.metaKey) && !event.shiftKey && (event.code === "Digit1" || event.code === "Numpad1")) {
+                // Convert to check list
+                event.preventDefault();
+                event.stopPropagation();
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, false, ElementFactoryService.ELEMENT_TYPES.CHECK_LIST);
+            } else if ((event.ctrlKey || event.metaKey) && !event.shiftKey &&  event.key === ".") {
+                // Convert to bulleted
+                event.preventDefault();
+                event.stopPropagation();
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, false, ElementFactoryService.ELEMENT_TYPES.BULLETED_LIST);
+            } else if ((event.ctrlKey || event.metaKey) && !event.shiftKey && (event.key === "/")) {
+                // Convert to numbered
+                event.preventDefault();
+                event.stopPropagation();
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, false, ElementFactoryService.ELEMENT_TYPES.NUMBERED_LIST);
+            } else if ((event.ctrlKey && event.altKey && ((event.code === "Digit1") || (isNumPad && numLockOn && event.code === "Numpad1")))) {
                 // Convert to h1
                 event.preventDefault();
                 event.stopPropagation();
@@ -74,22 +94,22 @@ export class Content extends BaseUIComponent {
                 event.preventDefault();
                 event.stopPropagation();
                 this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, false, ElementFactoryService.ELEMENT_TYPES.HEADER_2);
-            }else if ((event.ctrlKey && event.altKey && ((event.code === "Digit3") || (isNumPad && numLockOn && event.code === "Numpad3")))) {
+            } else if ((event.ctrlKey && event.altKey && ((event.code === "Digit3") || (isNumPad && numLockOn && event.code === "Numpad3")))) {
                 // Convert to h3
                 event.preventDefault();
                 event.stopPropagation();
                 this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, false, ElementFactoryService.ELEMENT_TYPES.HEADER_3);
-            }else if ((event.ctrlKey && event.altKey && ((event.code === "Digit4") || (isNumPad && numLockOn && event.code === "Numpad4")))) {
+            } else if ((event.ctrlKey && event.altKey && ((event.code === "Digit4") || (isNumPad && numLockOn && event.code === "Numpad4")))) {
                 // Convert to h4
                 event.preventDefault();
                 event.stopPropagation();
                 this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, false, ElementFactoryService.ELEMENT_TYPES.HEADER_4);
-            }else if ((event.ctrlKey && event.altKey && ((event.code === "Digit5") || (isNumPad && numLockOn && event.code === "Numpad5")))) {
+            } else if ((event.ctrlKey && event.altKey && ((event.code === "Digit5") || (isNumPad && numLockOn && event.code === "Numpad5")))) {
                 // Convert to h5
                 event.preventDefault();
                 event.stopPropagation();
                 this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, false, ElementFactoryService.ELEMENT_TYPES.HEADER_5);
-            }else if ((event.ctrlKey && event.altKey && ((event.code === "Digit6") || (isNumPad && numLockOn && event.code === "Numpad6")))) {
+            } else if ((event.ctrlKey && event.altKey && ((event.code === "Digit6") || (isNumPad && numLockOn && event.code === "Numpad6")))) {
                 // Convert to h6
                 event.preventDefault();
                 event.stopPropagation();
@@ -116,7 +136,7 @@ export class Content extends BaseUIComponent {
                 event.preventDefault();
             }
         });
-        
+
 
         this.htmlElement.addEventListener("keydown", async (event) => {
 

@@ -99,19 +99,19 @@ export class BlockOperationsService implements IBlockOperationsService {
             if (navigator.clipboard && navigator.clipboard.readText) {
                 navigator.clipboard.readText().then((pastedText: string) => {
                     const selection = document.getSelection();
-        
+
                     if (selection && selection.rangeCount > 0) {
                         const range = selection.getRangeAt(0);
                         range.deleteContents();
                         range.insertNode(document.createTextNode(pastedText));
-        
+
                         const selectionEvent = new CustomEvent('requestUpdateFloatingToolbar', {
                             bubbles: true,
                             cancelable: true
                         });
-        
+
                         document.dispatchEvent(selectionEvent);
-        
+
                         return true;
                     } else {
                         console.error('No text selected or clipboard empty.');
@@ -120,12 +120,12 @@ export class BlockOperationsService implements IBlockOperationsService {
                     console.error('Error when pasting text: ', err);
                 });
             }
-        
+
             return false;
         }
 
 
-        
+
 
         if (command == BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK) {
 
@@ -353,49 +353,49 @@ export class BlockOperationsService implements IBlockOperationsService {
         let newContentBlock;
 
         switch (type) {
-            case 'p':
+            case ElementFactoryService.ELEMENT_TYPES.PARAGRAPH:
                 {
                     newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.PARAGRAPH);
                     newContentBlock.innerText = content;
                     break;
                 }
-            case 'h1':
+            case ElementFactoryService.ELEMENT_TYPES.HEADER_1:
                 {
                     newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_1);
                     newContentBlock.innerText = content;
                     break;
                 }
-            case 'h2':
+            case ElementFactoryService.ELEMENT_TYPES.HEADER_2:
                 {
                     newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_2);
                     newContentBlock.innerText = content;
                     break;
                 }
-            case 'h3':
+            case ElementFactoryService.ELEMENT_TYPES.HEADER_3:
                 {
                     newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_3);
                     newContentBlock.innerText = content;
                     break;
                 }
-            case 'h4':
+            case ElementFactoryService.ELEMENT_TYPES.HEADER_4:
                 {
                     newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_4);
                     newContentBlock.innerText = content;
                     break;
                 }
-            case 'h5':
+            case ElementFactoryService.ELEMENT_TYPES.HEADER_5:
                 {
                     newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_5);
                     newContentBlock.innerText = content;
                     break;
                 }
-            case 'h6':
+            case ElementFactoryService.ELEMENT_TYPES.HEADER_6:
                 {
                     newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_6);
                     newContentBlock.innerText = content;
                     break;
                 }
-            case 'code':
+            case ElementFactoryService.ELEMENT_TYPES.CODE:
                 newContentBlock = document.createElement('pre');
                 const code = document.createElement('code');
                 code.innerText = content;
@@ -406,26 +406,27 @@ export class BlockOperationsService implements IBlockOperationsService {
                 newContentBlock.src = content;
                 newContentBlock.alt = "Descriptive text";
                 break;
-            case 'quote':
+            case ElementFactoryService.ELEMENT_TYPES.QUOTE:
                 {
                     // newContentBlock = factory.createNewQuoteElement(content);
 
                     break;
                 }
-            case 'bulleted-list':
+
+            case ElementFactoryService.ELEMENT_TYPES.BULLETED_LIST:
                 {
                     newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.BULLETED_LIST, content);
 
                     break;
                 }
 
-            case 'numbered-list':
+            case ElementFactoryService.ELEMENT_TYPES.NUMBERED_LIST:
                 {
                     newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.NUMBERED_LIST, content);
 
                     break;
                 }
-            case 'todo-list':
+            case ElementFactoryService.ELEMENT_TYPES.CHECK_LIST:
                 {
                     newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.CHECK_LIST, content);
 
