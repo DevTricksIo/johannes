@@ -86,4 +86,38 @@ export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
     changeVisibilityToHidden(): void {
         this.htmlElement.style.visibility = "hidden";
     }
+
+    get doesElementOverflowScreen(): boolean {
+
+        const originalDisplay = this.htmlElement.style.display;
+        const originalVisibility = this.htmlElement.style.visibility;
+        const originalPosition = this.htmlElement.style.position;
+
+        if (originalDisplay === 'none') {
+            this.htmlElement.style.display = 'block';
+            this.htmlElement.style.visibility = 'hidden';
+            this.htmlElement.style.position = 'absolute';
+        }
+
+        const elementRect = this.htmlElement.getBoundingClientRect();
+        const screenWidth = window.innerWidth;
+
+        if (originalDisplay === 'none') {
+            this.htmlElement.style.display = originalDisplay;
+            this.htmlElement.style.visibility = originalVisibility;
+            this.htmlElement.style.position = originalPosition;
+        }
+
+        const elementRightEdge = elementRect.right;
+
+        if (elementRightEdge > screenWidth) {
+            return true;
+        }
+
+        if (elementRect.left < 0) {
+            return true; 
+        }
+
+        return false;
+    }
 }

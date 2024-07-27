@@ -87,10 +87,8 @@ export class DropdownMenuList extends BaseUIComponent {
 
         this.htmlElement.style.left = "0";
         this.htmlElement.style.right = "auto";
-
-        const overflowTheScreen = this.doesElementOverflowScreen(this.htmlElement);
         
-        if(overflowTheScreen){
+        if(this.doesElementOverflowScreen){
             this.htmlElement.style.left = "auto";
             this.htmlElement.style.right = "0";
         }
@@ -155,38 +153,4 @@ export class DropdownMenuList extends BaseUIComponent {
         return this.canHide && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`);
     }
 
-
-
-    doesElementOverflowScreen(element: HTMLElement): boolean {
-        const originalDisplay = element.style.display;
-        const originalVisibility = element.style.visibility;
-        const originalPosition = element.style.position;
-
-        if (originalDisplay === 'none') {
-            element.style.display = 'block';
-            element.style.visibility = 'hidden';
-            element.style.position = 'absolute';
-        }
-
-        const elementRect = element.getBoundingClientRect();
-        const screenWidth = window.innerWidth;
-
-        if (originalDisplay === 'none') {
-            element.style.display = originalDisplay;
-            element.style.visibility = originalVisibility;
-            element.style.position = originalPosition;
-        }
-
-        const elementRightEdge = elementRect.right;
-
-        if (elementRightEdge > screenWidth) {
-            return true;
-        }
-
-        if (elementRect.left < 0) {
-            return true; 
-        }
-
-        return false;
-    }
 }
