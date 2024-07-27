@@ -13,7 +13,7 @@ describe("QuickMenuSection", () => {
 
     test("Create instance with success", () => {
 
-        const quickMenu = new QuickMenu();
+        const quickMenu = QuickMenu.getInstance();
 
         const quickMenuSection = new QuickMenuSection({ quickMenuInstance: quickMenu, title: "a", classList: "a" });
 

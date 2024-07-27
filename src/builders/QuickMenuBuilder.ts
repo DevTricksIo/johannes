@@ -7,7 +7,7 @@ export class QuickMenuBuilder {
 
     static build(): QuickMenu {
 
-        const quickMenu: QuickMenu = new QuickMenu();
+        const quickMenu: QuickMenu = QuickMenu.getInstance();
 
         const basicBlocksSection: QuickMenuSection = new QuickMenuSection({ quickMenuInstance: quickMenu, title: 'Basic blocks', classList: 'basic-section' });
 

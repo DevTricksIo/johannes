@@ -95,8 +95,11 @@ export class QuickMenuItem extends BaseUIComponent {
             this.quickMenuSectionInstance.quickMenuInstance.switchVisualFocus(node!);
         });
 
-        this.htmlElement.addEventListener('click', () => {
+        this.htmlElement.addEventListener('click', (event) => {
 
+            event.preventDefault();
+            event.stopPropagation();
+            
             this.quickMenuSectionInstance.quickMenuInstance.transformHtmlFocusedElementBeforeOpenQuickMenu(this.blockType);
 
         });

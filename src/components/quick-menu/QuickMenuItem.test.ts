@@ -14,7 +14,7 @@ describe("QuickMenuItem", () => {
 
     test("Create QuickMenuItem with success", () => {
 
-        const quickMenu = new QuickMenu();
+        const quickMenu = QuickMenu.getInstance();
         const quickMenuSection = new QuickMenuSection({ quickMenuInstance: quickMenu, title: "", classList: "a" });
 
         const quickMenuItem = new QuickMenuItem(quickMenuSection, "a", "b", "c", "d", "e");

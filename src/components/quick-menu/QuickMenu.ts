@@ -21,7 +21,7 @@ export class QuickMenu extends BaseUIComponent {
 
     private static instance: QuickMenu | null;
 
-    constructor() {
+    private constructor() {
 
         super({});
 

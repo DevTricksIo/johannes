@@ -11,7 +11,7 @@ describe("QuickMenu", () => {
     ServiceProvider.getInstance().registerService("IElementFactoryService", ElementFactoryService.getInstance());
 
     test("Create a new QuickMenu with success", () => {
-        const quickMenu = new QuickMenu();
+        const quickMenu = QuickMenu.getInstance;
 
         expect(quickMenu).toBeInstanceOf(QuickMenu);
     });

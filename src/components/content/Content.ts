@@ -3,7 +3,7 @@ import { ElementFactoryService } from "@/services/element-factory/ElementFactory
 import { BaseUIComponent } from "../common/BaseUIComponent";
 import { IBlockOperationsService } from "@/services/block-operations/IBlockOperationsService";
 import { BlockOperationsService } from "@/services/block-operations/BlockOperationsService";
-import { TextOperationService } from "@/services/text-operations/TextOperationService";
+import { QuickMenu } from "../quick-menu/QuickMenu";
 
 export class Content extends BaseUIComponent {
 
@@ -68,12 +68,12 @@ export class Content extends BaseUIComponent {
                 event.preventDefault();
                 event.stopPropagation();
                 this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, false, ElementFactoryService.ELEMENT_TYPES.PARAGRAPH);
-            }else if ((event.ctrlKey || event.metaKey) && !event.shiftKey && (event.code === "Digit1" || event.code === "Numpad1")) {
+            } else if ((event.ctrlKey || event.metaKey) && !event.shiftKey && (event.code === "Digit1" || event.code === "Numpad1")) {
                 // Convert to check list
                 event.preventDefault();
                 event.stopPropagation();
                 this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, false, ElementFactoryService.ELEMENT_TYPES.CHECK_LIST);
-            } else if ((event.ctrlKey || event.metaKey) && !event.shiftKey &&  event.key === ".") {
+            } else if ((event.ctrlKey || event.metaKey) && !event.shiftKey && event.key === ".") {
                 // Convert to bulleted
                 event.preventDefault();
                 event.stopPropagation();
@@ -143,9 +143,11 @@ export class Content extends BaseUIComponent {
             if (event.ctrlKey || event.shiftKey || event.altKey) {
                 return;
             }
+            
 
-            if (event.key === 'Enter') {
+            if (event.key === 'Enter' && !QuickMenu.getInstance().isVisible) {
                 event.preventDefault();
+
                 this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.CREATE_DEFAULT_BLOCK, false);
             } else if (event.key === 'Backspace') {
                 const target = event.target as HTMLElement;
