@@ -8,17 +8,21 @@ export class GroupedButton extends BaseUIComponent {
     private readonly commandService: ICommand;
     private readonly command: string;
     private readonly showUI: boolean;
+    private readonly icon: SVGIcon;
 
-    constructor(commandService: ICommand, command: string, title: string, svgUseHref: string) {
+    constructor(commandService: ICommand, command: string, title: string, svgIconId: string) {
+
+        const icon = new SVGIcon(svgIconId, "1.25rem", "1.25rem");
 
         super({
             title: title,
-            svgUseHref: svgUseHref
+            icon: icon
         });
 
         this.commandService = commandService;
         this.command = command;
         this.showUI = command == TextOperationService.QUERY_TEXT_OPERATIONS.CREATE_LINK;
+        this.icon = icon;
         this.attachEvents();
     }
 
@@ -31,7 +35,7 @@ export class GroupedButton extends BaseUIComponent {
         htmlElement.title = this.props.title;
         htmlElement.tabIndex = 1;
 
-        new SVGIcon(this.props.svgUseHref, "1.25rem", "1.25rem").documentAppendTo(htmlElement);
+        htmlElement.appendChild(this.props.icon.htmlElement);
 
         return htmlElement;
     }
@@ -60,12 +64,13 @@ export class GroupedButton extends BaseUIComponent {
 
                 if (!selection?.isCollapsed) {
                     if (this.commandService.queryCommandState(this.command)) {
-                        this.htmlElement.style.color = "#2382e2";
+                        
+                        this.icon.changeColor("#2382e2");
                     } else {
-                        this.htmlElement.style.color = "";
+                        this.icon.changeColor("rgba(55, 53, 47, 0.85)");
                     }
                 }
-            }, 10);
+            }, 50);
         });
     }
 

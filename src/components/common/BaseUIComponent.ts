@@ -79,6 +79,14 @@ export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
         this.htmlElement.focus();
     }
 
+    changeColor(value: string): void {
+        this.htmlElement.style.color = value;
+    }
+
+    removeColor(){
+        this.htmlElement.style.color = "inherit";
+    }
+
     changeVisibilityToVisible(): void {
         this.htmlElement.style.visibility = "visible";
     }
@@ -115,7 +123,7 @@ export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
         }
 
         if (elementRect.left < 0) {
-            return true; 
+            return true;
         }
 
         return false;
