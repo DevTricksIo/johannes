@@ -28,7 +28,6 @@ export class TextOperationService implements ITextOperationService {
 
     execCommand(command: string, showUi: boolean, value: string | null): boolean {
 
-
         if (command == TextOperationService.QUERY_TEXT_OPERATIONS.INLINE_CODE) {
             this.toggleCodeExecCommand();
             return true;
@@ -59,7 +58,19 @@ export class TextOperationService implements ITextOperationService {
 
                 return true;
             }
+        }
 
+        if(command == TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR || 
+            command == TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR){
+
+                document.execCommand(command, false, v);
+
+                const showInputLinkBox = new CustomEvent('colorChange', {
+                    bubbles: true,
+                    cancelable: true
+                });
+
+                document.dispatchEvent(showInputLinkBox);
         }
 
         return document.execCommand(command, false, v);
@@ -78,11 +89,18 @@ export class TextOperationService implements ITextOperationService {
 
     queryCommandState(command: string, value: string | null): boolean {
 
+        if (command === TextOperationService.QUERY_TEXT_OPERATIONS.CREATE_LINK) {
+
+            if (TextOperationService.getSelectedHTMLElement()?.closest("a")) {
+                return true;
+            }
+
+            return false;;
+        }
+
         if (command === TextOperationService.QUERY_TEXT_OPERATIONS.UNDERLINE) {
 
-            const element = TextOperationService.getSelectedHTMLElement();
-
-            if (element?.closest("a")) {
+            if (TextOperationService.getSelectedHTMLElement()?.closest("a")) {
                 return false;
             }
         }
@@ -93,17 +111,6 @@ export class TextOperationService implements ITextOperationService {
 
         if (command === TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR) {
             return this.queryForeColor(value!);
-        }
-
-        if (command === TextOperationService.QUERY_TEXT_OPERATIONS.CREATE_LINK) {
-
-            const element = TextOperationService.getSelectedHTMLElement();
-
-            if (element?.closest("a")) {
-                return true;
-            }
-
-            return false;;
         }
 
         return document.queryCommandState(command);
@@ -174,6 +181,7 @@ export class TextOperationService implements ITextOperationService {
 
 
     private queryHiliteColor(expectedColor: string) {
+
         const selection = window.getSelection();
 
         if (!selection) {
@@ -187,7 +195,11 @@ export class TextOperationService implements ITextOperationService {
             element = element.parentNode;
         }
 
-        const spanWithBackground = (element as HTMLElement).closest("span[style*='background-color']");
+        const spanWithBackground = 
+            (element as HTMLElement).closest("span[style*='background-color']") || 
+            (element as HTMLElement).closest("font[style*='background-color']");
+
+
         if (!spanWithBackground) return false;
 
         const style = window.getComputedStyle(spanWithBackground);

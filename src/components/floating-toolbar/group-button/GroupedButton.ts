@@ -45,32 +45,22 @@ export class GroupedButton extends BaseUIComponent {
 
         this.htmlElement.addEventListener("click", (event) => {
 
+            const editableElement = this.getParentEditable();
+
+            this.commandService.execCommand(this.command, this.showUI);
+            this.changeIconColor();
+
             setTimeout(() => {
-                const editableElement = this.getParentEditable();
-
-                this.commandService.execCommand(this.command, this.showUI);
-
-                setTimeout(() => {
-                    editableElement?.normalize();
-                }, 10);
-
+                editableElement?.normalize();
             }, 10);
         });
 
         document.addEventListener('selectionchange', (event) => {
+            const selection = window.getSelection();
 
-            setTimeout(() => {
-                const selection = window.getSelection();
-
-                if (!selection?.isCollapsed) {
-                    if (this.commandService.queryCommandState(this.command)) {
-                        
-                        this.icon.changeColor("#2382e2");
-                    } else {
-                        this.icon.changeColor("rgba(55, 53, 47, 0.85)");
-                    }
-                }
-            }, 50);
+            if (!selection?.isCollapsed) {
+                this.changeIconColor();
+            }
         });
     }
 
@@ -87,5 +77,13 @@ export class GroupedButton extends BaseUIComponent {
         const currentBlock = (commonAncestor as HTMLElement).closest('.editable');
 
         return currentBlock;
+    }
+
+    changeIconColor(): void {
+        if (this.commandService.queryCommandState(this.command)) {
+            this.icon.changeColor("#2382e2");
+        } else {
+            this.icon.changeColor("rgba(55, 53, 47, 0.85)");
+        }
     }
 }

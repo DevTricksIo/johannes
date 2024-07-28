@@ -50,39 +50,39 @@ export class FloatingToolbar extends BaseUIComponent {
     }
 
     show(): void {
-        setTimeout(() => {
+        requestAnimationFrame(() => {
             const selection = window.getSelection();
-    
+
             if (!selection || selection.rangeCount === 0) {
                 throw new Error('Nenhuma seleção encontrada');
             }
-    
+
             this.currentSelectionRange = selection.getRangeAt(0);
-    
+
             const range = selection.getRangeAt(0);
             const rect = range.getBoundingClientRect();
-    
+
             this.htmlElement.style.display = 'flex';
-    
+
             const elementWidth = this.htmlElement.offsetWidth;
             let leftPosition = rect.left + window.scrollX - 50;
-    
+
             if (leftPosition + elementWidth > window.innerWidth) {
                 leftPosition = window.innerWidth - elementWidth - 20;
             }
-    
+
             const elementHeight = this.htmlElement.offsetHeight;
             let topPosition = rect.top + window.scrollY - elementHeight - 10;
-    
+
             if (topPosition < 0) {
                 topPosition = rect.bottom + window.scrollY + 10;
             }
-    
+
             this.htmlElement.style.left = `${leftPosition}px`;
             this.htmlElement.style.top = `${topPosition}px`;
-    
+
             super.show();
-        }, 10);
+        });
     }
 
     hide(): void {
@@ -144,12 +144,9 @@ export class FloatingToolbar extends BaseUIComponent {
                     this.hide();
                 }
             } if (this.canHide && (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
-
-                setTimeout(() => {
-                    if (this.isSelectionEmpty()) {
-                        this.hide();
-                    }
-                }, 10);
+                if (this.isSelectionEmpty()) {
+                    this.hide();
+                }
             }
         });
 
@@ -165,19 +162,17 @@ export class FloatingToolbar extends BaseUIComponent {
         document.addEventListener('keyup', (event) => {
             if (event.key === "Shift" || event.key === "Control") {
 
-                setTimeout(() => {
-                    if (window.getSelection()!.toString().trim() !== '') {
+                if (window.getSelection()!.toString().trim() !== '') {
 
-                        if (Utils.isSelectedTextDescendantOf(".title")) {
-                            return;
-                        }
-
-                        event.preventDefault();
-                        event.stopPropagation();
-
-                        this.show();
+                    if (Utils.isSelectedTextDescendantOf(".title")) {
+                        return;
                     }
-                }, 10);
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    this.show();
+                }
             }
         });
 
@@ -193,7 +188,7 @@ export class FloatingToolbar extends BaseUIComponent {
             if (!this.isVisible) {
 
                 // wait the selection to be reflected in the DOM
-                setTimeout(() => {
+                requestAnimationFrame(() => {
 
                     if (window.getSelection()!.toString().trim() !== '') {
 
@@ -206,7 +201,7 @@ export class FloatingToolbar extends BaseUIComponent {
 
                         this.show();
                     }
-                }, 10);
+                });
             }
         });
 

@@ -84,10 +84,9 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
 
     performAction(): void {
 
-        setTimeout(() => {
+        this.textOperationService.execCommand(this.command, false, this.value);
 
-            this.textOperationService.execCommand(this.command, false, this.value);
-
+        requestAnimationFrame(() => {
             const selection = window.getSelection();
             if (!selection || selection.rangeCount === 0) return;
 
@@ -103,8 +102,7 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
             if (focusableParent) {
                 this.normalizeAndMergeElements(focusableParent as HTMLElement);
             }
-
-        }, 10);
+        });
     }
 
     attachEvent(): void {
@@ -126,18 +124,16 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
                 this.command == TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR ||
                 this.command == TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR) {
 
-                setTimeout(() => {
+                this.changeCheckIconVisibility();
+            }
+        });
 
-                    const value = this.textOperationService.queryCommandState(this.command, this.value);
+        document.addEventListener("colorChange", () => {
+            if (
+                this.command == TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR ||
+                this.command == TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR) {
 
-                    if (value) {
-
-                        this.activeIcon?.changeVisibilityToVisible();
-                    } else {
-                        this.activeIcon?.changeVisibilityToHidden();
-                    }
-
-                }, 10);
+                this.changeCheckIconVisibility();
             }
         });
 
@@ -173,5 +169,16 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
         return elem1.tagName === elem2.tagName &&
             elem1.style.cssText === elem2.style.cssText &&
             window.getComputedStyle(elem1).color === window.getComputedStyle(elem2).color;
+    }
+
+
+    changeCheckIconVisibility(): void {
+        requestAnimationFrame(() => {
+            if (this.textOperationService.queryCommandState(this.command, this.value)) {
+                this.activeIcon?.changeVisibilityToVisible();
+            } else {
+                this.activeIcon?.changeVisibilityToHidden();
+            }
+        });
     }
 }

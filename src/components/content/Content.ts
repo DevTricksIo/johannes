@@ -118,16 +118,12 @@ export class Content extends BaseUIComponent {
                 // Duplicate block shortcut
                 event.preventDefault();
                 event.stopPropagation();
-                setTimeout(() => {
-                    this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.DUPLICATE, false);
-                }, 10);
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.DUPLICATE, false);
             } else if ((event.key === "Delete" || event.key === "Backspace") && event.shiftKey) {
                 // Delete block shortcut
                 event.preventDefault();
                 event.stopPropagation();
-                setTimeout(() => {
-                    this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.DELETE, false);
-                }, 10);
+                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.DELETE, false);
             } else if (event.key === "\\" && (event.ctrlKey || event.metaKey)) {
                 // Clear formatting
                 this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.REMOVE_FORMAT, false);
@@ -143,7 +139,7 @@ export class Content extends BaseUIComponent {
             if (event.ctrlKey || event.shiftKey || event.altKey) {
                 return;
             }
-            
+
 
             if (event.key === 'Enter' && !QuickMenu.getInstance().isVisible) {
                 event.preventDefault();
