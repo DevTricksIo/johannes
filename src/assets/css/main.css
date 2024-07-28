@@ -495,8 +495,18 @@ span {
 
 
 
-code {
+code:not(pre code) {
+    margin: 0;
+    padding: 0;
     background-color: #d0d0d0;
+    background-color: #f6f5f4;
+    font-size: inherit;
+    font-size: 1rem !important;
+    border: 1px solid #0000001a;
+    padding: 0 3px;
+    display: inline-block;
+    border-radius: 4px;
+    box-sizing: border-box;
 }
 
 
@@ -595,7 +605,7 @@ mark {
 }
 
 .block-options {
-    width: 19rem;
+    width: fit-content;
     max-height: 19rem;
     overflow-y: auto;
 }
@@ -732,6 +742,7 @@ mark {
 
 .option-text .block-description {
     font-size: small !important;
+    color: rgba(55, 53, 47, 0.5);
 }
 
 /** End Block Options **/
