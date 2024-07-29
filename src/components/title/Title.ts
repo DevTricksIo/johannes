@@ -1,15 +1,14 @@
-import { BlockOperationsService } from "@/services/block-operations/BlockOperationsService";
 import { BaseUIComponent } from "../common/BaseUIComponent";
-import { IBlockOperationsService } from "@/services/block-operations/IBlockOperationsService";
+import { CustomEvents } from "@/commands/CustomEvents";
 
 export class Title extends BaseUIComponent {
 
-    blockOperationsService: IBlockOperationsService;
+    constructor(value: string | undefined) {
 
-    constructor(blockOperationsService: IBlockOperationsService) {
+        super({
+            value: value
+        });
 
-        super({});
-        this.blockOperationsService = blockOperationsService;
         this.attachEvents();
     }
 
@@ -22,8 +21,8 @@ export class Title extends BaseUIComponent {
         h1.setAttribute("contentEditable", "true");
         h1.setAttribute("data-placeholder", "Untitled");
 
-        if (window.editorConfig?.title) {
-            h1.textContent = window.editorConfig?.title
+        if (this.props.value) {
+            h1.textContent = this.props.value;
         }
 
         htmlElement.appendChild(h1);
@@ -35,9 +34,12 @@ export class Title extends BaseUIComponent {
         this.htmlElement.addEventListener("keydown", (event) => {
             if (event.key == "Enter") {
                 event.preventDefault();
-
-                this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_FIRST, false);
+                document.dispatchEvent(new CustomEvent(CustomEvents.focusOnFirstRequested, {}));
             }
         });
+    }
+
+    static create(value: string | undefined): Title {
+        return new Title(value);
     }
 }
