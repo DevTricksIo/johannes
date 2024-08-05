@@ -1,17 +1,39 @@
+import { DOMUtils } from "@/utilities/DOMUtils";
 import { IEditableNavigation } from "./IEditableNavigation";
 
+/**
+ * Provides navigation capabilities within editable elements on a web page.
+ * This class handles keyboard events to navigate between contenteditable elements using arrow keys,
+ * and ensures focus management and caret placement within these elements.
+ * It implements the `IEditableNavigation` interface and uses a singleton pattern to manage its instance.
+ */
 export class EditableNavigation implements IEditableNavigation {
 
     private static instance: EditableNavigation;
 
+    /**
+     * Private constructor to prevent external instantiation.
+     * It binds the `handleArrowKeys` method to keyboard events on the document.
+     */
     private constructor() {
         document.addEventListener('keydown', this.handleArrowKeys.bind(this));
     }
 
+    /**
+     * Acts as a trigger within the dependency injection container to ensure instantiation of this singleton class.
+     * This method does not perform any operations itself but ensures that an instance of EditableNavigation
+     * is created and ready to listen to keyboard events. This is crucial for setting up the event listeners
+     * that manage navigation within editable content areas, as it triggers the necessary bindings upon instantiation.
+     */
     listen(): void {
         console.log("EditableNavigation is now listening for key events.");
     }
 
+    /**
+     * Retrieves the singleton instance of the EditableNavigation class.
+     * If the instance does not exist, it creates a new one.
+     * @returns {EditableNavigation} The singleton instance of the EditableNavigation class.
+     */
     public static getInstance(): EditableNavigation {
         if (!EditableNavigation.instance) {
             EditableNavigation.instance = new EditableNavigation();
@@ -19,63 +41,65 @@ export class EditableNavigation implements IEditableNavigation {
         return EditableNavigation.instance;
     }
 
-    private async handleArrowKeys(event: KeyboardEvent) {
+    private handleArrowKeys(event: KeyboardEvent) {
 
-        requestAnimationFrame(async () => {
-            if (event.key.startsWith('Arrow') && !event.altKey && !event.ctrlKey && !event.altKey && !event.shiftKey && !event.metaKey) {
+        if (event.key.startsWith('Arrow') && !event.altKey && !event.ctrlKey && !event.altKey && !event.shiftKey && !event.metaKey) {
 
-                console.log("navigating");
+            const currentEditable = document.activeElement as HTMLElement;
 
-                const currentEditable = document.activeElement as HTMLElement;
+            if (currentEditable && currentEditable.isContentEditable) {
+                if (this.shouldSwitchEditable(currentEditable, event.key as Direction)) {
 
-                if (currentEditable && currentEditable.isContentEditable) {
-                    if (await this.shouldSwitchEditable(currentEditable, event.key)) {
+                    event.preventDefault();
+                    event.stopPropagation();
 
-                        event.preventDefault();
-                        event.stopPropagation();
+                    const nextEditable = this.findNextEditable(currentEditable, event.key as Direction);
+                    if (nextEditable) {
 
-                        const nextEditable = this.findNextEditable(currentEditable, event.key);
-                        if (nextEditable) {
+                        requestAnimationFrame(() => {
+                            nextEditable.focus();
+                        });
 
-                            requestAnimationFrame(() => {
-                                nextEditable.focus();
-                            });
+                        requestAnimationFrame
 
+                        if(event.key == Direction.ArrowUp || event.key == Direction.ArrowDown){
                             this.placeCaretInSimilarPosition(currentEditable, nextEditable);
                         }
+
+                        if(event.key == Direction.ArrowLeft){
+                            DOMUtils.placeCursorAtEndOfEditableElement(nextEditable);
+                        }
+
+                        if(event.key == Direction.ArrowRight){
+                            DOMUtils.placeCursorAtStartOfEditableElement(nextEditable);
+                        }
+
                     }
                 }
             }
-        });
-
-
+        }
     }
 
-    private shouldSwitchEditable(element: HTMLElement, key: string): Promise<boolean> {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const sel = window.getSelection();
-                if (sel && sel.rangeCount > 0) {
-                    const { atStart, atEnd } = this.getSelectionTextInfo(element);
-                    const isAtLastLine = this.isAtLineBoundary(element, 'last');
-                    const isAtFirstLine = this.isAtLineBoundary(element, 'first');
+    private shouldSwitchEditable(element: HTMLElement, direction: Direction): boolean {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0) {
+            const { atStart, atEnd } = this.getSelectionTextInfo(element);
+            const isAtFirstLine = this.isAtLineBoundary(element, Boundary.First);
+            const isAtLastLine = this.isAtLineBoundary(element, Boundary.Last);
 
-                    if ((key === 'ArrowLeft' && atStart) || (key === 'ArrowRight' && atEnd) ||
-                        (key === 'ArrowUp' && (atStart || isAtFirstLine)) ||
-                        (key === 'ArrowDown' && (atEnd || isAtLastLine))) {
-                        resolve(true);
-                    } else {
-                        resolve(false);
-                    }
-                } else {
-                    resolve(false);
-                }
-            }, 10);
-        });
+            if ((direction === Direction.ArrowLeft && atStart) || (direction === Direction.ArrowRight && atEnd) ||
+                (direction === Direction.ArrowUp && (atStart || isAtFirstLine)) ||
+                (direction === Direction.ArrowDown && (atEnd || isAtLastLine))) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return false;
     }
 
-
-    private isAtLineBoundary(element: HTMLElement, boundary: 'first' | 'last'): boolean {
+    private isAtLineBoundary(element: HTMLElement, boundary: Boundary): boolean {
 
         const hasTextContent = element.textContent?.trim() !== "";
 
@@ -94,16 +118,16 @@ export class EditableNavigation implements IEditableNavigation {
         const elementRect = element.getBoundingClientRect();
         const tolerance = 11;
 
-        if (boundary === 'first') {
+        if (boundary === Boundary.First) {
             return Math.abs(rect.top - elementRect.top) < tolerance;
-        } else if (boundary === 'last') {
+        } else if (boundary === Boundary.Last) {
             return Math.abs(rect.bottom - elementRect.bottom) < tolerance;
         }
 
         return false;
     }
 
-    private findNextEditable(current: HTMLElement, direction: string): HTMLElement | null {
+    private findNextEditable(current: HTMLElement, direction: Direction): HTMLElement | null {
         const allEditables = Array.from(document.querySelectorAll('[contenteditable="true"]')) as HTMLElement[];
         const currentIndex = allEditables.indexOf(current);
 
@@ -121,8 +145,8 @@ export class EditableNavigation implements IEditableNavigation {
         }
 
         let nextIndex = -1;
-        if (direction === 'ArrowLeft' || direction === 'ArrowRight') {
-            nextIndex = direction === 'ArrowLeft' ? currentIndex - 1 : currentIndex + 1;
+        if (direction === Direction.ArrowLeft || direction === Direction.ArrowRight) {
+            nextIndex = direction === Direction.ArrowLeft ? currentIndex - 1 : currentIndex + 1;
         } else {
             nextIndex = this.findVerticalEditable(current, allEditables, direction);
         }
@@ -136,7 +160,7 @@ export class EditableNavigation implements IEditableNavigation {
         return allEditables[nextIndex] || null;
     }
 
-    getNeighborCell(table: HTMLTableElement, cell: HTMLTableCellElement, direction: string): HTMLTableCellElement | null {
+    getNeighborCell(table: HTMLTableElement, cell: HTMLTableCellElement, direction: Direction): HTMLTableCellElement | null {
 
         if (!cell.parentElement) {
             return null;
@@ -146,20 +170,20 @@ export class EditableNavigation implements IEditableNavigation {
         const cellIndex = cell.cellIndex;
 
         switch (direction) {
-            case "ArrowRight":
+            case Direction.ArrowRight:
                 return (cell.parentElement as HTMLTableRowElement).cells[cellIndex + 1] ?? null;
-            case "ArrowLeft":
+            case Direction.ArrowLeft:
                 return (cell.parentElement as HTMLTableRowElement).cells[cellIndex - 1] ?? null;
-            case "ArrowUp":
+            case Direction.ArrowUp:
                 return table.rows[rowIndex - 1]?.cells[cellIndex] ?? null;
-            case "ArrowDown":
+            case Direction.ArrowDown:
                 return table.rows[rowIndex + 1]?.cells[cellIndex] ?? null;
         }
 
         return null;
     }
 
-    private findVerticalEditable(current: HTMLElement, allEditables: HTMLElement[], direction: string): number {
+    private findVerticalEditable(current: HTMLElement, allEditables: HTMLElement[], direction: Direction): number {
         const currentIndex = allEditables.indexOf(current);
         const currentRect = current.getBoundingClientRect();
         let closestIndex = -1;
@@ -168,7 +192,7 @@ export class EditableNavigation implements IEditableNavigation {
         allEditables.forEach((editable, index) => {
             if (editable !== current) {
                 const rect = editable.getBoundingClientRect();
-                const verticalDistance = direction === 'ArrowUp' ? currentRect.top - rect.bottom : rect.top - currentRect.bottom;
+                const verticalDistance = direction === Direction.ArrowUp ? currentRect.top - rect.bottom : rect.top - currentRect.bottom;
                 const horizontalDistance = Math.abs(currentRect.left - rect.left);
 
                 if (verticalDistance > 0 && (verticalDistance + horizontalDistance < closestDistance)) {
@@ -244,7 +268,7 @@ export class EditableNavigation implements IEditableNavigation {
 
         let atStart = false, atEnd = false;
 
-        if(el.textContent == ""){
+        if (el.textContent == "") {
             atStart = true;
             atEnd = true;
 
@@ -270,4 +294,31 @@ export class EditableNavigation implements IEditableNavigation {
         return { atStart, atEnd };
     }
 
+}
+
+
+/**
+ * Enum for keyboard arrow directions.
+ * @enum {string}
+ */
+enum Direction {
+    /** Represents the 'ArrowUp' key, used to navigate upwards in the Editor. */
+    ArrowUp = "ArrowUp",
+    /** Represents the 'ArrowDown' key, used to navigate downwards in the Editor. */
+    ArrowDown = "ArrowDown",
+    /** Represents the 'ArrowLeft' key, used to navigate left in the Editor. */
+    ArrowLeft = "ArrowLeft",
+    /** Represents the 'ArrowRight' key, used to navigate right in the Editor. */
+    ArrowRight = "ArrowRight",
+}
+
+/**
+ * Enum for specifying boundaries within an element.
+ * @enum {string}
+ */
+enum Boundary {
+    /** Represents the first line of an element, important for determining if the cursor is at the starting boundary. */
+    First = "First",
+    /** Represents the last line of an element, important for determining if the cursor is at the ending boundary. */
+    Last = "Last"
 }
