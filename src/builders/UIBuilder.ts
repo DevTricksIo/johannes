@@ -1,92 +1,74 @@
 import { Editor } from "../components/editor/Editor";
-import { ElementFactoryService } from "../services/element-factory/ElementFactoryService";
-import { BlockOperationsService } from "../services/block-operations/BlockOperationsService";
-import { ServiceProvider } from "../services/service-provider/ServiceProvider";
-import { TextOperationService } from "../services/text-operations/TextOperationService";
-import { QuickMenuBuilder } from "./QuickMenuBuilder";
-import { FloatingToolbarBuilder } from "./FloatingToolbarBuilder";
-import { FloatingToolbar } from "../components/floating-toolbar/FloatingToolbar";
-import { QuickMenu } from "../components/quick-menu/QuickMenu";
-import { AddBlock } from "../components/add-block/AddBlock";
+import icons from "../assets/img/icons.svg";
+import { EditorBuilder } from "./EditorBuilder";
 
+/**
+ * Singleton class responsible for building and managing the user interface of the editor.
+ * Ensures that only one instance of UIBuilder can exist, managing the creation and configuration of the editor.
+ */
 export class UIBuilder {
 
     private static instance: UIBuilder;
 
     private editor: Editor;
-    private addBlock: AddBlock;
-    private floatingToolbar: FloatingToolbar;
-    private quickMenu: QuickMenu;
 
-    private constructor(
-
-        editor: Editor,
-        addBock: AddBlock,
-        floatingToolbar: FloatingToolbar,
-        quickMenu: QuickMenu) {
+    /**
+     * Private constructor for UIBuilder to enforce singleton pattern.
+     * Initializes the UIBuilder instance with a given editor.
+     * @param {Editor} editor The editor instance to be managed by UIBuilder.
+     * @throws {Error} Throws an error if an instance of UIBuilder already exists.
+     */
+    private constructor(editor: Editor) {
 
         if (UIBuilder.instance) {
             throw new Error();
         }
 
         this.editor = editor;
-        this.addBlock = addBock;
-        this.floatingToolbar = floatingToolbar;
-        this.quickMenu = quickMenu;
 
         UIBuilder.instance = this;
     }
 
-    static build(services?: Map<string, any>): UIBuilder {
+    /**
+     * Static method to get or create an instance of UIBuilder.
+     * This method implements the singleton pattern and ensures that UIBuilder is only instantiated once.
+     * @returns {UIBuilder} Returns the existing or new UIBuilder instance.
+     */
+    static build(): UIBuilder {
 
         if (UIBuilder.instance) {
             return UIBuilder.instance;
         }
 
-        const serviceProvider = ServiceProvider.getInstance();
-
-        // Initializer all service before any component
-        if (services) {
-            serviceProvider.reset();
-            serviceProvider.registerServices(services);
-        } else {
-
-            //Registering all available services
-            serviceProvider.registerService("IBlockOperationsService", BlockOperationsService.getInstance());
-            serviceProvider.registerService("IElementFactoryService", ElementFactoryService.getInstance());
-            serviceProvider.registerService("ITextOperationService", TextOperationService.getInstance());
-        }
-
-        const editor = Editor.getInstance(serviceProvider.getInstanceOf("IElementFactoryService"), serviceProvider.getInstanceOf("IBlockOperationsService"));
-
-        const addBlock = new AddBlock(serviceProvider.getInstanceOf("IBlockOperationsService"));
-        const floatingToolbar = FloatingToolbarBuilder.build();
-        const quickMenu = QuickMenuBuilder.build();
-
-        const builder = new UIBuilder(editor, addBlock, floatingToolbar, quickMenu);
+        const builder = new UIBuilder(EditorBuilder.build());
 
         return builder;
     }
 
+    /**
+     * Initializes the editor by inserting necessary icons and returning the editor instance.
+     * This method should be called to start the editor and prepare all UI components.
+     * @returns {Editor} The initialized editor instance.
+     */
     start(): Editor {
 
-        // if (window.editorConfig?.enableTitle) {
-        //     this.editor.htmlElement.appendChild(this.title.htmlElement);
-        // }
-
-        if (window.editorConfig?.enableAddBlock || true) {
-            this.editor.htmlElement.appendChild(this.addBlock.htmlElement);
-        }
-
-        if (window.editorConfig?.enableFloatingToolbar || true) {
-            this.editor.htmlElement.appendChild(this.floatingToolbar.htmlElement);
-        }
-
-        if (window.editorConfig?.enableQuickMenu || true) {
-            this.editor.htmlElement.appendChild(this.quickMenu.htmlElement);
-        }
-
+        this.insertIcons();
 
         return this.editor;
+    }
+
+    /**
+    * Inserts a container with SVG icons into the document body. This method ensures that
+    * the icons are only inserted once to prevent duplicate entries.
+    */
+    insertIcons(): void {
+        if (!document.querySelector('.svg-icons-container')) {
+            const svgContainer = document.createElement('div');
+
+            svgContainer.innerHTML = icons;
+            svgContainer.className = 'svg-icons-container';
+
+            document.body.appendChild(svgContainer);
+        }
     }
 }
