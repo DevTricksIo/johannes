@@ -15,8 +15,26 @@ export class DropdownMenuListItemTitle extends BaseUIComponent implements IDropd
 
         this.parentDropdownMenuList = parentDropdownMenuList;
     }
+    changeActiveIconToVisible(): void {
+        return;
+    }
+    getLeftIconBackgroundColor(): string | null {
+        return null;
+    }
 
-    performAction(): void {
+    resetActiveIcon(): void {
+        return;
+    }
+    
+    attachOnLoseFocus(func: () => void): void {
+        throw new Error("Method not implemented.");
+    }
+    
+    attachOnFocus(func: () => void): void {
+        throw new Error("Method not implemented.");
+    }
+
+    emitCommandEvent(): void {
         throw new Error("Method not implemented.");
     }
 

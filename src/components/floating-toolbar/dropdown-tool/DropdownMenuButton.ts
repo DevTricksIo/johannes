@@ -1,6 +1,7 @@
 import { SVGIcon } from "../../common/SVGIcon";
 import { BaseUIComponent } from "../../common/BaseUIComponent";
 import { DropdownMenuList } from "./DropdownMenuList";
+import { Sizes } from "@/common/Sizes";
 
 export class DropdownMenuButton extends BaseUIComponent {
 
@@ -9,7 +10,7 @@ export class DropdownMenuButton extends BaseUIComponent {
 
     constructor(id: string, title: string | HTMLElement, dropdownList: DropdownMenuList, includeChevronIcon: boolean = true) {
 
-        const svgIcon = new SVGIcon("icon-wordpress-chevron-down");
+        const svgIcon = new SVGIcon("icon-wordpress-chevron-down", Sizes.medium);
 
         super({
             id: id,
@@ -56,8 +57,15 @@ export class DropdownMenuButton extends BaseUIComponent {
         this.htmlElement.addEventListener("click", () => {
             if (!this.dropdownList.isVisible) {
                 this.dropdownList.show();
+            }else{
+                this.dropdownList.hide();
             }
         });
 
+    }
+
+
+    get display(): string {
+        return 'block';
     }
 }

@@ -7,16 +7,19 @@ import { DropdownMenuButton } from "./DropdownMenuButton";
 
 export class DropdownMenuList extends BaseUIComponent {
 
+    readonly id: string;
     private parentDropdownParentButton?: DropdownMenuButton;
 
     dropdownItems: CircularDoublyLinkedList<IDropdownMenuItem>;
     currentFocusedMenuItem: JNode<IDropdownMenuItem> | null;
 
     constructor(id: string) {
+
         super({
             id: id
         });
 
+        this.id = id;
         this.dropdownItems = new CircularDoublyLinkedList<DropdownMenuListItem>();
         this.currentFocusedMenuItem = null;
 
@@ -56,7 +59,7 @@ export class DropdownMenuList extends BaseUIComponent {
         document.addEventListener('keydown', (event) => {
 
             if (this.isVisible && this.currentFocusedMenuItem && event.key === "Enter") {
-                this.currentFocusedMenuItem.value.performAction();
+                this.currentFocusedMenuItem.value.emitCommandEvent();
             }
         });
 
@@ -87,8 +90,8 @@ export class DropdownMenuList extends BaseUIComponent {
 
         this.htmlElement.style.left = "0";
         this.htmlElement.style.right = "auto";
-        
-        if(this.doesElementOverflowScreen){
+
+        if (this.doesElementOverflowScreen) {
             this.htmlElement.style.left = "auto";
             this.htmlElement.style.right = "0";
         }
@@ -146,11 +149,15 @@ export class DropdownMenuList extends BaseUIComponent {
     }
 
     private clickedOutsideTheDropdownWhileDropdownIsVisible(event: MouseEvent): boolean {
-        return this.canHide && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`);
+        return this.canHide
+            && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`)
+            && !(event.target! as HTMLElement).closest(`#${this.parentDropdownParentButton?.htmlElement.id}`);
     }
 
     private keyPressedOutsideTheDropdownWhileDropdownIsVisible(event: KeyboardEvent): boolean {
-        return this.canHide && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`);
+        return this.canHide
+            && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`)
+            && !(event.target! as HTMLElement).closest(`#${this.parentDropdownParentButton?.htmlElement.id}`);
     }
 
 }
