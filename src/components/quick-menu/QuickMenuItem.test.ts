@@ -1,16 +1,8 @@
-import { ServiceProvider } from "../../services/service-provider/ServiceProvider";
 import { QuickMenu } from "./QuickMenu";
 import { QuickMenuItem } from "./QuickMenuItem"
 import { QuickMenuSection } from "./QuickMenuSection";
-import { TextOperationService } from "../../services/text-operations/TextOperationService";
-import { ElementFactoryService } from "../../services/element-factory/ElementFactoryService";
-import { BlockOperationsService } from "../../services/block-operations/BlockOperationsService";
 
 describe("QuickMenuItem", () => {
-
-    ServiceProvider.getInstance().registerService("ITextOperationService", TextOperationService.getInstance());
-    ServiceProvider.getInstance().registerService("IBlockOperationsService", BlockOperationsService.getInstance());
-    ServiceProvider.getInstance().registerService("IElementFactoryService", ElementFactoryService.getInstance());
 
     test("Create QuickMenuItem with success", () => {
 

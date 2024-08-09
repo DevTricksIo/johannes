@@ -2,33 +2,27 @@ import { SVGIcon } from '../common/SVGIcon';
 import { BaseUIComponent } from '../common/BaseUIComponent';
 import { JNode } from "../../common/JNode";
 import { QuickMenuSection } from './QuickMenuSection';
+import { ICommandEventDetail } from '@/commands/ICommandEventDetail';
+import { CustomEvents } from '@/common/CustomEvents';
+import { Commands } from '@/commands/Commands';
 
 export class QuickMenuItem extends BaseUIComponent {
 
-    readonly blockType: string;
+    private _blockType: string;
+    private _filterValue: string;
+    private _immediateParent: QuickMenuSection;
 
-    readonly title: string;
-    readonly filterValue: string;
-    readonly description: string;
-
-    quickMenuSectionInstance: QuickMenuSection;
-
-    constructor(quickMenuSectionInstance: QuickMenuSection, title: string, description: string, SVGHrefUseId: string, blockType: string, filterValue: string) {
+    constructor(immediateParent: QuickMenuSection, title: string, description: string, iconId: string, blockType: string, filterValue: string) {
 
         super({
             title: title,
             description: description,
-            SVGHrefUseId: SVGHrefUseId
+            iconId: iconId
         });
 
-        this.blockType = blockType;
-        this.title = title;
-        this.description = description;
-        this.filterValue = filterValue;
-
-        this.quickMenuSectionInstance = quickMenuSectionInstance;
-
-        this.blockType = blockType;
+        this._blockType = blockType;
+        this._filterValue = filterValue;
+        this._immediateParent = immediateParent;
 
         this.attachEvents();
     }
@@ -46,7 +40,7 @@ export class QuickMenuItem extends BaseUIComponent {
         const optionImage = document.createElement('div');
         optionImage.classList.add('option-image');
 
-        const svg = new SVGIcon(this.props.SVGHrefUseId, '100%', '100%');
+        const svg = new SVGIcon(this.props.iconId, '100%');
 
         optionImage.appendChild(svg.htmlElement);
 
@@ -77,6 +71,18 @@ export class QuickMenuItem extends BaseUIComponent {
         return 'flex';
     }
 
+    get filterValue(): string {
+        return this._filterValue;
+    }
+
+    get immediateParent (): QuickMenuSection {
+        return this._immediateParent;
+    }
+
+    get blockType(): string {
+        return this._blockType;
+    }
+
     focus(): void {
         this.htmlElement.classList.add('option-focused');
         this.htmlElement.focus();
@@ -86,22 +92,33 @@ export class QuickMenuItem extends BaseUIComponent {
         this.htmlElement.classList.remove('option-focused');
     }
 
+
+    emitCommandEvent(): void {
+        const customEvent = new CustomEvent<ICommandEventDetail>(CustomEvents.emittedCommand, {
+            detail: {
+                command: Commands.transformBlock,
+                value: this.blockType
+            }
+        });
+
+        document.dispatchEvent(customEvent);
+    }
+
     attachEvents(): void {
 
         this.htmlElement.addEventListener('mousemove', () => {
 
-            const node: JNode<QuickMenuItem> = this.quickMenuSectionInstance.menuItems.find(this)!;
+            const node: JNode<QuickMenuItem> = this._immediateParent.menuItems.find(this)!;
 
-            this.quickMenuSectionInstance.quickMenuInstance.switchVisualFocus(node!);
+            this._immediateParent.immediateParent.switchVisualFocus(node!);
         });
 
         this.htmlElement.addEventListener('click', (event) => {
 
             event.preventDefault();
             event.stopPropagation();
-            
-            this.quickMenuSectionInstance.quickMenuInstance.transformHtmlFocusedElementBeforeOpenQuickMenu(this.blockType);
 
+            this.emitCommandEvent();
         });
     }
 }

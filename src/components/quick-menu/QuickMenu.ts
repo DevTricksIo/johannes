@@ -5,35 +5,47 @@ import { BaseUIComponent } from '../common/BaseUIComponent';
 import { CircularDoublyLinkedList } from '../../common/CircularDoublyLinkedList';
 import { IBlockOperationsService } from '../../services/block-operations/IBlockOperationsService';
 import { JNode } from "../../common/JNode";
-import { ServiceProvider } from "../../services/service-provider/ServiceProvider";
+import { DependencyContainer } from '@/core/DependencyContainer';
+import { IFocusStack } from '@/core/IFocusStack';
+import { IQuickMenu } from './IQuickMenu';
+import { ICommandEventDetail } from '@/commands/ICommandEventDetail';
+import { CustomEvents } from '@/common/CustomEvents';
+import { Commands } from '@/commands/Commands';
+import { DOMUtils } from '@/utilities/DOMUtils';
+import { DOMElements } from '@/common/DOMElements';
 
-export class QuickMenu extends BaseUIComponent {
+export class QuickMenu extends BaseUIComponent implements IQuickMenu {
 
     static id = "quickMenu";
 
-    private readonly blockOperationsService: IBlockOperationsService;
+    private blockOperationsService: IBlockOperationsService;
 
     private currentFocusedMenuItem: JNode<QuickMenuItem> | null;
-    private htmlFocusedElementBeforeOpenQuickMenu: HTMLElement | null;
+
+    // private htmlFocusedElementBeforeOpenQuickMenu: HTMLElement | null;
     private menuSections: CircularDoublyLinkedList<QuickMenuSection>;
     private quickMenuEmpty: QuickMenuEmpty;
     private filterInput: string;
 
     private static instance: QuickMenu | null;
 
-    private constructor() {
+    private focusStack: IFocusStack;
+
+    private constructor(blockOperationsService: IBlockOperationsService, focusStack: IFocusStack) {
 
         super({});
 
-        this.blockOperationsService = ServiceProvider.getInstance().getInstanceOf("IBlockOperationsService");
         this.currentFocusedMenuItem = null;
-        this.htmlFocusedElementBeforeOpenQuickMenu = null;
+        // this.htmlFocusedElementBeforeOpenQuickMenu = null;
         this.menuSections = new CircularDoublyLinkedList<QuickMenuSection>();
         this.quickMenuEmpty = new QuickMenuEmpty();
+        this.blockOperationsService = blockOperationsService;
+        this.focusStack = focusStack;
 
-        let blockOptions = this.htmlElement.querySelector('.block-options') as HTMLElement;
+        //TODO: Go back here
+        // let blockOptions = this.htmlElement.querySelector('.block-options') as HTMLElement;
 
-        this.quickMenuEmpty.documentAppendTo(blockOptions);
+        // this.quickMenuEmpty.appendTo(blockOptions);
         this.attachEvents();
 
         this.filterInput = "";
@@ -62,8 +74,12 @@ export class QuickMenu extends BaseUIComponent {
     }
 
     public static getInstance(): QuickMenu {
+
+        const blockOperationService = DependencyContainer.Instance.resolve<IBlockOperationsService>("IBlockOperationsService");
+        const focusStack = DependencyContainer.Instance.resolve<IFocusStack>("IFocusStack");
+
         if (!QuickMenu.instance) {
-            QuickMenu.instance = new QuickMenu();
+            QuickMenu.instance = new QuickMenu(blockOperationService, focusStack);
         }
 
         return QuickMenu.instance;
@@ -82,7 +98,8 @@ export class QuickMenu extends BaseUIComponent {
         this.currentFocusedMenuItem = item;
         this.currentFocusedMenuItem.value.focus();
 
-        this.htmlFocusedElementBeforeOpenQuickMenu?.focus();
+        // this.htmlFocusedElementBeforeOpenQuickMenu?.focus();
+        this.focusStack.peek()?.focus();
     }
 
     focusOnTheFirstVisibleItem(): void {
@@ -116,7 +133,7 @@ export class QuickMenu extends BaseUIComponent {
             previousVisibleItem = this.currentFocusedMenuItem.getPreviousSatisfying(item => item.isVisible);
             if (!previousVisibleItem) {
 
-                let previousVisibleSectionNode: JNode<QuickMenuSection> | null = this.menuSections.find(this.currentFocusedMenuItem.value.quickMenuSectionInstance)!.getPreviousSatisfying(section => section.isVisible);
+                let previousVisibleSectionNode: JNode<QuickMenuSection> | null = this.menuSections.find(this.currentFocusedMenuItem.value.immediateParent)!.getPreviousSatisfying(section => section.isVisible);
 
                 if (!previousVisibleSectionNode) {
                     return;
@@ -142,7 +159,7 @@ export class QuickMenu extends BaseUIComponent {
             nextVisibleItem = this.currentFocusedMenuItem.getNextSatisfying(item => item.isVisible);
             if (!nextVisibleItem) {
 
-                let nextVisibleSectionNode: JNode<QuickMenuSection> | null = this.menuSections.find(this.currentFocusedMenuItem.value.quickMenuSectionInstance)!.getNextSatisfying(section => section.isVisible);
+                let nextVisibleSectionNode: JNode<QuickMenuSection> | null = this.menuSections.find(this.currentFocusedMenuItem.value.immediateParent)!.getNextSatisfying(section => section.isVisible);
 
                 if (!nextVisibleSectionNode) {
                     return;
@@ -180,45 +197,54 @@ export class QuickMenu extends BaseUIComponent {
 
         setTimeout(() => {
 
-            this.htmlFocusedElementBeforeOpenQuickMenu = document.activeElement as HTMLElement;
+            const activeElement = document.activeElement;
 
-            if (!this.htmlFocusedElementBeforeOpenQuickMenu) {
-                throw new Error("Failed to capture the focused element before displaying the QuickMenu. Ensure an element is focused.");
+            if (!activeElement) {
+                console.error("Failed to display the quickMenu: no active element found. Please ensure an element is focused before attempting to display the quickMenu.");
+                return;
             }
+
+            this.focusStack.push(activeElement as HTMLElement)
+
+            // this.htmlFocusedElementBeforeOpenQuickMenu = document.activeElement as HTMLElement;
+
+            // if (!this.htmlFocusedElementBeforeOpenQuickMenu) {
+            //     throw new Error("Failed to capture the focused element before displaying the QuickMenu. Ensure an element is focused.");
+            // }
 
 
             const selection = window.getSelection();
-    
+
             if (!selection || selection.rangeCount === 0) {
                 throw new Error('Nenhuma seleção encontrada');
             }
-    
+
             const range = selection.getRangeAt(0);
             const rect = range.getBoundingClientRect();
-    
+
             this.htmlElement.style.display = 'flex';
-    
+
             const elementWidth = this.htmlElement.offsetWidth;
             let leftPosition = rect.left + window.scrollX;
-    
+
             if (leftPosition + elementWidth > window.innerWidth) {
                 leftPosition = window.innerWidth - elementWidth - 20;
             }
-    
+
             const elementHeight = this.htmlElement.offsetHeight;
             let topPosition = rect.top + window.scrollY - elementHeight - 10;
-    
+
             if (topPosition < 0) {
                 topPosition = rect.bottom + window.scrollY + 10;
             }
-    
+
             this.htmlElement.style.left = `${leftPosition}px`;
             this.htmlElement.style.top = `${topPosition}px`;
 
             super.show();
 
             this.focusOnTheFirstVisibleItem();
-            this.htmlFocusedElementBeforeOpenQuickMenu.focus();
+            this.focusStack.peek()?.focus();
 
         }, 10);
 
@@ -235,16 +261,37 @@ export class QuickMenu extends BaseUIComponent {
     hide() {
 
         this.restore();
-        this.htmlFocusedElementBeforeOpenQuickMenu?.focus();
+        this.focusStack.peek()?.focus();
+        // this.htmlFocusedElementBeforeOpenQuickMenu?.focus();
 
         super.hide();
     }
 
     private attachEvents() {
 
+        document.addEventListener(CustomEvents.emittedCommand, ((event: CustomEvent<ICommandEventDetail>) => {
+            const { command } = event.detail;
+
+            if (command == Commands.transformBlock) {
+                this.hide();
+            }
+
+        }) as EventListener);
+
         document.addEventListener('keydown', (event: KeyboardEvent) => {
 
-            if (!this.isVisible && event.key === '/' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+            const block = DOMUtils.findClosestAncestorOfActiveElementByClass("block");
+
+            if (!this.isVisible && event.key === '/' && !event.ctrlKey && !event.shiftKey && !event.altKey && block) {
+
+                //Prevent show quickMenu inside a table cell
+                const target = event.target as HTMLElement;
+                const currentCell = target.closest(DOMElements.TD) as HTMLTableCellElement;
+
+                if (currentCell) {
+                    return;
+                }
+
                 this.show();
             } else if (this.isVisible && event.key === 'ArrowLeft' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
                 event.preventDefault();
@@ -272,16 +319,6 @@ export class QuickMenu extends BaseUIComponent {
                 }
             } else if (this.isVisible && event.key === 'Escape' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
                 this.hide();
-            } else if (event.key === 'Enter' && this.isVisible && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-                let dataType = this.currentFocusedMenuItem!.value.htmlElement.getAttribute('data-type');
-
-                if (dataType) {
-                    this.transformHtmlFocusedElementBeforeOpenQuickMenu(dataType);
-                }
             }
         });
 
@@ -293,7 +330,7 @@ export class QuickMenu extends BaseUIComponent {
 
         document.addEventListener('keydown', (event) => {
 
-            if (event.key === 'Enter' && this.isVisible) {
+            if (this.isVisible && event.key === 'Enter' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
 
                 event.preventDefault();
                 event.stopPropagation();
@@ -305,19 +342,34 @@ export class QuickMenu extends BaseUIComponent {
                     this.transformHtmlFocusedElementBeforeOpenQuickMenu(blockType);
                 }
             }
-
         });
+
+        document.addEventListener(CustomEvents.blockTypeChanged, (event) => {
+            this.hide();
+        });
+    }
+
+
+    emitCommandEvent(blockType: string): void {
+
+        const customEvent = new CustomEvent<ICommandEventDetail>(CustomEvents.emittedCommand, {
+            detail: {
+                command: Commands.transformBlock,
+                value: blockType
+            }
+        });
+
+        document.dispatchEvent(customEvent);
     }
 
     transformHtmlFocusedElementBeforeOpenQuickMenu(blockType: string): void {
 
-        let element = this.htmlFocusedElementBeforeOpenQuickMenu?.closest('.block') as HTMLElement;
+        if (blockType) {
 
-        if (element && blockType) {
-            this.blockOperationsService.formatBlock(element, blockType);
+            this.emitCommandEvent(blockType);
         }
 
-        this.hide();
+        // this.hide();
     }
 
     private concatFilterInput(stg: string): void {
