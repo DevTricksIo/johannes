@@ -2,16 +2,21 @@ import { BaseUIComponent } from "../common/BaseUIComponent";
 import { SVGIcon } from "../common/SVGIcon";
 import { BlockOperationsService } from "../../services/block-operations/BlockOperationsService";
 import { IBlockOperationsService } from "../../services/block-operations/IBlockOperationsService";
+import { DependencyContainer } from "@/core/DependencyContainer";
 
 export class AddBlockButton extends BaseUIComponent {
 
     private readonly blockOperationsService: IBlockOperationsService;
+    private readonly icon: SVGIcon;
 
-    constructor(blockOperationsService: IBlockOperationsService) {
+    constructor(blockOperationsService: IBlockOperationsService, icon: SVGIcon) {
 
-        super({});
+        super({
+            icon: icon
+        });
 
         this.blockOperationsService = blockOperationsService;
+        this.icon = icon;
         this.attachEvents();
     }
 
@@ -22,9 +27,7 @@ export class AddBlockButton extends BaseUIComponent {
 
         htmlElement.classList.add("add-block", "block-operation");
 
-        const svg = new SVGIcon("icon-add-block", "1.5rem", "1.5rem");
-
-        htmlElement.appendChild(svg.htmlElement);
+        htmlElement.appendChild(this.props.icon.htmlElement);
 
         return htmlElement;
     }
@@ -34,5 +37,12 @@ export class AddBlockButton extends BaseUIComponent {
         this.htmlElement.addEventListener("click", () => {
             this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.CREATE_DEFAULT_BLOCK, false);
         });
+    }
+
+    static create(icon: SVGIcon): AddBlockButton {
+
+        const blockOperationsService = DependencyContainer.Instance.resolve<IBlockOperationsService>("IBlockOperationsService");
+
+        return new AddBlockButton(blockOperationsService, icon);
     }
 }
