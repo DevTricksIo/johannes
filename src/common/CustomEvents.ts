@@ -1,0 +1,42 @@
+export enum CustomEvents {
+    //Component events
+    floatingToolbarDisplayed = "floatingToolbarDisplayed",
+
+    //Text click edit events
+    anchorButtonClicked = "anchorButtonClicked",
+    boldButtonClicked = "boldButtonClicked",
+    italicButtonClicked = "italicButtonClicked",
+    underlineButtonClicked = "underlineButtonClicked",
+    inlineCodeButtonClicked = "inlineCodeButtonClicked",
+    strikeThroughButtonClicked = "strikeThroughButtonClicked",
+    hiliteColorButtonClicked = "hiliteColorButtonClicked",
+    foreColorButtonClicked = "foreColorButtonClicked",
+    
+    buttonGroupItemClicked = "buttonGroupItemClicked",
+    focusOnFirstRequested = "focusOnFirstRequested",
+    
+    transformBlockRequested = "transformBlockRequested",
+    duplicateBlockRequested = "duplicateBlockRequested",
+
+    //Text edit events
+    anchor = "anchor",
+    bold = "bold",
+    italic = "italic",
+    underline = "underline",
+    inlineCode = "inlineCode",
+    strikeThrough = "strikeThrough",
+    hiliteColor = "hiliteColor",
+    foreColor = "foreColor",
+
+
+    textFormatChanged = "textFormatChanged",
+    emittedCommand = "emittedCommand",
+    blockTypeChanged = "blockTypeChanged",
+    blockDeleted = "blockDeleted",
+    tableCellChanged = "tableCellChanged",
+
+
+
+    //Block commands
+    
+}
