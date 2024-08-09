@@ -1,3 +1,10 @@
+/** cursor style */
+[contenteditable="true"] {
+    cursor: text !important;
+}
+
+
+
 /** CSS reset */
 
 .button-reset {
@@ -103,10 +110,44 @@ p.johannes-content-element {
     text-decoration: line-through;
 }
 
-ul.johannes-content-element:not(.checkbox-list),
+/* ul.johannes-content-element:not(.checkbox-list),
 ol.johannes-content-element:not(.checkbox-list) {
     padding-left: 1.5rem !important;
+} */
+
+/** Add line through text decoration to checked checkboxes text div */
+.block input[type="checkbox"]:checked+div {
+    text-decoration: line-through;
 }
+
+/** Remove the default list style and replace by another that works with display flex */
+.block ol,
+.block ul {
+    list-style: none;
+}
+
+.block ul .list-item,
+.block ol .list-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.block ol li {
+    counter-increment: item;
+}
+
+.block ol li::before {
+    content: counter(item) ". ";
+    margin-right: 0.3125rem;
+}
+
+.block ul li:not(.list-item-checkable)::before {
+    content: "• ";
+    margin-right: 0.3125rem;
+}
+
+
 
 /** and list **/
 
@@ -140,10 +181,11 @@ ol.johannes-content-element:not(.checkbox-list) {
     flex-direction: row;
     margin-bottom: 1rem;
     position: relative;
+    max-width: 100%;
 }
 
 .block>*:not(.drag-handler) {
-    padding-left: 1.25rem;
+    padding-left: 1.25rem !important;
 }
 
 .block:hover .drag-handler {
@@ -161,6 +203,13 @@ ol.johannes-content-element:not(.checkbox-list) {
 
 .title h1 {
     margin-left: 1.3rem;
+}
+
+
+[contenteditable="true"]:empty:focus {
+    content: attr(data-placeholder);
+    color: #84888d;
+    pointer-events: none;
 }
 
 h1[data-placeholder]:empty:before {
@@ -207,9 +256,14 @@ h1 {
 .content {
     width: 100%;
     box-sizing: border-box;
-
-
+    /* background-color: red; */
 }
+
+.content .block .table-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
 
 pre {
     width: 100%;
@@ -356,54 +410,24 @@ p {
     border-radius: none;
 }
 
+/** soft-box-shadow class */
+.soft-box-shadow {
+    margin: 0;
+    padding: 0;
+    border-radius: 2px;
+    box-shadow:
+        0 4px 6px rgba(0, 0, 0, 0.1),
+        0 -2px 4px rgba(216, 196, 196, 0.02),
+        -2px 0 4px rgba(0, 0, 0, 0.02),
+        2px 0 4px rgba(0, 0, 0, 0.02);
 
-
-
-
-
-
-
-/** Text formatting Bar **/
-
-
-
-#floatingToolbar {
-    justify-content: space-between;
-    padding: 8px 16px;
-    background-color: #f9f9f9;
-    width: fit-content;
-    z-index: 999999;
-    position: absolute;
-    user-select: none;
+    border: 1px solid #d0d0d0;
 }
 
-/* TODO: remove this*/
-span {
-    font-family: Arial, sans-serif;
-}
+/** and soft-box-shadow */
 
 
-#floatingToolbar .item {
-    color: rgb(120, 119, 116);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-#floatingToolbar .item>button {
-
-    display: inline-flex;
-    align-items: center;
-}
-
-
-#floatingToolbar select {
-    color: rgb(120, 119, 116);
-    border: none;
-    font-size: 0.85rem;
-    background-color: inherit;
-}
-
+/** selection-wrapper class */
 .select-wrapper {
     display: flex;
     flex-direction: row;
@@ -423,12 +447,7 @@ span {
     padding-right: 0.3125rem;
 }
 
-
-
 .select-wrapper ul li {
-    /* display: flex;
-    flex-direction: row !important;
-    background-color: yellow; */
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -436,7 +455,6 @@ span {
     padding: 0.1875rem 0.3125rem;
     border-radius: 0.1875rem;
     user-select: none !important;
-
     font-size: small !important;
     font-weight: 500;
 }
@@ -460,6 +478,71 @@ span {
     margin: 0 !important;
 }
 
+.select-wrapper {
+    position: relative;
+    color: rgb(120, 119, 116);
+}
+
+.select-wrapper>button {
+    color: rgba(55, 53, 47, 0.85);
+}
+
+.select-wrapper ul li>h3 {
+    margin: 0;
+    font-size: small !important;
+    color: #37352fa6;
+    margin: 0;
+    padding: 0;
+    font-weight: 600 !important;
+    margin-top: 0.3125rem;
+    margin-bottom: 0.3125rem;
+}
+
+/** end selection wrapper **/
+
+
+
+/** Text formatting Bar **/
+
+
+
+.floating-toolbar {
+    justify-content: space-between;
+    padding: 8px 16px;
+    background-color: #f9f9f9;
+    width: fit-content;
+    z-index: 999999;
+    position: absolute;
+    user-select: none;
+}
+
+/* TODO: remove this*/
+span {
+    font-family: Arial, sans-serif;
+}
+
+
+.floating-toolbar .item {
+    color: rgb(120, 119, 116);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.floating-toolbar .item>button {
+
+    display: inline-flex;
+    align-items: center;
+}
+
+
+.floating-toolbar select {
+    color: rgb(120, 119, 116);
+    border: none;
+    font-size: 0.85rem;
+    background-color: inherit;
+}
+
 .text-formatting-select-button {
     display: flex;
     flex-direction: row;
@@ -478,22 +561,6 @@ span {
 #turnIntoButton svg use {
     margin: auto;
 }
-
-.select-wrapper {
-    position: relative;
-    color: rgb(120, 119, 116);
-}
-
-
-.select-wrapper > button {
-    color: rgba(55, 53, 47, 0.85);
-}
-
-
-
-
-
-
 
 code:not(pre code) {
     margin: 0;
@@ -535,18 +602,6 @@ a:not([href]) {
 }
 
 
-.select-wrapper ul li>h3 {
-    margin: 0;
-    font-size: small !important;
-    color: #37352fa6;
-    margin: 0;
-    padding: 0;
-    font-weight: 600 !important;
-    margin-top: 0.3125rem;
-    margin-bottom: 0.3125rem;
-}
-
-
 .bgc-red {
     background-color: #FDDEDE;
 }
@@ -585,18 +640,6 @@ mark {
 
 
 /** Block Options **/
-.soft-box-shadow {
-    margin: 0;
-    padding: 0;
-    border-radius: 2px;
-    box-shadow:
-        0 4px 6px rgba(0, 0, 0, 0.1),
-        0 -2px 4px rgba(216, 196, 196, 0.02),
-        -2px 0 4px rgba(0, 0, 0, 0.02),
-        2px 0 4px rgba(0, 0, 0, 0.02);
-
-    border: 1px solid #d0d0d0;
-}
 
 .block-options-wrapper {
     z-index: 999999;
@@ -650,11 +693,8 @@ mark {
     border: none;
 }
 
-#deleteOption.option-focused {
-    color: #EB5757 !important;
-}
-
-#deleteOption.option-focused svg {
+.danger-option.option-focused,
+.danger-option.option-focused svg {
     color: #EB5757 !important;
 }
 
@@ -680,10 +720,14 @@ mark {
     padding-left: 4px;
 } */
 
+#colorTextButton {
+    margin-left: 0.625rem;
+}
+
 #turnIntoButton:not([disabled]):hover,
 #colorTextButton:not([disabled]):hover,
 #moreTextOptionButton:not([disabled]):hover,
-#floatingToolbar .item>button:not([disabled]):hover {
+.floating-toolbar .item>button:not([disabled]):hover {
     background-color: #e9e9e9;
     box-shadow: 0px 0px 0px 2px #e9e9e9;
     border-radius: 1px;
@@ -757,7 +801,12 @@ mark {
 
 
 .johannes-editor *::selection {
-    background-color: rgba(211, 227, 253, 0.5) !important;
+    /* background-color: rgba(211, 227, 253, 0.5) !important; */
+
+    background-color: red;
+
+    background-color: hsl(210 75% 50% / 1);
+    color: white;
 }
 
 .johannes-editor mark,
@@ -805,4 +854,153 @@ only screen and (min-resolution: 3dppx) {
         font-size: 20px;
         /* Ainda maior para telas de densidade muito alta */
     }
+}
+
+
+
+
+
+
+
+
+
+
+
+table.johannes-content-element {
+    border-collapse: collapse;
+    max-width: inherit;
+    width: auto;
+    display: flex;
+    box-sizing: border-box !important;
+}
+
+table.johannes-content-element th,
+table.johannes-content-element td {
+    min-height: 20px;
+}
+
+table.johannes-content-element th,
+table.johannes-content-element td {
+    border: 1px solid #84888d;
+    padding: 8px;
+    text-align: left;
+    align-items: start;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    white-space: normal;
+    vertical-align: top;
+    min-width: 100px;
+    max-width: 200px;
+    /* box-sizing: border-box !important; */
+
+    transition: border 100ms ease-out, box-shadow 100ms ease-out;
+
+}
+
+table.johannes-content-element td.selected,
+table.johannes-content-element td:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px #74b6db inset;
+    border: 1px double #74b6db;
+
+}
+
+td {
+    min-height: 1rem !important;
+    line-height: 1rem;
+}
+
+td::placeholder {
+    display: block;
+}
+
+td:empty:before {
+    content: attr(data-placeholder);
+    color: #84888acd;
+    display: block !important;
+    opacity: 0;
+}
+
+.table-wrapper {
+    width: 100%;
+}
+
+.table-controller {
+    position: relative;
+    max-width: 100%;
+}
+
+.add-table-row {
+    background-color: rgba(55, 53, 47, 0.06);
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    margin-top: 0.375rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 1rem;
+    cursor: pointer;
+    opacity: 0;
+    user-select: none;
+}
+
+.add-table-column {
+    position: absolute;
+    right: -1.3125rem;
+    background-color: rgba(55, 53, 47, 0.06);
+    width: 1rem;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    top: 0;
+    cursor: pointer;
+    height: calc(100% - 1rem - 5px);
+    opacity: 0;
+    user-select: none;
+}
+
+.add-table-column:hover {
+    opacity: 1;
+}
+
+.add-table-row:hover {
+    opacity: 1;
+}
+
+.table-shell {
+    max-width: 100%;
+}
+
+
+
+.table-option {
+    background-color: white;
+    width: fit-content;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background-color: #f9f9f9;
+    width: fit-content;
+    z-index: 999999;
+    position: absolute;
+    user-select: none;
+    padding: 8px 16px;
+    display: none;
+}
+
+
+.temporary-shadow {
+    box-shadow: 0 0 0 1px #74b6db inset;
+    border: 1px double #74b6db !important;
+    outline: none;
+}
+
+.fade-out {
+    box-shadow: 0 0 0 1px #eb5757 inset !important;
+    border: 1px double #eb5757 !important;
 }
