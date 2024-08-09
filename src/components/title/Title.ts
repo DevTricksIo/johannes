@@ -1,5 +1,5 @@
 import { BaseUIComponent } from "../common/BaseUIComponent";
-import { CustomEvents } from "@/commands/CustomEvents";
+import { CustomEvents } from "@/common/CustomEvents";
 
 export class Title extends BaseUIComponent {
 

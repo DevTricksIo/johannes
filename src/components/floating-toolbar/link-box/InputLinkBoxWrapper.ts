@@ -1,4 +1,4 @@
-import { TextOperationService } from "@/services/text-operations/TextOperationService";
+import { TextOperationsService } from "@/services/text-operations/TextOperationsService";
 import { BaseUIComponent } from "../../common/BaseUIComponent";
 import { InputLinkBox } from "./InputLinkBox";
 

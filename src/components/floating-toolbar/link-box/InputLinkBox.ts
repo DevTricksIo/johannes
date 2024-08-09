@@ -1,6 +1,7 @@
-import { TextOperationService } from "@/services/text-operations/TextOperationService";
+import { TextOperationsService } from "@/services/text-operations/TextOperationsService";
 import { BaseUIComponent } from "../../common/BaseUIComponent";
 import { InputLinkBoxWrapper } from "./InputLinkBoxWrapper";
+import { Commands } from "@/commands/Commands";
 
 export class InputLinkBox extends BaseUIComponent {
 
@@ -41,7 +42,7 @@ export class InputLinkBox extends BaseUIComponent {
                 const url = (this.htmlElement as HTMLInputElement).value;
 
                 setTimeout(() => {
-                    TextOperationService.getInstance().execCommand(TextOperationService.QUERY_TEXT_OPERATIONS.CREATE_LINK, false, url);
+                    TextOperationsService.getInstance().execCommand(Commands.toggleLink, false, url);
                 }, 10);
 
                 (this.htmlElement as HTMLInputElement).value = "";
@@ -55,8 +56,9 @@ export class InputLinkBox extends BaseUIComponent {
             }
         });
 
+        //TODO check the floaring id here
         document.addEventListener('click', (event) => {
-            if (this.canHide && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`) && !(event.target! as HTMLElement).closest("#floatingToolbar")) {
+            if (this.canHide && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`) && !(event.target! as HTMLElement).closest("#textFloatingToolbar")) {
                 this.parentWrapper?.hide();
             }
         });
@@ -66,7 +68,5 @@ export class InputLinkBox extends BaseUIComponent {
                 event.stopPropagation();
             }
         });
-
-
     }
 }

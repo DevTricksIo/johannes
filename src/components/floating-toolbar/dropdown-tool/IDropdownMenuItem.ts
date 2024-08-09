@@ -11,5 +11,5 @@ export interface IDropdownMenuItem extends BaseUIComponent {
     attachOnLoseFocus(func: () => void): void;
     // resetActiveIcon(): void;
     // getLeftIconBackgroundColor(): string | null;
-    // changeActiveIconToVisible(): void;
+    // changeActiveIconToVisible(): void; 
 }
