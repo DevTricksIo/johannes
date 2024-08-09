@@ -1,6 +1,7 @@
-import { ICommand } from "../common/ICommand";
+import { ICommand } from "../../commands/ICommand";
 
 export interface IBlockOperationsService extends ICommand {
 
-    formatBlock(element: HTMLElement, contentTye: string): void;
+    transformBlock(type: string, element?: HTMLElement | null): void;
+    createNewElementAndSplitContent(): boolean;
 }

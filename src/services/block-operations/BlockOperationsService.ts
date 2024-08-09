@@ -1,11 +1,21 @@
 import { IBlockOperationsService } from "./IBlockOperationsService";
 import { IElementFactoryService } from "../element-factory/IElementFactoryService";
 import { ElementFactoryService } from "../element-factory/ElementFactoryService";
+import { ContentTypes } from "@/common/ContentTypes";
+import { DOMUtils } from "@/utilities/DOMUtils";
+import { CustomEvents } from "@/common/CustomEvents";
+import { DependencyContainer } from "@/core/DependencyContainer";
+import { IFocusStack } from "@/core/IFocusStack";
+import { IMemento } from "@/core/IMemento";
+import { Utils } from "@/utilities/Utils";
 
 export class BlockOperationsService implements IBlockOperationsService {
 
-    private readonly elementFactoryService: IElementFactoryService;
     private static instance: BlockOperationsService;
+
+    private elementFactoryService: IElementFactoryService;
+    private memento: IMemento;
+    private focusStack: IFocusStack;
 
     static BLOCK_OPERATIONS = {
         TURN_INTO: "turnInto",
@@ -24,13 +34,18 @@ export class BlockOperationsService implements IBlockOperationsService {
         TRANSFORM_BLOCK: "transformBlock"
     };
 
-    private constructor(elementFactoryService: IElementFactoryService) {
+    private constructor(
+        elementFactoryService: IElementFactoryService,
+        focusStack: IFocusStack,
+        memento: IMemento) {
 
         if (BlockOperationsService.instance) {
             throw new Error("Use BlockOperationsService.getInstance() to get instance.");
         }
 
         this.elementFactoryService = elementFactoryService;
+        this.focusStack = focusStack;
+        this.memento = memento;
 
         BlockOperationsService.instance = this;
     }
@@ -75,12 +90,12 @@ export class BlockOperationsService implements IBlockOperationsService {
 
                     selection.deleteFromDocument();
 
-                    const hideEvent = new CustomEvent('requestHideFloatingToolbar', {
-                        bubbles: true,
-                        cancelable: true
-                    });
+                    // const hideEvent = new CustomEvent( 'requestHideFloatingToolbar', {
+                    //     bubbles: true,
+                    //     cancelable: true
+                    // });
 
-                    document.dispatchEvent(hideEvent);
+                    // document.dispatchEvent(hideEvent);
 
                     navigator.clipboard.writeText(selectedText).then(() => {
 
@@ -124,14 +139,11 @@ export class BlockOperationsService implements IBlockOperationsService {
             return false;
         }
 
-
-
-
         if (command == BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK) {
 
             const block = this.getCurrentSelectedBlock() as HTMLElement;
             if (block && value) {
-                this.transformBlock(block, value);
+                this.transformBlock(value);
             }
         }
 
@@ -143,7 +155,7 @@ export class BlockOperationsService implements IBlockOperationsService {
 
             this.deleteAndFocusOnNext();
 
-            const hideEvent = new CustomEvent('requestHideFloatingToolbar', {
+            const hideEvent = new CustomEvent(CustomEvents.blockDeleted, {
                 bubbles: true,
                 cancelable: true
             });
@@ -209,52 +221,42 @@ export class BlockOperationsService implements IBlockOperationsService {
             return false;
         }
 
-        if (command == BlockOperationsService.BLOCK_OPERATIONS.TURN_INTO) {
+        // if (command == BlockOperationsService.BLOCK_OPERATIONS.TURN_INTO) {
 
-            if (!value) {
-                throw new Error();
-            }
+        //     if (!value) {
+        //         throw new Error();
+        //     }
 
-            const element = BlockOperationsService.getDraggableElementFromSelection();
+        //     const element = BlockOperationsService.getDraggableElementFromSelection();
 
-            this.formatBlock(element, value);
-        }
+        //     this.formatBlock(element, value);
+        // }
 
-        const selectionEvent = new CustomEvent('requestHideFloatingToolbar', {
-            bubbles: true,
-            cancelable: true
-        });
+        // const selectionEvent = new CustomEvent('requestHideFloatingToolbar', {
+        //     bubbles: true,
+        //     cancelable: true
+        // });
 
-        document.dispatchEvent(selectionEvent);
+        // document.dispatchEvent(selectionEvent);
 
         return true;
     }
 
-    queryCommandState(): boolean {
+    queryCommandState(): Promise<boolean> {
         throw new Error("Method not implemented.");
     }
 
-    static getInstance(elementFactoryService: IElementFactoryService | null = null): BlockOperationsService {
+    static getInstance(): BlockOperationsService {
+
+        const elementFactoryService = DependencyContainer.Instance.resolve<IElementFactoryService>("IElementFactoryService");
+        const focusStack = DependencyContainer.Instance.resolve<IFocusStack>("IFocusStack");
+        const memento = DependencyContainer.Instance.resolve<IMemento>("IMemento");
 
         if (!this.instance) {
-            this.instance = new BlockOperationsService(elementFactoryService || ElementFactoryService.getInstance());
+            this.instance = new BlockOperationsService(elementFactoryService, focusStack, memento);
         }
 
         return this.instance;
-    }
-
-    formatBlock(element: HTMLElement, contentType: string): void {
-
-        let contentElement = element.querySelector('.swittable') as HTMLElement;
-        let content = contentElement.innerText;
-
-        let newContentBlock = this.elementFactoryService.create(contentType, content);
-
-        element.replaceChild(newContentBlock, contentElement);
-
-        const focusable = newContentBlock.closest('.focusable') || element.querySelector('.focusable');
-
-        // focusOnTheEndOfTheText(focusable);
     }
 
     static getDraggableElementFromSelection(): HTMLElement {
@@ -338,17 +340,27 @@ export class BlockOperationsService implements IBlockOperationsService {
     //     hidefloatingToolbar();
     // }
 
-    transformBlock(blockElement: HTMLElement, type: string) {
+    // formatBlock(element: HTMLElement, contentType: string)
+    transformBlock(type: string, element?: HTMLElement | null) {
 
-        //blockElement, type
+        let blockElement: Element | null;
 
+        if (element) {
+            blockElement = element.closest(".block");
+        } else {
+            blockElement = this.focusStack.peek()?.closest(".block") || null;
+        }
 
-        let contentElement = blockElement.querySelector('.swittable') as HTMLElement;
+        let contentElement = blockElement!.querySelector('.swittable') as HTMLElement;
+
+        this.focusStack.peek()?.focus();
+
+        DOMUtils.removeFilterText();
+
+        this.memento.saveState();
+
         let content = contentElement?.innerText;
 
-        // if (content.endsWith('/')) {
-        //     content = content.slice(0, -1); // Remove the last '/'
-        // }
 
         let newContentBlock;
 
@@ -438,6 +450,11 @@ export class BlockOperationsService implements IBlockOperationsService {
                     // newContentBlock = factory.createNewSeparatorElement();
                     break;
                 }
+            case ElementFactoryService.ELEMENT_TYPES.TABLE:
+                {
+                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.TABLE, ",,");
+                    break;
+                }
 
             default:
                 console.error('Unsupported type');
@@ -448,16 +465,45 @@ export class BlockOperationsService implements IBlockOperationsService {
             return;
         }
 
-        blockElement.replaceChild(newContentBlock, contentElement);
+        blockElement!.replaceChild(newContentBlock, contentElement);
 
-        const focusable = newContentBlock.closest('.focusable') || blockElement.querySelector('.focusable');
+        const focusable = (newContentBlock.closest('.focusable') || blockElement!.querySelector('.focusable')) as HTMLElement;
+        if (focusable) {
+            focusable.focus();
+            DOMUtils.placeCursorAtEndOfEditableElement(focusable);
+        }
 
-        // focusOnTheEndOfTheText(focusable);
+
+
+        //'requestHideFloatingToolbar'
+        // const selectionEvent = new CustomEvent(CustomEvents.blockTypeChanged, {
+        //     bubbles: true,
+        //     cancelable: true
+        // });
+
+        // document.dispatchEvent(selectionEvent);
     }
+
+    //NOW THE formatBlock AND transformBlock IS THE SAME. formatBlock IS DEPRECETED USE transformBlock INSTED
+    // formatBlock(element: HTMLElement, contentType: string): void {
+
+    //     let contentElement = element.querySelector('.swittable') as HTMLElement;
+    //     let content = contentElement.innerText;
+
+    //     let newContentBlock = this.elementFactoryService.create(contentType, content);
+
+    //     element.replaceChild(newContentBlock, contentElement);
+
+    //     const focusable = newContentBlock.closest('.focusable') || element.querySelector('.focusable');
+
+    //     // focusOnTheEndOfTheText(focusable);
+    // }
 
 
 
     createNewElement(event: Event) {
+
+        this.memento.saveState();
 
         const element = event.target as Element;
 
@@ -471,6 +517,8 @@ export class BlockOperationsService implements IBlockOperationsService {
     }
 
     createListItem(element: HTMLElement): void {
+
+        this.memento.saveState();
 
         let newContentElement = null;
 
@@ -522,9 +570,146 @@ export class BlockOperationsService implements IBlockOperationsService {
         // focusOnTheEndOfTheText(newContentElement);
     }
 
+    /**
+    * Creates a new content element (paragraph or list item) based on the content type of the active element and splits the content accordingly.
+    * This function is triggered by pressing 'Enter' in an editable content area, facilitating dynamic content creation and organization
+    * within the document. It supports different content types including checklists, bulleted lists, numbered lists, and general text blocks.
+    *
+    * @returns {boolean} Always returns true to indicate successful execution, regardless of the path taken.
+    *
+    * @example
+    * // Typically called within an event handler for keypress events
+    * document.addEventListener('keypress', (event) => {
+    *     if (event.key === 'Enter') {
+    *         createNewElementAndSplitContent();
+    *     }
+    * });
+    *
+    * @description
+    * The function operates under several conditions based on the content type:
+    * - For list items (checklist, bulleted, and numbered):
+    *   1. Finds the closest list item ancestor of the active element.
+    *   2. If the list item contains text, it clones this item and splits the content between the original and the clone.
+    *   3. If the list item is empty and is the only item, it removes the entire block after creating a new paragraph.
+    * - For other blocks (like paragraphs):
+    *   1. Clones the current block and rearranges content between the original and the new clone.
+    *   2. Sets the focus to the start of the new element to continue editing.
+    *
+    * This method ensures that the document structure remains coherent while providing a seamless user experience in text editing environments.
+    */
+    createNewElementAndSplitContent(): boolean {
+
+        this.memento.saveState();
+
+        const contentType = DOMUtils.getContentTypeFromActiveElement();
+
+        if (contentType == ContentTypes.Table) {
+            return false;
+        } else if (
+            contentType == ContentTypes.CheckList ||
+            contentType == ContentTypes.BulletedList ||
+            contentType == ContentTypes.NumberedList) {
+
+            const currentItem = DOMUtils.findClosestAncestorOfActiveElementByClass("list-item");
+
+            if (currentItem && DOMUtils.hasTextContent(currentItem)) {
+                const clone = DOMUtils.cloneAndInsertAfter(currentItem);
+                if (clone) {
+                    const contentCurrent = currentItem.querySelector(".focusable") as Node;
+                    const contentClone = clone.querySelector(".focusable") as Node;
+                    DOMUtils.rearrangeContentAfterSplit(contentCurrent, contentClone);
+                }
+            } else if (currentItem) {
+
+                const parentBlock = currentItem.closest(".block");
+
+                if (parentBlock) {
+                    const counter = parentBlock.querySelectorAll(".list-item").length;
+                    const newParagraph = ElementFactoryService.blockParagraph();
+
+                    DOMUtils.insertAfter(newParagraph, parentBlock);
+
+                    currentItem.remove();
+                    if (counter == 1) {
+                        parentBlock.remove();
+                    }
+
+                    const focusable = (newParagraph as HTMLElement).querySelector("p") as HTMLElement;
+                    DOMUtils.placeCursorAtStartOfEditableElement(focusable as HTMLElement);
+                }
+            }
+
+        } else {
+            const currentBlock = DOMUtils.findClosestAncestorOfActiveElementByClass("block");
+
+            if (currentBlock) {
+                const clonedBlock = DOMUtils.cloneAndInsertAfter(currentBlock);
+
+                if (clonedBlock) {
+                    const contentCurrent = currentBlock.querySelector(".focusable") as Node;
+                    const contentClone = clonedBlock.querySelector(".focusable") as Node;
+                    DOMUtils.rearrangeContentAfterSplit(contentCurrent, contentClone);
+
+                    if (!DOMUtils.hasTextContent(clonedBlock!)) {
+                        this.transformBlock(ContentTypes.Paragraph, clonedBlock);
+                    }
+                }
+
+                const focusable = (clonedBlock as HTMLElement).querySelector(".focusable") as HTMLElement;
+
+                DOMUtils.placeCursorAtStartOfEditableElement(focusable as HTMLElement);
+            }
+        }
+
+        return true;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // splitContentAtCursor(): void {
+    //     const selection = window.getSelection();
+    //     if (!selection || selection.rangeCount === 0) return;
+
+    //     const range = selection.getRangeAt(0);
+    //     const container = range.startContainer;
+
+    //     // Criando range para o conteúdo antes do cursor
+    //     const rangeBefore = document.createRange();
+    //     rangeBefore.selectNodeContents(container);
+    //     rangeBefore.setEnd(range.startContainer, range.startOffset);
+
+    //     // Criando range para o conteúdo depois do cursor
+    //     const rangeAfter = document.createRange();
+    //     rangeAfter.selectNodeContents(container);
+    //     rangeAfter.setStart(range.endContainer, range.endOffset);
+
+    //     // Exemplo: Isolando o texto de cada parte
+    //     const textBefore = rangeBefore.toString();
+    //     const textAfter = rangeAfter.toString();
+
+    //     console.log('Texto antes do cursor:', textBefore);
+    //     console.log('Texto depois do cursor:', textAfter);
+
+    //     // Aqui você pode manipular o DOM como necessário, por exemplo:
+    //     // inserir novos elementos, modificar o texto, etc.
+    // }
+
 
     createDefaultBlock(eventParagraph: Element | null): void {
-
         const newBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.BLOCK_PARAGRAPH, "");
 
         if (eventParagraph && eventParagraph.closest('.block')) {
@@ -551,7 +736,7 @@ export class BlockOperationsService implements IBlockOperationsService {
 
     private deleteAndFocusOnNext() {
 
-        let currentActiveElement = this.getCurrentSelectedBlock() || this.getCurrentActiveBlock();
+        let currentActiveElement = this.getCurrentSelectedBlock() || DOMUtils.getCurrentActiveBlock();
 
         if (!currentActiveElement) {
             return;
@@ -578,7 +763,7 @@ export class BlockOperationsService implements IBlockOperationsService {
                 if (position) {
                     this.applyCursorXEndPosition(focusedElement, position);
                 } else {
-                    this.focusOnTheEndOfTheText(focusedElement);
+                    DOMUtils.placeCursorAtEndOfEditableElement(focusedElement);
                 }
                 // return focusedElement;
                 return;
@@ -594,7 +779,7 @@ export class BlockOperationsService implements IBlockOperationsService {
                 if (position) {
                     this.applyCursorXEndPosition(focusedElement, position);
                 } else {
-                    this.focusOnTheEndOfTheText(focusedElement);
+                    DOMUtils.placeCursorAtEndOfEditableElement(focusedElement);
                 }
                 // return focusedElement;
                 return;
@@ -615,7 +800,7 @@ export class BlockOperationsService implements IBlockOperationsService {
                 if (position) {
                     this.applyCursorXEndPosition(focusedElement, position);
                 } else {
-                    this.focusOnTheEndOfTheText(focusedElement);
+                    DOMUtils.placeCursorAtEndOfEditableElement(focusedElement);
                 }
                 // return focusedElement;
                 return;
@@ -641,7 +826,7 @@ export class BlockOperationsService implements IBlockOperationsService {
                 if (position) {
                     this.applyCursorXStartPosition(focusedElement, position);
                 } else {
-                    this.focusOnTheStartOfTheText(focusedElement);
+                    DOMUtils.placeCursorAtStartOfEditableElement(focusedElement);
                 }
                 return focusedElement;
             }
@@ -655,7 +840,7 @@ export class BlockOperationsService implements IBlockOperationsService {
                 if (position) {
                     this.applyCursorXStartPosition(focusedElement, position);
                 } else {
-                    this.focusOnTheStartOfTheText(focusedElement);
+                    DOMUtils.placeCursorAtStartOfEditableElement(focusedElement);
                 }
                 return focusedElement;
             }
@@ -676,7 +861,7 @@ export class BlockOperationsService implements IBlockOperationsService {
                 if (position) {
                     this.applyCursorXStartPosition(focusedElement, position);
                 } else {
-                    this.focusOnTheStartOfTheText(focusedElement);
+                    DOMUtils.placeCursorAtStartOfEditableElement(focusedElement);
                 }
                 return focusedElement;
             }
@@ -795,48 +980,49 @@ export class BlockOperationsService implements IBlockOperationsService {
     }
 
 
-    focusOnTheEndOfTheText(contentBlock: HTMLElement) {
+    // focusOnTheEndOfTheText(contentBlock: HTMLElement) {
 
-        setTimeout(() => {
+    //     requestAnimationFrame(() => {
 
-            const range = document.createRange();
-            const selection = window.getSelection()!;
+    //         const range = document.createRange();
+    //         const selection = window.getSelection()!;
 
-            range.selectNodeContents(contentBlock);
+    //         range.selectNodeContents(contentBlock);
 
-            let lastChild = contentBlock;
+    //         let lastChild = contentBlock;
 
-            while (lastChild.lastChild && lastChild.lastChild.nodeType === Node.ELEMENT_NODE) {
-                lastChild = lastChild.lastChild as HTMLElement;
-            }
-            if (lastChild.lastChild) {
-                lastChild = lastChild.lastChild as HTMLElement;
-            }
+    //         while (lastChild.lastChild && lastChild.lastChild.nodeType === Node.ELEMENT_NODE) {
+    //             lastChild = lastChild.lastChild as HTMLElement;
+    //         }
+    //         if (lastChild.lastChild) {
+    //             lastChild = lastChild.lastChild as HTMLElement;
+    //         }
 
-            range.setEnd(lastChild, lastChild.textContent!.length);
-            range.collapse(false);
+    //         range.setEnd(lastChild, lastChild.textContent!.length);
+    //         range.collapse(false);
 
-            selection.removeAllRanges();
-            selection.addRange(range);
+    //         selection.removeAllRanges();
+    //         selection.addRange(range);
 
-            contentBlock.focus();
-        }, 10);
-    }
+    //         contentBlock.focus();
+    //     });
+    // }
 
-    focusOnTheStartOfTheText(contentBlock: HTMLElement) {
+    // focusOnTheStartOfTheText(contentBlock: HTMLElement) {
 
-        setTimeout(() => {
-            const range = document.createRange();
-            const selection = window.getSelection()!;
+    //     setTimeout(() => {
+    //         const range = document.createRange();
+    //         const selection = window.getSelection()!;
 
-            range.selectNodeContents(contentBlock);
-            range.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(range);
+    //         range.selectNodeContents(contentBlock);
+    //         range.collapse(true);
+    //         selection.removeAllRanges();
+    //         selection.addRange(range);
 
-            contentBlock.focus();
-        }, 10);
-    }
+    //         contentBlock.focus();
+    //     }, 10);
+    // }
+
 
 
 
@@ -872,25 +1058,14 @@ export class BlockOperationsService implements IBlockOperationsService {
         return focusableParent;
     }
 
-    getCurrentActiveBlock(): Element | null {
 
-        let container = document.activeElement;
+    duplicateSelectedBlock(): Node | null {
 
-        if (container) {
-            return container.closest(".block");
-        }
-
-        return null;
-    }
-
-
-    duplicateSelectedBlock() {
-
-        let element = this.getCurrentSelectedBlock() || this.getCurrentActiveBlock();
+        let element = this.getCurrentSelectedBlock() || DOMUtils.getCurrentActiveBlock();
 
         if (!element || !element.parentNode) {
             console.error('O elemento fornecido é inválido ou não está no DOM.');
-            return;
+            return null;
         }
 
         const clone = element.cloneNode(true);
@@ -898,6 +1073,8 @@ export class BlockOperationsService implements IBlockOperationsService {
         const nextElement = element.nextSibling;
 
         element.parentNode.insertBefore(clone, nextElement);
+
+        return clone;
     }
 
 }
