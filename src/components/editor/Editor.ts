@@ -4,23 +4,49 @@ import { IElementFactoryService } from "../../services/element-factory/IElementF
 import { Content } from "../content/Content";
 import { Title } from "../title/Title";
 import { IBlockOperationsService } from "@/services/block-operations/IBlockOperationsService";
+import { AddBlockWrapper } from "../add-block/AddBlockWrapper";
+import { QuickMenu } from "../quick-menu/QuickMenu";
+import { TableContextFloatingToolbar } from "../floating-toolbar/TableContextFloatingToolbar";
+import { TextContextFloatingToolbar } from "../floating-toolbar/TextContextFloatingToolbar";
+import { IMemento } from "@/core/IMemento";
+import { DependencyContainer } from "@/core/DependencyContainer";
 
 export class Editor extends BaseUIComponent {
 
     private readonly elementFactoryService: IElementFactoryService;
     private static readonly editorId: string = "johannesEditor";
     private static instance: Editor;
+    private memento : IMemento;
 
     private title?: Title;
     private content?: Content;
+    private addBlock: AddBlockWrapper;
+    private textFloatingToolbar: TextContextFloatingToolbar;
+    private quickMenu: QuickMenu;
+    private tableContextToolbar: TableContextFloatingToolbar;
 
     private constructor(
         elementFactoryService: IElementFactoryService,
-        blockOperationsService: IBlockOperationsService) {
+        blockOperationsService: IBlockOperationsService,
+        memento: IMemento,
+        title: Title,
+        content: Content,
+        addBlock: AddBlockWrapper,
+        floatingToolbar: TextContextFloatingToolbar,
+        quickMenu: QuickMenu,
+        tableToolbar: TableContextFloatingToolbar
+
+    ) {
 
         super({
             elementFactoryService: elementFactoryService,
-            blockOperationsService: blockOperationsService
+            blockOperationsService: blockOperationsService,
+            title: title,
+            content: content,
+            addBlock: addBlock,
+            floatingToolbar: floatingToolbar,
+            quickMenu: quickMenu,
+            tableToolbar : tableToolbar
         });
 
         if (Editor.instance) {
@@ -28,10 +54,17 @@ export class Editor extends BaseUIComponent {
         }
 
         this.elementFactoryService = elementFactoryService;
+        this.memento = memento;
+        this.addBlock = addBlock;
+        this.textFloatingToolbar = floatingToolbar;
+        this.quickMenu = quickMenu;
+        this.tableContextToolbar = tableToolbar
 
         this.attachEvents();
 
         Editor.instance = this;
+
+        this.memento.saveState();
     }
 
     init(): HTMLElement {
@@ -41,24 +74,43 @@ export class Editor extends BaseUIComponent {
         htmlElement.classList.add("johannes-editor");
 
         if (window.editorConfig?.enableTitle || true) {
-            this.title = new Title(this.props.blockOperationsService);
-
-            htmlElement.appendChild(this.title.htmlElement);
+            htmlElement.appendChild(this.props.title.htmlElement);
         }
 
-        this.content = new Content(this.props.elementFactoryService, this.props.blockOperationsService);
+        // Content is required
+        htmlElement.appendChild(this.props.content.htmlElement);
 
-        htmlElement.appendChild(this.content.htmlElement);
+        if (window.editorConfig?.enableAddBlock || true) {
+            htmlElement.appendChild(this.props.addBlock.htmlElement);
+        }
 
-        // htmlElement.appendChild(this.props.content.htmlElement);
+        if (window.editorConfig?.enableFloatingToolbar || true) {
+            htmlElement.appendChild(this.props.floatingToolbar.htmlElement);
+        }
+
+        if (window.editorConfig?.enableQuickMenu || true) {
+            htmlElement.appendChild(this.props.quickMenu.htmlElement);
+        }
+
+        htmlElement.appendChild(this.props.tableToolbar.htmlElement);
 
         return htmlElement;
     }
 
-    static getInstance(elementFactoryService: IElementFactoryService, blockOperationsService: IBlockOperationsService) {
+    static getInstance(
+        title: Title,
+        content: Content,
+        addBlock: AddBlockWrapper,
+        textFloatingToolbar: TextContextFloatingToolbar,
+        quickMenu: QuickMenu, 
+        tableFloatingToolbar: TableContextFloatingToolbar) {
+        
+        const elementFactoryService = DependencyContainer.Instance.resolve<IElementFactoryService>("IElementFactoryService");
+        const blockOperationsService = DependencyContainer.Instance.resolve<IBlockOperationsService>("IBlockOperationsService");
+        const memento = DependencyContainer.Instance.resolve<IMemento>("IMemento");
 
         if (!Editor.instance) {
-            Editor.instance = new Editor(elementFactoryService, blockOperationsService);
+            Editor.instance = new Editor(elementFactoryService, blockOperationsService, memento, title, content, addBlock, textFloatingToolbar, quickMenu, tableFloatingToolbar);
         }
 
         return Editor.instance;
@@ -122,6 +174,9 @@ export class Editor extends BaseUIComponent {
             }
         }, true);
 
+
+        this.attachDragHandler();
+
     }
 
     static insertTextAtCursor(text: string): void {
@@ -181,5 +236,67 @@ export class Editor extends BaseUIComponent {
 
     extractContent() {
         throw new Error("Not implemented Exception");
+    }
+
+
+
+    attachDragHandler() {
+        let draggedItem: any = null;
+
+        let dropLine = document.createElement('div');
+        dropLine.classList.add('drop-line');
+        dropLine.style.height = '2px';
+        dropLine.style.display = 'none';
+
+        this.htmlElement.addEventListener('dragstart', (event) => {
+            if ((event.target as Element)?.classList?.contains('drag-handler')) {
+                draggedItem = (event.target as Element)?.closest('.block');
+                draggedItem.setAttribute('draggable', 'true');
+                setTimeout(() => {
+                    draggedItem.style.opacity = '0.5';
+                }, 0);
+            }
+        });
+
+        this.htmlElement.addEventListener('dragend', () => {
+            setTimeout(() => {
+                if (draggedItem) {
+                    draggedItem.style.opacity = '';
+                    draggedItem.removeAttribute('draggable');
+                    draggedItem = null;
+                }
+                dropLine.remove();
+            }, 0);
+        });
+
+        this.htmlElement.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            let target = (event.target as Element)?.closest('.block');
+
+            if (target && target !== draggedItem) {
+                let bounding = target.getBoundingClientRect();
+                let offset = bounding.y + bounding.height / 2;
+
+                if ((event as MouseEvent).clientY > offset) {
+                    if (target.nextElementSibling !== dropLine) {
+                        target.insertAdjacentElement('afterend', dropLine);
+                    }
+                } else {
+                    if (target.previousElementSibling !== dropLine) {
+                        target.insertAdjacentElement('beforebegin', dropLine);
+                    }
+                }
+            }
+
+            dropLine.style.display = 'block';
+        });
+
+        this.htmlElement.addEventListener('drop', (event) => {
+            event.preventDefault();
+            if (draggedItem && dropLine && dropLine.parentElement) {
+                dropLine.parentElement.insertBefore(draggedItem, dropLine);
+                dropLine.remove();
+            }
+        });
     }
 }

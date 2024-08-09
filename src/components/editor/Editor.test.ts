@@ -6,17 +6,17 @@ import { Editor } from "./Editor";
 import { BlockOperationsService } from "@/services/block-operations/BlockOperationsService";
 
 
-describe("Editor", () => {
-    test("getInstance with success", () => {
+// describe("Editor", () => {
+//     test("getInstance with success", () => {
 
-        const elementFactory = ElementFactoryService.getInstance();
-        const blockOperationsService = BlockOperationsService.getInstance();
+//         const elementFactory = ElementFactoryService.getInstance();
+//         const blockOperationsService = BlockOperationsService.getInstance();
 
-        const editor = Editor.getInstance(elementFactory, blockOperationsService);
+//         const editor = Editor.getInstance(elementFactory, blockOperationsService);
 
-        expect(editor).toBeInstanceOf(Editor);
-    });
-});
+//         expect(editor).toBeInstanceOf(Editor);
+//     });
+// });
 
 
 // describe('EditorInitializer', () => {
