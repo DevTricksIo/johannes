@@ -1,22 +1,23 @@
 {
     "compilerOptions": {
-        "target": "esnext", // Compila para a última versão do ECMAScript
-        "module": "esnext", // Usa ES Modules
-        "moduleResolution": "node", // Estratégia de resolução de módulos
-        "strict": true, // Ativa verificações estritas de tipo
-        "esModuleInterop": true, // Permite interoperabilidade de módulos padrão ES com módulos CommonJS
-        "allowSyntheticDefaultImports": true, // Permite importações default sintéticas
-        "outDir": "./dist", // Diretório para arquivos compilados
-        "baseUrl": "./", // Base para resolução de módulos
-        "paths": { // Mapeamento de caminhos para módulos
+        "target": "esnext",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "strict": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "outDir": "./dist",
+        "baseUrl": "./",
+        "paths": {
             "@/*": ["src/*"]
         },
-        "sourceMap": true // Gera mapas de código fonte para debugging
+        "sourceMap": true
     },
     "include": [
-        "src/**/*"
-    ], // Inclui todos os arquivos TypeScript na pasta src
+        "src/**/*",
+        "custom.d.ts"
+    ],
     "exclude": [
         "node_modules"
-    ] // Exclui a pasta node_modules
+    ]
 }
