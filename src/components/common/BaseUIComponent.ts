@@ -4,6 +4,7 @@ export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
 
     props: Record<string, any>;
     htmlElement: T;
+    parent?: BaseUIComponent;
 
     constructor(props: Record<string, any>) {
 
@@ -13,17 +14,55 @@ export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
         this._canHide = true;
     }
 
+    /**
+    * Initializes and returns an HTMLElement using the document.createElement API.
+    * This abstract method must be implemented by subclasses to specify the type of
+    * HTMLElement to be created and possibly configure its properties or styles.
+    * Dependencies needed by the subclasses are passed through the constructor and
+    * are typically made available via this.props for use within this method.
+    *
+    * @abstract
+    * @example
+    * // Example subclass that uses a dependency passed through the constructor.
+    * class Toolbar extends BaseUIComponent {
+    *     constructor(dependency) {
+    *         super({dependency: dependency});
+    *         this.dependency = dependency;
+    *     }
+    *
+    *     init(): HTMLElement {
+    *         const toolbarElement = document.createElement('div');
+    *         toolbarElement.className = 'toolbar';
+    *         // Using the dependency
+    *         toolbarElement.attribute("customDependencyBased", this.dependency.data);
+    *   
+    *         return toolbarElement;
+    *     }
+    * }
+    *
+    * @returns {HTMLElement} The newly created and configured HTMLElement.
+    */
     abstract init(): HTMLElement;
 
     get display(): string {
         return 'block';
     }
 
-    documentAppendTo(parent: HTMLElement): void {
-        parent.appendChild(this.htmlElement);
+    /**
+    * Appends this component's HTML element to the specified parent component's HTML element.
+    * This method establishes a parent-child relationship in the DOM by appending this instance's
+    * element as a child of the given parent's element. It also updates the parent property of this
+    * instance to refer to the provided parent component.
+    *
+    * @param {BaseUIComponent} parent The parent component to which this component's element will be appended.
+    * This should be an instance of BaseUIComponent or any of its subclasses, ensuring that it has an htmlElement property.
+    */
+    appendTo(parent: BaseUIComponent): void {
+        this.parent = parent;
+        parent.htmlElement.appendChild(this.htmlElement);
     }
 
-    get isVisible() {
+    get isVisible() : boolean{
         let element: HTMLElement = this.htmlElement;
 
         if (element.style.display === 'none' || element.style.visibility === 'hidden' || !document.contains(element)) {
@@ -48,23 +87,31 @@ export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
     }
 
     show() {
-        this._canHide = false;
+        // this._canHide = false;
         this.htmlElement.style.display = this.display;
 
-        setTimeout(() => {
-            this._canHide = true;
-        }, 100);
+        // setTimeout(() => {
+        //     this._canHide = true;
+        // }, 100);
     }
 
     hide() {
-        if (!this._canHide) {
+        // if (!this._canHide) {
 
-            console.warn("Attempted to hide the element before 100 milliseconds have passed since the last display.");
-            // return;
-            // throw new Error("Attempted to hide the element before 100 milliseconds have passed since the last display.");
-        }
+        //     console.warn("Attempted to hide the element before 100 milliseconds have passed since the last display.");
+        //     // return;
+        //     // throw new Error("Attempted to hide the element before 100 milliseconds have passed since the last display.");
+        // }
 
         this.htmlElement.style.display = 'none';
+    }
+
+    lockHide(){
+        this._canHide = false;
+    }
+
+    unlockHide(){
+        this._canHide = true;
     }
 
     get canHide(): boolean {
@@ -83,7 +130,7 @@ export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
         this.htmlElement.style.color = value;
     }
 
-    removeColor(){
+    removeColor() {
         this.htmlElement.style.color = "inherit";
     }
 
