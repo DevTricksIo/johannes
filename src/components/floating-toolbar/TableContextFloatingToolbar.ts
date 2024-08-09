@@ -10,16 +10,23 @@ import { TableUtils } from "@/utilities/TableUtils";
 import { KeyboardKeys } from "@/common/KeyboardKeys";
 import { TextContextFloatingToolbar } from "./TextContextFloatingToolbar";
 import { SelectionModes } from "./SelectionMode";
+import { Colors } from "@/common/Colors";
+import { DOMUtils } from "@/utilities/DOMUtils";
+import { EventEmitter } from "@/commands/EventEmitter";
+import { ITableOperationsService } from "@/services/table-operations/ITableOperationsService";
+import { CustomUIEvents } from "@/common/CustomUIEvents";
+import { IUIEventDetail } from "@/commands/IUIEventDetail";
 
 export class TableContextFloatingToolbar extends FloatingToolbar implements ITableContextFloatingToolbar {
 
     private static id: string = "tableFloatingToolbar";
-
     private static instance: TableContextFloatingToolbar;
 
     focusStack: IFocusStack;
     selectedCells: HTMLTableCellElement[] = [];
     actualFocusedCell: HTMLTableCellElement | null = null;
+
+    tableOperationsService: ITableOperationsService;
 
 
     controller: AbortController;
@@ -32,7 +39,7 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
     selectionFlag: boolean = false; // Flag to track whether text selection is active
     selectedText: string = ""; // Storage for the currently selected text
 
-    private constructor(focusStack: IFocusStack) {
+    private constructor(focusStack: IFocusStack, tableOperationsService: ITableOperationsService) {
 
         if (TableContextFloatingToolbar.instance) {
             throw new Error("Use TableContextFloatingToolbar.getInstance() to get instance.");
@@ -43,6 +50,7 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
         this.htmlElement.style.zIndex = ZIndex.ModeratelyImportant;
         this.controller = new AbortController();
         this.focusStack = focusStack;
+        this.tableOperationsService = tableOperationsService;
 
         this.attachEvents();
     }
@@ -58,6 +66,8 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
         document.addEventListener(DefaultJSEvents.Keydown, this.handleCellSelectionContinuationOnKeyDown.bind(this));
         document.addEventListener(DefaultJSEvents.Keydown, this.handleKeyDown.bind(this));
         document.addEventListener(DefaultJSEvents.Keyup, this.handleKeyUp.bind(this));
+
+        this.attachUIEvent();
 
         super.attachEvents();
     }
@@ -197,39 +207,76 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
     *
     */
     private updateTheSelectionModeByCurrentSelectionState(event: KeyboardEvent): void {
-        // Check if the selection flag is set, indicating that selection updates should be monitored
-
         if (this.selectionFlag) {
-            // Get the current selection from the document
-            const actualSelection = this.normalizeText(document.getSelection()?.toString().trim() || "");
+            const selection = document.getSelection();
+            if (selection) {
+                const actualSelection = this.normalizeText(selection.toString().trim());
+                const target = event.target as HTMLElement;
+                const currentCell = target.closest(DOMElements.TD) as HTMLTableCellElement;
+                const currentCellText = this.normalizeText((currentCell.textContent || "").trim());
 
-            const target = event.target as HTMLElement;
-            const currentCell = target.closest(DOMElements.TD) as HTMLTableCellElement;
+                const { atStart, atEnd } = DOMUtils.getSelectionTextInfo(currentCell);
 
-            const currentCellText = this.normalizeText((currentCell.textContent || "").trim());
-
-            let isTheEnd: boolean = false;
-
-            if (actualSelection) {
-                if (event.key == Directions.ArrowRight || event.key == Directions.ArrowDown) {
-                    isTheEnd = currentCellText.endsWith(actualSelection) || false;
-                } else {
-                    isTheEnd = currentCellText.startsWith(actualSelection) || false;
+                // This interaction keeps the menu visible after all text is selected, enhancing user engagement. 
+                // If the user presses a directional key again beyond this point, the menu is hidden and cell selection mode is initiated, 
+                // streamlining the interface and focusing on subsequent tasks.
+                if (currentCellText === "" || (actualSelection === this.selectedText.trim() && (atStart || atEnd))) {
+                    this.selectionMode = SelectionModes.Cell;
+                    this.selectedText = "";
+                    if (this.canHide) {
+                        this.hide();
+                    }
+                } else if (actualSelection) {
+                    this.selectedText = actualSelection;
                 }
-            }
-
-            // Check if the current selection matches the stored selected text
-            if ((actualSelection == this.selectedText.trim() && isTheEnd)) {
-                // If they are the same, it indicates that the selection hasn't changed,
-                // so switch to cell selection mode and reset the stored text
-                this.selectionMode = SelectionModes.Cell;
-                this.selectedText = "";
-            } else if (actualSelection) {
-                // If there is a new selection, update the stored selected text to the new value
-                this.selectedText = actualSelection;
             }
         }
     }
+
+    // private updateTheSelectionModeByCurrentSelectionState(event: KeyboardEvent): void {
+    //     // Check if the selection flag is set, indicating that selection updates should be monitored
+    //     if (this.selectionFlag) {
+    //         // Get the current selection from the document
+    //         const actualSelection = this.normalizeText(document.getSelection()?.toString().trim() || "");
+
+    //         const target = event.target as HTMLElement;
+    //         const currentCell = target.closest(DOMElements.TD) as HTMLTableCellElement;
+
+    //         const currentCellText = this.normalizeText((currentCell.textContent || "").trim());
+
+    //         let isTheEnd: boolean = false;
+
+    //         if (actualSelection) {
+    //             const selection = document.getSelection();
+    //             const selectionRange = selection?.getRangeAt(0);
+
+    //             if (selectionRange) {
+    //                 const selectionStartOffset = selectionRange.startOffset;
+    //                 const selectionEndOffset = selectionRange.endOffset;
+    //                 const cellTextLength = currentCellText.length;
+
+    //                 if (event.key === Directions.ArrowRight || event.key === Directions.ArrowDown) {
+    //                     // Consider the caret being at the end of the cell text
+    //                     isTheEnd = selectionEndOffset >= cellTextLength;
+    //                 } else if (event.key === Directions.ArrowLeft || event.key === Directions.ArrowUp) {
+    //                     // Consider the caret being at the start of the cell text
+    //                     isTheEnd = selectionStartOffset === 0;
+    //                 }
+    //             }
+    //         }
+
+    //         // Check if the current selection matches the stored selected text
+    //         if (currentCellText === "" || (actualSelection === this.selectedText.trim() && isTheEnd)) {
+    //             // If they are the same, it indicates that the selection hasn't changed,
+    //             // so switch to cell selection mode and reset the stored text
+    //             this.selectionMode = SelectionModes.Cell;
+    //             this.selectedText = "";
+    //         } else if (actualSelection) {
+    //             // If there is a new selection, update the stored selected text to the new value
+    //             this.selectedText = actualSelection;
+    //         }
+    //     }
+    // }
 
     /**
     * Updates the selection mode based on the current mouse position relative to the actual focused cell.
@@ -249,6 +296,9 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
 
             if (!(mouseX >= cellRect.left && mouseX <= cellRect.right && mouseY >= cellRect.top && mouseY <= cellRect.bottom)) {
                 this.selectionMode = SelectionModes.Cell;
+                if (this.canHide) {
+                    this.hide();
+                }
             }
         }
     }
@@ -297,10 +347,29 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
                     //Change the actual focused cell only if at same table
                     this.actualFocusedCell = cell;
                     cell.focus();
+                } else {
+                    //Celula já faz parte da lista apenas foca e continua
+                    this.actualFocusedCell = cell;
+                    cell.focus();
                 }
             }
         }
 
+    }
+
+
+    attachUIEvent() {
+        document.addEventListener(CustomUIEvents.CloseElement, this.handleCloseElementEvent.bind(this));
+    }
+
+    handleCloseElementEvent(event: Event) {
+
+        const customEvent = event as CustomEvent<IUIEventDetail>;
+        const details = customEvent.detail;
+
+        if (TableContextFloatingToolbar.id == details.targetId!) {
+            this.clearAndHide();
+        }
     }
 
     show(): void {
@@ -312,14 +381,82 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
 
         this.resetAbortController();
 
+        // const a = this.areAllSelectedCellsSameBgColor(Colors.HiliteColorRed);
+
         this.focusStack.push(this.actualFocusedCell);
 
         this.changeToolbarPositionToBeClosedTo(this.actualFocusedCell);
+        // this.resetCheckedColor();
+        this.processSelectionChangeEffects();
 
         super.show();
 
         this.actualFocusedCell.addEventListener(DefaultJSEvents.Blur, this.clearAndHide, { signal: this.controller.signal });
     }
+
+
+
+    // execCellBackgroundColor(value: string): void {
+
+    //     this.memento.saveState();
+
+    //     EventEmitter.emitResetActiveButtonsElementEvent("backgroundColor");
+
+    //     const activeCell = TableUtils.getActiveTableCell();
+
+    //     if (activeCell) {
+    //         const table = activeCell.closest('table')!;
+
+    //         const selectedCells = table.querySelectorAll('td.selected');
+
+    //         selectedCells.forEach(cell => {
+    //             (cell as HTMLElement).style.backgroundColor = value;
+    //         });
+
+    //         EventEmitter.emitShowHideActiveElementEvent("backgroundColor", value, "show");
+
+    //     } else {
+    //         console.error("cell not found");
+    //     }
+    // }
+
+    processSelectionChangeEffects() {
+
+        EventEmitter.emitResetActiveButtonsElementEvent("backgroundColor");
+
+        const backgroundColors: { [key: string]: boolean } = {};
+        backgroundColors[Colors.BackgroundColorRed] = this.tableOperationsService.queryAllStateCellBackgroundColor(this.selectedCells, Colors.BackgroundColorRed);
+        backgroundColors[Colors.BackgroundColorGreen] = this.tableOperationsService.queryAllStateCellBackgroundColor(this.selectedCells, Colors.BackgroundColorGreen);
+        backgroundColors[Colors.BackgroundColorBlue] = this.tableOperationsService.queryAllStateCellBackgroundColor(this.selectedCells, Colors.BackgroundColorBlue);
+        backgroundColors[Colors.BackgroundColorYellow] = this.tableOperationsService.queryAllStateCellBackgroundColor(this.selectedCells, Colors.BackgroundColorYellow);
+        backgroundColors[Colors.BackgroundColorGrey] = this.tableOperationsService.queryAllStateCellBackgroundColor(this.selectedCells, Colors.BackgroundColorGrey);
+
+        Object.entries(backgroundColors).forEach(([color, active]) => {
+            if (active) {
+                EventEmitter.emitShowHideActiveElementEvent("backgroundColor", color, "show");
+            }
+        });
+    }
+
+
+    // resetCheckedColor() {
+
+    //     const dropdownColor = this.dropdowns.find(e => e.id == "tableColorOptionsMenu")!;
+
+    //     dropdownColor.dropdownList.dropdownItems.forEach(item => {
+
+    //         item.resetActiveIcon();
+    //     });
+
+    //     dropdownColor.dropdownList.dropdownItems.forEach(item => {
+
+    //         const color = item.getLeftIconBackgroundColor();
+
+    //         if (color && this.areAllSelectedCellsSameBgColor(color) && color != "transparent") {
+    //             item.changeActiveIconToVisible();
+    //         }
+    //     });
+    // }
 
     changeToolbarPositionToBeClosedTo(element: HTMLElement): void {
         const rect = element.getBoundingClientRect();
@@ -374,6 +511,7 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
 
     static getInstance() {
         const focusStack = DependencyContainer.Instance.resolve<IFocusStack>("IFocusStack");
-        return new TableContextFloatingToolbar(focusStack);
+        const tableOperationsService = DependencyContainer.Instance.resolve<ITableOperationsService>("ITableOperationsService");
+        return new TableContextFloatingToolbar(focusStack, tableOperationsService);
     }
 }

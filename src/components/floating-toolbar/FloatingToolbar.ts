@@ -1,40 +1,43 @@
 import { BaseUIComponent } from '../common/BaseUIComponent';
 import { DropdownMenu } from './dropdown-tool/DropdownMenu';
 import { FloatingToolbarSeparator } from './separator/FloatingToolbarSeparator';
-import { GroupButton } from './group-button/GroupButton';
+import { ButtonGroup } from './button-group/ButtonGroup';
 import { InputLinkBoxWrapper } from './link-box/InputLinkBoxWrapper';
-import { Utils } from "../../utilities/Utils";
+import { CustomEvents } from '@/common/CustomEvents';
 
-export class FloatingToolbar extends BaseUIComponent {
+export abstract class FloatingToolbar extends BaseUIComponent {
 
     dropdowns: DropdownMenu[];
+    separators: FloatingToolbarSeparator[];
     currentSelectionRange: Range | null;
     inputLinkBoxWrapper: InputLinkBoxWrapper;
+    htmlFocusedElementBeforeOpenQuickMenu: HTMLElement | null;
 
-    constructor() {
+    constructor(id: string) {
 
         const inputLinkBoxWrapper = new InputLinkBoxWrapper();
 
         super({
+            id: id,
             inputLinkBoxWrapper: inputLinkBoxWrapper
         });
 
         this.inputLinkBoxWrapper = inputLinkBoxWrapper;
-        this.attachEvents();
         this.dropdowns = [];
+        this.separators = [];
         this.currentSelectionRange = null;
+        this.htmlFocusedElementBeforeOpenQuickMenu = null;
     }
 
     init(): HTMLElement {
 
-        const htmlElement = document.createElement('div');
+        const htmlElement = document.createElement("div");
 
-        htmlElement.id = 'floatingToolbar';
-        htmlElement.style.display = 'none';
-        htmlElement.classList.add('soft-box-shadow');
+        htmlElement.id = this.props.id;
+        htmlElement.style.display = "none";
+        htmlElement.classList.add("floating-toolbar", "select-wrapper", "soft-box-shadow");
 
-        const selectWrapper = document.createElement('div');
-        selectWrapper.classList.add('select-wrapper');
+        const selectWrapper = document.createElement("div");
 
         htmlElement.appendChild(selectWrapper);
 
@@ -49,45 +52,59 @@ export class FloatingToolbar extends BaseUIComponent {
         return 'flex';
     }
 
-    show(): void {
-        requestAnimationFrame(() => {
-            const selection = window.getSelection();
+    // show(): void {
+    //     requestAnimationFrame(() => {
 
-            if (!selection || selection.rangeCount === 0) {
-                throw new Error('Nenhuma seleção encontrada');
-            }
+    //         this.htmlFocusedElementBeforeOpenQuickMenu = DOMUtils.findClosestAncestorOfActiveElementByClass(".focusable");
+    //         const selection = window.getSelection();
 
-            this.currentSelectionRange = selection.getRangeAt(0);
+    //         if (!selection || selection.rangeCount === 0) {
+    //             console.error('No selection found');
+    //             return;
+    //         }
 
-            const range = selection.getRangeAt(0);
-            const rect = range.getBoundingClientRect();
+    //         this.currentSelectionRange = selection.getRangeAt(0);
 
-            this.htmlElement.style.display = 'flex';
+    //         const range = selection.getRangeAt(0);
+    //         const rect = range.getBoundingClientRect();
 
-            const elementWidth = this.htmlElement.offsetWidth;
-            let leftPosition = rect.left + window.scrollX - 50;
+    //         this.htmlElement.style.display = 'flex';
 
-            if (leftPosition + elementWidth > window.innerWidth) {
-                leftPosition = window.innerWidth - elementWidth - 20;
-            }
+    //         const elementWidth = this.htmlElement.offsetWidth;
+    //         let leftPosition = rect.left + window.scrollX - 50;
 
-            const elementHeight = this.htmlElement.offsetHeight;
-            let topPosition = rect.top + window.scrollY - elementHeight - 10;
+    //         if (leftPosition + elementWidth > window.innerWidth) {
+    //             leftPosition = window.innerWidth - elementWidth - 20;
+    //         }
 
-            if (topPosition < 0) {
-                topPosition = rect.bottom + window.scrollY + 10;
-            }
+    //         const elementHeight = this.htmlElement.offsetHeight;
+    //         let topPosition = rect.top + window.scrollY - elementHeight - 10;
 
-            this.htmlElement.style.left = `${leftPosition}px`;
-            this.htmlElement.style.top = `${topPosition}px`;
+    //         if (topPosition < 0) {
+    //             topPosition = rect.bottom + window.scrollY + 10;
+    //         }
 
-            super.show();
-        });
-    }
+    //         this.htmlElement.style.left = `${leftPosition}px`;
+    //         this.htmlElement.style.top = `${topPosition}px`;
+
+    //         super.show();
+
+    //         // document.dispatchEvent(new CustomEvent(CustomEvents.floatingToolbarDisplayed, {
+    //         //     bubbles: true,
+    //         //     cancelable: true
+    //         // }));
+    //     });
+    // }
 
     hide(): void {
-        this.currentSelectionRange = null;
-        super.hide();
+        if (this.canHide) {
+            if (this.anyDropdownVisible()) {
+                this.hideAllDropdownVisible();
+            }
+
+            this.currentSelectionRange = null;
+            super.hide();
+        }
     }
 
     appendDropdown(dropdown: DropdownMenu): void {
@@ -95,11 +112,16 @@ export class FloatingToolbar extends BaseUIComponent {
         this.htmlElement.appendChild(dropdown.htmlElement);
     }
 
+    appendButtonGroup(buttonGroup: ButtonGroup): void {
+        this.htmlElement.appendChild(buttonGroup.htmlElement);
+    }
+
     appendSeparator(separator: FloatingToolbarSeparator): void {
+        this.separators.push(separator);
         this.htmlElement.appendChild(separator.htmlElement);
     }
 
-    appendTextToolbar(button: GroupButton): void {
+    appendTextToolbar(button: ButtonGroup): void {
         this.htmlElement.appendChild(button.htmlElement);
     }
 
@@ -125,6 +147,16 @@ export class FloatingToolbar extends BaseUIComponent {
 
     attachEvents() {
 
+        // Prevent focus change when clicking on this element
+        this.htmlElement.addEventListener("click", (event) => {
+            event.preventDefault();
+        });
+
+        // Prevent focus change when clicking on this element
+        this.htmlElement.addEventListener("mousedown", (event) => {
+            event.preventDefault();
+        });
+
 
         document.addEventListener("showInputLinkBoxRequested", () => {
             this.canHide = false;
@@ -135,94 +167,48 @@ export class FloatingToolbar extends BaseUIComponent {
             this.restoreRangeSelection();
         });
 
-        document.addEventListener('keydown', (event) => {
-            if (this.canHide && (event.key === 'Escape')) {
+        // document.addEventListener('keydown', (event) => {
+        //     if (this.canHide && (event.key === 'Escape')) {
 
-                if (this.anyDropdownVisible()) {
-                    this.hideAllDropdownVisible();
-                } else {
-                    this.hide();
-                }
-            } if (this.canHide && (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
-                if (this.isSelectionEmpty()) {
-                    this.hide();
-                }
-            }
-        });
+        //         if (this.anyDropdownVisible()) {
+        //             this.hideAllDropdownVisible();
+        //         } else {
+        //             this.hide();
+        //         }
+        //     } if (this.canHide && (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
+        //         if (this.isSelectionEmpty()) {
+        //             this.hide();
+        //         }
+        //     }
+        // });
 
         // document.addEventListener('keydown', (event) => {
         //     if ((event.key === 'Escape' || event.key === 'Delete') && this.isVisible) {
-        //         if(this.canHide){
+        //         if (this.canHide) {
         //             this.hideAllDropdownVisible();
         //             this.hide();
         //         }
         //     }
         // });
 
-        document.addEventListener('keyup', (event) => {
-            if (event.key === "Shift" || event.key === "Control") {
 
-                if (window.getSelection()!.toString().trim() !== '') {
+        // document.addEventListener('click', (event) => {
+        //     if (this.canHide && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`) && !this.anyDropdownVisible()) {
+        //         this.hide();
+        //     } 
+        //     // else if (this.isVisible && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`) && !this.inputLinkBoxWrapper.isVisible) {
+        //     //     this.restoreRangeSelection();
+        //     // }
+        // });
 
-                    if (Utils.isSelectedTextDescendantOf(".title")) {
-                        return;
-                    }
-
-                    event.preventDefault();
-                    event.stopPropagation();
-
-                    this.show();
-                }
-            }
+        document.addEventListener(CustomEvents.blockDeleted, () => {
+            this.hide();
         });
 
-        document.addEventListener('click', (event) => {
-            if (this.canHide && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`) && !this.anyDropdownVisible()) {
-                this.hide();
-            } else if (this.isVisible && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`) && !this.inputLinkBoxWrapper.isVisible) {
-                this.restoreRangeSelection();
-            }
-        });
-
-        document.addEventListener('mouseup', (event) => {
-            if (!this.isVisible) {
-
-                // wait the selection to be reflected in the DOM
-                requestAnimationFrame(() => {
-
-                    if (window.getSelection()!.toString().trim() !== '') {
-
-                        if (Utils.isSelectedTextDescendantOf(".title")) {
-                            return;
-                        }
-
-                        event.preventDefault();
-                        event.stopPropagation();
-
-                        this.show();
-                    }
-                });
-            }
-        });
-
-        document.addEventListener('selectedBlockDeleted', (event) => {
-            if (this.canHide) {
-                this.hide();
-            }
-        });
-
-        document.addEventListener('requestHideFloatingToolbar', () => {
-            if (this.canHide) {
-
-                if (this.anyDropdownVisible()) {
-                    this.hideAllDropdownVisible();
-                }
-
-                this.hide();
-            }
+        document.addEventListener(CustomEvents.blockTypeChanged, () => {
+            this.hide();
         });
     }
-
 
     isSelectionEmpty() {
         const selection = document.getSelection();
