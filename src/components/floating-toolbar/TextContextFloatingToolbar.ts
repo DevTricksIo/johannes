@@ -193,6 +193,7 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
         });
 
         document.addEventListener(DefaultJSEvents.SelectionChange, () => {
+            
             this.showHide(isSelecting);
         });
 
@@ -237,6 +238,13 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
     }
 
     showHide(isSelecting: boolean) {
+
+        //This block checks for an active selection and whether it contains any content.
+        // In Firefox, the `selectionchange` event may be fired even while typing,
+        // which is not the intended trigger since we only want to react to actual changes in selection.
+        // If the selection is empty or null, the function returns early, effectively ignoring
+        // these unwanted `selectionchange` events during typing.
+        
         const hasContent = this.hasSelection();
 
         if (!hasContent) {
@@ -280,38 +288,40 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
 
 
     changeToolbarPositionToBeClosedToSelection(): void {
-
         const selection = window.getSelection();
-
+    
         if (!selection || selection.rangeCount === 0) {
             console.error('No selection found');
             return;
         }
-
+    
         this.currentSelectionRange = selection.getRangeAt(0);
-        const rect = this.currentSelectionRange.getBoundingClientRect();
-
+    
+        const firstCharRange = this.currentSelectionRange.cloneRange();
+        firstCharRange.collapse(true);
+        const firstCharRect = firstCharRange.getBoundingClientRect();
+    
         if (!this.initialRect) {
-            this.initialRect = rect;
+            this.initialRect = firstCharRect;
             this.htmlElement.style.display = 'flex';
-
-            const elementWidth = this.htmlElement.offsetWidth;
-            let leftPosition = rect.left + window.scrollX - 50;
-
-            if (leftPosition + elementWidth > window.innerWidth) {
-                leftPosition = window.innerWidth - elementWidth - 20;
-            }
-
-            const elementHeight = this.htmlElement.offsetHeight;
-            let topPosition = rect.top + window.scrollY - elementHeight - 10;
-
-            if (topPosition < 0) {
-                topPosition = rect.bottom + window.scrollY + 10;
-            }
-
-            this.htmlElement.style.left = `${leftPosition}px`;
-            this.htmlElement.style.top = `${topPosition}px`;
         }
+    
+        const elementWidth = this.htmlElement.offsetWidth;
+        let leftPosition = this.initialRect.left + window.scrollX - 50;
+    
+        if (leftPosition + elementWidth > window.innerWidth) {
+            leftPosition = window.innerWidth - elementWidth - 20;
+        }
+    
+        const elementHeight = this.htmlElement.offsetHeight;
+        let topPosition = this.initialRect.top + window.scrollY - elementHeight - 10;
+    
+        if (topPosition < 0) {
+            topPosition = this.initialRect.bottom + window.scrollY + 10;
+        }
+    
+        this.htmlElement.style.left = `${leftPosition}px`;
+        this.htmlElement.style.top = `${topPosition}px`;
     }
 
     show(): void {
