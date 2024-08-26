@@ -34,7 +34,9 @@ export class EmbedTool {
         const container = EmbedTool.createEmbedContainer(["embed-container"]);
         const iframe = document.createElement('iframe');
 
-        iframe.src = `https://docs.google.com/spreadsheets/d/e/${sheetId}/pubhtml?widget=true&amp;headers=false`;
+        const safeSheetId = encodeURIComponent(sheetId);
+
+        iframe.src = `https://docs.google.com/spreadsheets/d/e/${safeSheetId}/pubhtml?widget=true&amp;headers=false`;
         iframe.style.width = '100%';
         iframe.style.height = '450px';
         iframe.frameBorder = '0';
@@ -52,8 +54,10 @@ export class EmbedTool {
             const container = this.createEmbedContainer(["embed-container"]);
 
             const iframe = document.createElement('iframe');
+            
+            const safeVideoId = encodeURIComponent(videoId);
 
-            iframe.src = `https://www.youtube.com/embed/${videoId}`;
+            iframe.src = `https://www.youtube.com/embed/${safeVideoId}`;
             iframe.frameBorder = "0";
             iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
             iframe.allowFullscreen = true;
@@ -74,7 +78,9 @@ export class EmbedTool {
 
             const iframe = document.createElement('iframe');
 
-            iframe.src = `https://www.youtube.com/embed/${shortId}`;
+            const safeShortIdId = encodeURIComponent(shortId);
+
+            iframe.src = `https://www.youtube.com/embed/${safeShortIdId}`;
             iframe.frameBorder = "0";
             iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
             iframe.allowFullscreen = true;
@@ -94,8 +100,10 @@ export class EmbedTool {
         if (listId) {
             const container = EmbedTool.createEmbedContainer(["embed-container"]);
 
+            const safeListId = encodeURIComponent(listId);
+
             const iframe = document.createElement('iframe');
-            iframe.src = `https://www.youtube.com/embed/videoseries?list=${listId}`;
+            iframe.src = `https://www.youtube.com/embed/videoseries?list=${safeListId}`;
             iframe.setAttribute("allowfullscreen", "true");
             container.appendChild(iframe);
             EmbedTool.finalizeEmbed(container, ["x-resizable", ToolboxOptions.AlignToolClass], element);
@@ -108,10 +116,19 @@ export class EmbedTool {
         const contentId = urlObj.pathname.split('/').pop();
         const container = this.createEmbedContainer(["embed-container"]);
         container.classList.add("spotify-embed", ToolboxOptions.AlignToolClass);
+        
+
+        if(!contentId){
+            console.error("contentId is empty");
+            return;
+        }
+
+        const safeContentId = encodeURIComponent(contentId);
+
     
         const iframe = document.createElement('iframe');
         iframe.classList.add("spotify-embed");
-        iframe.src = `https://open.spotify.com/embed/${type}/${contentId}`;
+        iframe.src = `https://open.spotify.com/embed/${type}/${safeContentId}`;
         iframe.frameBorder = "0";
         iframe.setAttribute("scrolling", "no");
     
@@ -133,31 +150,6 @@ export class EmbedTool {
         this.finalizeEmbed(container, ["x-resizable", ToolboxOptions.AlignToolClass], element);
     }
 
-    static embedTweet(urlObj: URL, element: HTMLElement) {
-        const tweetId = urlObj.pathname.split('/').pop();
-        const script = document.createElement('script');
-        script.setAttribute('src', 'https://platform.twitter.com/widgets.js');
-        const container = EmbedTool.createEmbedContainer();
-        const blockquote = document.createElement('blockquote');
-        blockquote.classList.add("twitter-tweet");
-        blockquote.setAttribute('data-theme', 'light');
-        blockquote.innerHTML = `<a href="${urlObj.toString()}">Loading tweet...</a>`;
-        container.appendChild(blockquote);
-        container.appendChild(script);
-        EmbedTool.finalizeEmbed(container, [], element);
-    }
-
-    static embedGoogleMap(urlObj: URL, element: HTMLElement) {
-        const queryString = urlObj.search.slice(1);
-        const container = EmbedTool.createEmbedContainer();
-        const iframe = document.createElement('iframe');
-        iframe.src = `https://www.google.com/maps?${queryString}&output=embed`;
-        iframe.style.maxWidth = "100%";
-        iframe.style.height = "450px";
-        container.appendChild(iframe);
-        EmbedTool.finalizeEmbed(container, ["x-resizable"], element);
-    }
-
     static async embedGistAsScript(urlObj: URL, element: HTMLElement) {
         const gistId = urlObj.pathname.split('/').pop();
         if (!gistId) {
@@ -177,8 +169,10 @@ export class EmbedTool {
         container.appendChild(shadowElement);
         
         const shadowRoot = shadowElement.attachShadow({ mode: 'open' });
+
+        const safeGistId = encodeURIComponent(gistId);
     
-        const scriptSrc = `https://gist.github.com/${gistId}.js`;
+        const scriptSrc = `https://gist.github.com/${safeGistId}.js`;
         const script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = scriptSrc;
@@ -213,71 +207,6 @@ export class EmbedTool {
         EmbedTool.finalizeEmbed(container, [], element);
     }
 
-
-
-    static async embedGistAsIframe(urlObj: URL, service: string, element: HTMLElement) {
-        const gistId = urlObj.pathname.split('/').pop();
-        const container = EmbedTool.createEmbedContainer(["embed-container"]);
-        container.style.height = "inherit";
-        container.classList.add("gist-embed");
-        container.style.width = "100%";
-        container.style.minHeight = "200px";
-
-        if (!gistId) {
-            console.error("Invalid Gist/Snippet ID");
-            return;
-        }
-
-        let src;
-        if (service === "github") {
-            src = `https://gist.github.com/${gistId}.pibb`;
-        } else if (service === "gitlab") {
-            src = `https://gitlab.com/api/v4/snippets/${gistId}/raw`;
-        } else {
-            console.error("Unsupported service for embedding gists");
-            return;
-        }
-
-        const iframe = document.createElement('iframe');
-        iframe.setAttribute("width", "100%");
-        iframe.setAttribute("height", "100%");
-        iframe.style.border = "none";
-        iframe.style.margin = "0";
-        iframe.style.padding = "0";
-        iframe.src = src;
-        iframe.style.overflow = "auto";
-        iframe.frameBorder = "0";
-
-        container.appendChild(iframe);
-
-        iframe.setAttribute('sandbox', ' allow-same-origin');
-        iframe.setAttribute("allow", "cookie-store 'none'");
-
-
-        EmbedTool.finalizeEmbed(container, ["y-resizable"], element);
-
-        iframe.onload = () => {
-            console.log("Gist/Snippet loaded");
-        };
-
-        iframe.onerror = () => {
-            console.error("Failed to load the Gist/Snippet from " + service);
-        };
-
-        const resizeObserver = new ResizeObserver(entries => {
-            for (let entry of entries) {
-                const { height } = entry.contentRect;
-                iframe.style.height = `${height}px`;
-            }
-        });
-
-        const contentElement = container.closest(`${CommonClasses.ContentElement}`);
-        if (contentElement) {
-            contentElement.classList.add("overflow-hidden");
-            resizeObserver.observe(contentElement);
-        }
-    }
-
     static embedCodepenAsIframe(urlObj: URL, element: HTMLElement) {
         const parts = urlObj.pathname.split('/');
         if (parts.length < 4 || parts[1] === '' || parts[3] === '') {
@@ -287,10 +216,12 @@ export class EmbedTool {
         const user = parts[1];
         const pen = parts[3];
 
+        const safeUser = encodeURIComponent(user);
+        const safePen = encodeURIComponent(pen);
 
         const container = EmbedTool.createEmbedContainer(["embed-container"]);
         const iframe = document.createElement('iframe');
-        iframe.src = `https://codepen.io/${user}/embed/${pen}?height=265&theme-id=light&default-tab=js,result`;
+        iframe.src = `https://codepen.io/${safeUser}/embed/${safePen}?height=265&theme-id=light&default-tab=js,result`;
         iframe.style.border = "none";
         iframe.style.height = "100%";
         iframe.style.width = "100%";
