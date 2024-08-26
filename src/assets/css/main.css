@@ -1148,8 +1148,8 @@ td:empty:before {
 
 
     width: fit-content;
-    /* background-color: white !important; */
     position: absolute;
+    background-color: white;
 
 }
 
