@@ -45,18 +45,18 @@ export class TextContextFloatingToolbarBuilder {
 
         turnIntoBarList.append(new DropdownMenuListItemTitle(turnIntoBarList, "Turn into"));
 
-        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionText", turnIntoBarList, BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.PARAGRAPH, SVGIcons.paragraph.htmlElement, "Text", "Ctrl+Shift+Enter"));
-        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionTodoList", turnIntoBarList, BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.CHECK_LIST, SVGIcons.todo_list.htmlElement, "Todo list", "Ctrl+1"));
-        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionBulletedList", turnIntoBarList, BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.BULLETED_LIST, SVGIcons.b_list.htmlElement, "Bulleted list", "Ctrl+."));
-        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionNumberedList", turnIntoBarList, BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.NUMBERED_LIST, SVGIcons.n_list.htmlElement, "Numbered list", "Ctrl+/"));
-        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionBlockCode", turnIntoBarList, BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.CODE, SVGIcons.code.htmlElement, "Block code"));
-        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionQuote", turnIntoBarList, BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.QUOTE, SVGIcons.quote.htmlElement, "Quote"));
-        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionHeading1", turnIntoBarList, BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.HEADER_1, SVGIcons.head1.htmlElement, "Heading 1", "Ctrl+Alt+1"));
-        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionHeading2", turnIntoBarList, BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.HEADER_2, SVGIcons.head2.htmlElement, "Heading 2", "Ctrl+Alt+2"));
-        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionHeading3", turnIntoBarList, BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.HEADER_3, SVGIcons.head3.htmlElement, "Heading 3", "Ctrl+Alt+3"));
-        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionHeading4", turnIntoBarList, BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.HEADER_4, SVGIcons.head4.htmlElement, "Heading 4", "Ctrl+Alt+4"));
-        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionHeading5", turnIntoBarList, BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.HEADER_5, SVGIcons.head5.htmlElement, "Heading 5", "Ctrl+Alt+5"));
-        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionHeading6", turnIntoBarList, BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK, ElementFactoryService.ELEMENT_TYPES.HEADER_6, SVGIcons.head6.htmlElement, "Heading 6", "Ctrl+Alt+6"));
+        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionText", turnIntoBarList, Commands.transformBlock, ElementFactoryService.ELEMENT_TYPES.PARAGRAPH, SVGIcons.paragraph.htmlElement, "Text", "Ctrl+Shift+Enter"));
+        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionTodoList", turnIntoBarList, Commands.transformBlock, ElementFactoryService.ELEMENT_TYPES.CHECK_LIST, SVGIcons.todo_list.htmlElement, "Todo list", "Ctrl+1"));
+        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionBulletedList", turnIntoBarList, Commands.transformBlock, ElementFactoryService.ELEMENT_TYPES.BULLETED_LIST, SVGIcons.b_list.htmlElement, "Bulleted list", "Ctrl+."));
+        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionNumberedList", turnIntoBarList, Commands.transformBlock, ElementFactoryService.ELEMENT_TYPES.NUMBERED_LIST, SVGIcons.n_list.htmlElement, "Numbered list", "Ctrl+/"));
+        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionBlockCode", turnIntoBarList, Commands.transformBlock, ElementFactoryService.ELEMENT_TYPES.CODE, SVGIcons.code.htmlElement, "Block code"));
+        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionQuote", turnIntoBarList, Commands.transformBlock, ElementFactoryService.ELEMENT_TYPES.QUOTE, SVGIcons.quote.htmlElement, "Quote"));
+        //turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionHeading1", turnIntoBarList, Commands.transformBlock, ElementFactoryService.ELEMENT_TYPES.HEADER_1, SVGIcons.head1.htmlElement, "Heading 1", "Ctrl+Alt+1"));
+        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionHeading2", turnIntoBarList, Commands.transformBlock, ElementFactoryService.ELEMENT_TYPES.HEADER_2, SVGIcons.head2.htmlElement, "Heading 2", "Ctrl+Alt+2"));
+        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionHeading3", turnIntoBarList, Commands.transformBlock, ElementFactoryService.ELEMENT_TYPES.HEADER_3, SVGIcons.head3.htmlElement, "Heading 3", "Ctrl+Alt+3"));
+        turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionHeading4", turnIntoBarList, Commands.transformBlock, ElementFactoryService.ELEMENT_TYPES.HEADER_4, SVGIcons.head4.htmlElement, "Heading 4", "Ctrl+Alt+4"));
+        //turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionHeading5", turnIntoBarList, Commands.transformBlock, ElementFactoryService.ELEMENT_TYPES.HEADER_5, SVGIcons.head5.htmlElement, "Heading 5", "Ctrl+Alt+5"));
+        //turnIntoBarList.append(new DropdownMenuListItem("turnIntoOptionHeading6", turnIntoBarList, Commands.transformBlock, ElementFactoryService.ELEMENT_TYPES.HEADER_6, SVGIcons.head6.htmlElement, "Heading 6", "Ctrl+Alt+6"));
 
         return turnIntoDropdown;
     }
@@ -68,12 +68,29 @@ export class TextContextFloatingToolbarBuilder {
     static buttonGroup(): ButtonGroup {
         const groupButton = new ButtonGroup();
 
-        ButtonGroupItem.create(ButtonIDs.Link, Commands.toggleLink, "Link", SVGIcon.create(Icons.Link, Sizes.large)).appendTo(groupButton);
-        ButtonGroupItem.create(ButtonIDs.Bold, Commands.toggleBold, "Bold", SVGIcon.create(Icons.Bold, Sizes.large)).appendTo(groupButton);
-        ButtonGroupItem.create(ButtonIDs.Italic, Commands.toggleItalic, "Italic", SVGIcon.create(Icons.Italic, Sizes.large)).appendTo(groupButton);
-        ButtonGroupItem.create(ButtonIDs.Underline, Commands.toggleUnderline, "Underline", SVGIcon.create(Icons.Underline, Sizes.large)).appendTo(groupButton);
-        ButtonGroupItem.create(ButtonIDs.InlineCode, Commands.toggleInlineCode, "Code", SVGIcon.create(Icons.InlineCode, Sizes.large)).appendTo(groupButton);
-        ButtonGroupItem.create(ButtonIDs.Strikethrough, Commands.toggleStrikeThrough, "Strike-through", SVGIcon.create(Icons.StrikeThrough, Sizes.large)).appendTo(groupButton);
+        const link = ButtonGroupItem.create(Commands.toggleLink, "Link", SVGIcon.create(Icons.Link, Sizes.large));
+        link.setId(ButtonIDs.Link);
+        link.appendTo(groupButton);
+
+        const bold = ButtonGroupItem.create(Commands.toggleBold, "Bold", SVGIcon.create(Icons.Bold, Sizes.large));
+        bold.setId(ButtonIDs.Bold);
+        bold.appendTo(groupButton);
+        
+        const italic = ButtonGroupItem.create(Commands.toggleItalic, "Italic", SVGIcon.create(Icons.Italic, Sizes.large));
+        italic.setId(ButtonIDs.Italic);
+        italic.appendTo(groupButton);
+        
+        const underline = ButtonGroupItem.create(Commands.toggleUnderline, "Underline", SVGIcon.create(Icons.Underline, Sizes.large));
+        underline.setId(ButtonIDs.Underline);
+        underline.appendTo(groupButton);
+        
+        const inlineCode = ButtonGroupItem.create(Commands.toggleInlineCode, "Code", SVGIcon.create(Icons.InlineCode, Sizes.large));
+        inlineCode.setId(ButtonIDs.InlineCode);
+        inlineCode.appendTo(groupButton);
+        
+        const strikethrough = ButtonGroupItem.create(Commands.toggleStrikeThrough, "Strike-through", SVGIcon.create(Icons.StrikeThrough, Sizes.large));
+        strikethrough.setId(ButtonIDs.Strikethrough);
+        strikethrough.appendTo(groupButton);
 
         return groupButton;
     }
@@ -84,13 +101,13 @@ export class TextContextFloatingToolbarBuilder {
         const colorButton = new DropdownMenuButton("colorTextButton", new ColorIcon("#FAF4D1").htmlElement, colorDropdownList);
         const colorDropdown = new DropdownMenu(DropdownMenuIDs.ColorTextOptionsMenu, colorButton, colorDropdownList);
 
-        colorDropdownList.append(new DropdownMenuListItemTitle(colorDropdownList, "Background"));
+        colorDropdownList.append(new DropdownMenuListItemTitle(colorDropdownList, "Highlight"));
 
         const hiliteColorRed = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionRed, colorDropdownList, Commands.toggleHiliteColor, Colors.HiliteColorRed, new ColorIcon(Colors.HiliteColorRed).htmlElement, "Red");
         hiliteColorRed.addClass("hiliteColor");
 
-        const HiliteColorGreen = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionGreen, colorDropdownList, Commands.toggleHiliteColor, Colors.HiliteColorGreen, new ColorIcon(Colors.HiliteColorGreen).htmlElement, "Green");
-        HiliteColorGreen.addClass("hiliteColor");
+        const hiliteColorGreen = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionGreen, colorDropdownList, Commands.toggleHiliteColor, Colors.HiliteColorGreen, new ColorIcon(Colors.HiliteColorGreen).htmlElement, "Green");
+        hiliteColorGreen.addClass("hiliteColor");
 
         const hiliteColorBlue = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionBlue, colorDropdownList, Commands.toggleHiliteColor, Colors.HiliteColorBlue, new ColorIcon(Colors.HiliteColorBlue).htmlElement, "Blue");
         hiliteColorBlue.addClass("hiliteColor");
@@ -105,13 +122,13 @@ export class TextContextFloatingToolbarBuilder {
         hiliteColorNone.addClass("hiliteColor");
 
         colorDropdownList.append(hiliteColorRed);
-        colorDropdownList.append(HiliteColorGreen);
+        colorDropdownList.append(hiliteColorGreen);
         colorDropdownList.append(hiliteColorBlue);
         colorDropdownList.append(hiliteColorYellow);
         colorDropdownList.append(hiliteColorGrey);
         colorDropdownList.append(hiliteColorNone);
 
-        colorDropdownList.append(new DropdownMenuListItemTitle(colorDropdownList, "Color"));
+        colorDropdownList.append(new DropdownMenuListItemTitle(colorDropdownList, "Text"));
 
         const foreColorRed = new DropdownMenuListItem("colorOptionRed", colorDropdownList, Commands.toggleForeColor, Colors.ForeColorRed, new SVGIcon("icon-material-format", Sizes.large).htmlElement, "Red");
         foreColorRed.addClass("foreColor");
@@ -151,13 +168,13 @@ export class TextContextFloatingToolbarBuilder {
 
         moreOptionsList.append(new DropdownMenuListItemTitle(moreOptionsList, "More options"));
 
-        moreOptionsList.append(new DropdownMenuListItem("copyOption", moreOptionsList, BlockOperationsService.BLOCK_OPERATIONS.COPY, null, SVGIcons.copy.htmlElement, "Copy", "Ctrl+C"));
-        moreOptionsList.append(new DropdownMenuListItem("cutOption", moreOptionsList, BlockOperationsService.BLOCK_OPERATIONS.CUT, null, SVGIcons.cut.htmlElement, "Cut", "Ctrl+X"));
-        moreOptionsList.append(new DropdownMenuListItem("pasteOption", moreOptionsList, BlockOperationsService.BLOCK_OPERATIONS.PASTE, null, SVGIcons.paste.htmlElement, "Replace", "Ctrl+V"));
-        moreOptionsList.append(new DropdownMenuListItem("duplicateOption", moreOptionsList, BlockOperationsService.BLOCK_OPERATIONS.DUPLICATE, null, SVGIcons.duplicate.htmlElement, "Clone Block", "Ctrl+D"));
-        moreOptionsList.append(new DropdownMenuListItem("resetOption", moreOptionsList, BlockOperationsService.BLOCK_OPERATIONS.REMOVE_FORMAT, null, SVGIcons.eraser.htmlElement, "Reset Style", "Ctrl+\\"));
+        moreOptionsList.append(new DropdownMenuListItem("copyOption", moreOptionsList, Commands.copySelected, null, SVGIcons.copy.htmlElement, "Copy", "Ctrl+C"));
+        moreOptionsList.append(new DropdownMenuListItem("cutOption", moreOptionsList, Commands.cutSelected, null, SVGIcons.cut.htmlElement, "Cut", "Ctrl+X"));
+        moreOptionsList.append(new DropdownMenuListItem("pasteOption", moreOptionsList, Commands.past, null, SVGIcons.paste.htmlElement, "Replace", "Ctrl+V"));
+        moreOptionsList.append(new DropdownMenuListItem("duplicateOption", moreOptionsList, Commands.duplicateBlock, null, SVGIcons.duplicate.htmlElement, "Clone", "Ctrl+D"));
+        moreOptionsList.append(new DropdownMenuListItem("resetOption", moreOptionsList, Commands.removeFormat, null, SVGIcons.eraser.htmlElement, "Reset Style", "Ctrl+\\"));
 
-        const deleteItem = new DropdownMenuListItem("deleteOption", moreOptionsList, BlockOperationsService.BLOCK_OPERATIONS.DELETE, null, SVGIcons.delete.htmlElement, "Delete Block", "Shift+Del");
+        const deleteItem = new DropdownMenuListItem("deleteOption", moreOptionsList, Commands.deleteBlock, null, SVGIcons.delete.htmlElement, "Delete", "Shift+Del");
         deleteItem.addCssClass("danger-option");
 
         moreOptionsList.append(deleteItem);
