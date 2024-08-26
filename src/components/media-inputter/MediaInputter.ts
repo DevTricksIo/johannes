@@ -132,7 +132,7 @@ export class MediaInputter extends BaseUIComponent {
         try {
             const url = new URL(stringURL);
 
-            if(!Utils.isValidUrl(url.toString())){
+            if (!Utils.isValidUrl(url.toString())) {
                 throw new Error("Invalid URL");
             }
 
@@ -324,10 +324,26 @@ export class MediaInputter extends BaseUIComponent {
         });
         document.querySelectorAll('.content-data').forEach(content => {
             content.classList.remove('active');
+
         });
 
         this.getTab(tabId)?.classList.add('active');
-        this.getContent(contentId)?.classList.add('active');
+
+        const contentElement = this.getContent(contentId);
+
+        if (contentElement) {
+            contentElement.classList.add('active');
+
+            const input = contentElement.querySelector("input");
+
+            if (input) {
+                input.style.backgroundColor = "white";
+
+                setTimeout(() => {
+                    input.focus();
+                }, 100);
+            }
+        }
     }
 
     show(): void {

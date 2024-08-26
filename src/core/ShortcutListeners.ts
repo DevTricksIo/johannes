@@ -89,7 +89,7 @@ export class ShortcutListeners implements IShortcutListeners {
     private listen() {
         document.addEventListener("keydown", (event) => {
 
-            console.log(`Key: ${event.key}, Code: ${event.code}, Ctrl: ${event.ctrlKey}, Alt: ${event.altKey}, AltGr: ${event.key === 'AltGraph'}, NumLock: ${event.getModifierState('NumLock')}`);
+            // console.log(`Key: ${event.key}, Code: ${event.code}, Ctrl: ${event.ctrlKey}, Alt: ${event.altKey}, AltGr: ${event.key === 'AltGraph'}, NumLock: ${event.getModifierState('NumLock')}`);
 
             const isNumPad = event.code.startsWith("Numpad");
             const numLockOn = event.getModifierState("NumLock");
@@ -99,7 +99,6 @@ export class ShortcutListeners implements IShortcutListeners {
                 event.preventDefault();
                 event.stopPropagation();
 
-                alert("converto para paragrafo");
                 document.dispatchEvent(new CustomEvent<ICommandEventDetail>(CustomEvents.emittedCommand, {
                     detail: {
                         command: Commands.transformBlock,
