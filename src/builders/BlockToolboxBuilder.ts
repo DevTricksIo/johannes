@@ -30,7 +30,7 @@ export class BlockToolboxBuilder {
     static colorTool(): DropdownMenu {
 
         const colorDropdownList = new DropdownMenuList("colorInteractiveOptionSelect" + Utils.generateUniqueId());
-        const colorButton = new DropdownMenuButton("colorInteractiveButton" + Utils.generateUniqueId(), new ColorIcon("#FAF4D1").htmlElement, colorDropdownList);
+        const colorButton = new DropdownMenuButton("colorInteractiveButton" + Utils.generateUniqueId(), new ColorIcon("white").htmlElement, colorDropdownList);
         colorButton.addCssClass("color-interactive-button");
 
         const colorDropdown = new DropdownMenu("colorInteractionOptionsMenu" + Utils.generateUniqueId(), colorButton, colorDropdownList);

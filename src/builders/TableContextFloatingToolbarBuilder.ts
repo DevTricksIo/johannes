@@ -72,7 +72,7 @@ export class TableContextFloatingToolbarBuilder {
     static tableColorDropdown(): DropdownMenu {
 
         const colorDropdownList = new DropdownMenuList("colorTableOptionSelect");
-        const colorButton = new DropdownMenuButton("colorTableButton", new ColorIcon("#FAF4D1").htmlElement, colorDropdownList);
+        const colorButton = new DropdownMenuButton("colorTableButton", new ColorIcon("white").htmlElement, colorDropdownList);
         const colorDropdown = new DropdownMenu("tableColorOptionsMenu", colorButton, colorDropdownList);
 
         colorDropdownList.append(new DropdownMenuListItemTitle(colorDropdownList, "Background"));

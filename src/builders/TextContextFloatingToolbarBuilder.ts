@@ -98,7 +98,7 @@ export class TextContextFloatingToolbarBuilder {
     static colorDropdown(): DropdownMenu {
 
         const colorDropdownList = new DropdownMenuList(DropdownListIDs.ColorTextOptionSelect);
-        const colorButton = new DropdownMenuButton("colorTextButton", new ColorIcon("#FAF4D1").htmlElement, colorDropdownList);
+        const colorButton = new DropdownMenuButton("colorTextButton", new ColorIcon("white").htmlElement, colorDropdownList);
         const colorDropdown = new DropdownMenu(DropdownMenuIDs.ColorTextOptionsMenu, colorButton, colorDropdownList);
 
         colorDropdownList.append(new DropdownMenuListItemTitle(colorDropdownList, "Highlight"));
