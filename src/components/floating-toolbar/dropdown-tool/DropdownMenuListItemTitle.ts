@@ -1,3 +1,4 @@
+import { SVGIcon } from "@/components/common/SVGIcon";
 import { BaseUIComponent } from "../../common/BaseUIComponent";
 import { DropdownMenuList } from "./DropdownMenuList";
 import { IDropdownMenuItem } from "./IDropdownMenuItem";
@@ -15,6 +16,12 @@ export class DropdownMenuListItemTitle extends BaseUIComponent implements IDropd
 
         this.parentDropdownMenuList = parentDropdownMenuList;
     }
+
+    title: string = "";
+    activeIcon?: SVGIcon | undefined;
+
+    value: string | null = "";
+    
     changeActiveIconToVisible(): void {
         return;
     }
@@ -49,9 +56,11 @@ export class DropdownMenuListItemTitle extends BaseUIComponent implements IDropd
     init(): HTMLElement {
 
         const htmlElement = document.createElement('li');
+        htmlElement.classList.add("no-list-style");
 
         const title = document.createElement('h3');
         title.innerText = this.props.title;
+        title.classList.add("no-selection");
 
         htmlElement.appendChild(title);
 

@@ -9,16 +9,18 @@ import { CustomEvents } from "@/common/CustomEvents";
 import { CustomUIEvents } from "@/common/CustomUIEvents";
 import { IUIEventDetail } from "@/commands/IUIEventDetail";
 import { ShowHideActiveButton } from "@/commands/UIActions/ShowHideActiveButton";
-import { ResetActiveButtons } from "@/commands/UIActions/ResetActiveButtons";
+import { DOMUtils } from "@/utilities/DOMUtils";
+import { ChangeBlockToolbarLanguage } from "@/commands/UIActions/ChangeBlockToolbarLanguage";
+import { DefaultJSEvents } from "@/common/DefaultJSEvents";
 
 export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMenuItem {
 
-    private readonly id: string;
+    id: string;
     private readonly command: string;
-    private readonly value: string | null;
+    readonly value: string | null;
     readonly activeIcon?: SVGIcon;
-    private leftIcon?: SVGElement | HTMLElement;
-    private classList: string[];
+    private leftIcon?: SVGElement | HTMLElement | null;
+    readonly title: string;
 
     private onFocusFunctionList: (() => void)[] = [];
     private onLoseFocusFunctionList: (() => void)[] = [];
@@ -30,16 +32,16 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
         parentDropdownMenuList: DropdownMenuList,
         command: string,
         value: string | null,
-        leftIcon: HTMLElement | SVGElement,
+        leftIcon: HTMLElement | SVGElement | null,
         title: string,
         shortcut: string | null = null) {
 
-        const classList = ["list-item", "option", "option-hover", "block-operation"];
+        const classList = ["list-item", "option", "option-hover", "block-operation", "no-list-style", "no-selection"];
 
         const icon = new SVGIcon("icon-material-small-check", Sizes.medium);
         icon.htmlElement.style.visibility = "hidden";
 
-        if (value) {
+        if (value && leftIcon) {
             leftIcon.style.color = value;
         }
 
@@ -52,16 +54,16 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
             shortcut: shortcut
         });
 
-
         this.id = id;
         this.classList = classList;
         this.leftIcon = leftIcon;
         this.command = command;
         this.value = value;
+        this.title = title;
         this.parentDropdownMenuList = parentDropdownMenuList;
         this.activeIcon = icon;
 
-        this.attachEvent();
+        this.attachEvents();
     }
 
     // attachOnFocus(func: () => void): void {
@@ -81,6 +83,10 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
         this.onLoseFocusFunctionList.push(() => func(...args));
     }
 
+    get display(): string {
+        return 'flex';
+    }
+
     focus(): void {
         this.htmlElement.classList.add('option-focused');
         this.onFocusFunctionList.forEach(func => func());
@@ -96,7 +102,7 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
         const htmlElement = document.createElement('li');
         htmlElement.id = this.props.id;
         const classList = this.props.classList as string[];
-        htmlElement.classList.add(...classList);
+        htmlElement.classList.add("pointer", ...classList);
         htmlElement.tabIndex = 2;
 
         htmlElement.style.color = "#37352F";
@@ -104,7 +110,10 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
         const textOption = document.createElement('div');
         textOption.classList.add('text-option');
 
-        textOption.appendChild(this.props.leftIcon);
+        if (this.props.leftIcon) {
+            textOption.appendChild(this.props.leftIcon);
+        }
+
 
         const span = document.createElement('span');
         span.innerText = this.props.title;
@@ -125,12 +134,13 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
         return htmlElement;
     }
 
-    emitCommandEvent(): void {
+    emitCommandEvent(event: Event): void {
 
         const customEvent = new CustomEvent<ICommandEventDetail>(CustomEvents.emittedCommand, {
             detail: {
                 command: this.command,
                 value: this.value,
+                block: ( DOMUtils.getParentFromSelection(".block") || DOMUtils.getParentTargetBySelector(event as MouseEvent, ".block") ) as HTMLHtmlElement
             }
         });
 
@@ -156,34 +166,32 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
         // });
     }
 
-
-    addCssClass(...tokens: string[]) {
-        this.htmlElement.classList.add(...tokens);
-    }
-
-    attachEvent(): void {
+    attachEvents(): void {
 
         this.attachUIEvent();
 
         // Prevent focus change when clicking on this element
-        this.htmlElement.addEventListener("click", (event) => {
+        this.htmlElement.addEventListener(DefaultJSEvents.Click, (event) => {
             event.preventDefault();
         });
 
         // Prevent focus change when clicking on this element
-        this.htmlElement.addEventListener("mousedown", (event) => {
+        this.htmlElement.addEventListener(DefaultJSEvents.Mousedown, (event) => {
             event.preventDefault();
         });
 
-        this.htmlElement.addEventListener('mousemove', async () => {
+        this.htmlElement.addEventListener(DefaultJSEvents.Mousemove, async () => {
 
             const node: JNode<IDropdownMenuItem> = this.parentDropdownMenuList.dropdownItems.find(this)!;
 
             this.parentDropdownMenuList.switchVisualFocus(node!);
         });
 
-        this.htmlElement.addEventListener("click", () => {
-            this.emitCommandEvent();
+        this.htmlElement.addEventListener(DefaultJSEvents.Click, (event) => {
+
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            this.emitCommandEvent(event);
         });
 
 
@@ -276,6 +284,28 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
         //     }
         // });
 
+        document.addEventListener(CustomUIEvents.ChangeBlockToolbarLanguage, this.handleChangeBlockToolbarLanguageEvent.bind(this));
+    }
+
+    handleChangeBlockToolbarLanguageEvent(event: Event) {
+        const customEvent = event as CustomEvent<IUIEventDetail>;
+        const details = customEvent.detail;
+
+        if (details.targetClass && details.targetClass.includes("code-block-language-menu")) {
+
+            const eventValues = (details.action as ChangeBlockToolbarLanguage);
+
+            const block = this.htmlElement.closest(`#${eventValues.blockId}`);
+
+            if (block) {
+
+                if (this.value == eventValues.language) {
+                    this.activeIcon?.changeVisibilityToVisible();
+                } else {
+                    this.activeIcon?.changeVisibilityToHidden();
+                }
+            }
+        }
     }
 
     // normalizeAndMergeElements(element: HTMLElement | null): void {
