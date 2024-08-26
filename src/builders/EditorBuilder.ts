@@ -5,6 +5,7 @@ import { QuickMenuBuilder } from "./QuickMenuBuilder";
 import { TitleBuilder } from "./TitleBuilder";
 import { ContentBuilder } from "./ContentBuilder";
 import { TableContextFloatingToolbarBuilder } from "./TableContextFloatingToolbarBuilder";
+import { MediaInputterBuilder } from "./MediaInputterBuilder";
 
 export class EditorBuilder {
 
@@ -16,7 +17,8 @@ export class EditorBuilder {
             AddBlockBuilder.build(),
             TextContextFloatingToolbarBuilder.build(),
             QuickMenuBuilder.build(),
-            TableContextFloatingToolbarBuilder.build()
+            TableContextFloatingToolbarBuilder.build(),
+            MediaInputterBuilder.build()
         );
 
         return editor;
