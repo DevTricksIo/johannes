@@ -13,6 +13,7 @@ import { TableOperationsService } from './services/table-operations/TableOperati
 import { TableContextFloatingToolbar } from './components/floating-toolbar/TableContextFloatingToolbar';
 import { Memento } from './core/Memento';
 import { EditableNavigation } from './core/EditableNavigation';
+import { BlockToolbox } from './components/block-toolbox/BlockToolbox';
 
 /**
  * This script initializes the editor and sets up event listeners once the DOM content has fully loaded.
@@ -40,6 +41,9 @@ document.addEventListener('DOMContentLoaded', function () {
     DependencyContainer.Instance.register("IEditableNavigation", () => EditableNavigation.getInstance());
 
     UIBuilder.build().start();
+
     CommandDispatcher.getInstance().listen();
     EditableNavigation.getInstance().listen();
+    BlockToolbox.getInstance().listen();
+
 });
