@@ -10,13 +10,15 @@ import { TableContextFloatingToolbar } from "../floating-toolbar/TableContextFlo
 import { TextContextFloatingToolbar } from "../floating-toolbar/TextContextFloatingToolbar";
 import { IMemento } from "@/core/IMemento";
 import { DependencyContainer } from "@/core/DependencyContainer";
+import { MediaInputter } from "../media-inputter/MediaInputter";
+import { InputLinkBoxWrapper } from "../floating-toolbar/link-box/InputLinkBoxWrapper";
 
 export class Editor extends BaseUIComponent {
 
     private readonly elementFactoryService: IElementFactoryService;
     private static readonly editorId: string = "johannesEditor";
     private static instance: Editor;
-    private memento : IMemento;
+    private memento: IMemento;
 
     private title?: Title;
     private content?: Content;
@@ -24,6 +26,8 @@ export class Editor extends BaseUIComponent {
     private textFloatingToolbar: TextContextFloatingToolbar;
     private quickMenu: QuickMenu;
     private tableContextToolbar: TableContextFloatingToolbar;
+    private mediaInputter: MediaInputter;
+    private inputLinkBoxWrapper: InputLinkBoxWrapper;
 
     private constructor(
         elementFactoryService: IElementFactoryService,
@@ -34,8 +38,9 @@ export class Editor extends BaseUIComponent {
         addBlock: AddBlockWrapper,
         floatingToolbar: TextContextFloatingToolbar,
         quickMenu: QuickMenu,
-        tableToolbar: TableContextFloatingToolbar
-
+        tableToolbar: TableContextFloatingToolbar,
+        mediaInputter: MediaInputter,
+        inputLinkBoxWrapper: InputLinkBoxWrapper
     ) {
 
         super({
@@ -46,19 +51,23 @@ export class Editor extends BaseUIComponent {
             addBlock: addBlock,
             floatingToolbar: floatingToolbar,
             quickMenu: quickMenu,
-            tableToolbar : tableToolbar
+            tableToolbar: tableToolbar,
+            mediaInputter: mediaInputter,
+            inputLinkBoxWrapper: inputLinkBoxWrapper
         });
 
         if (Editor.instance) {
             throw new Error("Use BlockOperationsService.getInstance() to get instance.");
         }
 
+        this.inputLinkBoxWrapper = inputLinkBoxWrapper;
         this.elementFactoryService = elementFactoryService;
         this.memento = memento;
         this.addBlock = addBlock;
         this.textFloatingToolbar = floatingToolbar;
         this.quickMenu = quickMenu;
-        this.tableContextToolbar = tableToolbar
+        this.tableContextToolbar = tableToolbar;
+        this.mediaInputter = mediaInputter;
 
         this.attachEvents();
 
@@ -73,12 +82,17 @@ export class Editor extends BaseUIComponent {
 
         htmlElement.classList.add("johannes-editor");
 
+        const contentWrapper = document.createElement("div");
+        contentWrapper.classList.add("content-wrapper");
+
         if (window.editorConfig?.enableTitle || true) {
-            htmlElement.appendChild(this.props.title.htmlElement);
+            contentWrapper.appendChild(this.props.title.htmlElement);
         }
 
         // Content is required
-        htmlElement.appendChild(this.props.content.htmlElement);
+        contentWrapper.appendChild(this.props.content.htmlElement);
+
+        htmlElement.appendChild(contentWrapper);
 
         if (window.editorConfig?.enableAddBlock || true) {
             htmlElement.appendChild(this.props.addBlock.htmlElement);
@@ -90,9 +104,11 @@ export class Editor extends BaseUIComponent {
 
         if (window.editorConfig?.enableQuickMenu || true) {
             htmlElement.appendChild(this.props.quickMenu.htmlElement);
-        }
+        }        
 
         htmlElement.appendChild(this.props.tableToolbar.htmlElement);
+        htmlElement.appendChild(this.props.mediaInputter.htmlElement);
+        htmlElement.appendChild(this.props.inputLinkBoxWrapper.htmlElement)
 
         return htmlElement;
     }
@@ -102,15 +118,17 @@ export class Editor extends BaseUIComponent {
         content: Content,
         addBlock: AddBlockWrapper,
         textFloatingToolbar: TextContextFloatingToolbar,
-        quickMenu: QuickMenu, 
-        tableFloatingToolbar: TableContextFloatingToolbar) {
-        
+        quickMenu: QuickMenu,
+        tableFloatingToolbar: TableContextFloatingToolbar,
+        mediaInputter: MediaInputter) {
+
         const elementFactoryService = DependencyContainer.Instance.resolve<IElementFactoryService>("IElementFactoryService");
         const blockOperationsService = DependencyContainer.Instance.resolve<IBlockOperationsService>("IBlockOperationsService");
         const memento = DependencyContainer.Instance.resolve<IMemento>("IMemento");
+        const inputLinkBoxWrapper = new InputLinkBoxWrapper();
 
         if (!Editor.instance) {
-            Editor.instance = new Editor(elementFactoryService, blockOperationsService, memento, title, content, addBlock, textFloatingToolbar, quickMenu, tableFloatingToolbar);
+            Editor.instance = new Editor(elementFactoryService, blockOperationsService, memento, title, content, addBlock, textFloatingToolbar, quickMenu, tableFloatingToolbar, mediaInputter, inputLinkBoxWrapper);
         }
 
         return Editor.instance;
