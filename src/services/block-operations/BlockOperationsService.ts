@@ -7,7 +7,10 @@ import { CustomEvents } from "@/common/CustomEvents";
 import { DependencyContainer } from "@/core/DependencyContainer";
 import { IFocusStack } from "@/core/IFocusStack";
 import { IMemento } from "@/core/IMemento";
+import { EventEmitter } from "@/commands/EventEmitter";
+import { Commands } from "@/commands/Commands";
 import { Utils } from "@/utilities/Utils";
+import { CommonClasses } from "@/common/CommonClasses";
 
 export class BlockOperationsService implements IBlockOperationsService {
 
@@ -17,22 +20,22 @@ export class BlockOperationsService implements IBlockOperationsService {
     private memento: IMemento;
     private focusStack: IFocusStack;
 
-    static BLOCK_OPERATIONS = {
-        TURN_INTO: "turnInto",
-        CREATE_DEFAULT_BLOCK: "CreateDefaultBlock",
-        DELETE_FOCUS_ON_PREVIOUS: "DeleteAndFocusOnPrevious",
-        DELETE_FOCUS_ON_NEXT: "DeleteAndFocusOnNext",
-        FOCUS_ON_FIRST: "FocusOnFirst",
-        FOCUS_ON_PREVIOUS: "FocusOnPrevious",
-        FOCUS_ON_NEXT: "FocusOnNext",
-        DELETE: "delete",
-        DUPLICATE: "duplicate",
-        COPY: "copy",
-        PASTE: "pates",
-        CUT: "cut",
-        REMOVE_FORMAT: "removeFormat",
-        TRANSFORM_BLOCK: "transformBlock"
-    };
+    // static BLOCK_OPERATIONS = {
+    //     TURN_INTO: "turnInto",
+    //     CREATE_DEFAULT_BLOCK: "CreateDefaultBlock",
+    //     DELETE_FOCUS_ON_PREVIOUS: "DeleteAndFocusOnPrevious",
+    //     DELETE_FOCUS_ON_NEXT: "DeleteAndFocusOnNext",
+    //     FOCUS_ON_FIRST: "FocusOnFirst",
+    //     FOCUS_ON_PREVIOUS: "FocusOnPrevious",
+    //     FOCUS_ON_NEXT: "FocusOnNext",
+    //     DELETE: "delete",
+    //     DUPLICATE: "duplicate",
+    //     COPY: "copy",
+    //     PASTE: "pates",
+    //     CUT: "cut",
+    //     REMOVE_FORMAT: "removeFormat",
+    //     TRANSFORM_BLOCK: "transformBlock"
+    // };
 
     private constructor(
         elementFactoryService: IElementFactoryService,
@@ -52,7 +55,7 @@ export class BlockOperationsService implements IBlockOperationsService {
 
     execCommand(command: string, showUI: boolean, value: string | null = null): boolean {
 
-        if (command == BlockOperationsService.BLOCK_OPERATIONS.COPY) {
+        if (command == Commands.copySelected) {
 
             if (document.getSelection && navigator.clipboard && navigator.clipboard.writeText) {
                 const selection = document.getSelection();
@@ -80,7 +83,7 @@ export class BlockOperationsService implements IBlockOperationsService {
             return false;
         }
 
-        if (command == BlockOperationsService.BLOCK_OPERATIONS.CUT) {
+        if (command == Commands.cutSelected) {
 
             if (document.getSelection && navigator.clipboard && navigator.clipboard.writeText) {
                 const selection = document.getSelection();
@@ -110,7 +113,7 @@ export class BlockOperationsService implements IBlockOperationsService {
             return false;
         }
 
-        if (command == BlockOperationsService.BLOCK_OPERATIONS.PASTE) {
+        if (command == Commands.past) {
             if (navigator.clipboard && navigator.clipboard.readText) {
                 navigator.clipboard.readText().then((pastedText: string) => {
                     const selection = document.getSelection();
@@ -139,7 +142,7 @@ export class BlockOperationsService implements IBlockOperationsService {
             return false;
         }
 
-        if (command == BlockOperationsService.BLOCK_OPERATIONS.TRANSFORM_BLOCK) {
+        if (command == Commands.transformBlock) {
 
             const block = this.getCurrentSelectedBlock() as HTMLElement;
             if (block && value) {
@@ -147,39 +150,32 @@ export class BlockOperationsService implements IBlockOperationsService {
             }
         }
 
-        if (command == BlockOperationsService.BLOCK_OPERATIONS.REMOVE_FORMAT) {
-            return document.execCommand(BlockOperationsService.BLOCK_OPERATIONS.REMOVE_FORMAT, false);
+        if (command == Commands.removeFormat) {
+            return document.execCommand(Commands.removeFormat, false);
         }
 
-        if (command == BlockOperationsService.BLOCK_OPERATIONS.DELETE) {
+        // if (command == Commands.deleteBlock) {
 
-            this.deleteAndFocusOnNext();
+        //     this.deleteAndFocusOnNext();
 
-            const hideEvent = new CustomEvent(CustomEvents.blockDeleted, {
-                bubbles: true,
-                cancelable: true
-            });
+        //     const hideEvent = new CustomEvent(CustomEvents.blockDeleted, {
+        //         bubbles: true,
+        //         cancelable: true
+        //     });
 
-            document.dispatchEvent(hideEvent);
+        //     document.dispatchEvent(hideEvent);
 
-            return true;
-        }
+        //     return true;
+        // }
 
-        if (command == BlockOperationsService.BLOCK_OPERATIONS.DUPLICATE) {
-
-            this.duplicateSelectedBlock();
-
-            return true;
-        }
-
-        if (command == BlockOperationsService.BLOCK_OPERATIONS.CREATE_DEFAULT_BLOCK) {
+        if (command == Commands.createDefaultBlock) {
             const element = document.activeElement || null;
 
             this.createDefaultBlock(element);
             return true;
         }
 
-        if (command == BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_FIRST) {
+        if (command == Commands.focusOnFirstBlock) {
 
             const element = document.querySelector(".focusable");
 
@@ -191,35 +187,39 @@ export class BlockOperationsService implements IBlockOperationsService {
             return false;
         }
 
-        if (command == BlockOperationsService.BLOCK_OPERATIONS.DELETE_FOCUS_ON_PREVIOUS) {
-            this.deleteAndFocusOnPrevious();
+        if (command == Commands.deleteBlockAndFocusOnPrevious) {
+
+            throw new Error("Remove all reference to this code");
+            this.execDeleteFocusOnPrevious();
             return true;
         }
 
-        if (command == BlockOperationsService.BLOCK_OPERATIONS.DELETE_FOCUS_ON_NEXT) {
-            this.deleteAndFocusOnNext();
+        if (command == Commands.deleteBlockAndFocusOnNext) {
+
+            throw new Error("Remove all reference to this code");
+            this.execDeleteAndFocusOnNext();
             return true;
         }
 
-        if (command == BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_PREVIOUS) {
-            const element = document.activeElement;
+        // if (command == BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_PREVIOUS) {
+        //     const element = document.activeElement;
 
-            if (element) {
-                this.focusOnPrevious(element);
-                return true;
-            }
-            return false;
-        }
+        //     if (element) {
+        //         this.focusOnPrevious(element);
+        //         return true;
+        //     }
+        //     return false;
+        // }
 
-        if (command == BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_NEXT) {
-            const element = document.activeElement;
+        // if (command == BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_NEXT) {
+        //     const element = document.activeElement;
 
-            if (element) {
-                this.focusOnNext(element);
-                return true;
-            }
-            return false;
-        }
+        //     if (element) {
+        //         this.focusOnNext(element);
+        //         return true;
+        //     }
+        //     return false;
+        // }
 
         // if (command == BlockOperationsService.BLOCK_OPERATIONS.TURN_INTO) {
 
@@ -307,9 +307,143 @@ export class BlockOperationsService implements IBlockOperationsService {
     // }
 
 
+    execMergeWithPreviousBlock(): void {
+        this.memento.saveState();
+
+        const currentContentEditable = DOMUtils.getActiveContentEditable();
+        if (!currentContentEditable) {
+            return;
+        }
+
+        const previousContentEditable = DOMUtils.getPreviousContentEditable(currentContentEditable);
+        if (!previousContentEditable) {
+            return;
+        }
+
+        DOMUtils.sanitizeContentEditable(currentContentEditable);
+        DOMUtils.sanitizeContentEditable(previousContentEditable);
+
+        setTimeout(() => {
+            DOMUtils.placeCursorAtEndOfEditableElement(previousContentEditable);
+
+            setTimeout(() => {
+                const caretPosition = DOMUtils.saveCaretPosition2d(previousContentEditable);
+
+                previousContentEditable.innerHTML = previousContentEditable.innerHTML + currentContentEditable.innerHTML;
+
+                if (currentContentEditable.closest("li")) {
+                    const listItem = currentContentEditable.closest("li");
+                    if (listItem) {
+                        listItem.remove();
+                    }
+                } else {
+                    const block = currentContentEditable.closest(".block");
+                    if (block) {
+                        block.remove();
+                    }
+                }
+
+                const adjustedCaretPosition = {
+                    charIndex: caretPosition.charIndex + previousContentEditable.textContent!.length,
+                    horizontalPos: caretPosition.horizontalPos
+                };
+
+                DOMUtils.restoreCaretPosition2d(previousContentEditable, adjustedCaretPosition);
+            }, 10);
+        });
+    }
 
 
+    execMergeWithNextBlock(): void {
+        this.memento.saveState();
 
+        const currentContentEditable = DOMUtils.getActiveContentEditable();
+        if (!currentContentEditable) {
+            return;
+        }
+
+        const nextContentEditable = DOMUtils.getNextContentEditable(currentContentEditable);
+        if (!nextContentEditable) {
+            return;
+        }
+
+        DOMUtils.sanitizeContentEditable(currentContentEditable);
+        DOMUtils.sanitizeContentEditable(nextContentEditable);
+
+        setTimeout(() => {
+            DOMUtils.placeCursorAtEndOfEditableElement(currentContentEditable);
+
+            setTimeout(() => {
+                const caretPosition = DOMUtils.saveCaretPosition2d(currentContentEditable);
+
+                currentContentEditable.innerHTML = currentContentEditable.innerHTML + nextContentEditable.innerHTML;
+
+                if (currentContentEditable.closest("li")) {
+                    const listItem = nextContentEditable.closest("li");
+                    if (listItem) {
+                        listItem.remove();
+                    }
+                } else {
+                    const block = nextContentEditable.closest(".block");
+                    if (block) {
+                        block.remove();
+                    }
+                }
+
+                DOMUtils.restoreCaretPosition2d(currentContentEditable, caretPosition);
+            }, 10);
+        });
+    }
+
+
+    execDuplicateBlock(block?: HTMLElement): boolean {
+        if (!block) {
+            block = (this.getCurrentSelectedBlock() || DOMUtils.getCurrentActiveBlock()) as HTMLElement;
+        }
+
+        const clone = block.cloneNode(true) as HTMLElement;
+
+        clone.querySelectorAll('.exclude-from-clone').forEach(el => el.remove());
+
+        const nextElement = block.nextSibling;
+        block.parentNode?.insertBefore(clone, nextElement);
+
+        clone.id = `b-${Utils.generateUniqueId()}`;
+
+        const hideEvent = new CustomEvent(CustomEvents.blockCloned, {
+            bubbles: true,
+            cancelable: true
+        });
+
+        document.dispatchEvent(hideEvent);
+
+        return true;
+    }
+
+
+    execDeleteBlock(block?: HTMLElement): boolean {
+
+        if (!block) {
+            block = (this.getCurrentSelectedBlock() || DOMUtils.getCurrentActiveBlock()) as HTMLElement;
+        }
+
+        this.focusOnNext(block);
+        this.deleteTheCurrentElementAndTheDraggableBlockIfEmpty(block);
+
+        const hideEvent = new CustomEvent(CustomEvents.blockDeleted, {
+            bubbles: true,
+            cancelable: true
+        });
+
+        document.dispatchEvent(hideEvent);
+
+        return true;
+    }
+
+    // execDeleteFocusOnPrevious(): boolean {
+    //     this.deleteAndFocusOnPrevious();
+    //     return true;
+    // }
 
 
 
@@ -351,6 +485,10 @@ export class BlockOperationsService implements IBlockOperationsService {
             blockElement = this.focusStack.peek()?.closest(".block") || null;
         }
 
+        if(!element){
+            element = DOMUtils.findClosestAncestorOfActiveElementByClass(".block");
+        }
+
         let contentElement = blockElement!.querySelector('.swittable') as HTMLElement;
 
         this.focusStack.peek()?.focus();
@@ -361,100 +499,139 @@ export class BlockOperationsService implements IBlockOperationsService {
 
         let content = contentElement?.innerText;
 
+        let focusStackToAdd: HTMLElement | null = null;
+
 
         let newContentBlock;
 
         switch (type) {
-            case ElementFactoryService.ELEMENT_TYPES.PARAGRAPH:
-                {
-                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.PARAGRAPH);
-                    newContentBlock.innerText = content;
-                    break;
+            case ElementFactoryService.ELEMENT_TYPES.PARAGRAPH: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.PARAGRAPH);
+
+                const editableContent = DOMUtils.querySelectorIncludingSelf(contentElement, '[contenteditable="true"]');
+                if (editableContent) {
+                    newContentBlock.innerHTML = editableContent.innerHTML;
                 }
-            case ElementFactoryService.ELEMENT_TYPES.HEADER_1:
-                {
-                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_1);
-                    newContentBlock.innerText = content;
-                    break;
-                }
-            case ElementFactoryService.ELEMENT_TYPES.HEADER_2:
-                {
-                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_2);
-                    newContentBlock.innerText = content;
-                    break;
-                }
-            case ElementFactoryService.ELEMENT_TYPES.HEADER_3:
-                {
-                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_3);
-                    newContentBlock.innerText = content;
-                    break;
-                }
-            case ElementFactoryService.ELEMENT_TYPES.HEADER_4:
-                {
-                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_4);
-                    newContentBlock.innerText = content;
-                    break;
-                }
-            case ElementFactoryService.ELEMENT_TYPES.HEADER_5:
-                {
-                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_5);
-                    newContentBlock.innerText = content;
-                    break;
-                }
-            case ElementFactoryService.ELEMENT_TYPES.HEADER_6:
-                {
-                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_6);
-                    newContentBlock.innerText = content;
-                    break;
-                }
-            case ElementFactoryService.ELEMENT_TYPES.CODE:
-                newContentBlock = document.createElement('pre');
-                const code = document.createElement('code');
-                code.innerText = content;
-                newContentBlock.appendChild(code);
                 break;
-            case 'image':
-                newContentBlock = document.createElement('img');
-                newContentBlock.src = content;
-                newContentBlock.alt = "Descriptive text";
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.HEADER_1: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_1);
+                newContentBlock.innerText = content;
                 break;
-            case ElementFactoryService.ELEMENT_TYPES.QUOTE:
-                {
-                    // newContentBlock = factory.createNewQuoteElement(content);
+            }
 
-                    break;
+            case ElementFactoryService.ELEMENT_TYPES.HEADER_2: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_2);
+                newContentBlock.innerText = content;
+                break;
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.HEADER_3: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_3);
+                newContentBlock.innerText = content;
+                break;
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.HEADER_4: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_4);
+                newContentBlock.innerText = content;
+                break;
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.HEADER_5: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_5);
+                newContentBlock.innerText = content;
+                break;
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.HEADER_6: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.HEADER_6);
+                newContentBlock.innerText = content;
+                break;
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.CODE: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.CODE);
+                break;
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.QUOTE: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.QUOTE);
+                break;
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.BULLETED_LIST: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.BULLETED_LIST, content);
+                break;
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.NUMBERED_LIST: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.NUMBERED_LIST, content);
+                break;
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.CHECK_LIST: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.CHECK_LIST, content);
+                break;
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.SEPARATOR: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.SEPARATOR);
+                break;
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.TABLE: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.TABLE, ",,");
+                break;
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.IMAGE: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.IMAGE, content);
+                focusStackToAdd = newContentBlock;
+                break;
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.VIDEO: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.VIDEO, content);
+                focusStackToAdd = newContentBlock;
+                break;
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.SPOTIFY: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.SPOTIFY, content);
+                focusStackToAdd = newContentBlock;
+                break;
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.GITHUB_GIST: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.GITHUB_GIST, content);
+                focusStackToAdd = newContentBlock;
+                break;
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.GITLAB_SNIPPET: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.GITLAB_SNIPPET, content);
+                focusStackToAdd = newContentBlock;
+                break;
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.CODEPEN: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.CODEPEN, content);
+                focusStackToAdd = newContentBlock;
+                break;
+            }
+
+            case ElementFactoryService.ELEMENT_TYPES.CALLOUT: {
+                newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.CALLOUT);
+
+                const callout = newContentBlock.querySelector(".callout-text");
+                const editableContent = DOMUtils.querySelectorIncludingSelf(contentElement, '[contenteditable="true"]');
+                if (callout && editableContent) {
+                    callout.innerHTML = editableContent.innerHTML;
                 }
-
-            case ElementFactoryService.ELEMENT_TYPES.BULLETED_LIST:
-                {
-                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.BULLETED_LIST, content);
-
-                    break;
-                }
-
-            case ElementFactoryService.ELEMENT_TYPES.NUMBERED_LIST:
-                {
-                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.NUMBERED_LIST, content);
-
-                    break;
-                }
-            case ElementFactoryService.ELEMENT_TYPES.CHECK_LIST:
-                {
-                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.CHECK_LIST, content);
-
-                    break;
-                }
-
-            case 'separator':
-                {
-                    // newContentBlock = factory.createNewSeparatorElement();
-                    break;
-                }
-            case ElementFactoryService.ELEMENT_TYPES.TABLE:
-                {
-                    newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.TABLE, ",,");
-                    break;
-                }
+                break;
+            }
 
             default:
                 console.error('Unsupported type');
@@ -471,6 +648,27 @@ export class BlockOperationsService implements IBlockOperationsService {
         if (focusable) {
             focusable.focus();
             DOMUtils.placeCursorAtEndOfEditableElement(focusable);
+        }
+
+
+        if (focusStackToAdd) {
+            this.focusStack.push((focusStackToAdd as HTMLElement)!);
+        }
+
+        if (type == "image" || type == "video" || type == "spotify" || type == "github-gist" || type == "gitlab-snippet" || type == "codepen") {
+
+            const placeholder = focusStackToAdd?.querySelector(".content-placeholder");
+            if (placeholder) {
+                console.log("opaaaaaa");
+                this.focusStack.push(placeholder as HTMLElement);
+            }
+            EventEmitter.emitShowElementEvent("mediaInputter");
+        }
+
+
+        const blockToolbar = blockElement?.querySelector(".block-toolbar-wrapper");
+        if (blockToolbar) {
+            blockToolbar.remove();
         }
 
 
@@ -604,6 +802,7 @@ export class BlockOperationsService implements IBlockOperationsService {
         const contentType = DOMUtils.getContentTypeFromActiveElement();
 
         if (contentType == ContentTypes.Table) {
+            // TODO Jump to the next line if exists
             return false;
         } else if (
             contentType == ContentTypes.CheckList ||
@@ -650,14 +849,14 @@ export class BlockOperationsService implements IBlockOperationsService {
                     const contentClone = clonedBlock.querySelector(".focusable") as Node;
                     DOMUtils.rearrangeContentAfterSplit(contentCurrent, contentClone);
 
-                    if (!DOMUtils.hasTextContent(clonedBlock!)) {
-                        this.transformBlock(ContentTypes.Paragraph, clonedBlock);
-                    }
+
+                    this.transformBlock(ContentTypes.Paragraph, clonedBlock);
+
                 }
 
                 const focusable = (clonedBlock as HTMLElement).querySelector(".focusable") as HTMLElement;
-
                 DOMUtils.placeCursorAtStartOfEditableElement(focusable as HTMLElement);
+
             }
         }
 
@@ -665,16 +864,34 @@ export class BlockOperationsService implements IBlockOperationsService {
     }
 
 
+    createANewParagraphFromTitle(): void {
 
+        this.memento.saveState();
 
+        const title = document.querySelector("#johannesEditor .title h1") as HTMLElement;
 
+        const clonedTitle = DOMUtils.cloneAndInsertAfter(title);
+        if (clonedTitle) {
+            DOMUtils.rearrangeContentAfterSplit(title as Node, clonedTitle as Node);
+        }
 
+        const newBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.BLOCK_PARAGRAPH, "");
+        const p = newBlock.querySelector(`.${CommonClasses.ContentElement}`);
+        if (p) {
+            p.innerHTML = clonedTitle?.innerHTML || "";
+        }
 
+        const content = document.querySelector("#johannesEditor .content");
 
+        if (content) {
+            content.prepend(newBlock);
+            const focusable = (newBlock as HTMLElement).querySelector(".focusable") as HTMLElement;
 
+            DOMUtils.placeCursorAtStartOfEditableElement(focusable);
+        }
 
-
-
+        clonedTitle?.remove();
+    }
 
 
 
@@ -709,7 +926,9 @@ export class BlockOperationsService implements IBlockOperationsService {
     // }
 
 
-    createDefaultBlock(eventParagraph: Element | null): void {
+    createDefaultBlock(eventParagraph: Element | null): HTMLElement {
+
+        this.memento.saveState();
         const newBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.BLOCK_PARAGRAPH, "");
 
         if (eventParagraph && eventParagraph.closest('.block')) {
@@ -721,29 +940,53 @@ export class BlockOperationsService implements IBlockOperationsService {
 
         const focusable = newBlock.querySelector('.johannes-content-element') as HTMLElement;
         focusable.focus();
+        this.focusStack.push(newBlock);
+
+        return newBlock;
 
         // focusOnTheEndOfTheText(focusable);
     }
 
+    execFocusOnNext(): boolean {
+        let currentActiveElement = this.getCurrentSelectedBlock() || DOMUtils.getCurrentActiveBlock();
 
-    private deleteAndFocusOnPrevious(): void {
+        if (!currentActiveElement) {
+            return false;
+        }
+
+        this.focusOnNext(currentActiveElement);
+
+        return true;
+
+    }
+
+
+    execDeleteFocusOnPrevious(): boolean {
+
+        this.memento.saveState();
 
         const currentActiveElement = document.activeElement!;
 
         this.focusOnPrevious(currentActiveElement);
         this.deleteTheCurrentElementAndTheDraggableBlockIfEmpty(currentActiveElement);
+
+        return true;
     }
 
-    private deleteAndFocusOnNext() {
+    execDeleteAndFocusOnNext(): boolean {
+
+        this.memento.saveState();
 
         let currentActiveElement = this.getCurrentSelectedBlock() || DOMUtils.getCurrentActiveBlock();
 
         if (!currentActiveElement) {
-            return;
+            return false;
         }
 
         this.focusOnNext(currentActiveElement);
         this.deleteTheCurrentElementAndTheDraggableBlockIfEmpty(currentActiveElement);
+
+        return true;
     }
 
     private focusOnPrevious(actualElement: Element, position: number | null = null): void {
@@ -813,6 +1056,55 @@ export class BlockOperationsService implements IBlockOperationsService {
         return;
     }
 
+    private getPreviousFocusableElement(actualElement: Element): Element | null {
+
+        let tag = actualElement.tagName.toUpperCase();
+        let focusedElement = null;
+
+        if (tag === 'LI') {
+            let previousElement = actualElement.previousElementSibling;
+
+            if (!previousElement) {
+                return null;
+            }
+
+            if (previousElement && previousElement.classList.contains('focusable')) {
+                focusedElement = previousElement as HTMLElement;
+                return focusedElement;
+            }
+        }
+
+        if ((actualElement.parentNode as HTMLElement).tagName.toUpperCase() === 'LI' /* focusable SPAN inside LI*/) {
+
+            let previousElement = actualElement.closest('li')?.previousElementSibling?.querySelector('.focusable');
+
+            if (previousElement && previousElement.classList.contains('focusable')) {
+                focusedElement = previousElement as HTMLElement;
+
+                return focusedElement;
+            }
+        }
+
+        let parent = actualElement.closest('.block');
+
+        if (!parent) {
+            return null;
+        }
+        let sibling = parent.previousElementSibling;
+
+        while (sibling) {
+            let focusableCandidates = sibling.querySelectorAll('.focusable');
+            if (focusableCandidates.length > 0) {
+                focusedElement = focusableCandidates[focusableCandidates.length - 1] as HTMLElement;
+                return focusedElement;
+            }
+
+            sibling = sibling.previousElementSibling;
+        }
+
+        return focusedElement;
+    }
+
     private focusOnNext(actualElement: Element, position: number | null = null) {
         let tag = actualElement.tagName.toUpperCase();
         let focusedElement = null;
@@ -863,6 +1155,50 @@ export class BlockOperationsService implements IBlockOperationsService {
                 } else {
                     DOMUtils.placeCursorAtStartOfEditableElement(focusedElement);
                 }
+                return focusedElement;
+            }
+
+            sibling = sibling.nextElementSibling;
+        }
+
+        return focusedElement;
+    }
+
+
+    private getNextFocusableElement(actualElement: Element): Element | null {
+        let tag = actualElement.tagName.toUpperCase();
+        let focusedElement = null;
+
+        if (tag === 'LI') {
+            let nextElement = actualElement.nextElementSibling;
+
+            if (nextElement && nextElement.classList.contains('focusable')) {
+                focusedElement = nextElement as HTMLElement;
+                return focusedElement;
+            }
+        }
+
+        if ((actualElement.parentNode as HTMLElement).tagName.toUpperCase() === 'LI' /* focusable SPAN inside LI*/) {
+            let nextElement = actualElement.closest('li')?.nextElementSibling?.querySelector('.focusable');
+
+            if (nextElement && nextElement.classList.contains('focusable')) {
+                focusedElement = nextElement as HTMLElement;
+                return focusedElement;
+            }
+        }
+
+        let parent = actualElement.closest('.block');
+
+        if (!parent) {
+            return null;
+        }
+
+        let sibling = parent.nextElementSibling;
+
+        while (sibling) {
+            let focusableCandidates = sibling.querySelectorAll('.focusable');
+            if (focusableCandidates.length > 0) {
+                focusedElement = focusableCandidates[0] as HTMLElement;
                 return focusedElement;
             }
 
@@ -1059,22 +1395,69 @@ export class BlockOperationsService implements IBlockOperationsService {
     }
 
 
-    duplicateSelectedBlock(): Node | null {
+    justifyLeft(block: HTMLElement): void {
 
-        let element = this.getCurrentSelectedBlock() || DOMUtils.getCurrentActiveBlock();
+        this.memento.saveState();
 
-        if (!element || !element.parentNode) {
-            console.error('O elemento fornecido é inválido ou não está no DOM.');
-            return null;
+        this.removeJustify(block);
+        block.classList.add("justify-left");
+    }
+
+    justifyCenter(block: HTMLElement): void {
+
+        this.memento.saveState();
+
+        this.removeJustify(block);
+        block.classList.add("justify-center");
+    }
+
+    justifyRight(block: HTMLElement): void {
+
+        this.memento.saveState();
+
+        this.removeJustify(block);
+        block.classList.add("justify-right");
+    }
+
+    changeCodeBlockLanguage(block: HTMLElement, value: string): void {
+
+        this.memento.saveState();
+
+        const code = block.querySelector("code");
+
+        if (code) {
+            DOMUtils.removeClassesWithPrefix(code as Element, "language-");
+            code.classList.add(`language-${value}`);
+            code.removeAttribute("data-highlighted");
+
+            hljs.highlightElement(code);
+
+            EventEmitter.emitCodeBlockLanguageChangedEvent("code-block-language-menu", block.id, value);
         }
+    }
 
-        const clone = element.cloneNode(true);
+    private removeJustify(element: HTMLElement) {
 
-        const nextElement = element.nextSibling;
+        const classList = element.classList;
 
-        element.parentNode.insertBefore(clone, nextElement);
+        for (let i = 0; i < classList.length; i++) {
+            const className = classList[i];
+            if (className.startsWith("justify-")) {
+                classList.remove(className);
+            }
+        }
+    }
 
-        return clone;
+
+
+    execChangeCalloutBackground(block: HTMLElement, color: string): void {
+
+        const calloutDiv = block.querySelector(".callout > div");
+
+        if(calloutDiv){
+            DOMUtils.removeClassesWithPrefix(calloutDiv as Element, "callout-background-");
+            calloutDiv.classList.add(color);
+        }
     }
 
 }
