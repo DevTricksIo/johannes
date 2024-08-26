@@ -10,5 +10,8 @@ export enum ContentTypes {
     BulletedList = "bulletedList",
     NumberedList = "numberedList",
     List = "list",
-    Table = "table"
+    Table = "table",
+    Image = "image",
+    Script = "script",
+    Iframe = "iframe"
 }
