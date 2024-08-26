@@ -1395,6 +1395,7 @@ td:empty:before {
     padding: 0;
     display: contents;
     display: block;
+    
 }
 
 .block-toolbar {
@@ -1415,6 +1416,10 @@ td:empty:before {
     padding-left: 10px;
     padding-right: 10px;
     transition: visibility 0.2s;
+
+    top: 5px;
+    right: 5px;
+    border-radius: 4px;
 }
 
 .block-toolbar .item {
