@@ -1,3 +1,4 @@
+import { Utils } from "@/utilities/Utils";
 import { BaseUIComponent } from "../../common/BaseUIComponent";
 import { DropdownMenuButton } from "./DropdownMenuButton";
 import { DropdownMenuList } from "./DropdownMenuList";
@@ -8,7 +9,7 @@ export class DropdownMenu extends BaseUIComponent {
     dropdownButton: DropdownMenuButton;
     dropdownList: DropdownMenuList;
 
-    constructor(id: string,  button: DropdownMenuButton, dropdownList: DropdownMenuList) {
+    constructor(id: string, button: DropdownMenuButton, dropdownList: DropdownMenuList) {
 
         super({
             id: id
@@ -34,5 +35,13 @@ export class DropdownMenu extends BaseUIComponent {
 
     get display(): string {
         return 'block';
+    }
+
+
+    static create(prefixId: string, button: DropdownMenuButton, list: DropdownMenuList, classesKey: string[] = []): DropdownMenu {
+        const instance = new DropdownMenu(prefixId + Utils.generateUniqueId(), button, list);
+        instance.addCssClass(...classesKey);
+
+        return instance;
     }
 }
