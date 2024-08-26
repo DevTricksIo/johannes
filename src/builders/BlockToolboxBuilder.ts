@@ -37,24 +37,30 @@ export class BlockToolboxBuilder {
 
         colorDropdownList.append(new DropdownMenuListItemTitle(colorDropdownList, "Background"));
 
-        const hiliteColorRed = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionRed + Utils.generateUniqueId(), colorDropdownList, Commands.changeCalloutBackgroundColor, ColorsNames.CalloutBackgroundRed, new ColorIcon(Colors.HiliteColorRed).htmlElement, "Red");
+        const backgroundColorRed = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionRed + Utils.generateUniqueId(), colorDropdownList, Commands.changeCalloutBackgroundColor, ColorsNames.CalloutBackgroundRed, new ColorIcon(Colors.HiliteColorRed).htmlElement, "Red");
+        backgroundColorRed.addClass("block-toolbox-color");
 
-        const HiliteColorGreen = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionGreen + Utils.generateUniqueId(), colorDropdownList, Commands.changeCalloutBackgroundColor, ColorsNames.CalloutBackgroundGreen, new ColorIcon(Colors.HiliteColorGreen).htmlElement, "Green");
+        const backgroundColorGreen = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionGreen + Utils.generateUniqueId(), colorDropdownList, Commands.changeCalloutBackgroundColor, ColorsNames.CalloutBackgroundGreen, new ColorIcon(Colors.HiliteColorGreen).htmlElement, "Green");
+        backgroundColorGreen.addClass("block-toolbox-color");
 
-        const hiliteColorBlue = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionBlue + Utils.generateUniqueId(), colorDropdownList, Commands.changeCalloutBackgroundColor, ColorsNames.CalloutBackgroundBlue, new ColorIcon(Colors.HiliteColorBlue).htmlElement, "Blue");
+        const backgroundColorBlue = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionBlue + Utils.generateUniqueId(), colorDropdownList, Commands.changeCalloutBackgroundColor, ColorsNames.CalloutBackgroundBlue, new ColorIcon(Colors.HiliteColorBlue).htmlElement, "Blue");
+        backgroundColorBlue.addClass("block-toolbox-color");
 
-        const hiliteColorYellow = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionYellow + Utils.generateUniqueId(), colorDropdownList, Commands.changeCalloutBackgroundColor, ColorsNames.CalloutBackgroundYellow, new ColorIcon(Colors.HiliteColorYellow).htmlElement, "Yellow");
+        const backgroundColorYellow = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionYellow + Utils.generateUniqueId(), colorDropdownList, Commands.changeCalloutBackgroundColor, ColorsNames.CalloutBackgroundYellow, new ColorIcon(Colors.HiliteColorYellow).htmlElement, "Yellow");
+        backgroundColorYellow.addClass("block-toolbox-color");
 
-        const hiliteColorGrey = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionGrey + Utils.generateUniqueId(), colorDropdownList, Commands.changeCalloutBackgroundColor, ColorsNames.CalloutBackgroundGrey, new ColorIcon(Colors.HiliteColorGrey).htmlElement, "Grey");
+        const backgroundColorGrey = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionGrey + Utils.generateUniqueId(), colorDropdownList, Commands.changeCalloutBackgroundColor, ColorsNames.CalloutBackgroundGrey, new ColorIcon(Colors.HiliteColorGrey).htmlElement, "Grey");
+        backgroundColorGrey.addClass("block-toolbox-color");
 
-        const hiliteColorNone = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionNone + Utils.generateUniqueId(), colorDropdownList, Commands.changeCalloutBackgroundColor, ColorsNames.CalloutBackgroundNone, new ColorIcon(Colors.HiliteColorNone).htmlElement, "None");
+        const backgroundColorNone = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionNone + Utils.generateUniqueId(), colorDropdownList, Commands.changeCalloutBackgroundColor, ColorsNames.CalloutBackgroundNone, new ColorIcon(Colors.HiliteColorNone).htmlElement, "None");
+        backgroundColorNone.addClass("block-toolbox-color");
 
-        colorDropdownList.append(hiliteColorRed);
-        colorDropdownList.append(HiliteColorGreen);
-        colorDropdownList.append(hiliteColorBlue);
-        colorDropdownList.append(hiliteColorYellow);
-        colorDropdownList.append(hiliteColorGrey);
-        colorDropdownList.append(hiliteColorNone);
+        colorDropdownList.append(backgroundColorRed);
+        colorDropdownList.append(backgroundColorGreen);
+        colorDropdownList.append(backgroundColorBlue);
+        colorDropdownList.append(backgroundColorYellow);
+        colorDropdownList.append(backgroundColorGrey);
+        colorDropdownList.append(backgroundColorNone);
 
         return colorDropdown;
     }
