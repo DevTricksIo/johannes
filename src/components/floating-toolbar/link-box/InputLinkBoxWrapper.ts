@@ -68,7 +68,7 @@ export class InputLinkBoxWrapper extends BaseUIComponent {
     attachEvent(): void {
 
         document.addEventListener(DefaultJSEvents.Keydown, (event) => {
-            if (this.canHide && (event.key === 'Escape')) {
+            if (this.canHide && (event.key === KeyboardKeys.Escape)) {
                 event.stopImmediatePropagation();
                 this.hide();
             }
@@ -98,7 +98,7 @@ export class InputLinkBoxWrapper extends BaseUIComponent {
             if (event.key == KeyboardKeys.Enter) {
                 this.insertLink(event);
             }
-        });
+        }, true);
 
         document.addEventListener(DefaultJSEvents.Click, (event) => {
 
@@ -117,10 +117,9 @@ export class InputLinkBoxWrapper extends BaseUIComponent {
                 this.hide();
             }
 
-
         });
 
-        this.button.addEventListener(DefaultJSEvents.Click, this.insertLink.bind(this));
+        this.button.addEventListener(DefaultJSEvents.Click, this.insertLink.bind(this), true);
 
         super.attachUIEvent();
     }
@@ -128,7 +127,6 @@ export class InputLinkBoxWrapper extends BaseUIComponent {
 
 
     handleShowElementEvent(event: Event) {
-
         const customEvent = event as CustomEvent<IUIEventDetail>;
         const details = customEvent.detail;
 
@@ -188,6 +186,10 @@ export class InputLinkBoxWrapper extends BaseUIComponent {
         this.positionLinkComponentBelowSelection(range);
         this.highlightSelectedText(range);
         super.show();
+
+        setTimeout(() => {
+            input.focus();
+        }, 100);
     }
 
     positionLinkComponentBelowSelection(range: Range): void {
@@ -241,16 +243,6 @@ export class InputLinkBoxWrapper extends BaseUIComponent {
 
         document.getSelection()?.removeAllRanges();
         document.getSelection()?.addRange(range);
-
-        // setTimeout(() => {
-
-        //     const showInputLinkBoxFinished = new CustomEvent('showInputLinkBoxFinished', {
-        //         bubbles: true,
-        //         cancelable: true
-        //     });
-
-        //     document.dispatchEvent(showInputLinkBoxFinished);
-        // }, 0);
     }
 
     highlightSelectedText(range: Range) {
@@ -283,6 +275,6 @@ export class InputLinkBoxWrapper extends BaseUIComponent {
         });
         this.highlights = [];
     }
-        
+
 
 }
