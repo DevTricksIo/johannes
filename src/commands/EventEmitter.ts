@@ -9,9 +9,35 @@ import { CustomUIEvents } from "@/common/CustomUIEvents";
 import { ShowHideActiveButton } from "./UIActions/ShowHideActiveButton";
 import { ResetActiveButtons } from "./UIActions/ResetActiveButtons";
 import { CloseElement } from "./UIActions/CloseElement";
+import { ShowElement } from "./UIActions/ShowElement";
+import { ChangeBlockToolbarLanguage } from "./UIActions/ChangeBlockToolbarLanguage";
 
 export class EventEmitter {
 
+
+    static emitCodeBlockLanguageChangedEvent(targetClass: string, blockId: string, language: string) {
+
+        const customEvent = new CustomEvent<IUIEventDetail>(CustomUIEvents.ChangeBlockToolbarLanguage, {
+            detail: {
+                targetClass: targetClass,
+                action: new ChangeBlockToolbarLanguage(blockId, language)
+            }
+        });
+
+        document.dispatchEvent(customEvent);
+    }
+
+    static emitShowElementEvent(targetId: string) {
+
+        const customEvent = new CustomEvent<IUIEventDetail>(CustomUIEvents.ShowElement, {
+            detail: {
+                targetId: targetId,
+                action: new ShowElement
+            }
+        });
+
+        document.dispatchEvent(customEvent);
+    }
 
     static emitCloseElementEvent(targetId: string) {
 
