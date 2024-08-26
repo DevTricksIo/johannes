@@ -1,8 +1,8 @@
 import { BaseUIComponent } from "../common/BaseUIComponent";
 import { SVGIcon } from "../common/SVGIcon";
-import { BlockOperationsService } from "../../services/block-operations/BlockOperationsService";
 import { IBlockOperationsService } from "../../services/block-operations/IBlockOperationsService";
 import { DependencyContainer } from "@/core/DependencyContainer";
+import { Commands } from "@/commands/Commands";
 
 export class AddBlockButton extends BaseUIComponent {
 
@@ -25,7 +25,7 @@ export class AddBlockButton extends BaseUIComponent {
         const htmlElement = document.createElement("button");
         htmlElement.title = "Add a new block";
 
-        htmlElement.classList.add("add-block", "block-operation");
+        htmlElement.classList.add("add-block", "block-operation", "pointer");
 
         htmlElement.appendChild(this.props.icon.htmlElement);
 
@@ -35,7 +35,9 @@ export class AddBlockButton extends BaseUIComponent {
     attachEvents(): void {
 
         this.htmlElement.addEventListener("click", () => {
-            this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.CREATE_DEFAULT_BLOCK, false);
+
+            //TODO: Use command dispatcher
+            this.blockOperationsService.execCommand(Commands.createDefaultBlock, false);
         });
     }
 
