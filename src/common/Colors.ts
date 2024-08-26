@@ -22,7 +22,7 @@ export enum Colors {
     BackgroundColorNone = "transparent",
 
     IconActiveBlue = "#2382e2",
-    IconDefaultBlack = "rgba(55, 53, 47, 0.85)",
+    IconDefaultBlack = "#37352fd9",
     Red = "red",
     Tomato = "#EB5757",
     OriginalTableColor = "#84888d"
