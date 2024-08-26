@@ -113,13 +113,11 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
         }
     }
 
-    logSelectionChange(event: Event) {
+    processAfterChange(event: Event) {
         const selection = document.getSelection();
         if (selection && !selection.isCollapsed) {
 
-            // event.stopImmediatePropagation();
             this.processSelectionChangeEffects();
-            console.log("passou no log selection");
         }
     }
 
@@ -130,9 +128,9 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
 
         this.htmlElement.addEventListener(DefaultJSEvents.Mouseup, (event) => { event.preventDefault(); });
 
-        document.addEventListener(DefaultJSEvents.Mouseup, this.logSelectionChange.bind(this));
-        document.addEventListener(DefaultJSEvents.BblClick, this.logSelectionChange.bind(this));
-        document.addEventListener(DefaultJSEvents.SelectionChange, this.logSelectionChange.bind(this));
+        document.addEventListener(DefaultJSEvents.Mouseup, this.processAfterChange.bind(this));
+        document.addEventListener(DefaultJSEvents.BblClick, this.processAfterChange.bind(this));
+        document.addEventListener(DefaultJSEvents.SelectionChange, this.processAfterChange.bind(this));
 
         document.addEventListener(DefaultJSEvents.Keydown, (event) => {
             if (event.shiftKey) {
