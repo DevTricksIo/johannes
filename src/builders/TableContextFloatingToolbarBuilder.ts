@@ -78,22 +78,22 @@ export class TableContextFloatingToolbarBuilder {
         colorDropdownList.append(new DropdownMenuListItemTitle(colorDropdownList, "Background"));
 
 
-        const cellBackgroundColorRed = new DropdownMenuListItem("backgroundOptionRed", colorDropdownList, Commands.toggleCellHiliteColor, Colors.HiliteColorRed, new ColorIcon(Colors.HiliteColorRed).htmlElement, "Red");
+        const cellBackgroundColorRed = new DropdownMenuListItem("backgroundOptionRed", colorDropdownList, Commands.toggleCellHiliteColor, Colors.BackgroundColorCellRed, new ColorIcon(Colors.HiliteColorRed).htmlElement, "Red");
         cellBackgroundColorRed.addClass("backgroundColor");
         
-        const cellBackgroundColorGreen = new DropdownMenuListItem("backgroundOptionGreen", colorDropdownList, Commands.toggleCellHiliteColor, Colors.HiliteColorGreen, new ColorIcon(Colors.HiliteColorGreen).htmlElement, "Green");
+        const cellBackgroundColorGreen = new DropdownMenuListItem("backgroundOptionGreen", colorDropdownList, Commands.toggleCellHiliteColor, Colors.BackgroundColorCellGreen, new ColorIcon(Colors.HiliteColorGreen).htmlElement, "Green");
         cellBackgroundColorGreen.addClass("backgroundColor");
         
         
-        const cellBackgroundColorBlue = new DropdownMenuListItem("backgroundOptionBlue", colorDropdownList, Commands.toggleCellHiliteColor, Colors.HiliteColorBlue, new ColorIcon(Colors.HiliteColorBlue).htmlElement, "Blue");
+        const cellBackgroundColorBlue = new DropdownMenuListItem("backgroundOptionBlue", colorDropdownList, Commands.toggleCellHiliteColor, Colors.BackgroundColorCellBlue, new ColorIcon(Colors.HiliteColorBlue).htmlElement, "Blue");
         cellBackgroundColorBlue.addClass("backgroundColor");
         
         
-        const cellBackgroundColorYellow = new DropdownMenuListItem("backgroundOptionYellow", colorDropdownList, Commands.toggleCellHiliteColor, Colors.HiliteColorYellow, new ColorIcon(Colors.HiliteColorYellow).htmlElement, "Yellow");
+        const cellBackgroundColorYellow = new DropdownMenuListItem("backgroundOptionYellow", colorDropdownList, Commands.toggleCellHiliteColor, Colors.BackgroundColorCellYellow, new ColorIcon(Colors.HiliteColorYellow).htmlElement, "Yellow");
         cellBackgroundColorYellow.addClass("backgroundColor");
         
         
-        const cellBackgroundColorGrey = new DropdownMenuListItem("backgroundOptionGrey", colorDropdownList, Commands.toggleCellHiliteColor, Colors.HiliteColorGrey, new ColorIcon(Colors.HiliteColorGrey).htmlElement, "Grey");
+        const cellBackgroundColorGrey = new DropdownMenuListItem("backgroundOptionGrey", colorDropdownList, Commands.toggleCellHiliteColor, Colors.BackgroundColorCellGrey, new ColorIcon(Colors.HiliteColorGrey).htmlElement, "Grey");
         cellBackgroundColorGrey.addClass("backgroundColor");
         
         

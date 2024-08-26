@@ -914,28 +914,28 @@ td:empty:before {
 }
 
 .callout-background-red {
-    background-color: #FDDEDE;
-    border-color: #e4c8c8;
+    background-color: #feebeb;
+    border-color: #FDDEDE;
 }
 
 .callout-background-green {
-    background-color: #D7F7DC;
-    border-color: #c2dec6;
+    background-color: #ebfbee;
+    border-color: #D7F7DC;
 }
 
 .callout-background-blue {
-    background-color: #D9EDF6;
-    border-color: #c3d5dd;
+    background-color: #e8f4fa;
+    border-color: #D9EDF6;
 }
 
 .callout-background-yellow {
     background-color: #fcf7df;
-    border-color: #fbf5d6;
+    border-color: #FAF4D1;
 }
 
 .callout-background-grey {
     background-color: #edecec;
-    border-color: #e7e6e6;
+    border-color: #E1E0E0;
 }
 
 .callout-background-none {

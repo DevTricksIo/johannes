@@ -7,6 +7,14 @@ export enum Colors {
     HiliteColorGrey = "#E1E0E0",
     HiliteColorNone = "transparent",
 
+
+    BackgroundColorCellRed = "#FDDEDE",
+    BackgroundColorCellGreen = "#D7F7DC",
+    BackgroundColorCellBlue = "#D9EDF6",
+    BackgroundColorCellYellow = "#FAF4D1",
+    BackgroundColorCellGrey = "#E1E0E0",
+    BackgroundColorCellNone = "transparent",
+
     ForeColorRed = "#D44C47",
     ForeColorGreen = "#448361",
     ForeColorBlue = "#337EA9",
