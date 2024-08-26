@@ -1,8 +1,11 @@
 {
     "cSpell.words": [
+        "callout",
+        "codepen",
         "contenteditable",
         "Editables",
         "hilite",
+        "Inputter",
         "Triggable"
     ],
     "jestrunner.jestPath": "node_modules/jest/bin/jest.js",
