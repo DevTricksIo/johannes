@@ -13,5 +13,19 @@ export enum Icons {
     deleteSweep = "icon-material-delete-sweep",
     Trash = "icon-material-trash",
     CloseCircle = "icon-ionic-close-circle",
-    Empty = "Empty"
+    Empty = "Empty",
+    Callout = "icon-material-callout",
+    Image = "icon-material-image",
+    Image2 = "icon-bootstrap-image",
+    Video = "icon-material-video",
+    JustifyStart =  "icon-material-justify-start",
+    JustifyCenter = "icon-material-justify-center",
+    JustifyEnd = "icon-material-justify-end",
+    Duplicate = "icon-material-duplicate",
+    Spotify = "icon-bootstrap-spotify",
+    GitHub = "icon-bootstrap-github",
+    GitLab = "icon-bootstrap-gitlab",
+    CodePen = "icon-codepen",
+    YouTube = "icon-bootstrap-youtube"
+
 }
