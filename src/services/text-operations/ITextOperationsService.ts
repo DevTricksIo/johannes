@@ -1,17 +1,18 @@
-import { ICommand } from "../../commands/ICommand";
-
-export interface ITextOperationsService extends ICommand {
+export interface ITextOperationsService {
 
     queryHiliteColor(expectedColor: string): boolean;
     queryForeColor(expectedColor: string): boolean;
 
+    execToggleLink(): void;
+    execInsertLink(url: string): void;
     execBold(): void;
     execItalic(): void;
     execStrikeThrough(): void;
-    execUnderline(): void 
+    execInlineCode(): void;
+    execUnderline(): void
     execHiliteColor(value: string): void;
     execForeColor(value: string): void;
 
 
-    queryCommandStateA(command: string, value?: string | null): boolean
+    queryCommandState(command: string, value?: string | null): boolean
 }

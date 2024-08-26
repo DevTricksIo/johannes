@@ -6,7 +6,7 @@ import { IMemento } from "@/core/IMemento";
 import { DependencyContainer } from "@/core/DependencyContainer";
 import { EventEmitter } from "@/commands/EventEmitter";
 import { ButtonIDs } from "@/core/ButtonIDs";
-import { DropdownListIDs } from "@/core/DropdownListIDs";
+import { DOMUtils } from "@/utilities/DOMUtils";
 
 type TargetNode = {
     nodeType: string;
@@ -27,38 +27,7 @@ export class TextOperationsService implements ITextOperationsService {
         }
 
         this.memento = memento;
-        this.attachEvents();
-
     }
-
-    //TODO: move this to textContentFloatingToolbar
-    attachEvents(): void {
-        // document.addEventListener(DefaultJSEvents.SelectionChange, this.handleSelectionChange.bind(this));
-    }
-
-    // handleSelectionChange() {
-
-    //     const bold: boolean = document.queryCommandState('bold');
-    //     const italic: boolean = document.queryCommandState('italic');
-    //     const underline: boolean = document.queryCommandState('underline');
-    //     const strikeThrough: boolean = document.queryCommandState('strikeThrough');
-
-    //     const hiliteColor: { [key: string]: boolean } = {};
-    //     hiliteColor[Colors.HiliteColorRed] = this.queryHiliteColor(Colors.HiliteColorRed);
-    //     hiliteColor[Colors.HiliteColorGreen] = this.queryHiliteColor(Colors.HiliteColorGreen);
-    //     hiliteColor[Colors.HiliteColorBlue] = this.queryHiliteColor(Colors.HiliteColorBlue);
-    //     hiliteColor[Colors.HiliteColorYellow] = this.queryHiliteColor(Colors.HiliteColorYellow);
-    //     hiliteColor[Colors.HiliteColorGrey] = this.queryHiliteColor(Colors.HiliteColorGrey);
-
-    //     const foreColor: { [key: string]: boolean } = {};
-    //     foreColor[Colors.ForeColorRed] = this.queryHiliteColor(Colors.ForeColorRed);
-    //     foreColor[Colors.ForeColorGreen] = this.queryHiliteColor(Colors.ForeColorGreen);
-    //     foreColor[Colors.ForeColorBlue] = this.queryHiliteColor(Colors.ForeColorBlue);
-    //     foreColor[Colors.ForeColorYellow] = this.queryHiliteColor(Colors.ForeColorYellow);
-    //     foreColor[Colors.ForeColorGrey] = this.queryHiliteColor(Colors.ForeColorGrey);
-
-    //     // EventEmitter.emitFormatChangeEvent(bold, italic, underline, strikeThrough, hiliteColor, foreColor);
-    // }
 
     static getInstance(): TextOperationsService {
 
@@ -71,19 +40,138 @@ export class TextOperationsService implements ITextOperationsService {
         return this.instance;
     }
 
+    execInsertLink(url: string): void {
+        this.memento.saveState();
+
+        document.execCommand("createLink", false, url);
+
+        setTimeout(() => {
+            EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Link, Colors.IconActiveBlue);
+            this.normalizeAnchors();
+        }, 50);
+    }
+
+    private normalizeAnchors() {
+        const anchors = document.querySelectorAll("#johannesEditor .content a");
+
+        anchors.forEach(anchor => {
+            if (!anchor.hasAttribute('title')) {
+                anchor.setAttribute('title', (anchor as HTMLAnchorElement).href);
+            }
+
+            anchor.normalize();
+        });
+    }
 
 
-    /**
-     * Executes the 'bold' command by toggling bold style on the selected text.
-     * @returns {boolean} True if the command was executed successfully.
-     */
+    execToggleLink(): void {
+        if (!this.queryAnchorCommandState()) {
+            EventEmitter.emitShowElementEvent("linkBox");
+        } else {
+            document.execCommand('unlink', false);
+            EventEmitter.emitChangeComponentColorEvent("linkButton", Colors.IconDefaultBlack);
+        }
+    }
+
     execBold(): void {
 
         this.memento.saveState();
 
         if (document.execCommand("bold")) {
-            EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Bold, Colors.IconActiveBlue);
+            if (document.queryCommandState("bold")) {
+                EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Bold, Colors.IconActiveBlue);
+            } else {
+                EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Bold, Colors.IconDefaultBlack);
+            }
         }
+    }
+
+    execInlineCode(): void {
+
+        this.memento.saveState();
+
+        if (this.toggleInlineCode()) {
+            if (this.queryInlineCodeCommandState()) {
+                EventEmitter.emitChangeComponentColorEvent(ButtonIDs.InlineCode, Colors.IconActiveBlue);
+            } else {
+                EventEmitter.emitChangeComponentColorEvent(ButtonIDs.InlineCode, Colors.IconDefaultBlack);
+            }
+        }
+    }
+
+    // toggleInlineCode(): boolean {
+    //     const selection = window.getSelection();
+    //     if (!selection || selection.rangeCount === 0) return false;
+
+    //     const range = selection.getRangeAt(0);
+    //     const selectedContent = range.extractContents();
+
+    //     if (selection.anchorNode?.parentElement?.tagName === "CODE") {
+    //         const textNode = document.createTextNode(selectedContent.textContent || '');
+    //         range.insertNode(textNode);
+    //     } else {
+    //         const codeElement = document.createElement("code");
+    //         codeElement.appendChild(selectedContent);
+    //         range.insertNode(codeElement);
+    //     }
+
+    //     selection.removeAllRanges();
+    //     selection.addRange(range);
+
+    //     return true;
+    // }
+
+    toggleInlineCode(): boolean {
+        const selection = window.getSelection();
+        if (!selection || selection.rangeCount === 0) return false;
+
+        const range = selection.getRangeAt(0);
+        let selectedContent: DocumentFragment | HTMLSpanElement = range.extractContents();
+
+        let isCode = false;
+        const containsCode = document.createElement('span');
+        containsCode.appendChild(selectedContent.cloneNode(true));
+
+        if (containsCode.querySelector('code')) {
+            isCode = true;
+            containsCode.querySelectorAll('code').forEach(code => {
+                const textNode = document.createTextNode(code.textContent || '');
+                code.parentNode?.replaceChild(textNode, code);
+            });
+            selectedContent = containsCode;
+        }
+
+        let parentCode = selection.anchorNode;
+        while (parentCode && parentCode.nodeName !== "CODE" && parentCode.nodeName !== "BODY") {
+            parentCode = parentCode.parentNode;
+        }
+
+        if (parentCode && parentCode.nodeName === "CODE") {
+            isCode = true;
+            const textNode = document.createTextNode(parentCode.textContent || '');
+            parentCode.parentNode?.replaceChild(textNode, parentCode);
+        }
+
+        if (!isCode) {
+            const codeElement = document.createElement("code");
+            codeElement.appendChild(selectedContent);
+            range.insertNode(codeElement);
+        } else {
+            range.insertNode(containsCode);
+        }
+
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+
+        const content = DOMUtils.getActiveContentEditable();
+        if (content) {
+            content.normalize();
+
+            DOMUtils.mergeInlineElements(content);
+        }
+
+        return true;
     }
 
     execItalic(): void {
@@ -91,7 +179,11 @@ export class TextOperationsService implements ITextOperationsService {
         this.memento.saveState();
 
         if (document.execCommand("italic")) {
-            EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Italic, Colors.IconActiveBlue);
+            if (document.queryCommandState("italic")) {
+                EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Italic, Colors.IconActiveBlue);
+            } else {
+                EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Italic, Colors.IconDefaultBlack);
+            }
         }
     }
 
@@ -100,7 +192,11 @@ export class TextOperationsService implements ITextOperationsService {
         this.memento.saveState();
 
         if (document.execCommand("strikeThrough")) {
-            EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Strikethrough, Colors.IconActiveBlue);
+            if (document.queryCommandState("strikeThrough")) {
+                EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Strikethrough, Colors.IconActiveBlue);
+            } else {
+                EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Strikethrough, Colors.IconDefaultBlack);
+            }
         }
     }
 
@@ -108,7 +204,13 @@ export class TextOperationsService implements ITextOperationsService {
         this.memento.saveState();
 
         if (document.execCommand("underline")) {
-            EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Underline, Colors.IconActiveBlue);
+            setTimeout(() => {
+                if (document.queryCommandState("underline")) {
+                    EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Underline, Colors.IconActiveBlue);
+                } else {
+                    EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Underline, Colors.IconDefaultBlack);
+                }
+            }, 10);
         }
     }
 
@@ -134,104 +236,15 @@ export class TextOperationsService implements ITextOperationsService {
         }
     }
 
-    execCommand(command: string, showUi: boolean, value: string | null): boolean {
 
-        // if (command == TextOperationService.QUERY_TEXT_OPERATIONS.INLINE_CODE) {
-        //     this.toggleCodeExecCommand();
-        //     return true;
-        // }
-
-        // let v: string | undefined = value || undefined;
-
-        // if (v == "initial") {
-        //     v = this.getInitialColorAsHex();
-        // }
-
-        // if (command == TextOperationService.QUERY_TEXT_OPERATIONS.CREATE_LINK) {
-
-        //     const element = TextOperationService.getSelectedHTMLElement();
-
-        //     if (element?.closest("a")) {
-        //         return document.execCommand("unlink", false, v);
-        //     }
-
-        //     if (showUi) {
-
-        //         const showInputLinkBox = new CustomEvent('showInputLinkBoxRequested', {
-        //             bubbles: true,
-        //             cancelable: true
-        //         });
-
-        //         document.dispatchEvent(showInputLinkBox);
-
-        //         return true;
-        //     }
-        // }
-
-        // if (command == TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR ||
-        //     command == TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR) {
-
-        //     document.execCommand(command, false, v);
-
-        //     const showInputLinkBox = new CustomEvent('colorChange', {
-        //         bubbles: true,
-        //         cancelable: true
-        //     });
-
-        //     document.dispatchEvent(showInputLinkBox);
-        // }
-
-        // return document.execCommand(command, false, v);
-
-        return false;
-    }
-
-    queryCommandState(command: string, value: string | null): Promise<boolean> {
-
-        return new Promise((resolve, reject) => {
-
-            requestAnimationFrame(() => {
-                if (command === Commands.toggleLink) {
-                    resolve(this.queryAnchor());
-                    return;
-                }
-
-                if (command === Commands.toggleUnderline) {
-
-                    if (this.queryAnchor()) {
-                        resolve(false);
-                        return;
-                    }
-                }
-
-                if (command === Commands.toggleHiliteColor) {
-                    resolve(this.queryHiliteColor(value!));
-                    return;
-                }
-
-                if (command === Commands.toggleForeColor) {
-                    resolve(this.queryForeColor(value!));
-                    return;
-                }
-
-                resolve(document.queryCommandState(command));
-                return;
-            });
-        });
-    }
-
-
-    queryCommandStateA(command: string, value: string | null): boolean {
+    queryCommandState(command: string, value: string | null): boolean {
 
         if (command === Commands.toggleLink) {
-            return this.queryAnchor();
+            return this.queryAnchorCommandState();
         }
 
         if (command === Commands.toggleUnderline) {
-
-            if (this.queryAnchor()) {
-                return !this.queryAnchor();
-            }
+            return this.queryUnderlineCommandState();
         }
 
         if (command === Commands.toggleHiliteColor) {
@@ -242,69 +255,152 @@ export class TextOperationsService implements ITextOperationsService {
             return this.queryForeColor(value!);
         }
 
+        if (command === Commands.toggleInlineCode) {
+            return this.queryInlineCodeCommandState();
+        }
+
         return document.queryCommandState(command);
     }
 
-    private toggleCodeExecCommand() {
+    // private queryAnchorCommandState(): boolean {
+    //     const selection = window.getSelection();
+    //     if (!selection || !selection.rangeCount) return false;
+
+    //     const range = selection.getRangeAt(0);
+    //     let node: Node | null = range.commonAncestorContainer;
+
+    //     if (node.nodeType === Node.TEXT_NODE) {
+    //         node = node.parentNode;
+    //     }
+
+    //     // Verifica se algum nó pai é uma âncora
+    //     while (node) {
+    //         if (node.nodeType === Node.ELEMENT_NODE) {
+    //             const element = node as HTMLElement;
+    //             if (element.tagName === 'A') {
+    //                 return true;  // A seleção está dentro de uma âncora
+    //             }
+    //             if (element.closest('a')) {
+    //                 return true;  // A seleção está dentro de algo que está dentro de uma âncora
+    //             }
+    //         }
+    //         node = node.parentNode;
+    //     }
+
+    //     // Verifica se a seleção contém uma âncora completa
+    //     if (range.startContainer === range.endContainer) {
+    //         const children = Array.from(range.commonAncestorContainer.childNodes);
+    //         let selectedAnchor: HTMLElement | null = null;
+    //         for (let child of children) {
+    //             if (child.nodeType === Node.ELEMENT_NODE && (child as HTMLElement).tagName === 'A') {
+    //                 if (range.intersectsNode(child)) {
+    //                     selectedAnchor = child as HTMLElement;
+    //                     break;
+    //                 }
+    //             }
+    //         }
+    //         if (selectedAnchor && range.toString() === selectedAnchor.textContent) {
+    //             return true;  // A seleção é exatamente o texto de uma âncora
+    //         }
+    //     }
+
+    //     return false;
+    // }
+
+
+    //ORIGINAL
+    // private queryAnchorCommandState(): boolean {
+    //     const selection = window.getSelection();
+    //     if (!selection || !selection.rangeCount) return false;
+
+    //     let node: Node | null = selection.getRangeAt(0).commonAncestorContainer;
+
+    //     if (node.nodeType === Node.TEXT_NODE) {
+    //         node = node.parentNode;
+    //     }
+
+    //     while (node && node !== null) {
+    //         if (node.nodeType == Node.ELEMENT_NODE && (node as HTMLElement).closest('a')) {
+    //             return true;
+    //         }
+    //         node = node.parentNode;
+    //     }
+
+    //     return false;
+    // }
+
+    // multiples elements
+    private queryAnchorCommandState(): boolean {
         const selection = window.getSelection();
-        if (!selection || selection.rangeCount === 0) return;
+        if (!selection || !selection.rangeCount) return false;
 
         const range = selection.getRangeAt(0);
-        let containerNode: Node | null = range.commonAncestorContainer;
+        const startContainer = range.startContainer;
+        const endContainer = range.endContainer;
 
-        while (containerNode && containerNode.nodeName !== 'CODE') {
-            containerNode = containerNode.parentNode;
-        }
-
-        if (containerNode && containerNode.nodeName === 'CODE') {
-            const codeElement = containerNode as HTMLElement;
-            const rangeOfCode = document.createRange();
-            rangeOfCode.selectNodeContents(codeElement);
-
-            if (range.toString() === rangeOfCode.toString()) {
-                const parent: Node | null = codeElement.parentNode;
-                while (parent && codeElement.firstChild) {
-                    parent.insertBefore(codeElement.firstChild, codeElement);
+        // Function to check if a node or its parents are an <a> element
+        const isNodeInsideAnchor = (node: Node | null): boolean => {
+            while (node && node !== document.body) {
+                if (node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).tagName.toLowerCase() === 'a') {
+                    return true;
                 }
-                parent?.removeChild(codeElement);
-            } else {
-                const textContent = range.toString();
-                document.execCommand('insertHTML', false, textContent);
+                node = node.parentNode;
             }
-            document.getSelection()?.removeAllRanges();
-        } else {
-            const contentAsString = new XMLSerializer().serializeToString(range.cloneContents());
-            document.execCommand('insertHTML', false, `<code>${contentAsString}</code>`);
+            return false;
+        };
+
+        // Check if the start or end of the selection is within an <a> element
+        if (isNodeInsideAnchor(startContainer) || isNodeInsideAnchor(endContainer)) {
+            return true;
         }
+
+        // Check all elements between start and end if necessary
+        const nodesInRange = range.cloneContents().querySelectorAll('a');
+        return nodesInRange.length > 0;
     }
 
 
+    private queryInlineCodeCommandState(): boolean {
+        const selection = window.getSelection();
+        if (!selection || !selection.rangeCount) return false;
+
+        let node: Node | null = selection.getRangeAt(0).commonAncestorContainer;
+
+        if (node.nodeType === Node.TEXT_NODE) {
+            node = node.parentNode;
+        }
+
+        while (node && node !== null) {
+            if (node.nodeType == Node.ELEMENT_NODE && (node as HTMLElement).closest('code')) {
+                return true;
+            }
+            node = node.parentNode;
+        }
+
+        return false;
+    }
 
 
+    private queryUnderlineCommandState(): boolean {
+        const selection = window.getSelection();
+        if (!selection || !selection.rangeCount) return false;
 
-    /**
-    * Checks if the currently selected text has the specified foreground (text) color.
-    * This function is crucial in environments where text color formatting is monitored or needs verification,
-    * such as in a rich text editor. It determines whether the selected text's color matches an expected hexadecimal color value.
-    *
-    * @param {string} expectedColor - The expected text color in hexadecimal format (e.g., "#FFFFFF") to check against the selection.
-    * @returns {boolean} Returns true if the selected text's color matches the expected color, otherwise false.
-    *
-    * @example
-    * // To verify if the selected text has a blue text color:
-    * const hasBlueTextColor = queryForeColor("#0000FF");
-    * console.log('Selected text has blue text color:', hasBlueTextColor);
-    *
-    * @description
-    * The function operates as follows:
-    * 1. Retrieves the current text selection using `window.getSelection()`.
-    * 2. Validates that there is a selection and that it includes at least one range.
-    * 3. Identifies the most deeply nested node that contains the selection, adjusting for text nodes by moving to their parent node.
-    * 4. Searches for the nearest ancestor `font` element with an explicit `color` attribute, intended to directly influence the text color.
-    * 5. If such an element is found, computes the actual color in RGB format using computed styles and converts it to hexadecimal.
-    * 6. Compares the converted hexadecimal color to the `expectedColor`, adjusting for case sensitivity.
-    * 7. Returns true if the colors match, false otherwise.
-    */
+        let node: Node | null = selection.getRangeAt(0).commonAncestorContainer;
+
+        if (node.nodeType === Node.TEXT_NODE) {
+            node = node.parentNode;
+        }
+
+        while (node && node !== null) {
+            if (node.nodeType == Node.ELEMENT_NODE && (node as HTMLElement).closest('u')) {
+                return true;
+            }
+            node = node.parentNode;
+        }
+
+        return false;
+    }
+
     queryForeColor(expectedColor: string): boolean {
         const selection = window.getSelection();
 
@@ -319,6 +415,10 @@ export class TextOperationsService implements ITextOperationsService {
             element = element.parentNode;
         }
 
+        if(!(element instanceof Element)){
+            return false;
+        }
+
         const fontColor = (element as HTMLElement).closest("font[color]");
         if (!fontColor) return false;
 
@@ -330,52 +430,6 @@ export class TextOperationsService implements ITextOperationsService {
         return hexColor.toUpperCase() === expectedColor.toUpperCase();
     }
 
-    private queryAnchor(): boolean {
-        const selection = window.getSelection();
-        if (!selection || !selection.rangeCount) return false;
-
-        let node: Node | null = selection.getRangeAt(0).commonAncestorContainer;
-
-        // Se o node é um nó de texto, começamos a verificar a partir de seu nó pai.
-        if (node.nodeType === Node.TEXT_NODE) {
-            node = node.parentNode;
-        }
-
-        // Verifica se o nó ou um ascendente até o elemento editável é um link.
-        while (node && node !== null) { // 'this.editorElement' deve ser o elemento <p>
-            if (node.nodeType == Node.ELEMENT_NODE && (node as HTMLElement).closest('a')) {
-                return true;
-            }
-            node = node.parentNode;
-        }
-
-        return false;
-    }
-
-
-    /**
-    * Checks if the currently selected text has the specified background color.
-    * This function is designed to verify the presence of a specific background color in the text selection,
-    * which can be useful in text editing environments where background color formatting needs to be tracked or verified.
-    *
-    * @param {string} expectedColor - The expected background color in hexadecimal format (e.g., "#FFFFFF") to check against the selection.
-    * @returns {boolean} Returns true if the selected text's background color matches the expected color, otherwise false.
-    *
-    * @example
-    * // To check if the selected text has a red background color:
-    * const hasRedBackground = queryHiliteColor("#FF0000");
-    * console.log('Selected text has red background:', hasRedBackground);
-    *
-    * @description
-    * The function operates as follows:
-    * 1. Retrieves the current text selection using `window.getSelection()`.
-    * 2. Checks if there is a selection and if it includes at least one range.
-    * 3. Identifies the most deeply nested node that contains the selection, adjusting for text nodes by stepping up to their parent node.
-    * 4. Searches for the nearest ancestor `span` or `font` element that explicitly has a `background-color` style applied.
-    * 5. If such an element is found, computes the actual background color in RGB format and converts it to hexadecimal.
-    * 6. Compares the converted hexadecimal color to the `expectedColor`, adjusting for case sensitivity.
-    * 7. Returns true if the colors match, false otherwise.
-    */
     queryHiliteColor(expectedColor: string): boolean {
 
         const selection = window.getSelection();
@@ -391,10 +445,13 @@ export class TextOperationsService implements ITextOperationsService {
             element = element.parentNode;
         }
 
+        if(!(element instanceof Element)){
+            return false;
+        }
+
         const spanWithBackground =
             (element as HTMLElement).closest("span[style*='background-color']") ||
             (element as HTMLElement).closest("font[style*='background-color']");
-
 
         if (!spanWithBackground) return false;
 
@@ -404,19 +461,6 @@ export class TextOperationsService implements ITextOperationsService {
         const hexColor = Utils.rgbToHex(rgbColor);
 
         return hexColor.toUpperCase() === expectedColor.toUpperCase();
-    }
-
-    private getInitialColorAsHex() {
-        const tempElement = document.createElement("div");
-        document.body.appendChild(tempElement);
-
-        tempElement.style.color = 'initial';
-
-        const computedColor = window.getComputedStyle(tempElement).color;
-
-        document.body.removeChild(tempElement);
-
-        return Utils.rgbToHex(computedColor);
     }
 
     getTargetElementMap(command: string): keyof HTMLElementTagNameMap {
