@@ -2,27 +2,23 @@ import { BaseUIComponent } from '../common/BaseUIComponent';
 import { DropdownMenu } from './dropdown-tool/DropdownMenu';
 import { FloatingToolbarSeparator } from './separator/FloatingToolbarSeparator';
 import { ButtonGroup } from './button-group/ButtonGroup';
-import { InputLinkBoxWrapper } from './link-box/InputLinkBoxWrapper';
 import { CustomEvents } from '@/common/CustomEvents';
+import { DefaultJSEvents } from '@/common/DefaultJSEvents';
+import { ZIndex } from '@/common/ZIndex';
 
 export abstract class FloatingToolbar extends BaseUIComponent {
 
     dropdowns: DropdownMenu[];
     separators: FloatingToolbarSeparator[];
     currentSelectionRange: Range | null;
-    inputLinkBoxWrapper: InputLinkBoxWrapper;
     htmlFocusedElementBeforeOpenQuickMenu: HTMLElement | null;
 
     constructor(id: string) {
 
-        const inputLinkBoxWrapper = new InputLinkBoxWrapper();
-
         super({
-            id: id,
-            inputLinkBoxWrapper: inputLinkBoxWrapper
+            id: id
         });
 
-        this.inputLinkBoxWrapper = inputLinkBoxWrapper;
         this.dropdowns = [];
         this.separators = [];
         this.currentSelectionRange = null;
@@ -36,14 +32,11 @@ export abstract class FloatingToolbar extends BaseUIComponent {
         htmlElement.id = this.props.id;
         htmlElement.style.display = "none";
         htmlElement.classList.add("floating-toolbar", "select-wrapper", "soft-box-shadow");
+        htmlElement.style.zIndex = ZIndex.SlightlyImportant;
 
         const selectWrapper = document.createElement("div");
 
         htmlElement.appendChild(selectWrapper);
-
-        const editor = document.getElementById("johannesEditor");
-
-        editor?.appendChild(this.props.inputLinkBoxWrapper.htmlElement);
 
         return htmlElement;
     }
@@ -148,12 +141,12 @@ export abstract class FloatingToolbar extends BaseUIComponent {
     attachEvents() {
 
         // Prevent focus change when clicking on this element
-        this.htmlElement.addEventListener("click", (event) => {
+        this.htmlElement.addEventListener(DefaultJSEvents.Click, (event) => {
             event.preventDefault();
         });
 
         // Prevent focus change when clicking on this element
-        this.htmlElement.addEventListener("mousedown", (event) => {
+        this.htmlElement.addEventListener(DefaultJSEvents.Mousedown, (event) => {
             event.preventDefault();
         });
 
