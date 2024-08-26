@@ -186,10 +186,6 @@ export class MediaInputter extends BaseUIComponent {
                         EmbedTool.embedGistAsScript(url, focusedElement);
                         break;
 
-                    case EmbedTypes.GitLabSnippet:
-                        EmbedTool.embedGistAsIframe(url, "gitlab", focusedElement);
-                        break;
-
                     case EmbedTypes.CodePen:
                         EmbedTool.embedCodepenAsIframe(url, focusedElement);
                         break;
