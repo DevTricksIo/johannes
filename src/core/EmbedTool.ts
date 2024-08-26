@@ -339,10 +339,10 @@ export class EmbedTool {
 
     static determineEmbedType(url: string): EmbedTypes | null {
         const urlObj = new URL(url);
-        const domain = urlObj.hostname;
-        const path = urlObj.pathname;
+        const domain = urlObj.hostname.toLowerCase();
+        const path = urlObj.pathname.toLowerCase();
     
-        if (domain.includes("spotify.com")) {
+        if (/^(?:.*\.)?spotify\.com$/.test(domain)) {
             if (path.includes("/track")) {
                 return EmbedTypes.SpotifyTrack;
             } else if (path.includes("/playlist")) {
@@ -354,10 +354,9 @@ export class EmbedTool {
             } else if (path.includes("/show")) {
                 return EmbedTypes.SpotifyShow;
             }
-        } else if (domain.includes("youtube.com") || domain.includes("youtu.be")) {
+        } else if (/^(?:.*\.)?(youtube\.com|youtu\.be)$/.test(domain)) {
             if (path.includes("/watch")) {
-                const params = urlObj.searchParams;
-                if (params.has("list")) {
+                if (urlObj.searchParams.has("list")) {
                     return EmbedTypes.YouTubePlaylist;
                 }
                 return EmbedTypes.YouTubeVideo;
@@ -366,25 +365,25 @@ export class EmbedTool {
             } else if (path.includes("/shorts")) {
                 return EmbedTypes.YouTubeShort;
             }
-        } else if (domain.includes("vimeo.com")) {
+        } else if (domain === "vimeo.com") {
             return EmbedTypes.VimeoVideo;
-        } else if (domain.includes("docs.google.com") && path.includes("/spreadsheets")) {
+        } else if (domain === "docs.google.com" && path.includes("/spreadsheets")) {
             return EmbedTypes.GoogleSheet;
-        } else if (domain.includes("twitter.com")) {
+        } else if (domain === "twitter.com") {
             return EmbedTypes.Tweet;
-        } else if (domain.includes("google.com") && path.includes("/maps")) {
+        } else if (domain === "google.com" && path.includes("/maps")) {
             return EmbedTypes.GoogleMap;
-        } else if (domain.includes("gist.github.com")) {
+        } else if (domain === "gist.github.com") {
             return EmbedTypes.GitHubGist;
-        } else if (domain.includes("gitlab.com") && path.includes("/snippets")) {
+        } else if (domain === "gitlab.com" && path.includes("/snippets")) {
             return EmbedTypes.GitLabSnippet;
-        } else if (domain.includes("codepen.io")) {
+        } else if (domain === "codepen.io") {
             return EmbedTypes.CodePen;
         }
     
         return null;
     }
-
+    
 }
 
 
