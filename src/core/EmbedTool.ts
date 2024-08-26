@@ -3,17 +3,17 @@ import { ToolboxOptions } from "../components/block-toolbox/ToolboxOptions";
 
 export class EmbedTool {
 
-    static embedImage(urlObj: string, lastFocusedElement: HTMLElement) {
+    static async embedImage(urlObj: string, lastFocusedElement: HTMLElement) {
+        const url = new URL(urlObj);
 
-        if (!this.isValidImageURL(urlObj)) {
+        if (!await EmbedTool.validateImage(url.toString())) {
             throw new Error("invalid image")
         }
 
         const container = this.createEmbedContainer();
-
         const image = document.createElement('img');
 
-        image.src = urlObj;
+        image.src = url.toString();
         image.alt = 'Embedded Image';
         image.style.maxWidth = '100%';
         image.style.width = 'auto';
@@ -24,9 +24,20 @@ export class EmbedTool {
         EmbedTool.finalizeEmbed(container, [ToolboxOptions.AlignToolClass, "fit-content", "x-resizable"], lastFocusedElement);
     }
 
-    static isValidImageURL(url: string): boolean {
-        const pattern = /\.(jpe?g|png|gif|bmp|tif?f|webp)$/i;
-        return pattern.test(url);
+    static validateImage(urlToCheck: string): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            const image = new Image();
+
+            image.onload = () => {
+                resolve(true);
+            };
+
+            image.onerror = () => {
+                resolve(false);
+            };
+
+            image.src = urlToCheck;
+        });
     }
 
     static embedGoogleSheet(urlObj: URL, lastFocusedElement: HTMLElement): void {
@@ -54,7 +65,7 @@ export class EmbedTool {
             const container = this.createEmbedContainer(["embed-container"]);
 
             const iframe = document.createElement('iframe');
-            
+
             const safeVideoId = encodeURIComponent(videoId);
 
             iframe.src = `https://www.youtube.com/embed/${safeVideoId}`;
@@ -91,10 +102,6 @@ export class EmbedTool {
         }
     }
 
-    static isYouTubeDomain(domain: string, element: HTMLElement): boolean {
-        return domain.endsWith("youtube.com") || domain.endsWith("youtu.be");
-    }
-
     static embedYouTubePlaylistAsIframe(urlObj: URL, element: HTMLElement) {
         const listId = urlObj.searchParams.get('list');
         if (listId) {
@@ -116,23 +123,23 @@ export class EmbedTool {
         const contentId = urlObj.pathname.split('/').pop();
         const container = this.createEmbedContainer(["embed-container"]);
         container.classList.add("spotify-embed", ToolboxOptions.AlignToolClass);
-        
 
-        if(!contentId){
+
+        if (!contentId) {
             console.error("contentId is empty");
             return;
         }
 
         const safeContentId = encodeURIComponent(contentId);
 
-    
+
         const iframe = document.createElement('iframe');
         iframe.classList.add("spotify-embed");
         iframe.src = `https://open.spotify.com/embed/${type}/${safeContentId}`;
         iframe.frameBorder = "0";
         iframe.setAttribute("scrolling", "no");
-    
-        switch(type) {
+
+        switch (type) {
             case EmbedTypes.SpotifyTrack:
                 iframe.style.height = "80px";
                 break;
@@ -145,7 +152,7 @@ export class EmbedTool {
             default:
                 iframe.style.height = "300px";
         }
-    
+
         container.appendChild(iframe);
         this.finalizeEmbed(container, ["x-resizable", ToolboxOptions.AlignToolClass], element);
     }
@@ -156,7 +163,7 @@ export class EmbedTool {
             console.error("Invalid Gist ID");
             return;
         }
-    
+
         const shadowElement = document.createElement("div");
         shadowElement.classList.add("shadow-element");
 
@@ -167,43 +174,43 @@ export class EmbedTool {
 
 
         container.appendChild(shadowElement);
-        
+
         const shadowRoot = shadowElement.attachShadow({ mode: 'open' });
 
         const safeGistId = encodeURIComponent(gistId);
-    
+
         const scriptSrc = `https://gist.github.com/${safeGistId}.js`;
         const script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = scriptSrc;
         script.async = true;
-    
+
         const originalWrite = document.write;
         let scriptOutput = '';
         document.write = (content: string) => {
             scriptOutput += content;
         };
-    
+
         script.onload = () => {
             document.write = originalWrite;
-            
+
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = scriptOutput;
-            
+
             Array.from(tempDiv.childNodes).forEach(node => {
                 shadowRoot.appendChild(node);
             });
-            
+
             console.log("Gist loaded successfully");
         };
-    
+
         script.onerror = () => {
             document.write = originalWrite;
             console.error("Failed to load the Gist");
         };
-    
+
         shadowRoot.appendChild(script);
-    
+
         EmbedTool.finalizeEmbed(container, [], element);
     }
 
@@ -272,7 +279,7 @@ export class EmbedTool {
         const urlObj = new URL(url);
         const domain = urlObj.hostname.toLowerCase();
         const path = urlObj.pathname.toLowerCase();
-    
+
         if (/^(?:.*\.)?spotify\.com$/.test(domain)) {
             if (path.includes("/track")) {
                 return EmbedTypes.SpotifyTrack;
@@ -311,10 +318,10 @@ export class EmbedTool {
         } else if (domain === "codepen.io") {
             return EmbedTypes.CodePen;
         }
-    
+
         return null;
     }
-    
+
 }
 
 
