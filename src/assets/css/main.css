@@ -7,7 +7,6 @@
 
 
 /** CSS reset */
-
 .button-reset {
     border: none;
     margin: 0;
@@ -15,15 +14,9 @@
     width: auto;
     overflow: visible;
     background: transparent;
-    color: inherit;
     font: inherit;
     line-height: normal;
-    -webkit-font-smoothing: inherit;
-    -moz-osx-font-smoothing: inherit;
-    -webkit-appearance: none;
 }
-
-
 
 /** add block */
 .add-block {
@@ -127,11 +120,6 @@ p.johannes-content-element {
     text-decoration: line-through;
 }
 
-/* ul.johannes-content-element:not(.checkbox-list),
-ol.johannes-content-element:not(.checkbox-list) {
-    padding-left: 1.5rem !important;
-} */
-
 /** Add line through text decoration to checked checkboxes text div */
 .block input[type="checkbox"]:checked+div {
     text-decoration: line-through;
@@ -167,17 +155,14 @@ ol.johannes-content-element:not(.checkbox-list) {
     content: "•";
     margin-right: 0.3125rem;
     display: flex;
-    /* width: 18px; */
 }
 
 .list-item-checkable input {
-    /* width: 18px; */
     margin-right: 0.3125rem;
 }
 
 
 /** and list **/
-
 
 
 .drag-handler {
@@ -193,16 +178,6 @@ ol.johannes-content-element:not(.checkbox-list) {
     position: relative;
     height: 0;
     width: 0;
-}
-
-
-
-.drag-handler svg {
-    /* background-color: red; */
-}
-
-.drag-handler svg use {
-    /* background-color: blue; */
 }
 
 .drag-handler:active {
@@ -227,10 +202,6 @@ ol.johannes-content-element:not(.checkbox-list) {
     justify-content: start;
     transition: visibility 0.2s;
 }
-
-/* .block:hover .block-toolbar {
-    visibility: visible;
-} */
 
 .drop-line {
     height: 1rem;
@@ -293,15 +264,9 @@ h1 {
     font-weight: bolder !important;
 }
 
-.johannes-editor {
-    width: 100%;
-
-}
-
 .content {
     width: 100%;
     box-sizing: border-box;
-    /* background-color: red; */
 }
 
 .content .block .table-wrapper {
@@ -310,16 +275,11 @@ h1 {
 }
 
 
-/* pre {
-    width: 100%;
-} */
-
 [contenteditable] {
     outline: none;
 }
 
 body {
-    /* min-height: 2000px; */
     background-color: white;
 
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -347,7 +307,6 @@ p {
     width: 100%;
     padding: 0;
     margin: 0;
-    /* background-color: green; */
 }
 
 
@@ -386,40 +345,18 @@ p {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #linkBox {
     z-index: 999999;
     width: fit-content;
-    /* background-color: white; */
     background-color: white;
 }
 
 #linkBox .header {
     border-bottom: 1px solid rgba(55, 53, 47, 0.16);
-    ;
     padding: 10px 20px;
-    /* font-size: 0.75rem; */
-    /* color: rgba(55, 53, 47, 0.6); */
     font-size: 0.86rem;
+    color: #37352fd9;
+    font-weight: 600;
 }
 
 #linkBox .link-box-shell {
@@ -444,52 +381,9 @@ p {
 }
 
 
-
-
-/* #linkBox {
-    border-radius: 2px;
-    padding: 20px;
-    background-color: #f9f9f9;
-
-
-    box-shadow:
-        0 4px 6px rgba(0, 0, 0, 0.1),
-        0 -2px 4px rgba(0, 0, 0, 0.02),
-        -2px 0 4px rgba(0, 0, 0, 0.02),
-        2px 0 4px rgba(0, 0, 0, 0.02);
-
-
-    border: 1px solid #d0d0d0;
-    width: fit-content;
-    z-index: 999999;
-    color: rgb(120, 119, 116);
-    border-radius: none;
-}
-
-
-#linkBox input {
-    width: 316px;
-    padding: 8px 40px 8px 16px;
-
-    border: 1px solid #949494;
-    height: 24px;
-
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-
-
-#linkBox input::selection,
-#linkBox input:focus {
-    border-radius: none;
-} */
-
 /** soft-box-shadow class */
 .soft-box-shadow {
     margin: 0;
-    padding: 0;
     border-radius: 2px;
     box-shadow:
         0 4px 6px rgba(0, 0, 0, 0.1),
@@ -508,16 +402,16 @@ p {
     display: flex;
     flex-direction: row;
     align-items: center;
+    position: relative;
+    color: rgb(120, 119, 116);
 }
 
 .select-wrapper ul {
-    position: absolute;
     background: white;
     flex-direction: column;
     width: fit-content;
     padding-bottom: 0.5rem;
     padding-left: 5px;
-    padding-right: 5px;
     top: 2.2rem;
     color: rgb(55, 53, 47);
     padding-right: 0.3125rem;
@@ -556,13 +450,8 @@ p {
     margin: 0 !important;
 }
 
-.select-wrapper {
-    position: relative;
-    color: rgb(120, 119, 116);
-}
-
 .select-wrapper>button {
-    color: rgba(55, 53, 47, 0.85);
+    color: #37352fd9;
 }
 
 .select-wrapper ul li>h3 {
@@ -589,7 +478,6 @@ p {
     padding: 8px 16px;
     background-color: white;
     width: fit-content;
-    z-index: 999999;
     position: absolute;
     user-select: none;
 }
@@ -602,10 +490,12 @@ p {
     gap: 10px;
 }
 
+.item>button,
 .floating-toolbar .item>button {
 
     display: inline-flex;
     align-items: center;
+    cursor: pointer;
 }
 
 
@@ -613,7 +503,7 @@ p {
     color: rgb(120, 119, 116);
     border: none;
     font-size: 0.85rem;
-    background-color: inherit;
+    /* background-color: inherit; */
 }
 
 .text-formatting-select-button {
@@ -635,26 +525,6 @@ p {
     margin: auto;
 }
 
-/* code:not(pre code) {
-    margin: 0;
-    padding: 0;
-    background-color: #d0d0d0;
-    background-color: #f6f5f4;
-    font-size: inherit;
-    font-size: 1rem !important;
-    border: 1px solid #0000001a;
-    padding: 0 3px;
-    display: inline-block;
-    border-radius: 4px;
-    box-sizing: border-box;
-} */
-
-
-
-
-/* a:not([href]) {
-    background-color: #d3e3fd;
-} */
 
 .text-formatting-button-active {
     color: #2382e2;
@@ -700,15 +570,11 @@ mark {
     line-height: 1;
 }
 
-#turnIntoSelect .option-image {
-    /* display: none !important; */
-}
 
 .border-less-image {
     width: 24px;
     height: 24px;
 }
-
 
 
 
@@ -780,19 +646,7 @@ mark {
     border: inherit;
 }
 
-/* .option-hover:hover {
-    background-color: #e9e9e9;
-    box-shadow: 0px 0px 0px 2px #e9e9e9;
-    border-radius: 1px;
-    transition: 0.1s ease;
-} */
 
-/* .select-wrapper>button, */
-
-/* #turnIntoButton,
-#colorTextButton {
-    padding-left: 4px;
-} */
 
 #colorTextButton {
     margin-left: 0.625rem;
@@ -862,17 +716,7 @@ mark {
 /** End Block Options **/
 
 
-
-/* #deleteBlockButton:hover svg,
-#deleteBlockButton:hover {
-    color: rgb(235, 87, 87) !important;
-} */
-
-
-
 .johannes-editor *::selection {
-    /* background-color: rgba(211, 227, 253, 0.5) !important; */
-
     background-color: hsl(210 75% 50% / 1);
     color: white;
 }
@@ -894,13 +738,6 @@ mark {
     gap: 0.625rem;
 }
 
-
-
-
-:root {
-    /* font-size: 16px; */
-    /* Tamanho padrão */
-}
 
 /* Para telas com densidade média */
 @media only screen and (-webkit-min-device-pixel-ratio: 2),
@@ -959,7 +796,6 @@ table.johannes-content-element td {
     vertical-align: top;
     min-width: 100px;
     max-width: 200px;
-    /* box-sizing: border-box !important; */
 
     transition: border 100ms ease-out, box-shadow 100ms ease-out;
 
@@ -1175,7 +1011,8 @@ td:empty:before {
 
 
 .nav-item.active .nav-link {
-    color: #000;
+    color: #37352fd9;
+    font-weight: 600;
 }
 
 .tab-content .content-data {
@@ -1209,6 +1046,10 @@ td:empty:before {
     padding-left: 10px;
 }
 
+.embed-content button {
+    cursor: pointer;
+}
+
 
 .upload-content label {
     display: block;
@@ -1219,7 +1060,6 @@ td:empty:before {
     padding: 4px;
     color: rgb(55, 53, 47);
     background-color: #fff;
-    /* transition: 0.1s ease; */
 }
 
 .upload-content label:hover {
@@ -1235,20 +1075,21 @@ td:empty:before {
 
 
 
-/* Estilo para as alças de redimensionamento */
+/* Resize handler */
 .resize-handle {
     position: absolute;
     width: 10px;
     height: 10px;
     background: rgba(0, 0, 0, 0.5);
     cursor: nwse-resize;
-    /* Cursor de redimensionamento diagonal */
 }
 
 .resize-handle.se {
     bottom: 0;
     right: 0;
 }
+
+/** Resize handler **/
 
 .spotify-embed {
     min-height: 152px;
@@ -1339,52 +1180,6 @@ td:empty:before {
 }
 
 
-
-
-
-
-
-
-
-
-
-/* .embed-container {
-    position: relative;
-}
-
-.more-options-button {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 999999;
-    background-color: red;
-
-}
-
-.context-menu {
-    position: absolute;
-    top: 20px;
-    right: 0;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    padding: 5px;
-    z-index: 10;
-    display: none;
-}
-
-.more-options-button:active + .context-menu,
-.more-options-button:focus + .context-menu {
-    display: block;
-}
-
-
-.bbbuton{
-    background-color: red;
-    top: 0;
-    left: 0;
-} */
-
-
 /** BlockToolbar component **/
 .block-toolbar-wrapper {
     width: 0;
@@ -1395,7 +1190,7 @@ td:empty:before {
     padding: 0;
     display: contents;
     display: block;
-    
+
 }
 
 .block-toolbar {
@@ -1495,6 +1290,7 @@ figure {
     gap: 5px;
     align-items: center;
     border-radius: 4px;
+    cursor: pointer;
 }
 
 .content-placeholder .icon-wrapper {
@@ -1538,7 +1334,7 @@ pre code {
     border: none;
     padding: 4px 8px;
     font: inherit;
-    color: inherit;
+    /* color: inherit; */
     background-repeat: no-repeat;
     background-position: right 10px center;
     color: white;
@@ -1583,28 +1379,20 @@ pre code {
 }
 
 .blue-button {
-    background-color: "#2383e2";
-    color: "white";
-    border: "none";
-    padding: "3px";
-    border-radius: "5px";
-    font-weight: "500";
+    background-color: #2383e2;
+    color: white;
+    border: none;
+    padding: 3px;
+    border-radius: 5px;
+    font-weight: 500;
 }
 
 
-.block-selected {
-    /* border: 2px dashed red; */
-}
-
-.separator {
-    /* padding: 10px 0; */
-}
-
+/** separator **/
 
 .separator-wrapper {
     display: flex;
     align-items: center;
-    /* height: 50px; */
 }
 
 .separator {
@@ -1612,18 +1400,8 @@ pre code {
     padding: 0 10px;
 }
 
-/* .separator::before,
-.separator::after {
-    content: "";
-    flex-grow: 1;
-} */
-
-
-
 .separator-wrapper hr {
-    /* Outros estilos */
     outline: none !important;
-    /* Remova esta linha se estiver presente */
 }
 
 .separator-wrapper hr:focus {
@@ -1631,20 +1409,27 @@ pre code {
 }
 
 .separator-selected {
-    /* outline: 2px solid blue; */
     border: none !important;
     outline: none !important;
     background-color: hsl(210 75% 50% / 1);
 }
 
-
 .separator-selected hr {
-    /* outline: 2px solid blue; */
-    /* border: 1px solid white !important; */
-
-    /* background-color: hsl(210 75% 50% / 1); */
     color: white !important;
     border-color: white !important;
+}
+
+/** end separator */
 
 
+
+
+#linkBoxInput{
+
+}
+
+.content-data input:focus,
+#linkBoxInput:focus {
+    outline: 2px solid #4A90E2;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
 }
