@@ -1,32 +1,31 @@
 import { SVGIcon } from "../../common/SVGIcon";
 import { BaseUIComponent } from "../../common/BaseUIComponent";
-import { Colors } from "../../../common/Colors";
 import { CustomEvents } from "@/common/CustomEvents";
 import { ICommandEventDetail } from "@/commands/ICommandEventDetail";
 import { Commands } from "@/commands/Commands";
 import { CustomUIEvents } from "@/common/CustomUIEvents";
 import { IUIEventDetail } from "@/commands/IUIEventDetail";
 import { ChangeColor } from "@/commands/UIActions/ChangeColor";
+import { DOMUtils } from "@/utilities/DOMUtils";
+import { DefaultJSEvents } from "@/common/DefaultJSEvents";
 
 export class ButtonGroupItem extends BaseUIComponent {
 
-    private id: string;
     private readonly command: string;
     private readonly showUI: boolean;
     private readonly icon: SVGIcon;
 
-    constructor(id: string, command: string, title: string, icon: SVGIcon) {
+    constructor(command: string, title: string, icon: SVGIcon) {
 
         super({
-            id: id,
             title: title,
             icon: icon
         });
 
-        this.id = id;
         this.command = command;
         this.showUI = command == Commands.toggleLink;
         this.icon = icon;
+
         this.attachEvents();
     }
 
@@ -45,12 +44,15 @@ export class ButtonGroupItem extends BaseUIComponent {
 
     attachEvents(): void {
 
-        this.htmlElement.addEventListener("click", async () => {
+        this.htmlElement.addEventListener(DefaultJSEvents.Click, async (event) => {
+
+            const block = DOMUtils.findClickedElementOrAncestorByClass(event, "block");
+
             document.dispatchEvent(new CustomEvent<ICommandEventDetail>(CustomEvents.emittedCommand, {
                 detail: {
                     command: this.command,
                     showUI: this.showUI,
-
+                    block: block
                 }
             }));
         });
@@ -72,7 +74,8 @@ export class ButtonGroupItem extends BaseUIComponent {
             const customEvent = event as CustomEvent<IUIEventDetail>;
             const details = customEvent.detail;
 
-            if(this.id == details.targetId){
+            if (this.id == details.targetId) {
+
                 this.icon.changeColor((details.action as ChangeColor).color)
 
                 // if (details[this.command as keyof IFormatCommand]) {
@@ -82,9 +85,26 @@ export class ButtonGroupItem extends BaseUIComponent {
                 // }
             }
         });
+
+
+        // document.addEventListener(CustomUIEvents.ColorChangeRequest, (event: Event) => {
+
+        //     const customEvent = event as CustomEvent<IUIEventDetail>;
+        //     const details = customEvent.detail;
+
+        //     if(this.id == details.targetId){
+        //         this.icon.changeColor((details.action as ChangeColor).color)
+
+        //         // if (details[this.command as keyof IFormatCommand]) {
+        //         //     this.icon.changeColor(Colors.IconActiveBlue);
+        //         // } else {
+        //         //     this.icon.changeColor(Colors.IconDefaultBlack);
+        //         // }
+        //     }
+        // });
     }
 
-    static create(id: string, command: string, title: string, icon: SVGIcon): ButtonGroupItem {
-        return new ButtonGroupItem(id, command, title, icon);
+    static create(command: string, title: string, icon: SVGIcon): ButtonGroupItem {
+        return new ButtonGroupItem(command, title, icon);
     }
 }
