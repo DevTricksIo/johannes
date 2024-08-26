@@ -27,8 +27,6 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
     actualFocusedCell: HTMLTableCellElement | null = null;
 
     tableOperationsService: ITableOperationsService;
-
-
     controller: AbortController;
 
 
@@ -56,12 +54,10 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
     }
 
     attachEvents(): void {
-        // Mouse events
         document.addEventListener(DefaultJSEvents.Mousedown, this.handleMouseDown.bind(this));
         document.addEventListener(DefaultJSEvents.Mousemove, this.handleMouseMove.bind(this));
         document.addEventListener(DefaultJSEvents.Mouseup, this.handleMouseUp.bind(this));
 
-        // Keyboard events
         document.addEventListener(DefaultJSEvents.Keydown, this.handleStartSelectionInCellKeyDown.bind(this));
         document.addEventListener(DefaultJSEvents.Keydown, this.handleCellSelectionContinuationOnKeyDown.bind(this));
         document.addEventListener(DefaultJSEvents.Keydown, this.handleKeyDown.bind(this));
@@ -77,7 +73,7 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
         const target = event.target as HTMLElement;
         const cell = target.closest(DOMElements.TD) as HTMLTableCellElement;
 
-        if (cell) {
+        if (cell && !cell.matches('.figure-embed-container td')) {
             console.log("MouseDown event on: ", event.target);
 
             event.stopImmediatePropagation();
@@ -131,7 +127,7 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
         const target = event.target as HTMLElement;
         const currentCell = target.closest(DOMElements.TD) as HTMLTableCellElement;
 
-        if (currentCell) {
+        if (currentCell && !currentCell.matches('.gist td')) {
 
             if (event.key == KeyboardKeys.Enter && !event.shiftKey && !event.ctrlKey && !event.metaKey && !event.altKey) {
                 event.stopImmediatePropagation();
@@ -154,7 +150,7 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
         const target = event.target as HTMLElement;
         const currentCell = target.closest(DOMElements.TD) as HTMLTableCellElement;
 
-        if (currentCell) {
+        if (currentCell && !currentCell.matches('.gist td')) {
             if (!event.repeat && event.key === KeyboardKeys.Shift) {
 
                 event.stopImmediatePropagation();
@@ -173,7 +169,7 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
             const target = event.target as HTMLElement;
             const currentCell = target.closest(DOMElements.TD) as HTMLTableCellElement;
 
-            if (currentCell) {
+            if (currentCell && !currentCell.matches('.gist td')) {
                 if (this.selectionMode == SelectionModes.Cell && event.shiftKey && event.key.startsWith('Arrow') && !event.repeat) {
 
                     event.stopImmediatePropagation();
@@ -213,6 +209,11 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
                 const actualSelection = this.normalizeText(selection.toString().trim());
                 const target = event.target as HTMLElement;
                 const currentCell = target.closest(DOMElements.TD) as HTMLTableCellElement;
+
+                if(currentCell.matches('.gist td')){
+                    return;
+                }
+
                 const currentCellText = this.normalizeText((currentCell.textContent || "").trim());
 
                 const { atStart, atEnd } = DOMUtils.getSelectionTextInfo(currentCell);
@@ -380,13 +381,8 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
         }
 
         this.resetAbortController();
-
-        // const a = this.areAllSelectedCellsSameBgColor(Colors.HiliteColorRed);
-
         this.focusStack.push(this.actualFocusedCell);
-
         this.changeToolbarPositionToBeClosedTo(this.actualFocusedCell);
-        // this.resetCheckedColor();
         this.processSelectionChangeEffects();
 
         super.show();
