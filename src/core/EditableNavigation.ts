@@ -66,7 +66,7 @@ export class EditableNavigation implements IEditableNavigation {
                     if (nextEditable) {
 
                         event.preventDefault();
-                        event.stopPropagation();
+                        event.stopImmediatePropagation();
 
                         if (event.key == Directions.ArrowUp || event.key == Directions.ArrowDown) {
                             this.placeCaretInSimilarPosition(currentEditable, nextEditable);
@@ -97,6 +97,7 @@ export class EditableNavigation implements IEditableNavigation {
     */
     private shouldSwitchEditable(element: HTMLElement, direction: Directions): boolean {
 
+        // DOMUtils.sanitizeContentEditable(element);
         const sel = window.getSelection();
 
         // If has selection ignore navigation 
@@ -105,7 +106,6 @@ export class EditableNavigation implements IEditableNavigation {
             if (range.endOffset != range.startOffset) {
                 return false;
             }
-
         }
 
         if (sel && sel.rangeCount > 0) {
@@ -165,6 +165,7 @@ export class EditableNavigation implements IEditableNavigation {
         const allEditables = Array.from(document.querySelectorAll('[contenteditable="true"]')) as HTMLElement[];
         const currentIndex = allEditables.indexOf(current);
 
+        // The table navigation behavior is a little different
         if (current.closest("td")) {
             const table = current.closest("table");
             const cell = current.closest("td");
@@ -180,11 +181,11 @@ export class EditableNavigation implements IEditableNavigation {
         if (direction === Directions.ArrowLeft || direction === Directions.ArrowRight) {
             nextIndex = direction === Directions.ArrowLeft ? currentIndex - 1 : currentIndex + 1;
         } else {
-            nextIndex = this.findVerticalEditable(current, allEditables, direction);
+            nextIndex = this.findVerticalEditableIndex(current, allEditables, direction);
         }
 
         if (nextIndex < 0 || nextIndex >= allEditables.length) {
-            return null; // Prevent wraparound
+            return null;
         }
 
         return allEditables[nextIndex] || null;
@@ -199,26 +200,42 @@ export class EditableNavigation implements IEditableNavigation {
     * @param {Directions} direction - The direction of navigation, either up or down.
     * @returns {number} The index of the closest vertical editable element or the current index if none are closer.
     */
-    private findVerticalEditable(current: HTMLElement, allEditables: HTMLElement[], direction: Directions): number {
+    // private findVerticalEditable(current: HTMLElement, allEditables: HTMLElement[], direction: Directions): number {
+    //     const currentIndex = allEditables.indexOf(current);
+    //     const currentRect = current.getBoundingClientRect();
+    //     let closestIndex = -1;
+    //     let closestDistance = Infinity;
+
+    //     allEditables.forEach((editable, index) => {
+    //         if (editable !== current) {
+    //             const rect = editable.getBoundingClientRect();
+    //             const verticalDistance = direction === Directions.ArrowUp ? currentRect.top - rect.bottom : rect.top - currentRect.bottom;
+    //             const horizontalDistance = Math.abs(currentRect.left - rect.left);
+
+    //             if (verticalDistance > 0 && (verticalDistance + horizontalDistance < closestDistance)) {
+    //                 closestDistance = verticalDistance + horizontalDistance;
+    //                 closestIndex = index;
+    //             }
+    //         }
+    //     });
+
+    //     return closestIndex === -1 ? currentIndex : closestIndex;
+    // }
+    private findVerticalEditableIndex(current: HTMLElement, allEditables: HTMLElement[], direction: Directions): number {
         const currentIndex = allEditables.indexOf(current);
-        const currentRect = current.getBoundingClientRect();
-        let closestIndex = -1;
-        let closestDistance = Infinity;
-
-        allEditables.forEach((editable, index) => {
-            if (editable !== current) {
-                const rect = editable.getBoundingClientRect();
-                const verticalDistance = direction === Directions.ArrowUp ? currentRect.top - rect.bottom : rect.top - currentRect.bottom;
-                const horizontalDistance = Math.abs(currentRect.left - rect.left);
-
-                if (verticalDistance > 0 && (verticalDistance + horizontalDistance < closestDistance)) {
-                    closestDistance = verticalDistance + horizontalDistance;
-                    closestIndex = index;
-                }
-            }
-        });
-
-        return closestIndex === -1 ? currentIndex : closestIndex;
+        let nextIndex = currentIndex;
+    
+        if (direction === Directions.ArrowUp) {
+            nextIndex--;
+        } else if (direction === Directions.ArrowDown) {
+            nextIndex++;
+        }
+    
+        if (nextIndex >= 0 && nextIndex < allEditables.length) {
+            return nextIndex;
+        }
+    
+        return -1;
     }
 
     /**
