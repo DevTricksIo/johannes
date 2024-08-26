@@ -119,7 +119,8 @@ export class DropdownMenuList extends BaseUIComponent {
     }
 
     handlerKeyDownEvent(event: KeyboardEvent) {
-        if (this.isVisible && /^[a-zA-Z]$/.test(event.key)) {
+        if (this.isVisible && /^[a-zA-Z]$/.test(event.key) && !event.altKey && !event.ctrlKey && !event.metaKey) {
+            event.preventDefault();
             this.filter += event.key;
             this.applyFilter();
         } else if (this.isVisible && event.key === KeyboardKeys.Backspace) {
