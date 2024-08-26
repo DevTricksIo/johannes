@@ -55,7 +55,7 @@ export class InputLinkBoxWrapper extends BaseUIComponent {
         // const button = document.createElement("button");
 
         this.props.button.classList.add("blue-button");
-        this.props.button.innerHTML = "Embed";
+        this.props.button.innerHTML = "Insert";
 
         shell.appendChild(this.props.button);
 
