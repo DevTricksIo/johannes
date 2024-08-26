@@ -247,4 +247,22 @@ export class TableUtils {
         }
     }
 
+
+
+    static moveFocusToBelowCell(table: HTMLTableElement, cell: HTMLTableCellElement): boolean {
+        const nextRow = cell.parentElement?.nextElementSibling as HTMLTableRowElement | null;
+        if (!nextRow) {
+            return false; // No cell below
+        }
+
+        const cellIndex = cell.cellIndex;
+        const belowCell = nextRow.cells[cellIndex];
+        if (!belowCell || !belowCell.isContentEditable) {
+            return false; // No editable cell below
+        }
+
+        belowCell.focus();
+        return true;
+    }
+
 }
