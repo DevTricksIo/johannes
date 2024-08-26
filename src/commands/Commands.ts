@@ -3,19 +3,35 @@ export enum Commands {
     toggleBold = "bold",
     toggleItalic = "italic",
     toggleHiliteColor = "hiliteColor",
+    changeCalloutBackgroundColor = "changeCalloutBackgroundColor",
     toggleForeColor = "foreColor",
     toggleInlineCode = "inlineCode",
     toggleLink = "createLink",
+    linkReadyToInsert = "linkReadyToInsert",
     toggleUnderline = "underline",
     toggleStrikeThrough = "strikeThrough",
     removeFormat = "removeFormat",
+    copySelected = "copySelected",
+    cutSelected = "cutSelected",
+    past = "past",
 
     /** Block operations commands */
     transformBlock = "transformBlock",
     duplicateBlock = "duplicateBlock",
     deleteBlock = "deleteBlock",
     createDefaultBlock = "createDefaultBlock",
+    focusOnNextBlock = "focusOnNextBlock",
     focusOnPreviousBlock = "focusOnPreviousBlock",
+    mergeWithPreviousBlock = "mergeWithPreviousBlock",
+    mergeWithNextBlock = "mergeWithNextBlock",
+    focusOnFirstBlock = "focusOnFirstBlock",
+    deleteBlockAndFocusOnPrevious = "deleteBlockAndFocusOnPrevious",
+    deleteBlockAndFocusOnNext = "deleteBlockAndFocusOnNext",
+
+    JustifyLeft = "justifyLeft",
+    JustifyCenter = "justifyCenter",
+    JustifyRight = "justifyRight",
+
     
     /** wildcard command context based*/
     insertNew = "insertNew",
@@ -32,5 +48,9 @@ export enum Commands {
     toggleCellHiliteColor = "toggleCellHiliteColor",
     removeColumn = "removeColumn",
     removeRow = "removeRow",
-    changeTableBorderColor = "changeTableBorderColor"
+    changeTableBorderColor = "changeTableBorderColor",
+
+
+
+    changeCodeBlockLanguage = "changeCodeBlockLanguage"
 }
