@@ -8,8 +8,6 @@ export class Title extends BaseUIComponent {
         super({
             value: value
         });
-
-        this.attachEvents();
     }
 
     init(): HTMLElement {
@@ -28,15 +26,6 @@ export class Title extends BaseUIComponent {
         htmlElement.appendChild(h1);
 
         return htmlElement;
-    }
-
-    attachEvents() {
-        this.htmlElement.addEventListener("keydown", (event) => {
-            if (event.key == "Enter") {
-                event.preventDefault();
-                document.dispatchEvent(new CustomEvent(CustomEvents.focusOnFirstRequested, {}));
-            }
-        });
     }
 
     static create(value: string | undefined): Title {
