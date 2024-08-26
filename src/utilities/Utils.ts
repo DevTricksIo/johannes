@@ -14,4 +14,23 @@ export class Utils {
             return hex.length === 1 ? "0" + hex : hex;
         }).join("");
     }
+
+    static isValidUrl(url: string): boolean {
+        const pattern = new RegExp(
+            '^(https?:\\/\\/)' +
+            '(?!-)[a-zA-Z\\d-]{1,63}(?<!-)\\.' +
+            '([a-zA-Z\\d-]+\\.)*[a-zA-Z]{2,}' +
+            '(\\:\\d{1,5})?' +
+            '(\\/[-a-zA-Z\\d%_.~+]*)*' +
+            '(\\?[-a-zA-Z\\d%_.~+=&]*)?' +
+            '(#[-a-zA-Z\\d_]*)?$',
+            'i'
+        );
+    
+        if (url.includes('../') || url.toLowerCase().includes('%2e%2e') || url.toLowerCase().includes('%00')) {
+            return false;
+        }
+    
+        return pattern.test(url);
+    }
 }
