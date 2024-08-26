@@ -1432,3 +1432,8 @@ pre code {
     outline: 2px solid #4A90E2;
     box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
 }
+
+
+.d-none{
+    display: none !important;
+}
