@@ -68,6 +68,8 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
         super.attachEvents();
     }
 
+
+
     private handleMouseDown(event: MouseEvent) {
 
         const target = event.target as HTMLElement;
@@ -210,7 +212,7 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
                 const target = event.target as HTMLElement;
                 const currentCell = target.closest(DOMElements.TD) as HTMLTableCellElement;
 
-                if(currentCell.matches('.gist td')){
+                if (currentCell.matches('.gist td')) {
                     return;
                 }
 
@@ -385,9 +387,17 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
         this.changeToolbarPositionToBeClosedTo(this.actualFocusedCell);
         this.processSelectionChangeEffects();
 
+        const block = this.actualFocusedCell.closest(".block");
+        let blockToolbar: HTMLElement | null = null;
+
+        if (block) {
+            blockToolbar = block.querySelector(".block-toolbar") as HTMLElement;
+            blockToolbar.classList.add("d-none");
+        }
+
         super.show();
 
-        this.actualFocusedCell.addEventListener(DefaultJSEvents.Blur, this.clearAndHide, { signal: this.controller.signal });
+        this.actualFocusedCell.addEventListener(DefaultJSEvents.Blur, () => this.clearAndHide(blockToolbar), { signal: this.controller.signal });
     }
 
 
@@ -496,7 +506,12 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
         }
     }
 
-    clearAndHide(): void {
+    clearAndHide(blockToolbar: HTMLElement | null = null): void {
+
+        if (blockToolbar) {
+            blockToolbar.classList.remove("d-none");
+        }
+
         this.clearAll();
         this.hide();
     }
