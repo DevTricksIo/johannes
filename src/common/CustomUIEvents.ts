@@ -4,5 +4,7 @@ export enum CustomUIEvents {
     ShowHideActiveButton = "ShowHideActiveButton",
     ResetActiveButtons = "ResetActiveButtons",
     CloseElement = "HideComponent",
+    ShowElement = "ShowElement",
+    ChangeBlockToolbarLanguage = "ChangeBlockToolbarLanguage"
     
 }

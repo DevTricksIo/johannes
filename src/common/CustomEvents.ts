@@ -14,6 +14,7 @@ export enum CustomEvents {
     
     buttonGroupItemClicked = "buttonGroupItemClicked",
     focusOnFirstRequested = "focusOnFirstRequested",
+    pressedEnterOnTitle = "pressedEnterOnTitle",
     
     transformBlockRequested = "transformBlockRequested",
     duplicateBlockRequested = "duplicateBlockRequested",
@@ -33,6 +34,7 @@ export enum CustomEvents {
     emittedCommand = "emittedCommand",
     blockTypeChanged = "blockTypeChanged",
     blockDeleted = "blockDeleted",
+    blockCloned = "blockCloned",
     tableCellChanged = "tableCellChanged",
 
 
