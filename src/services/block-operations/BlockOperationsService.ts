@@ -11,6 +11,7 @@ import { EventEmitter } from "@/commands/EventEmitter";
 import { Commands } from "@/commands/Commands";
 import { Utils } from "@/utilities/Utils";
 import { CommonClasses } from "@/common/CommonClasses";
+import { ICommandEventDetail } from "@/commands/ICommandEventDetail";
 
 export class BlockOperationsService implements IBlockOperationsService {
 
@@ -485,7 +486,7 @@ export class BlockOperationsService implements IBlockOperationsService {
             blockElement = this.focusStack.peek()?.closest(".block") || null;
         }
 
-        if(!element){
+        if (!element) {
             element = DOMUtils.findClosestAncestorOfActiveElementByClass(".block");
         }
 
@@ -659,7 +660,6 @@ export class BlockOperationsService implements IBlockOperationsService {
 
             const placeholder = focusStackToAdd?.querySelector(".content-placeholder");
             if (placeholder) {
-                console.log("opaaaaaa");
                 this.focusStack.push(placeholder as HTMLElement);
             }
             EventEmitter.emitShowElementEvent("mediaInputter");
@@ -669,6 +669,16 @@ export class BlockOperationsService implements IBlockOperationsService {
         const blockToolbar = blockElement?.querySelector(".block-toolbar-wrapper");
         if (blockToolbar) {
             blockToolbar.remove();
+        }
+
+        if (type == ElementFactoryService.ELEMENT_TYPES.SEPARATOR) {
+            const customEvent = new CustomEvent<ICommandEventDetail>(CustomEvents.emittedCommand, {
+                detail: {
+                    command: Commands.createDefaultBlock
+                }
+            });
+
+            document.dispatchEvent(customEvent);
         }
 
 
@@ -1454,7 +1464,7 @@ export class BlockOperationsService implements IBlockOperationsService {
 
         const calloutDiv = block.querySelector(".callout > div");
 
-        if(calloutDiv){
+        if (calloutDiv) {
             DOMUtils.removeClassesWithPrefix(calloutDiv as Element, "callout-background-");
             calloutDiv.classList.add(color);
         }
