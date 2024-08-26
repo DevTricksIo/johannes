@@ -7,6 +7,7 @@ import { ICommandEventDetail } from "@/commands/ICommandEventDetail";
 import { CustomEvents } from "@/common/CustomEvents";
 import { Commands } from "@/commands/Commands";
 import { IUIEventDetail } from "@/commands/IUIEventDetail";
+import { Utils } from "@/utilities/Utils";
 
 export class InputLinkBoxWrapper extends BaseUIComponent {
 
@@ -148,7 +149,7 @@ export class InputLinkBoxWrapper extends BaseUIComponent {
         const url = (this.inputLinkBox.htmlElement as HTMLInputElement).value;
         const urlWithProtocol = url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
 
-        const isValid = this.isValidUrl(urlWithProtocol);
+        const isValid = Utils.isValidUrl(urlWithProtocol);
 
         if (isValid) {
             this.hide();
@@ -282,16 +283,6 @@ export class InputLinkBoxWrapper extends BaseUIComponent {
         });
         this.highlights = [];
     }
-
-
-    private isValidUrl(url: string) {
-        const pattern = new RegExp('^(https?:\\/\\/)?' +
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|' +
-            '((\\d{1,3}\\.){3}\\d{1,3}))' +
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
-            '(\\?[;&a-z\\d%_.~+=-]*)?' +
-            '(\\#[-a-z\\d_]*)?$', 'i');
-        return !!pattern.test(url);
-    }
+        
 
 }
