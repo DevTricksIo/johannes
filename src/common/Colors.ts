@@ -28,3 +28,12 @@ export enum Colors {
     OriginalTableColor = "#84888d"
 
 }
+
+export enum ColorsNames {
+    CalloutBackgroundRed = "callout-background-red",
+    CalloutBackgroundGreen = "callout-background-green",
+    CalloutBackgroundBlue = "callout-background-blue",
+    CalloutBackgroundYellow = "callout-background-yellow",
+    CalloutBackgroundGrey = "callout-background-grey",
+    CalloutBackgroundNone = "callout-background-none",
+}
