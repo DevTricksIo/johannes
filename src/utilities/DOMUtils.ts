@@ -1,3 +1,5 @@
+import { Utils } from "./Utils";
+
 export class DOMUtils {
 
 
@@ -145,6 +147,17 @@ export class DOMUtils {
         }
 
         parentElement.insertBefore(clonedElement, element.nextSibling);
+
+        if (clonedElement.id) {
+            const match = clonedElement.id.match(/^(.+?)-/);
+
+            if (match) {
+                const prefix = match[1];
+                clonedElement.id = prefix + '-' + Utils.generateUniqueId();
+            } else {
+                clonedElement.id = Utils.generateUniqueId();
+            }
+        }
 
         return clonedElement;
     }
@@ -482,19 +495,21 @@ export class DOMUtils {
     * This approach is crucial for editing interfaces, ensuring that user interaction is intuitive and immediately responsive.
     */
     static placeCursorAtStartOfEditableElement(editableElement: HTMLElement) {
-        if (editableElement.isContentEditable) {
-            editableElement.focus();
+        setTimeout(() => {
+            if (editableElement.isContentEditable) {
+                editableElement.focus();
 
-            const range = document.createRange();
-            range.selectNodeContents(editableElement);
-            range.collapse(true);
+                const range = document.createRange();
+                range.selectNodeContents(editableElement);
+                range.collapse(true);
 
-            const selection = window.getSelection();
-            selection?.removeAllRanges();
-            selection?.addRange(range);
-        } else {
-            console.warn("The element is not editable.");
-        }
+                const selection = window.getSelection();
+                selection?.removeAllRanges();
+                selection?.addRange(range);
+            } else {
+                console.warn("The element is not editable.");
+            }
+        });
     }
 
     /**
@@ -609,5 +624,466 @@ export class DOMUtils {
 
         return lastSlashPosition;
     }
+
+
+
+    static findClickedElementOrAncestorByDataContentType(event: MouseEvent, dataContentType: string): HTMLElement | null {
+        let clickedElement = event.target as HTMLElement;
+
+        if (clickedElement.nodeType === Node.TEXT_NODE) {
+            clickedElement = clickedElement.parentElement!;
+        }
+
+        if (clickedElement.dataset.contentType === dataContentType) {
+            return clickedElement;
+        }
+
+        let currentElement = clickedElement.parentElement;
+        while (currentElement) {
+            if (currentElement.dataset.contentType === dataContentType) {
+                return currentElement;
+            }
+            currentElement = currentElement.parentElement;
+        }
+
+        return null;
+    }
+
+    static findClickedElementOrAncestorById(event: MouseEvent, id: string): HTMLElement | null {
+        let clickedElement = event.target as HTMLElement;
+
+        if (clickedElement.nodeType === Node.TEXT_NODE) {
+            clickedElement = clickedElement.parentElement!;
+        }
+
+        if (clickedElement.id === id) {
+            return clickedElement;
+        }
+
+        let currentElement = clickedElement.parentElement;
+        while (currentElement) {
+            if (currentElement.id === id) {
+                return currentElement;
+            }
+            currentElement = currentElement.parentElement;
+        }
+
+        return null;
+    }
+
+    static findClickedElementOrAncestorByClass(event: MouseEvent, classKey: string): HTMLElement | null {
+        let clickedElement = event.target as HTMLElement;
+
+        if (clickedElement.nodeType === Node.TEXT_NODE) {
+            clickedElement = clickedElement.parentElement!;
+        }
+
+        if (clickedElement.classList.contains(classKey)) {
+            return clickedElement;
+        }
+
+        let currentElement = clickedElement.parentElement;
+        while (currentElement) {
+            if (currentElement.classList.contains(classKey)) {
+                return currentElement;
+            }
+            currentElement = currentElement.parentElement;
+        }
+
+        return null;
+    }
+
+
+    static isEventTargetDescendantOf(event: KeyboardEvent, selector: string): boolean {
+        let target: Element | null = event.target as Element;
+
+        if (!(event.target instanceof Element)) {
+            return false;
+        }
+
+        while (target && target !== document.documentElement) {
+            if (target.matches(selector)) {
+                return true;
+            }
+            target = target.parentElement;
+        }
+
+        return false;
+    }
+
+    static getParentTargetBySelector(event: MouseEvent, selector: string): Element | null {
+        let target: Element | null = (event.target instanceof Element) ? event.target : event.target instanceof Node ? event.target.parentElement : null;
+
+        if (!target) {
+            return null;
+        }
+
+        while (target && target !== document.documentElement) {
+            if (target.matches(selector)) {
+                return target;
+            }
+            target = target.parentElement;
+        }
+
+        return null;
+    }
+
+    static getParentFromSelection(selector: string): Element | null {
+        const selection: Selection | null = window.getSelection();
+    
+        if (!selection || selection.rangeCount === 0) {
+            return null;
+        }
+    
+        let range: Range = selection.getRangeAt(0);
+        let commonAncestorContainer: Node = range.commonAncestorContainer;
+    
+        if (commonAncestorContainer instanceof Element && commonAncestorContainer.matches(selector)) {
+            return commonAncestorContainer;
+        }
+    
+        let parentElement: Element | null = commonAncestorContainer instanceof Element
+            ? commonAncestorContainer
+            : commonAncestorContainer.parentElement;
+    
+        while (parentElement && parentElement !== document.documentElement) {
+            if (parentElement.matches(selector)) {
+                return parentElement;
+            }
+            parentElement = parentElement.parentElement;
+        }
+    
+        return null;
+    }
+
+    static removeClassesWithPrefix(element: Element, prefix: string) {
+        const classesToRemove = Array.from(element.classList).filter(cls => cls.startsWith(prefix));
+        classesToRemove.forEach(cls => element.classList.remove(cls));
+    }
+
+    static isTargetDescendantOfSelector(event: Event, selector: string): boolean {
+        let target: HTMLElement | null = null;
+
+        if (event.target instanceof HTMLElement) {
+            target = event.target as HTMLElement;
+        } else if (event.target instanceof Text) {
+            target = (event.target as Text).parentElement;
+        }
+
+        if (!target) {
+            return false;
+        }
+
+        const ancestor = target.closest(selector);
+
+        return ancestor !== null;
+    }
+
+    /**
+    * Searches for the first element that matches a specified selector, checking the element itself and its descendants.
+    * @param element The root element to start the search from, included in the search.
+    * @param selector The CSS selector to match against.
+    * @returns The first element that matches the selector, including the element itself, or null if no match is found.
+    */
+    static querySelectorIncludingSelf(element: Element, selector: string): Element | null {
+        // First, check if the element itself matches the selector
+        if (element.matches(selector)) {
+            return element;
+        }
+        // If not, use the standard querySelector to find a matching descendant
+        return element.querySelector(selector);
+    }
+
+    // static sanitizeContentEditable(element: HTMLElement): void {
+    //     const content = element.innerHTML;
+    //     if (content.endsWith('<br>')) {
+    //         element.innerHTML = content.slice(0, -4);
+    //     }
+    // }
+
+    static sanitizeContentEditable(element: HTMLElement): void {
+        const content = element.innerHTML;
+        const selection = window.getSelection();
+
+        if (!selection) {
+            return;
+        }
+
+        let shouldRestoreCaret = false;
+        let caretPos = 0;
+        if (selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const rangeEndsAtContentEnd = range.endOffset === element.innerText.length;
+
+            if (rangeEndsAtContentEnd && content.endsWith('<br>')) {
+                shouldRestoreCaret = true;
+                caretPos = range.endOffset; // Manter a posição original do caret
+            }
+        }
+
+        // Remover <br> final, se existir, usando manipulação do DOM
+        if (content.endsWith('<br>')) {
+            const lastChild = element.lastChild;
+            if (lastChild && lastChild.nodeName === 'BR') {
+                element.removeChild(lastChild);
+            }
+        }
+
+        if (shouldRestoreCaret) {
+            const range = new Range();
+            const textNodes = this.getTextNodesIn(element);
+            let charCount = 0;
+
+            for (const textNode of textNodes) {
+                const nodeLength = textNode.length;
+                if (charCount + nodeLength >= caretPos) {
+                    range.setStart(textNode, caretPos - charCount);
+                    range.setEnd(textNode, caretPos - charCount);
+                    break;
+                }
+                charCount += nodeLength;
+            }
+
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+    }
+
+    private static getTextNodesIn(node: Node): Text[] {
+        let textNodes: Text[] = [];
+        if (node.nodeType === Node.TEXT_NODE) {
+            textNodes.push(node as Text);
+        } else {
+            const children = node.childNodes;
+            for (let i = 0; i < children.length; i++) {
+                textNodes = textNodes.concat(this.getTextNodesIn(children[i]));
+            }
+        }
+        return textNodes;
+    }
+
+
+
+    static getPreviousContentEditable(element: HTMLElement): HTMLElement | null {
+        const allContentEditables: HTMLElement[] = Array.from(document.querySelectorAll('[contenteditable="true"]')) as HTMLElement[];
+        const index = allContentEditables.indexOf(element);
+        if (index > 0) {
+            return allContentEditables[index - 1];
+        }
+        return null;
+    }
+
+    static getNextContentEditable(element: HTMLElement): HTMLElement | null {
+        const allContentEditables: HTMLElement[] = Array.from(document.querySelectorAll('[contenteditable="true"]')) as HTMLElement[];
+
+        const index = allContentEditables.indexOf(element);
+        if (index < allContentEditables.length - 1) {
+            return allContentEditables[index + 1];
+        }
+        return null;
+    }
+
+
+    static getActiveContentEditable(): HTMLElement | null {
+        const activeElement = document.activeElement;
+
+        if (!activeElement) {
+            return null;
+        }
+
+        if (activeElement instanceof HTMLElement && activeElement.isContentEditable) {
+            return activeElement;
+        }
+
+        let parent = activeElement.parentElement;
+        while (parent) {
+            if (parent.isContentEditable) {
+                return parent;
+            }
+            parent = parent.parentElement;
+        }
+
+        return DOMUtils.findContentEditableInDescendants(activeElement);
+    }
+
+
+    private static findContentEditableInDescendants(element: Element): HTMLElement | null {
+        if ((element as HTMLElement).isContentEditable) {
+            return element as HTMLElement;
+        }
+        for (let i = 0; i < element.children.length; i++) {
+            const child = element.children[i];
+            const result = DOMUtils.findContentEditableInDescendants(child);
+            if (result) {
+                return result;
+            }
+        }
+        return null;
+    }
+
+    static saveCaretPosition2d(element: HTMLElement): { charIndex: number, horizontalPos: number } {
+        const selection = window.getSelection();
+        if (selection && selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const rect = range.getBoundingClientRect();
+            const charIndex = Array.from(element.textContent || '').slice(0, selection.anchorOffset).length;
+            return { charIndex, horizontalPos: rect.left };
+        }
+        return { charIndex: 0, horizontalPos: 0 };
+    }
+
+    static restoreCaretPosition2d(element: HTMLElement, position: { charIndex: number, horizontalPos: number }): void {
+        setTimeout(() => {
+            const selection = window.getSelection();
+            if (!selection) return;
+
+            const range = document.createRange();
+            const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+            let node = walker.nextNode();
+            let bestNode = node;
+            let bestOffset = 0;
+            let bestDistance = Infinity;
+
+            while (node) {
+                if (!node.nodeValue) continue;
+
+                for (let i = 0; i <= node.nodeValue.length; i++) {
+                    range.setStart(node, i);
+                    range.collapse(true);
+
+                    const testRect = range.getBoundingClientRect();
+                    const horizontalDistance = Math.abs(testRect.left - position.horizontalPos);
+
+                    if (horizontalDistance < bestDistance) {
+                        bestDistance = horizontalDistance;
+                        bestNode = node;
+                        bestOffset = i;
+
+                        // If it's close enough, break early
+                        if (horizontalDistance < 5) break;
+                    }
+                }
+
+                node = walker.nextNode();
+            }
+
+            if (bestNode) {
+                range.setStart(bestNode, bestOffset);
+                range.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        });
+    }
+
+
+    static saveCaretPosition3d(element: HTMLElement): { charIndex: number, horizontalPos: number, verticalPos: number } {
+        const selection = window.getSelection();
+        if (selection && selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const rect = range.getBoundingClientRect();
+            const charIndex = Array.from(element.textContent || '').slice(0, selection.anchorOffset).length;
+            return { charIndex, horizontalPos: rect.left, verticalPos: rect.top };
+        }
+        return { charIndex: 0, horizontalPos: 0, verticalPos: 0 };
+    }
+
+    static restoreCaretPosition3d(element: HTMLElement, position: { charIndex: number, horizontalPos: number, verticalPos: number }): void {
+        setTimeout(() => {
+            const selection = window.getSelection();
+            if (!selection) return;
+
+            const range = document.createRange();
+            const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+            let node = walker.nextNode();
+            let bestNode = node;
+            let bestOffset = 0;
+            let bestDistance = Infinity;
+
+            while (node) {
+                if (!node.nodeValue) continue;
+
+                for (let i = 0; i <= node.nodeValue.length; i++) {
+                    range.setStart(node, i);
+                    range.collapse(true);
+
+                    const testRect = range.getBoundingClientRect();
+                    const horizontalDistance = Math.abs(testRect.left - position.horizontalPos);
+                    const verticalDistance = Math.abs(testRect.top - position.verticalPos);
+                    const totalDistance = Math.sqrt(horizontalDistance ** 2 + verticalDistance ** 2);  // Use Euclidean distance
+
+                    if (totalDistance < bestDistance) {
+                        bestDistance = totalDistance;
+                        bestNode = node;
+                        bestOffset = i;
+
+                        // If it's close enough, break early
+                        if (totalDistance < 5) break;
+                    }
+                }
+
+                node = walker.nextNode();
+            }
+
+            if (bestNode) {
+                range.setStart(bestNode, bestOffset);
+                range.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        });
+    }
+
+    // static mergeAndNormalizeInlineElements(element: HTMLElement): void {
+    //     if (!element) return;
+
+    //     element.normalize();
+
+    //     const mergeInlineElements = (node: ChildNode) => {
+    //         let currentNode = node.firstChild;
+    //         while (currentNode) {
+    //             if (currentNode.nodeType === Node.ELEMENT_NODE && ['SPAN', 'CODE', 'EM', 'STRONG', 'B', 'I'].includes(currentNode.nodeName)) {
+    //                 mergeInlineElements(currentNode);
+
+    //                 let nextNode = currentNode.nextSibling;
+    //                 while (nextNode && nextNode.nodeType === Node.ELEMENT_NODE && nextNode.nodeName === currentNode.nodeName) {
+    //                     while (nextNode.firstChild) {
+    //                         currentNode.appendChild(nextNode.firstChild);
+    //                     }
+    //                     const nodeToRemove = nextNode;
+    //                     nextNode = nextNode.nextSibling;
+    //                     nodeToRemove.parentNode?.removeChild(nodeToRemove);
+    //                 }
+    //             }
+    //             currentNode = currentNode.nextSibling;
+    //         }
+    //     };
+
+    //     mergeInlineElements(element);
+    // }
+
+    static mergeInlineElements(element: HTMLElement): void {
+        element.normalize();  // Normaliza os nós de texto primeiro
+
+        const children: NodeListOf<ChildNode> = element.childNodes;
+        for (let i = 0; i < children.length; i++) {
+            if (children[i].nodeType === Node.ELEMENT_NODE) {
+                const childElement = children[i] as HTMLElement;
+                if (['SPAN', 'CODE', 'EM', 'STRONG', 'B', 'I'].includes(childElement.nodeName)) {
+                    while (i < children.length - 1 && childElement.nextSibling && childElement.nextSibling.nodeType === Node.ELEMENT_NODE && childElement.nodeName === (childElement.nextSibling as HTMLElement).nodeName) {
+                        while ((childElement.nextSibling as HTMLElement).childNodes.length > 0) {
+                            childElement.appendChild((childElement.nextSibling as HTMLElement).firstChild!);
+                        }
+                        element.removeChild(childElement.nextSibling);
+                    }
+                    DOMUtils.mergeInlineElements(childElement);
+                }
+            }
+        }
+    }
+
+
+
+
 
 }
