@@ -11,7 +11,7 @@ export class QuickMenuEmpty extends BaseUIComponent {
 
         const htmlEmptyIndicator = document.createElement('span');
 
-        htmlEmptyIndicator.innerText = 'No results';
+        htmlEmptyIndicator.innerText = 'No matching block types found.';
         htmlEmptyIndicator.classList.add('empty-block-options');
         htmlEmptyIndicator.style.padding = '10px';
         htmlEmptyIndicator.style.color = 'rgba(55, 53, 47, 0.65)';
