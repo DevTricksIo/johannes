@@ -8,6 +8,7 @@ import { DOMUtils } from "@/utilities/DOMUtils";
 import { EmbedTool, EmbedTypes } from "@/core/EmbedTool";
 import { CommonClasses } from "@/common/CommonClasses";
 import { ContentTypes } from "@/common/ContentTypes";
+import { Utils } from "@/utilities/Utils";
 
 export class MediaInputter extends BaseUIComponent {
 
@@ -122,16 +123,18 @@ export class MediaInputter extends BaseUIComponent {
         input.style.backgroundColor = "";
     }
 
-    embedGeneric(input: HTMLInputElement): void {
+    async embedGeneric(input: HTMLInputElement): Promise<void> {
 
         const stringURL = input.value;
-
         const focusedElement = this.focusStack.peek();
-
         const contentType = focusedElement?.closest(`.${CommonClasses.ContentElement}`)?.getAttribute("data-content-type");
 
         try {
             const url = new URL(stringURL);
+
+            if(!Utils.isValidUrl(url.toString())){
+                throw new Error("Invalid URL");
+            }
 
             if (!focusedElement) {
                 console.error("not element found");
@@ -139,7 +142,7 @@ export class MediaInputter extends BaseUIComponent {
             }
 
             if (contentType == ContentTypes.Image) {
-                EmbedTool.embedImage(stringURL, focusedElement);
+                await EmbedTool.embedImage(stringURL, focusedElement);
             } else if (contentType == ContentTypes.Iframe) {
 
                 const embedType = EmbedTool.determineEmbedType(stringURL);
