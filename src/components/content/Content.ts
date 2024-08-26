@@ -132,7 +132,7 @@ export class Content extends BaseUIComponent {
         });
 
         //Focus on P when load
-        document.addEventListener(DefaultJSEvents.DOMContentLoaded, function () {
+        window.addEventListener("load", () => {
             const editor = document.querySelector('.johannes-editor');
 
             if (editor) {
@@ -303,7 +303,7 @@ export class Content extends BaseUIComponent {
 
                 if (DOMUtils.isEventTargetDescendantOf(event, ".johannes-code")) {
                     event.preventDefault();
-                    const tabCharacter = '\u00a0\u00a0\u00a0\u00a0';  // Representa 4 espaços (ou você pode usar um verdadeiro caractere de tabulação '\t' se preferir)
+                    const tabCharacter = '\u00a0\u00a0\u00a0\u00a0';
                     document.execCommand('insertText', false, tabCharacter);
                 }
             }
@@ -317,9 +317,7 @@ export class Content extends BaseUIComponent {
     sanitizeElementEventHandler(event: Event): void {
         const target = event.target as HTMLElement;
 
-        // Verifica se o elemento alvo é contenteditable
         if (target instanceof HTMLElement && target.contentEditable === "true") {
-            console.log("lipou");
             DOMUtils.sanitizeContentEditable(target);
         }
     }
