@@ -171,11 +171,6 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
         this.attachUIEvent();
 
         // Prevent focus change when clicking on this element
-        this.htmlElement.addEventListener(DefaultJSEvents.Click, (event) => {
-            event.preventDefault();
-        });
-
-        // Prevent focus change when clicking on this element
         this.htmlElement.addEventListener(DefaultJSEvents.Mousedown, (event) => {
             event.preventDefault();
         });
