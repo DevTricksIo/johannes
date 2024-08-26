@@ -7,6 +7,7 @@ import { ITextOperationsService } from "@/services/text-operations/ITextOperatio
 import { DependencyContainer } from "@/core/DependencyContainer";
 import { Colors } from "@/common/Colors";
 import { ButtonIDs } from "@/core/ButtonIDs";
+import { KeyboardKeys } from "@/common/KeyboardKeys";
 
 export class TextContextFloatingToolbar extends FloatingToolbar {
 
@@ -14,6 +15,9 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
     private static instance: TextContextFloatingToolbar;
     private textOperationsService: ITextOperationsService;
     private initialRect: DOMRect | null = null;
+
+    private lockedHide = false;
+    debounceTimer: any = null;
 
     private constructor(textOperationsService: ITextOperationsService) {
 
@@ -47,50 +51,58 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
         // which is not the intended trigger since we only want to react to actual changes in selection.
         // If the selection is empty or null, the function returns early, effectively ignoring
         // these unwanted `selectionchange` events during typing.
-        const selection = document.getSelection();
-        if (!selection || selection?.toString().trim() === '') {
-            return;
-        }
+        // const selection = document.getSelection();
+        // if (!selection || selection.isCollapsed || selection.toString().trim.length == 0) {
+        //     return;
+        // }
+        // const txt = selection.toString();
+        // console.log(txt);
 
-        EventEmitter.emitResetActiveButtonsElementEvent("hiliteColor");
-        EventEmitter.emitResetActiveButtonsElementEvent("foreColor");
+        setTimeout(() => {
 
-        const isBold: boolean = this.textOperationsService.queryCommandStateA('bold');
-        const isItalic: boolean = this.textOperationsService.queryCommandStateA('italic');
-        const isUnderline: boolean = this.textOperationsService.queryCommandStateA('underline');
-        const isStrikeThrough: boolean = this.textOperationsService.queryCommandStateA('strikeThrough');
+            EventEmitter.emitResetActiveButtonsElementEvent("hiliteColor");
+            EventEmitter.emitResetActiveButtonsElementEvent("foreColor");
 
-        const hiliteColors: { [key: string]: boolean } = {};
-        hiliteColors[Colors.HiliteColorRed] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorRed);
-        hiliteColors[Colors.HiliteColorGreen] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorGreen);
-        hiliteColors[Colors.HiliteColorBlue] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorBlue);
-        hiliteColors[Colors.HiliteColorYellow] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorYellow);
-        hiliteColors[Colors.HiliteColorGrey] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorGrey);
+            const isLink: boolean = this.textOperationsService.queryCommandState('createLink');
+            const isBold: boolean = this.textOperationsService.queryCommandState('bold');
+            const isItalic: boolean = this.textOperationsService.queryCommandState('italic');
+            const isUnderline: boolean = this.textOperationsService.queryCommandState('underline');
+            const isInlineCode: boolean = this.textOperationsService.queryCommandState("inlineCode");
+            const isStrikeThrough: boolean = this.textOperationsService.queryCommandState('strikeThrough');
 
-        const foreColors: { [key: string]: boolean } = {};
-        foreColors[Colors.ForeColorRed] = this.textOperationsService.queryForeColor(Colors.ForeColorRed);
-        foreColors[Colors.ForeColorGreen] = this.textOperationsService.queryForeColor(Colors.ForeColorGreen);
-        foreColors[Colors.ForeColorBlue] = this.textOperationsService.queryForeColor(Colors.ForeColorBlue);
-        foreColors[Colors.ForeColorYellow] = this.textOperationsService.queryForeColor(Colors.ForeColorYellow);
-        foreColors[Colors.ForeColorGrey] = this.textOperationsService.queryForeColor(Colors.ForeColorGrey);
+            const hiliteColors: { [key: string]: boolean } = {};
+            hiliteColors[Colors.HiliteColorRed] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorRed);
+            hiliteColors[Colors.HiliteColorGreen] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorGreen);
+            hiliteColors[Colors.HiliteColorBlue] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorBlue);
+            hiliteColors[Colors.HiliteColorYellow] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorYellow);
+            hiliteColors[Colors.HiliteColorGrey] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorGrey);
 
+            const foreColors: { [key: string]: boolean } = {};
+            foreColors[Colors.ForeColorRed] = this.textOperationsService.queryForeColor(Colors.ForeColorRed);
+            foreColors[Colors.ForeColorGreen] = this.textOperationsService.queryForeColor(Colors.ForeColorGreen);
+            foreColors[Colors.ForeColorBlue] = this.textOperationsService.queryForeColor(Colors.ForeColorBlue);
+            foreColors[Colors.ForeColorYellow] = this.textOperationsService.queryForeColor(Colors.ForeColorYellow);
+            foreColors[Colors.ForeColorGrey] = this.textOperationsService.queryForeColor(Colors.ForeColorGrey);
 
-        Object.entries(hiliteColors).forEach(([color, active]) => {
-            if (active) {
-                EventEmitter.emitShowHideActiveElementEvent("hiliteColor", color, "show");
-            }
-        });
+            Object.entries(hiliteColors).forEach(([color, active]) => {
+                if (active) {
+                    EventEmitter.emitShowHideActiveElementEvent("hiliteColor", color, "show");
+                }
+            });
 
-        Object.entries(foreColors).forEach(([color, active]) => {
-            if (active) {
-                EventEmitter.emitShowHideActiveElementEvent("foreColor", color, "show");
-            }
-        });
+            Object.entries(foreColors).forEach(([color, active]) => {
+                if (active) {
+                    EventEmitter.emitShowHideActiveElementEvent("foreColor", color, "show");
+                }
+            });
 
-        this.emitChangeComponentColorEvent(isBold, ButtonIDs.Bold);
-        this.emitChangeComponentColorEvent(isItalic, ButtonIDs.Italic);
-        this.emitChangeComponentColorEvent(isUnderline, ButtonIDs.Underline);
-        this.emitChangeComponentColorEvent(isStrikeThrough, ButtonIDs.Strikethrough);
+            this.emitChangeComponentColorEvent(isLink, ButtonIDs.Link);
+            this.emitChangeComponentColorEvent(isBold, ButtonIDs.Bold);
+            this.emitChangeComponentColorEvent(isItalic, ButtonIDs.Italic);
+            this.emitChangeComponentColorEvent(isInlineCode, ButtonIDs.InlineCode);
+            this.emitChangeComponentColorEvent(isUnderline, ButtonIDs.Underline);
+            this.emitChangeComponentColorEvent(isStrikeThrough, ButtonIDs.Strikethrough);
+        }, 20);
     }
 
     private emitChangeComponentColorEvent(active: boolean, targetId: string) {
@@ -101,107 +113,63 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
         }
     }
 
+    logSelectionChange(event: Event) {
+        const selection = document.getSelection();
+        if (selection && !selection.isCollapsed) {
+
+            // event.stopImmediatePropagation();
+            this.processSelectionChangeEffects();
+            console.log("passou no log selection");
+        }
+    }
+
     attachEvents(): void {
 
-
-        document.addEventListener(DefaultJSEvents.SelectionChange, this.processSelectionChangeEffects.bind(this));
-
-        // document.addEventListener('keyup', (event) => {
-        //     if (event.key === "Shift" || event.key === "Control") {
-
-        //         if (window.getSelection()!.toString().trim() !== '') {
-
-        //             if (DOMUtils.isSelectedTextDescendantOf(".title")) {
-        //                 return;
-        //             }
-
-        //             event.preventDefault();
-        //             event.stopPropagation();
-
-        //             this.show();
-        //         }
-        //     }
-        // });
-
-        // document.addEventListener('mouseup', (event) => {
-        //     if (!this.isVisible) {
-
-        //         // wait the selection to be reflected in the DOM
-        //         requestAnimationFrame(() => {
-
-        //             if (window.getSelection()!.toString().trim() !== '') {
-
-        //                 if (DOMUtils.isSelectedTextDescendantOf(".title")) {
-        //                     return;
-        //                 }
-
-        //                 event.preventDefault();
-        //                 event.stopPropagation();
-
-        //                 this.show();
-        //             }
-        //         });
-        //     }
-        // });
-
-
-        // document.addEventListener('onselection', (event) => {
-        //     if (!this.isVisible) {
-
-        //         // wait the selection to be reflected in the DOM
-        //         requestAnimationFrame(() => {
-
-        //             if (window.getSelection()!.toString().trim() !== '') {
-
-        //                 if (DOMUtils.isSelectedTextDescendantOf(".title")) {
-        //                     return;
-        //                 }
-
-        //                 event.preventDefault();
-        //                 event.stopPropagation();
-
-        //                 this.show();
-        //             }
-        //         });
-        //     }
-        // });
-
         let isSelecting = false;
+        let debounceTimer: any;
 
-        this.htmlElement.addEventListener("mouseup", (event) => { event.preventDefault(); });
+        this.htmlElement.addEventListener(DefaultJSEvents.Mouseup, (event) => { event.preventDefault(); });
 
-        document.addEventListener("keydown", (event) => {
+        document.addEventListener(DefaultJSEvents.Mouseup, this.logSelectionChange.bind(this));
+        document.addEventListener(DefaultJSEvents.BblClick, this.logSelectionChange.bind(this));
+        document.addEventListener(DefaultJSEvents.SelectionChange, this.logSelectionChange.bind(this));
+
+        document.addEventListener(DefaultJSEvents.Keydown, (event) => {
             if (event.shiftKey) {
                 isSelecting = true;
             }
         });
 
-        document.addEventListener("keyup", (event) => {
-            if (event.key === "Shift") {
+        document.addEventListener(DefaultJSEvents.Keyup, (event) => {
+            if (event.key === KeyboardKeys.Shift) {
                 isSelecting = false;
-                this.showHide(isSelecting);
+                this.showHide(event, isSelecting);
             }
         });
 
-        document.addEventListener('mousedown', () => {
+        document.addEventListener(DefaultJSEvents.Mousedown, () => {
             isSelecting = true;
         });
 
-        document.addEventListener('mouseup', (event) => {
+        document.addEventListener(DefaultJSEvents.Mouseup, (event) => {
             isSelecting = false;
-            this.showHide(isSelecting);
+            this.showHide(event, isSelecting);
+
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                isSelecting = false;
+                this.showHide(event, isSelecting);
+            }, 100);
         });
 
-        document.addEventListener(DefaultJSEvents.SelectionChange, () => {
-            
-            this.showHide(isSelecting);
+        document.addEventListener(DefaultJSEvents.SelectionChange, (event) => {
+            this.showHide(event, isSelecting);
         });
 
 
-        document.addEventListener('keydown', (event) => {
-
+        document.addEventListener(DefaultJSEvents.Keydown, (event) => {
             setTimeout(() => {
-                if (this.canHide && (event.key === 'Escape')) {
+                if (this.canHide && (event.key === KeyboardKeys.Escape) && !this.lockedHide) {
 
 
                     if (this.anyDropdownVisible()) {
@@ -216,16 +184,6 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
         super.attachEvents();
     }
 
-    // showHide(isSelecting: boolean) {
-    //     const hasContent = this.hasSelection();
-
-    //     if (!hasContent) {
-    //         this.hide();
-    //     } else if (hasContent && !isSelecting) {
-    //         this.show();
-    //     }
-    // }
-
     shouldUpdatePosition(): boolean {
         const selection = window.getSelection();
         if (!selection || selection.rangeCount === 0) return false;
@@ -237,26 +195,44 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
         return positionChanged;
     }
 
-    showHide(isSelecting: boolean) {
+    showHide(event: Event, isSelecting: boolean) {
 
         //This block checks for an active selection and whether it contains any content.
         // In Firefox, the `selectionchange` event may be fired even while typing,
         // which is not the intended trigger since we only want to react to actual changes in selection.
         // If the selection is empty or null, the function returns early, effectively ignoring
         // these unwanted `selectionchange` events during typing.
-        
+
         const hasContent = this.hasSelection();
 
         if (!hasContent) {
+
+            if (this.lockedHide) {
+                return;
+            }
+
             this.hide();
             this.initialRect = null;
+            return;
         } else if (hasContent && !isSelecting) {
             if (!this.isVisible) {
+
+                const ignoreFloatingToolbar = DOMUtils.isSelectedTextDescendantOf(".ignore-text-floating-toolbar") || DOMUtils.isSelectedTextDescendantOf(".gist");
+                if (ignoreFloatingToolbar) {
+                    return;
+                }
+
+                // event.stopImmediatePropagation();
                 this.show();
             } else if (this.shouldUpdatePosition()) {
-                this.updatePosition();
+
+                const ignoreFloatingToolbar = DOMUtils.isSelectedTextDescendantOf(".gist") || DOMUtils.isSelectedTextDescendantOf(".gist");
+                if (ignoreFloatingToolbar) {
+                    return;
+                }
             }
         }
+
     }
 
     hasSelection(): boolean {
@@ -272,54 +248,44 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
     }
 
 
-    // showHide() {
-    //     const selection = window.getSelection();
-    //     if (selection && selection.rangeCount > 0) {
-    //         const selectedText = selection.toString().trim();
-    //         if (selectedText !== '') {
-    //             alert("Selecionou: " + selectedText);
-
-    //             this.show();
-    //         } else {
-    //             this.hide();
-    //         }
-    //     }
-    // }
-
-
     changeToolbarPositionToBeClosedToSelection(): void {
         const selection = window.getSelection();
-    
+
         if (!selection || selection.rangeCount === 0) {
             console.error('No selection found');
             return;
         }
-    
+
         this.currentSelectionRange = selection.getRangeAt(0);
-    
-        const firstCharRange = this.currentSelectionRange.cloneRange();
-        firstCharRange.collapse(true);
-        const firstCharRect = firstCharRange.getBoundingClientRect();
-    
-        if (!this.initialRect) {
-            this.initialRect = firstCharRect;
-            this.htmlElement.style.display = 'flex';
+        const rects = this.currentSelectionRange.getClientRects();
+
+        if (rects.length === 0) {
+            console.error('No rects found');
+            return;
         }
-    
+
+        const firstRect = rects[0];
+
+        const c_firstRectLeft = firstRect.left;
+        const c_firstRectTop = firstRect.top;
+        const c_firstRectBottom = firstRect.bottom;
+
+        this.htmlElement.style.display = 'flex';
+
         const elementWidth = this.htmlElement.offsetWidth;
-        let leftPosition = this.initialRect.left + window.scrollX - 50;
-    
+        let leftPosition = c_firstRectLeft + window.scrollX - 50;
+
         if (leftPosition + elementWidth > window.innerWidth) {
             leftPosition = window.innerWidth - elementWidth - 20;
         }
-    
+
         const elementHeight = this.htmlElement.offsetHeight;
-        let topPosition = this.initialRect.top + window.scrollY - elementHeight - 10;
-    
+        let topPosition = c_firstRectTop + window.scrollY - elementHeight - 10;
+
         if (topPosition < 0) {
-            topPosition = this.initialRect.bottom + window.scrollY + 10;
+            topPosition = c_firstRectBottom + window.scrollY + 10;
         }
-    
+
         this.htmlElement.style.left = `${leftPosition}px`;
         this.htmlElement.style.top = `${topPosition}px`;
     }
@@ -333,13 +299,12 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
             return;
         }
 
-        if(DOMUtils.findClosestAncestorOfActiveElementByClass("title")){
+        if (DOMUtils.findClosestAncestorOfActiveElementByClass("title")) {
             return;
         };
 
         this.changeToolbarPositionToBeClosedToSelection();
         this.hideTurnIntoDropdownIfInCell();
-        super.show();
     }
 
     hideTurnIntoDropdownIfInCell(): void {
@@ -398,5 +363,13 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
             this.currentSelectionRange = null;
             super.hide();
         }
+    }
+
+    lockHide(): void {
+        this.lockedHide = true;
+    }
+
+    unlockHide(): void {
+        this.lockedHide = false;
     }
 }
