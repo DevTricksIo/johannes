@@ -9,6 +9,9 @@ import { EmbedTool, EmbedTypes } from "@/core/EmbedTool";
 import { CommonClasses } from "@/common/CommonClasses";
 import { ContentTypes } from "@/common/ContentTypes";
 import { Utils } from "@/utilities/Utils";
+import { CustomEvents } from "@/common/CustomEvents";
+import { ICommandEventDetail } from "@/commands/ICommandEventDetail";
+import { Commands } from "@/commands/Commands";
 
 export class MediaInputter extends BaseUIComponent {
 
@@ -110,6 +113,9 @@ export class MediaInputter extends BaseUIComponent {
 
         input.addEventListener(DefaultJSEvents.Keydown, (event: KeyboardEvent) => {
             if (event.key == KeyboardKeys.Enter) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                
                 this.embedGeneric(input);
             }
         });
@@ -196,6 +202,14 @@ export class MediaInputter extends BaseUIComponent {
                         throw new Error("Unsupported");
                 }
             }
+
+            const customEvent = new CustomEvent<ICommandEventDetail>(CustomEvents.emittedCommand, {
+                detail: {
+                    command: Commands.createDefaultBlock
+                }
+            });
+
+            document.dispatchEvent(customEvent);
 
             this.hide();
 
