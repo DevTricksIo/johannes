@@ -8,6 +8,7 @@ import { ITableOperationsService } from "@/services/table-operations/ITableOpera
 import { ITextOperationsService } from "@/services/text-operations/ITextOperationsService";
 import { TableScopes } from "@/services/table-operations/TableScopes";
 import { Colors } from "@/common/Colors";
+import { DOMUtils } from "@/utilities/DOMUtils";
 
 /**
  * Central command dispatcher class for handling various editor commands related to text and block manipulation.
@@ -70,7 +71,8 @@ export class CommandDispatcher {
      */
     public listen(): void {
         document.addEventListener(CustomEvents.emittedCommand, this.handleCommandEvent as EventListener);
-        document.addEventListener(CustomEvents.focusOnFirstRequested, this.handleFocusOnFirstRequestedEvent);
+        // document.addEventListener(CustomEvents.focusOnFirstRequested, this.handleFocusOnFirstRequestedEvent);
+        document.addEventListener(CustomEvents.pressedEnterOnTitle, () => this.blockOperationsService.createANewParagraphFromTitle());
     }
 
     /**
@@ -81,84 +83,190 @@ export class CommandDispatcher {
         const { command, showUI, value, targetBlockType, block, scope } = event.detail;
 
         switch (command) {
+
+            case Commands.linkReadyToInsert:
+                if (!value) {
+                    throw new Error(`${Commands.linkReadyToInsert} requires value`);
+                }
+                this.textOperationsService.execInsertLink(value);
+                break;
+
+            case Commands.toggleLink:
+                this.textOperationsService.execToggleLink();
+                break;
+
             case Commands.toggleBold:
                 this.textOperationsService.execBold();
                 break;
+
+            case Commands.toggleInlineCode:
+                this.textOperationsService.execInlineCode();
+                break;
+
             case Commands.toggleItalic:
                 this.textOperationsService.execItalic();
                 break;
+
             case Commands.toggleUnderline:
                 this.textOperationsService.execUnderline();
                 break;
+
             case Commands.toggleStrikeThrough:
                 this.textOperationsService.execStrikeThrough();
                 break;
+
             case Commands.toggleHiliteColor:
                 if (!value) {
                     throw new Error(`${Commands.toggleHiliteColor} requires a color value`);
                 }
                 this.textOperationsService.execHiliteColor(value);
                 break;
+
             case Commands.toggleForeColor:
                 if (!value) {
                     throw new Error(`${Commands.toggleForeColor} requires a color value`);
                 }
                 this.textOperationsService.execForeColor(value);
                 break;
+
             case Commands.transformBlock:
                 if (!value) {
                     throw new Error(`${Commands.transformBlock} requires a value that represents the target element type.`);
                 }
-                this.execTransformBlock(value);
+
+                // if (!block) {
+                //     throw new Error(`${Commands.transformBlock} requires a block.`);
+                // }
+                this.blockOperationsService.transformBlock(value, block);
                 break;
+
             case Commands.duplicateBlock:
-                this.execDuplicateBlock();
+                this.blockOperationsService.execDuplicateBlock(block);
                 break;
+
             case Commands.deleteBlock:
-                this.execDeleteBlock();
+                this.blockOperationsService.execDeleteBlock(block);
                 break;
+
+            case Commands.deleteBlockAndFocusOnPrevious:
+                this.blockOperationsService.execDeleteFocusOnPrevious();
+                break;
+
+            case Commands.deleteBlockAndFocusOnNext:
+                this.blockOperationsService.execDeleteAndFocusOnNext();
+                break;
+
+            case Commands.focusOnNextBlock:
+                this.blockOperationsService.execFocusOnNext();
+                break;
+
             case Commands.removeFormat:
-                this.execRemoveFormat();
+                this.execRemoveFormat(command);
                 break;
+
+            case Commands.JustifyLeft:
+                if (!block) {
+                    throw new Error(`${Commands.JustifyLeft} requires a block to justify.`);
+                }
+                this.blockOperationsService.justifyLeft(block);
+                break;
+
+            case Commands.JustifyCenter:
+                if (!block) {
+                    throw new Error(`${Commands.JustifyCenter} requires a block to justify.`);
+                }
+                this.blockOperationsService.justifyCenter(block);
+                break;
+
+            case Commands.JustifyRight:
+                if (!block) {
+                    throw new Error(`${Commands.JustifyRight} requires a block to justify.`);
+                }
+                this.blockOperationsService.justifyRight(block);
+                break;
+
+            case Commands.changeCodeBlockLanguage:
+                if (!block) {
+                    throw new Error(`${Commands.changeCodeBlockLanguage} requires a block to change a code block language.`);
+                }
+
+                if (!value) {
+                    throw new Error(`${Commands.changeCodeBlockLanguage} requires a value to change a code block language.`);
+                }
+                this.blockOperationsService.changeCodeBlockLanguage(block, value)
+                break;
+
             case Commands.createDefaultBlock:
-                this.execCreateDefaultBlock();
+                this.execCreateDefaultBlock(command);
                 break;
+
             case Commands.insertNew:
-                this.execInsertNew();
+                this.execInsertNew(command);
                 break;
+
             case Commands.focusOnPreviousBlock:
-                this.execFocusOnPreviousBlock();
+                this.execFocusOnPreviousBlock(command);
                 break;
+
+            case Commands.mergeWithNextBlock:
+                this.blockOperationsService.execMergeWithNextBlock();
+                break;
+
+            case Commands.mergeWithPreviousBlock:
+                this.blockOperationsService.execMergeWithPreviousBlock();
+                break;
+
             case Commands.insertTableColumnLeft:
                 this.tableOperationsService.insertColumnLeft();
                 break;
+
             case Commands.insertTableColumnRight:
                 this.tableOperationsService.insertColumnRight(block || null);
                 break;
+
             case Commands.insertTableRowAbove:
                 this.tableOperationsService.insertRowAbove();
                 break;
+
             case Commands.insertTableRowBelow:
                 this.tableOperationsService.insertRowBelow(block || null);
                 break;
+
             case Commands.toggleCellHiliteColor:
                 if (!value) {
                     throw new Error(`${Commands.toggleCellHiliteColor} requires a value that represents the cell background color.`);
                 }
                 this.tableOperationsService.execCellBackgroundColor(value);
                 break;
+
+            case Commands.changeCalloutBackgroundColor:
+                if (!block) {
+                    throw new Error(`${Commands.changeCalloutBackgroundColor} requires a block.`);
+                }
+
+                if (!value) {
+                    throw new Error(`${Commands.changeCalloutBackgroundColor} requires a value that represents the background color.`);
+                }
+
+                this.blockOperationsService.execChangeCalloutBackground(block, value);
+                break;
+
             case Commands.removeColumn:
                 this.tableOperationsService.removeColumn();
                 break;
             case Commands.removeRow:
                 this.tableOperationsService.removeRow();
                 break;
+
             case Commands.removeRow:
                 this.tableOperationsService.removeRow();
                 break;
+
             case Commands.changeTableBorderColor:
                 this.tableOperationsService.changeTableBorderColor(scope as TableScopes, value as Colors);
                 break;
+
+
             // case Commands.showInsertTableColumnElement:
             //     if (!block) {
             //         throw new Error(`${Commands.insertTableColumn} requires a block with a target table inside.`);
@@ -188,37 +296,36 @@ export class CommandDispatcher {
         }
     }
 
-    private execTransformBlock(targetBlockType: string): boolean {
-        this.blockOperationsService.transformBlock(targetBlockType);
-        return true;
+    // private execTransformBlock(targetBlockType: string): boolean {
+    //     this.blockOperationsService.transformBlock(targetBlockType);
+    //     return true;
+    // }
+
+    private execRemoveFormat(command: Commands): boolean {
+        const format = this.blockOperationsService.execCommand(command, false);
+
+        const content = DOMUtils.getActiveContentEditable();
+        if (content) {
+            content.normalize();
+        }
+
+        return format;
     }
 
-    private execDuplicateBlock(): boolean {
-        return this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.DUPLICATE, false);
+    private execCreateDefaultBlock(command: Commands): boolean {
+        return this.blockOperationsService.execCommand(command, false);
     }
 
-    private execDeleteBlock(): boolean {
-        return this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.DELETE, false);
-    }
-
-    private execRemoveFormat(): boolean {
-        return this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.REMOVE_FORMAT, false);
-    }
-
-    private execCreateDefaultBlock(): boolean {
-        return this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.CREATE_DEFAULT_BLOCK, false);
-    }
-
-    private execInsertNew(): boolean {
+    private execInsertNew(command: Commands): boolean {
         return this.blockOperationsService.createNewElementAndSplitContent();
     }
 
-    private execFocusOnPreviousBlock(): boolean {
-        return this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.DELETE_FOCUS_ON_PREVIOUS, false);
+    private execFocusOnPreviousBlock(command: Commands): boolean {
+        return this.blockOperationsService.execCommand(command, false);
     }
 
-    private handleFocusOnFirstRequestedEvent = (): void => {
-        // alert("focus on first");
-        this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_FIRST, false);
-    }
+    // private handleFocusOnFirstRequestedEvent = (command: Commands): void => {
+    //     // alert("focus on first");
+    //     this.blockOperationsService.execCommand(command, false);
+    // }
 }
