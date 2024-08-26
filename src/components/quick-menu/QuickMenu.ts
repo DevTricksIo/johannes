@@ -13,6 +13,7 @@ import { CustomEvents } from '@/common/CustomEvents';
 import { Commands } from '@/commands/Commands';
 import { DOMUtils } from '@/utilities/DOMUtils';
 import { DOMElements } from '@/common/DOMElements';
+import { ZIndex } from '@/common/ZIndex';
 
 export class QuickMenu extends BaseUIComponent implements IQuickMenu {
 
@@ -55,6 +56,7 @@ export class QuickMenu extends BaseUIComponent implements IQuickMenu {
 
         const htmlElement = document.createElement('div');
         htmlElement.id = QuickMenu.id;
+        htmlElement.style.zIndex = ZIndex.SlightlyImportant;
 
         htmlElement.classList.add('block-options-wrapper', 'soft-box-shadow');
         htmlElement.style.display = 'none';
@@ -196,56 +198,44 @@ export class QuickMenu extends BaseUIComponent implements IQuickMenu {
     show() {
 
         setTimeout(() => {
-
             const activeElement = document.activeElement;
-
+        
             if (!activeElement) {
                 console.error("Failed to display the quickMenu: no active element found. Please ensure an element is focused before attempting to display the quickMenu.");
                 return;
             }
-
-            this.focusStack.push(activeElement as HTMLElement)
-
-            // this.htmlFocusedElementBeforeOpenQuickMenu = document.activeElement as HTMLElement;
-
-            // if (!this.htmlFocusedElementBeforeOpenQuickMenu) {
-            //     throw new Error("Failed to capture the focused element before displaying the QuickMenu. Ensure an element is focused.");
-            // }
-
-
+        
+            this.focusStack.push(activeElement as HTMLElement);
+        
             const selection = window.getSelection();
-
+        
             if (!selection || selection.rangeCount === 0) {
                 throw new Error('Nenhuma seleção encontrada');
             }
-
+        
             const range = selection.getRangeAt(0);
             const rect = range.getBoundingClientRect();
-
+        
             this.htmlElement.style.display = 'flex';
-
+        
             const elementWidth = this.htmlElement.offsetWidth;
             let leftPosition = rect.left + window.scrollX;
-
+        
             if (leftPosition + elementWidth > window.innerWidth) {
                 leftPosition = window.innerWidth - elementWidth - 20;
             }
-
+        
             const elementHeight = this.htmlElement.offsetHeight;
-            let topPosition = rect.top + window.scrollY - elementHeight - 10;
-
-            if (topPosition < 0) {
-                topPosition = rect.bottom + window.scrollY + 10;
-            }
-
+            let topPosition = rect.bottom + window.scrollY + 10;
+        
             this.htmlElement.style.left = `${leftPosition}px`;
             this.htmlElement.style.top = `${topPosition}px`;
-
+        
             super.show();
-
+        
             this.focusOnTheFirstVisibleItem();
             this.focusStack.peek()?.focus();
-
+        
         }, 10);
 
     }
@@ -284,9 +274,9 @@ export class QuickMenu extends BaseUIComponent implements IQuickMenu {
 
             if (!this.isVisible && event.key === '/' && !event.ctrlKey && !event.shiftKey && !event.altKey && block) {
 
-                //Prevent show quickMenu inside a table cell
+                // Prevent show quickMenu
                 const target = event.target as HTMLElement;
-                const currentCell = target.closest(DOMElements.TD) as HTMLTableCellElement;
+                const currentCell = target.closest(".ignore-quick-menu") as HTMLTableCellElement;
 
                 if (currentCell) {
                     return;

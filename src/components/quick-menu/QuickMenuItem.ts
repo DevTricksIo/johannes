@@ -30,7 +30,7 @@ export class QuickMenuItem extends BaseUIComponent {
     init(): HTMLElement {
 
         const htmlElement = document.createElement('div');
-        htmlElement.classList.add('option', 'option-hover', 'block-operation');
+        htmlElement.classList.add('option', 'option-hover', 'block-operation', "pointer", "no-selection");
 
         htmlElement.setAttribute('data-block-operation', 'apply-selected-block-type');
         htmlElement.setAttribute('tabindex', '0');

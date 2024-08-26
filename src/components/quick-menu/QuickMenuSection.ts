@@ -26,6 +26,7 @@ export class QuickMenuSection extends BaseUIComponent {
 
         const heading = document.createElement('h2');
         heading.textContent = this.props.title;
+        heading.classList.add("no-selection");
 
         htmlElement.appendChild(heading);
 
