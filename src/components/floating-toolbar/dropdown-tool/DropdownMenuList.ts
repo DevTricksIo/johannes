@@ -4,14 +4,19 @@ import { DropdownMenuListItem } from "./DropdownMenuListItem";
 import { IDropdownMenuItem } from "./IDropdownMenuItem";
 import { JNode } from "@/common/JNode";
 import { DropdownMenuButton } from "./DropdownMenuButton";
+import { Utils } from "@/utilities/Utils";
+import { DefaultJSEvents } from "@/common/DefaultJSEvents";
+import { KeyboardKeys } from "@/common/KeyboardKeys";
+import { ZIndex } from "@/common/ZIndex";
+import { CustomEvents } from "@/common/CustomEvents";
 
 export class DropdownMenuList extends BaseUIComponent {
 
-    readonly id: string;
     private parentDropdownParentButton?: DropdownMenuButton;
 
     dropdownItems: CircularDoublyLinkedList<IDropdownMenuItem>;
     currentFocusedMenuItem: JNode<IDropdownMenuItem> | null;
+    filter: string = "";
 
     constructor(id: string) {
 
@@ -40,6 +45,7 @@ export class DropdownMenuList extends BaseUIComponent {
         htmlElement.style.position = "absolute";
         htmlElement.style.maxHeight = "25vmax";
         htmlElement.style.overflowY = "auto";
+        htmlElement.style.zIndex = ZIndex.ExtremelyImportant;
 
         return htmlElement;
     }
@@ -54,22 +60,30 @@ export class DropdownMenuList extends BaseUIComponent {
         this.parentDropdownParentButton = dropdownParentButton;
     }
 
+    
+
     attachEvents(): void {
 
-        document.addEventListener('keydown', (event) => {
+        // Set `true` to capture the event during the registration phase, giving this function priority over others.
+        // This prevents the event from being handled by earlier `Content` component listeners.
+        document.addEventListener(DefaultJSEvents.Keydown, (event) => {
 
             if (this.isVisible && this.currentFocusedMenuItem && event.key === "Enter") {
-                this.currentFocusedMenuItem.value.emitCommandEvent();
-            }
-        });
+                event.stopImmediatePropagation();
+                event.preventDefault();
 
-        document.addEventListener('click', (event) => {
+                this.currentFocusedMenuItem.value.emitCommandEvent(event);
+            }
+        }, true);
+
+        document.addEventListener(DefaultJSEvents.Click, (event) => {
             if (this.clickedOutsideTheDropdownWhileDropdownIsVisible(event)) {
                 this.hide();
             }
         });
 
-        document.addEventListener('keydown', (event) => {
+        document.addEventListener(DefaultJSEvents.Keydown, (event) => {
+
             if (this.keyPressedOutsideTheDropdownWhileDropdownIsVisible(event)) {
 
                 if (event.key == "ArrowDown") {
@@ -82,11 +96,51 @@ export class DropdownMenuList extends BaseUIComponent {
                     event.preventDefault();
                     this.focusPreviousVisibleItem();
                 }
+
+                // When using a FloatingToolbar with a DropdownList, this handler should be ignored for smoother UI control. 
+                // However, for components like BlockToolbox, where there's no risk of the parent element disappearing after pressing Escape (if the cursor is within the block),
+                // this handler is used to close the dropdown list when the user presses Escape.
+                if (event.key == KeyboardKeys.Escape && !this.htmlElement.closest(".floating-toolbar")) {
+                    event.stopImmediatePropagation();
+                    event.preventDefault();
+                    this.hide();
+                }
+            }
+        });
+
+        document.addEventListener(DefaultJSEvents.Keydown, this.handlerKeyDownEvent.bind(this));
+
+        document.addEventListener(CustomEvents.blockCloned, () => {
+            this.hide();
+        });
+
+
+        this.attachUIEvent();
+    }
+
+    handlerKeyDownEvent(event: KeyboardEvent) {
+        if (this.isVisible && /^[a-zA-Z]$/.test(event.key)) {
+            this.filter += event.key;
+            this.applyFilter();
+        } else if (this.isVisible && event.key === KeyboardKeys.Backspace) {
+            this.filter = this.filter.slice(0, -1);
+            this.applyFilter();
+        }
+    }
+
+    applyFilter() {
+        this.dropdownItems.forEach(item => {
+            if (item.value == "" || item.value?.toLocaleLowerCase().includes(this.filter.toLocaleLowerCase()) || item.title?.toLocaleLowerCase().includes(this.filter.toLocaleLowerCase())) {
+                item.show();
+            } else {
+                item.hide();
             }
         });
     }
 
     show(): void {
+
+        this.filter = "";
 
         this.htmlElement.style.left = "0";
         this.htmlElement.style.right = "auto";
@@ -97,6 +151,8 @@ export class DropdownMenuList extends BaseUIComponent {
         }
 
         this.parentDropdownParentButton?.svgIcon?.setUseTo("icon-wordpress-chevron-up");
+
+        this.applyFilter();
         super.show();
 
     }
@@ -127,12 +183,15 @@ export class DropdownMenuList extends BaseUIComponent {
         let nextVisibleItem: JNode<IDropdownMenuItem> | null;
 
         if (this.currentFocusedMenuItem) {
-            nextVisibleItem = this.currentFocusedMenuItem.getNextSatisfying(item => item instanceof DropdownMenuListItem);
+            nextVisibleItem = this.currentFocusedMenuItem.getNextSatisfying(item => {
+                return item instanceof DropdownMenuListItem && item.isVisible;
+            });
         } else {
             nextVisibleItem = this.dropdownItems.findFirst(item => item instanceof DropdownMenuListItem);
         }
 
         this.switchVisualFocus(nextVisibleItem!);
+        nextVisibleItem?.value.ensureVisible();
     }
 
     focusPreviousVisibleItem(): void {
@@ -140,12 +199,15 @@ export class DropdownMenuList extends BaseUIComponent {
         let previousVisibleItem: JNode<IDropdownMenuItem> | null;
 
         if (this.currentFocusedMenuItem) {
-            previousVisibleItem = this.currentFocusedMenuItem.getPreviousSatisfying(item => item instanceof DropdownMenuListItem);
+            previousVisibleItem = this.currentFocusedMenuItem.getPreviousSatisfying(item => {
+                return item instanceof DropdownMenuListItem && item.isVisible;
+            });
         } else {
             previousVisibleItem = this.dropdownItems.findFirst(item => item instanceof DropdownMenuListItem);
         }
 
         this.switchVisualFocus(previousVisibleItem!);
+        previousVisibleItem?.value.ensureVisible();
     }
 
     private clickedOutsideTheDropdownWhileDropdownIsVisible(event: MouseEvent): boolean {
@@ -157,7 +219,14 @@ export class DropdownMenuList extends BaseUIComponent {
     private keyPressedOutsideTheDropdownWhileDropdownIsVisible(event: KeyboardEvent): boolean {
         return this.canHide
             && !(event.target! as HTMLElement).closest(`#${this.htmlElement.id}`)
-            && !(event.target! as HTMLElement).closest(`#${this.parentDropdownParentButton?.htmlElement.id}`);
+        //&& !(event.target! as HTMLElement).closest(`#${this.parentDropdownParentButton?.htmlElement.id}`);
     }
 
+
+    static create(prefixId: string, classesKey: string[] = []): DropdownMenuList {
+        const instance = new DropdownMenuList(prefixId + Utils.generateUniqueId());
+        instance.addCssClass(...classesKey);
+
+        return instance;
+    }
 }
