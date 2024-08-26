@@ -1,7 +1,12 @@
+import { IUIEventDetail } from "@/commands/IUIEventDetail";
+import { CustomUIEvents } from "@/common/CustomUIEvents";
+
 export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
 
+    id?: string;
     private _canHide: boolean;
 
+    classList: string[] = [];
     props: Record<string, any>;
     htmlElement: T;
     parent?: BaseUIComponent;
@@ -48,6 +53,16 @@ export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
         return 'block';
     }
 
+    setId(id: string) {
+        this.id = id;
+        this.htmlElement.id = id;
+    }
+
+    addCssClass(...tokens: string[]) {
+        this.classList.push(...tokens);
+        this.htmlElement.classList.add(...tokens);
+    }
+
     /**
     * Appends this component's HTML element to the specified parent component's HTML element.
     * This method establishes a parent-child relationship in the DOM by appending this instance's
@@ -62,7 +77,7 @@ export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
         parent.htmlElement.appendChild(this.htmlElement);
     }
 
-    get isVisible() : boolean{
+    get isVisible(): boolean {
         let element: HTMLElement = this.htmlElement;
 
         if (element.style.display === 'none' || element.style.visibility === 'hidden' || !document.contains(element)) {
@@ -93,6 +108,8 @@ export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
         // setTimeout(() => {
         //     this._canHide = true;
         // }, 100);
+
+        
     }
 
     hide() {
@@ -106,11 +123,11 @@ export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
         this.htmlElement.style.display = 'none';
     }
 
-    lockHide(){
+    lockHide() {
         this._canHide = false;
     }
 
-    unlockHide(){
+    unlockHide() {
         this._canHide = true;
     }
 
@@ -174,5 +191,43 @@ export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
         }
 
         return false;
+    }
+
+    ensureVisible(): void {
+        const relevantContainer = this.htmlElement.closest('select, ul');
+
+        if (relevantContainer) {
+            this.htmlElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        } else {
+            console.warn('Attempted to make a non-relevant item visible');
+        }
+    }
+
+    handleCloseElementEvent(event: Event) {
+
+        const customEvent = event as CustomEvent<IUIEventDetail>;
+        const details = customEvent.detail;
+
+        if (this.id && this.id == details.targetId!) {
+            event.stopImmediatePropagation();
+            this.hide();
+        }
+    }
+
+    handleShowElementEvent(event: Event) {
+
+        const customEvent = event as CustomEvent<IUIEventDetail>;
+        const details = customEvent.detail;
+
+        if (details.targetId == this.id) {
+            event.stopImmediatePropagation();
+            this.show();
+        }
+    }
+
+    //Basic UI events
+    attachUIEvent() {
+        document.addEventListener(CustomUIEvents.CloseElement, this.handleCloseElementEvent.bind(this));
+        document.addEventListener(CustomUIEvents.ShowElement, this.handleShowElementEvent.bind(this));
     }
 }
