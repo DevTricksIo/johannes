@@ -157,7 +157,7 @@ export class ElementFactoryService implements IElementFactoryService {
             code.contentEditable = "true";
             code.setAttribute("data-placeholder", "/* Code snippet */");
             code.textContent = content || "";
-            code.classList.add('johannes-code', "focusable", "hljs", "language-plaintext");
+            code.classList.add('johannes-code', "focusable", "hljs", "language-plaintext", "editable");
             code.setAttribute("spellCheck", "false");
 
             pre.appendChild(code);
@@ -184,7 +184,7 @@ export class ElementFactoryService implements IElementFactoryService {
             contentElement.classList.add("johannes-content-element", "swittable");
 
             const blockquote = document.createElement("blockquote");
-            blockquote.classList.add("focusable");
+            blockquote.classList.add("focusable", "editable");
             blockquote.textContent = content || "";
             blockquote.contentEditable = "true";
             blockquote.setAttribute("data-placeholder", ElementFactoryService.getRandomQuote());
@@ -216,11 +216,7 @@ export class ElementFactoryService implements IElementFactoryService {
     private static checkListCreator(): ElementCreator {
         return content => {
             const ul = document.createElement('ul');
-            // ul.contentEditable = "true";
-            ul.classList.add('johannes-content-element');
-            ul.classList.add('swittable');
-            ul.classList.add('list');
-            ul.classList.add('checkbox-list');
+            ul.classList.add("johannes-content-element", "swittable", "list", "checkbox-list");
             ul.setAttribute("data-content-type", ContentTypes.CheckList);
 
             const initialItem = ElementFactoryService.checkboxItem(content || "");
@@ -291,7 +287,7 @@ export class ElementFactoryService implements IElementFactoryService {
             const row = document.createElement('tr');
             rowData.forEach(cellContent => {
                 const cell = document.createElement('td');
-                cell.classList.add("focusable");
+                cell.classList.add("focusable", "editable");
                 cell.setAttribute("data-placeholder", "cell");
                 cell.textContent = cellContent;
                 cell.contentEditable = 'true';
@@ -382,10 +378,7 @@ export class ElementFactoryService implements IElementFactoryService {
         p.innerText = content || "";
         p.contentEditable = "true";
         p.setAttribute('data-content-type', ContentTypes.Paragraph);
-        p.classList.add('johannes-content-element');
-        p.classList.add('swittable');
-        p.classList.add('focusable');
-        p.classList.add('key-trigger');
+        p.classList.add("johannes-content-element", "swittable", "focusable", "key-trigger", "editable");
         p.setAttribute('data-placeholder', 'Write something or type / (slash) to choose a block...');
 
         return p;
@@ -397,11 +390,7 @@ export class ElementFactoryService implements IElementFactoryService {
         h.innerText = content || "";
         h.contentEditable = "true";
         h.setAttribute('data-content-type', `h${level}`);
-        h.classList.add('johannes-content-element');
-        h.classList.add('swittable');
-        h.classList.add('focusable');
-        h.classList.add('focus');
-        h.classList.add('key-trigger');
+        h.classList.add("johannes-content-element", "swittable", "focusable", "focus", "key-trigger", "editable");
         h.setAttribute('data-placeholder', `Heading ${level}`);
 
         return h;
@@ -426,11 +415,8 @@ export class ElementFactoryService implements IElementFactoryService {
         span.setAttribute('data-placeholder', 'To-do');
         span.contentEditable = "true";
         span.setAttribute("for", id);
-        span.setAttribute("contentEditable", "true");
 
-        span.classList.add('focusable');
-        span.classList.add('editable');
-        span.classList.add('focus');
+        span.classList.add("focusable", "editable", "focus");
 
         element.appendChild(checkbox);
         element.appendChild(span);
@@ -467,19 +453,14 @@ export class ElementFactoryService implements IElementFactoryService {
 
         const div = document.createElement("div");
 
-        div.classList.add('focusable');
-        div.classList.add('editable');
-        div.classList.add('focus');
+        div.classList.add("focusable", "editable", "focus", "key-trigger");
         div.contentEditable = "true";
-        div.classList.add('key-trigger');
         div.setAttribute('data-placeholder', 'Item');
 
         initialItem.appendChild(div);
 
 
         div.innerText = content || "";
-
-        // initialItem.contentEditable = true;
 
         return initialItem;
     }

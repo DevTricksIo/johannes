@@ -14,7 +14,7 @@ export class TableUtils {
             const cell = newRow.insertCell();
             cell.contentEditable = "true";
             cell.setAttribute("data-placeholder", "Enter text");
-            // cell.classList.add("temporary-shadow");
+            cell.classList.add("editable");
             affectedCells.push(cell);  // Add cell reference to array
         }
 
@@ -31,7 +31,7 @@ export class TableUtils {
             const cell = table.rows[i].insertCell(insertPosition);
             cell.contentEditable = "true";
             cell.setAttribute("data-placeholder", "cell");
-            // cell.classList.add("temporary-shadow");
+            cell.classList.add("editable");
             affectedCells.push(cell);  // Add cell reference to array
         }
 
