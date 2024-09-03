@@ -12,6 +12,7 @@ import { IMemento } from "@/core/IMemento";
 import { DependencyContainer } from "@/core/DependencyContainer";
 import { MediaInputter } from "../media-inputter/MediaInputter";
 import { InputLinkBoxWrapper } from "../floating-toolbar/link-box/InputLinkBoxWrapper";
+import { Thumbnail } from "../feature-image/Thumbnail";
 
 export class Editor extends BaseUIComponent {
 
@@ -21,6 +22,7 @@ export class Editor extends BaseUIComponent {
     private memento: IMemento;
 
     private title?: Title;
+    private thumbnail?: Thumbnail;
     private content?: Content;
     private addBlock: AddBlockWrapper;
     private textFloatingToolbar: TextContextFloatingToolbar;
@@ -34,6 +36,7 @@ export class Editor extends BaseUIComponent {
         blockOperationsService: IBlockOperationsService,
         memento: IMemento,
         title: Title,
+        thumbnail: Thumbnail,
         content: Content,
         addBlock: AddBlockWrapper,
         floatingToolbar: TextContextFloatingToolbar,
@@ -47,6 +50,7 @@ export class Editor extends BaseUIComponent {
             elementFactoryService: elementFactoryService,
             blockOperationsService: blockOperationsService,
             title: title,
+            thumbnail: thumbnail,
             content: content,
             addBlock: addBlock,
             floatingToolbar: floatingToolbar,
@@ -89,6 +93,10 @@ export class Editor extends BaseUIComponent {
             contentWrapper.appendChild(this.props.title.htmlElement);
         }
 
+        if (window.editorConfig?.enableThumbnail || false) {
+            contentWrapper.appendChild(this.props.thumbnail.htmlElement);
+        }
+
         // Content is required
         contentWrapper.appendChild(this.props.content.htmlElement);
 
@@ -104,7 +112,7 @@ export class Editor extends BaseUIComponent {
 
         if (window.editorConfig?.enableQuickMenu || true) {
             htmlElement.appendChild(this.props.quickMenu.htmlElement);
-        }        
+        }
 
         htmlElement.appendChild(this.props.tableToolbar.htmlElement);
         htmlElement.appendChild(this.props.mediaInputter.htmlElement);
@@ -126,9 +134,10 @@ export class Editor extends BaseUIComponent {
         const blockOperationsService = DependencyContainer.Instance.resolve<IBlockOperationsService>("IBlockOperationsService");
         const memento = DependencyContainer.Instance.resolve<IMemento>("IMemento");
         const inputLinkBoxWrapper = new InputLinkBoxWrapper();
+        const thumbnail = new Thumbnail();
 
         if (!Editor.instance) {
-            Editor.instance = new Editor(elementFactoryService, blockOperationsService, memento, title, content, addBlock, textFloatingToolbar, quickMenu, tableFloatingToolbar, mediaInputter, inputLinkBoxWrapper);
+            Editor.instance = new Editor(elementFactoryService, blockOperationsService, memento, title, thumbnail, content, addBlock, textFloatingToolbar, quickMenu, tableFloatingToolbar, mediaInputter, inputLinkBoxWrapper);
         }
 
         return Editor.instance;
