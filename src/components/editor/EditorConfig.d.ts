@@ -5,6 +5,7 @@ export interface EditorConfig {
     includeHeader: boolean;
     includeFirstParagraph: boolean;
     enableTitle: boolean;
+    enableThumbnail: boolean;
     title: string | undefined
 }
 
