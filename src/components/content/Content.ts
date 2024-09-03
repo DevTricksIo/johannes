@@ -26,6 +26,8 @@ export class Content extends BaseUIComponent {
         const htmlElement = document.createElement("div");
         htmlElement.classList.add("content");
 
+        htmlElement.style.marginTop = "1.3rem";
+
         if (window.editorConfig?.includeFirstParagraph || true) {
             htmlElement.append(ElementFactoryService.blockParagraph());
         }
