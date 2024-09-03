@@ -46,4 +46,6 @@ document.addEventListener('DOMContentLoaded', function () {
     EditableNavigation.getInstance().listen();
     BlockToolbox.getInstance().listen();
 
+    document.dispatchEvent(new Event("TextEditorLoaded"));
+
 });
