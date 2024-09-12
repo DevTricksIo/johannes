@@ -20,7 +20,7 @@ export class EmbedTool {
         const image = document.createElement('img');
 
         image.src = url.toString();
-        image.alt = 'Embedded Image';
+        image.alt = '';
         image.style.maxWidth = '100%';
         image.style.width = '100%';
         image.style.height = 'auto';
