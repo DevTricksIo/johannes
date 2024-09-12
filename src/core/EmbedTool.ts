@@ -265,6 +265,7 @@ export class EmbedTool {
         const figcaption = document.createElement('figcaption');
         figcaption.setAttribute("data-placeholder", "Type a caption for this image");
         figcaption.setAttribute("contenteditable", "true");
+        figcaption.classList.add("editable");
 
         figure.appendChild(figcaption);
 
