@@ -79,19 +79,55 @@ export class MediaInputter extends BaseUIComponent {
         const div = document.createElement("div");
         div.id = "uploadContent";
         div.classList.add("upload-content", "content-data");
-
+    
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*";
+        input.id = "fileInput";
+        input.style.display = "block";
+    
         const label = document.createElement("label");
         label.classList.add("blue-button");
+        label.htmlFor = input.id;
         label.innerText = "Upload file";
-
+    
+        label.addEventListener("click", () => {
+            input.click();
+        });
+    
         const textInfo = document.createElement("div");
-        textInfo.classList.add("text-info");
+        textInfo.classList.add("text-information");
         textInfo.innerText = "Maximum file size: 5MB";
-
-        div.appendChild(label);
+    
+        div.appendChild(input);
         div.appendChild(textInfo);
-
+    
+        input.addEventListener("change", (event) => this.uploadImage(event));
+    
         return div;
+    }
+
+    async uploadImage(event: Event): Promise<void> {
+        const input = event.target as HTMLInputElement;
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+    
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file.');
+                return;
+            }
+    
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const src = e.target!.result as string;
+                const focusedElement = this.focusStack.peek();
+                if (focusedElement) {
+                    await EmbedTool.embedImage(src, focusedElement);
+                    this.hide();
+                }
+            };
+            reader.readAsDataURL(file);
+        }
     }
 
     createEmbedContent(): HTMLElement {
@@ -115,7 +151,7 @@ export class MediaInputter extends BaseUIComponent {
             if (event.key == KeyboardKeys.Enter) {
                 event.preventDefault();
                 event.stopImmediatePropagation();
-                
+
                 this.embedGeneric(input);
             }
         });

@@ -11,17 +11,23 @@ export class EmbedTool {
         }
 
         const container = this.createEmbedContainer();
+
+        container.classList.add("x-resizable");
+        container.style.maxWidth = "100%";
+        container.style.width = 'fit-content';
+        container.style.height = 'auto';
+
         const image = document.createElement('img');
 
         image.src = url.toString();
         image.alt = 'Embedded Image';
         image.style.maxWidth = '100%';
-        image.style.width = 'auto';
+        image.style.width = '100%';
         image.style.height = 'auto';
 
-        container.appendChild(image);
+        container.prepend(image);
         container.classList.add(ToolboxOptions.AlignToolClass);
-        EmbedTool.finalizeEmbed(container, [ToolboxOptions.AlignToolClass, "fit-content", "x-resizable"], lastFocusedElement);
+        EmbedTool.finalizeEmbed(container, [ToolboxOptions.AlignToolClass, "fit-content"], lastFocusedElement);
     }
 
     static validateImage(urlToCheck: string): Promise<boolean> {
@@ -255,6 +261,13 @@ export class EmbedTool {
     private static createEmbedContainer(classes: string[] = []): HTMLElement {
         const figure = document.createElement('figure');
         figure.classList.add(...classes);
+
+        const figcaption = document.createElement('figcaption');
+        figcaption.setAttribute("data-placeholder", "Type a caption for this image");
+        figcaption.setAttribute("contenteditable", "true");
+
+        figure.appendChild(figcaption);
+
         return figure;
     }
 
