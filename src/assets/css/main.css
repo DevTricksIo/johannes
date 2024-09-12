@@ -216,42 +216,42 @@ p.johannes-content-element {
 }
 
 
-[contenteditable="true"]:empty:focus {
+#johannesEditor [contenteditable="true"]:empty:focus {
     content: attr(data-placeholder);
     color: #84888d;
     pointer-events: none;
 }
 
-h1[data-placeholder]:empty:before {
+#johannesEditor h1[data-placeholder]:empty:before {
     content: attr(data-placeholder);
     color: #84888d !important;
     display: block;
 }
 
-h1[data-placeholder]:focus:before {}
+#johannesEditor h1[data-placeholder]:focus:before {}
 
 
-*[contenteditable="true"]:not(h1):empty:before {
+#johannesEditor *[contenteditable="true"]:not(h1):empty:before {
     content: attr(data-placeholder);
     color: #84888acd;
     display: none;
 }
 
-*[contenteditable="true"]:not(h1):empty:hover:before {
+#johannesEditor *[contenteditable="true"]:not(h1):empty:hover:before {
     display: block;
 }
 
-cite[contenteditable="true"]:empty:before {
+#johannesEditor cite[contenteditable="true"]:empty:before {
     display: block;
 }
 
-*[contenteditable="true"]:not(h1)[data-placeholder]:empty:focus:before {
+#johannesEditor *[contenteditable="true"]:not(h1)[data-placeholder]:empty:focus:before {
     content: attr(data-placeholder);
     color: #84888acd !important;
     display: block;
 }
 
-li.div[contenteditable="true"]:empty:hover:before {
+#johannesEditor li.div[contenteditable="true"]:empty:hover:before {
     content: attr(data-placeholder);
     color: #84888acd;
     display: block;
@@ -295,7 +295,6 @@ p {
     color: #242424;
 }
 
-
 .block,
 .block * {
     user-select: text;
@@ -310,7 +309,7 @@ p {
 
 
 #johannesEditor {
-    width: 60%;
+    /* width: 60%; */
     margin-left: auto;
     margin-right: auto;
 }
@@ -622,7 +621,6 @@ mark {
 .block-options .option:focus {
     outline: none;
     background-color: #e9e9e9;
-    background-color: red;
     border: inherit;
 }
 
@@ -817,7 +815,7 @@ td::placeholder {
     display: block;
 }
 
-td:empty:before {
+#johannesEditor td:empty:before {
     content: attr(data-placeholder);
     color: #84888acd;
     display: block !important;
@@ -1028,7 +1026,7 @@ td:empty:before {
     gap: 1rem;
 }
 
-.tab-content .text-info {
+.tab-content .text-information {
     font-size: 0.75rem;
     color: rgba(55, 53, 47, 0.6);
 }
@@ -1147,12 +1145,6 @@ td:empty:before {
     width: 100%;
     height: 100%;
 }
-
-
-
-
-
-
 
 .x-resizable {
     resize: horizontal;
