@@ -37,7 +37,7 @@
   "dependencies": {
     "braces": "^3.0.3",
     "fix": "^0.0.3",
-    "micromatch": "^4.0.7",
+    "micromatch": "^4.0.8",
     "postcss": "^8.4.39"
   }
 }
