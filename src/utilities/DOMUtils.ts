@@ -1092,22 +1092,41 @@ export class DOMUtils {
 
     static insertCaretMarker(element: HTMLElement): void {
         const selection = window.getSelection();
-
         if (selection && selection.rangeCount > 0) {
             const range = selection.getRangeAt(0);
+            const isCollapsed = range.collapsed;
 
-            const marker = document.createElement('span');
+            if (isCollapsed) {
+                const marker = document.createElement('span');
+                marker.id = START_MARKER_ID;
+                marker.style.display = 'none';
+                range.insertNode(marker);
+                range.setStartAfter(marker);
+                range.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            } else {
+                const endMarker = document.createElement('span');
+                endMarker.id = END_MARKER_ID;
+                endMarker.style.display = 'none';
+                const rangeCloneEnd = range.cloneRange();
+                rangeCloneEnd.collapse(false);
+                rangeCloneEnd.insertNode(endMarker);
 
-            marker.id = START_MARKER_ID;
+                const startMarker = document.createElement('span');
+                startMarker.id = START_MARKER_ID;
+                startMarker.style.display = 'none';
+                range.collapse(true);
+                range.insertNode(startMarker);
 
-            marker.style.display = 'none';
-
-            range.insertNode(marker);
-
-            selection.collapse(marker, 0);
+                const newRange = document.createRange();
+                newRange.setStartAfter(startMarker);
+                newRange.setEndBefore(endMarker);
+                selection.removeAllRanges();
+                selection.addRange(newRange);
+            }
         }
     }
-
 
     static removeCaretMarker(element: HTMLElement): void {
         const marker = element.querySelector(`#${START_MARKER_ID}`);
