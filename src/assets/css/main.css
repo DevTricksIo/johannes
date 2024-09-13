@@ -5,6 +5,19 @@
 }
 
 
+figure figcaption[data-placeholder]:empty:before {
+    content: attr(data-placeholder) !important;
+    color: #84888d !important;
+    display: block !important;
+}
+
+
+figure figcaption{
+    max-width: 100%;
+    width: fit-content;
+    margin:  0 auto;
+    display: block !important;
+}
 
 /** CSS reset */
 .button-reset {
@@ -309,7 +322,7 @@ p {
 
 
 #johannesEditor {
-    /* width: 60%; */
+    width: 60%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -516,6 +529,7 @@ p {
     justify-content: center;
     align-items: center;
     font-size: 0.9rem;
+    font-weight: 600;
 
 }
 
