@@ -184,24 +184,24 @@ export class DOMUtils {
     */
     static findClosestAncestorOfActiveElementByClass(className: string): HTMLElement | null {
         const activeElement = document.activeElement;
-
+    
         if (!activeElement) {
             return null;
         }
-
+    
         let currentElement: Node | null = activeElement;
-
+    
         while (currentElement) {
             if (
-                currentElement.nodeType === Node.ELEMENT_NODE &&
-                (currentElement as HTMLElement).classList.contains(className)
+                currentElement instanceof HTMLElement &&
+                currentElement.classList.contains(className)
             ) {
-                return currentElement as HTMLElement;
+                return currentElement;
             }
-
+    
             currentElement = currentElement.parentNode;
         }
-
+    
         return null;
     }
 

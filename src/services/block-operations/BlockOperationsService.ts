@@ -811,7 +811,12 @@ export class BlockOperationsService implements IBlockOperationsService {
 
         const contentType = DOMUtils.getContentTypeFromActiveElement();
 
-        if (contentType == ContentTypes.Table) {
+        if (contentType == ContentTypes.Image) {
+
+            const block = DOMUtils.findClosestAncestorOfActiveElementByClass("block");
+            this.createDefaultBlock(block);
+            return false;
+        } else if (contentType == ContentTypes.Table) {
             // TODO Jump to the next line if exists
             return false;
         } else if (
