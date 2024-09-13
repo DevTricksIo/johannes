@@ -12,7 +12,7 @@ export class EmbedTool {
 
         const container = this.createEmbedContainer();
 
-        container.classList.add("x-resizable");
+        // container.classList.add("x-resizable");
         container.style.maxWidth = "100%";
         container.style.width = 'fit-content';
         container.style.height = 'auto';
@@ -265,7 +265,7 @@ export class EmbedTool {
         const figcaption = document.createElement('figcaption');
         figcaption.setAttribute("data-placeholder", "Type a caption for this image");
         figcaption.setAttribute("contenteditable", "true");
-        figcaption.classList.add("editable");
+        figcaption.classList.add("editable", "hide-turninto", "hide-moreoptions", "hide-inlineCode");
 
         figure.appendChild(figcaption);
 
