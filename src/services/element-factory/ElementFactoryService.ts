@@ -273,7 +273,7 @@ export class ElementFactoryService implements IElementFactoryService {
             tableWrapper.classList.add("table-wrapper");
 
             const table = document.createElement('table');
-            table.classList.add("johannes-content-element", "swittable", "table", ToolboxOptions.IncludeBlockToolbarClass, ToolboxOptions.AlignToolClass, ToolboxOptions.ExtraOptionsClass);
+            table.classList.add("johannes-content-element", "swittable", "table", ToolboxOptions.IncludeBlockToolbarClass, ToolboxOptions.AlignToolClass, ToolboxOptions.ExtraOptionsClass, "hide-turninto", "hide-moreoptions");
             table.setAttribute("data-content-type", ContentTypes.Table);
 
             tableShell.appendChild(tableController);
