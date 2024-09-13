@@ -1,3 +1,26 @@
+.justify-center table,
+.justify-center figure {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.justify-right table,
+.justify-right figure {
+    margin-left: auto;
+    margin-right: 0;
+    text-align: right;
+}
+
+.justify-left table,
+.justify-left figure {
+    margin-left: 0;
+    margin-right: auto;
+    text-align: left;
+}
+
+
+
 /** cursor style */
 [contenteditable="true"] {
     cursor: text !important;
@@ -8,15 +31,13 @@
 figure figcaption[data-placeholder]:empty:before {
     content: attr(data-placeholder) !important;
     color: #84888d !important;
-    display: block !important;
+    display: inline-block !important;
 }
 
-
 figure figcaption{
-    max-width: 100%;
+    max-width: inherit;
     width: fit-content;
-    margin:  0 auto;
-    display: block !important;
+    display: inline-block;
 }
 
 /** CSS reset */
@@ -322,7 +343,7 @@ p {
 
 
 #johannesEditor {
-    /* width: 60%; */
+    width: 60%;
     margin-left: auto;
     margin-right: auto;
 }
