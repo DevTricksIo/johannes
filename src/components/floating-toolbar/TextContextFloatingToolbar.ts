@@ -302,31 +302,60 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
         };
 
         this.changeToolbarPositionToBeClosedToSelection();
-        this.hideTurnIntoDropdownIfInCell();
+        this.hideTurnInto();
+        this.hideMoreOptions();
+        
     }
 
-    hideTurnIntoDropdownIfInCell(): void {
-        const isCell = DOMUtils.isSelectionInTableCell();
+    hideTurnInto(): void {
+        const shouldHide = this.isSelectionWithinElementWithClass("hide-turninto");
 
         this.dropdowns.forEach(dropdown => {
-            if (dropdown.id == "turnIntoMenu") {
-                if (isCell) {
-                    dropdown.htmlElement.style.display = "none";
-                } else {
-                    dropdown.htmlElement.style.display = this.display;
-                }
+            if (dropdown.id === "turnIntoMenu") {
+                dropdown.htmlElement.style.display = shouldHide ? "none" : this.display;
             }
         });
 
         this.separators.forEach(separator => {
-            if (separator.id == "turnIntoSeparator") {
-                if (isCell) {
-                    separator.htmlElement.style.display = "none";
-                } else {
-                    separator.htmlElement.style.display = this.display;
-                }
+            if (separator.id === "turnIntoSeparator") {
+                separator.htmlElement.style.display = shouldHide ? "none" : this.display;
             }
         });
+    }
+
+    hideMoreOptions(): void {
+        const shouldHide = this.isSelectionWithinElementWithClass("hide-moreoptions");
+
+        this.dropdowns.forEach(dropdown => {
+            if (dropdown.id === "moreTextOptionsMenu") {
+                dropdown.htmlElement.style.display = shouldHide ? "none" : this.display;
+            }
+        });
+
+        this.separators.forEach(separator => {
+            if (separator.id === "textOperationsSeparator") {
+                separator.htmlElement.style.display = shouldHide ? "none" : this.display;
+            }
+        });
+    }
+
+    isSelectionWithinElementWithClass(className: string): boolean {
+        const selection = window.getSelection();
+        if (selection?.rangeCount === 0) return false;
+
+        let node: null | Node | undefined = selection?.getRangeAt(0).commonAncestorContainer;
+        if (node && node.nodeType !== Node.ELEMENT_NODE) {
+            node = node.parentNode;
+        }
+
+        while (node != null) {
+            if (node instanceof HTMLElement && node.classList.contains(className)) {
+                return true;
+            }
+            node = node.parentNode;
+        }
+
+        return false;
     }
 
     updatePosition(): void {
