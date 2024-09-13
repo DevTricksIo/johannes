@@ -69,6 +69,23 @@ export class Content extends BaseUIComponent {
         this.clearSelectionOnDrag();
         this.reRenderPlaceholder();
 
+        document.addEventListener('click', (event) => {
+            const target = event.target as HTMLInputElement;
+
+            if (target && target.type === 'checkbox' && target.closest('.list-item-checkable')) {
+                const listItem = target.closest('.list-item-checkable');
+                const contentDiv = listItem?.querySelector('.editable') as HTMLDivElement;
+
+                if (target.checked) {
+                    contentDiv?.classList.add('checked');
+                    target.classList.add('checked');
+                } else {
+                    contentDiv?.classList.remove('checked');
+                    target.classList.remove('checked');
+                }
+            }
+        });
+
 
         // Event selector
         document.addEventListener(DefaultJSEvents.Click, (event: MouseEvent) => {
