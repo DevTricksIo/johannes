@@ -247,14 +247,14 @@ export class InputLinkBoxWrapper extends BaseUIComponent {
         this.removeHighlights();
         (this.inputLinkBox.htmlElement as HTMLInputElement).value = "";
 
-        const range = this.textContextFloatingToolbar.currentSelectionRange;
+        // const range = this.textContextFloatingToolbar.currentSelectionRange;
 
-        if (!range) {
-            return;
-        }
+        // if (!range) {
+        //     return;
+        // }
 
-        document.getSelection()?.removeAllRanges();
-        document.getSelection()?.addRange(range);
+        // document.getSelection()?.removeAllRanges();
+        // document.getSelection()?.addRange(range);
     }
 
     highlightSelectedText(range: Range) {
