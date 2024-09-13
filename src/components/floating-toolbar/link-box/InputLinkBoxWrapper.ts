@@ -15,6 +15,8 @@ export class InputLinkBoxWrapper extends BaseUIComponent {
     highlights: HTMLDivElement[] = [];
     button: HTMLButtonElement;
 
+    private savedSelectionRange: Range | null = null;
+
     textContextFloatingToolbar: TextContextFloatingToolbar;
 
     constructor() {
@@ -150,6 +152,14 @@ export class InputLinkBoxWrapper extends BaseUIComponent {
         const isValid = Utils.isValidUrl(urlWithProtocol);
 
         if (isValid) {
+
+            // Restore the selection before executing the command
+            if (this.savedSelectionRange) {
+                const selection = document.getSelection();
+                selection?.removeAllRanges();
+                selection?.addRange(this.savedSelectionRange);
+            }
+
             this.hide();
 
             document.dispatchEvent(new CustomEvent<ICommandEventDetail>(CustomEvents.emittedCommand, {
@@ -182,6 +192,8 @@ export class InputLinkBoxWrapper extends BaseUIComponent {
         if (!range) {
             return;
         }
+
+        this.savedSelectionRange = range.cloneRange();
 
         this.positionLinkComponentBelowSelection(range);
         this.highlightSelectedText(range);
