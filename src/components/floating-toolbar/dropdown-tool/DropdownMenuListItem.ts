@@ -136,11 +136,14 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
 
     emitCommandEvent(event: Event): void {
 
-        const customEvent = new CustomEvent<ICommandEventDetail>(CustomEvents.emittedCommand, {
+        const block = DOMUtils.getParentTargetBySelector(event as MouseEvent, ".block") || DOMUtils.getParentFromSelection(".block");
+
+        const customEvent = new CustomEvent<ICommandEventDetail>(CustomEvents.emittedCommand, {            
+
             detail: {
                 command: this.command,
                 value: this.value,
-                block: ( DOMUtils.getParentFromSelection(".block") || DOMUtils.getParentTargetBySelector(event as MouseEvent, ".block") ) as HTMLHtmlElement
+                block: ( block ) as HTMLHtmlElement
             }
         });
 
