@@ -16,14 +16,12 @@ export class EmbedTool {
         container.style.maxWidth = "100%";
         container.style.width = 'fit-content';
         container.style.height = 'auto';
+        container.style.display = "table-caption"
 
         const image = document.createElement('img');
 
         image.src = url.toString();
         image.alt = '';
-        image.style.maxWidth = '100%';
-        image.style.width = '100%';
-        image.style.height = 'auto';
 
         container.prepend(image);
         container.classList.add(ToolboxOptions.AlignToolClass);
