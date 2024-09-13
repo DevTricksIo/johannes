@@ -1,6 +1,12 @@
 import { Utils } from "./Utils";
 
+const START_MARKER_ID = 'caret-start-marker';
+const END_MARKER_ID = 'caret-end-marker'; // If you need to handle selections
+
 export class DOMUtils {
+
+
+
 
 
     static isSelectionInTableCell() {
@@ -184,13 +190,13 @@ export class DOMUtils {
     */
     static findClosestAncestorOfActiveElementByClass(className: string): HTMLElement | null {
         const activeElement = document.activeElement;
-    
+
         if (!activeElement) {
             return null;
         }
-    
+
         let currentElement: Node | null = activeElement;
-    
+
         while (currentElement) {
             if (
                 currentElement instanceof HTMLElement &&
@@ -198,10 +204,10 @@ export class DOMUtils {
             ) {
                 return currentElement;
             }
-    
+
             currentElement = currentElement.parentNode;
         }
-    
+
         return null;
     }
 
@@ -730,29 +736,29 @@ export class DOMUtils {
 
     static getParentFromSelection(selector: string): Element | null {
         const selection: Selection | null = window.getSelection();
-    
+
         if (!selection || selection.rangeCount === 0) {
             return null;
         }
-    
+
         let range: Range = selection.getRangeAt(0);
         let commonAncestorContainer: Node = range.commonAncestorContainer;
-    
+
         if (commonAncestorContainer instanceof Element && commonAncestorContainer.matches(selector)) {
             return commonAncestorContainer;
         }
-    
+
         let parentElement: Element | null = commonAncestorContainer instanceof Element
             ? commonAncestorContainer
             : commonAncestorContainer.parentElement;
-    
+
         while (parentElement && parentElement !== document.documentElement) {
             if (parentElement.matches(selector)) {
                 return parentElement;
             }
             parentElement = parentElement.parentElement;
         }
-    
+
         return null;
     }
 
@@ -1084,6 +1090,42 @@ export class DOMUtils {
 
 
 
+    static insertCaretMarker(element: HTMLElement): void {
+        const selection = window.getSelection();
 
+        if (selection && selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+
+            const marker = document.createElement('span');
+
+            marker.id = START_MARKER_ID;
+
+            marker.style.display = 'none';
+
+            range.insertNode(marker);
+
+            selection.collapse(marker, 0);
+        }
+    }
+
+
+    static removeCaretMarker(element: HTMLElement): void {
+        const marker = element.querySelector(`#${START_MARKER_ID}`);
+        marker?.parentNode?.removeChild(marker);
+    }
+
+
+    static restoreCaretFromMarker(element: HTMLElement): void {
+        const marker = element.querySelector(`#${START_MARKER_ID}`);
+        if (marker) {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.setStartAfter(marker);
+            range.collapse(true);
+            selection?.removeAllRanges();
+            selection?.addRange(range);
+            marker.parentNode?.removeChild(marker);
+        }
+    }
 
 }

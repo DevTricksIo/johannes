@@ -9,8 +9,8 @@ export class Memento implements IMemento {
   private static query: string = "#johannesEditor .content-wrapper";
   private static instance: Memento;
 
-  private undoStack: { html: string, caretPosition: { charIndex: number, horizontalPos: number, verticalPos: number } }[] = [];
-  private redoStack: { html: string, caretPosition: { charIndex: number, horizontalPos: number, verticalPos: number } }[] = [];
+  private undoStack: { html: string }[] = [];
+  private redoStack: { html: string }[] = [];
 
   private get content(): HTMLElement {
     return document.querySelector(Memento.query)!;
@@ -26,39 +26,34 @@ export class Memento implements IMemento {
 
   saveState() {
     if (this.content) {
-      const clone = this.content.cloneNode(true) as HTMLElement;
-
-      setTimeout(() => {
-        const caretPosition = DOMUtils.saveCaretPosition3d(this.content);
-
-        clone.querySelectorAll(`.${CommonClasses.EditorOnly}`).forEach(el => el.remove());
-
-        this.undoStack.push({ html: clone.innerHTML, caretPosition });
-        this.redoStack = [];
-      }, 10);
+      const state = this.captureState();
+      this.undoStack.push(state);
+      this.redoStack = [];
     }
   }
 
   private undo() {
     if (this.undoStack.length > 1) {
-      this.redoStack.push({ html: this.content.innerHTML, caretPosition: DOMUtils.saveCaretPosition3d(this.content) });
+      const state = this.captureState();
+      this.redoStack.push(state);
 
       const stateToRestore = this.undoStack.pop();
       if (stateToRestore) {
         this.content.innerHTML = stateToRestore.html;
-        DOMUtils.restoreCaretPosition3d(this.content, stateToRestore.caretPosition);
+        DOMUtils.restoreCaretFromMarker(this.content);
       }
     }
   }
 
   private redo() {
     if (this.redoStack.length > 0) {
-      this.undoStack.push({ html: this.content.innerHTML, caretPosition: DOMUtils.saveCaretPosition3d(this.content) });
+      const state = this.captureState();
+      this.undoStack.push(state);
 
       const stateToApply = this.redoStack.pop();
       if (stateToApply) {
         this.content.innerHTML = stateToApply.html;
-        DOMUtils.restoreCaretPosition3d(this.content, stateToApply.caretPosition);
+        DOMUtils.restoreCaretFromMarker(this.content);
       }
     }
   }
@@ -100,4 +95,18 @@ export class Memento implements IMemento {
 
     return Memento.instance;
   }
+
+
+  private captureState(): { html: string } {
+    DOMUtils.insertCaretMarker(this.content);
+
+    const clone = this.content.cloneNode(true) as HTMLElement;
+
+    clone.querySelectorAll(`.${CommonClasses.EditorOnly}`).forEach(el => el.remove());
+
+    DOMUtils.removeCaretMarker(this.content);
+
+    return { html: clone.innerHTML };
+  }
+
 }
