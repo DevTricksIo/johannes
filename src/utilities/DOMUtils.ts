@@ -274,24 +274,78 @@ export class DOMUtils {
     * without additional checks or corrections.
     */
     static rearrangeContentAfterSplit(currentNode: Node, newNode: Node): void {
-        const cursorPosition = DOMUtils.getCursorPosition(currentNode as Node);
-        const ranges1 = this.splitContentAtCursorSelection(currentNode as Node);
-
-        // change the original
-        document.getSelection()?.removeAllRanges();
-        document.getSelection()?.addRange(ranges1[1]);
-        document.getSelection()?.deleteFromDocument();
-
-        // change the clone
-        if (newNode && cursorPosition) {
-            this.setCursorPosition(newNode, cursorPosition);
-
-            const ranges2 = this.splitContentAtCursorSelection(newNode as Node);
-
-            document.getSelection()?.removeAllRanges();
-            document.getSelection()?.addRange(ranges2[0]);
-            document.getSelection()?.deleteFromDocument();
+        const selection = window.getSelection();
+        if (!selection || selection.rangeCount === 0) {
+            return;
         }
+    
+        const range = selection.getRangeAt(0);
+    
+        // Ensure the selection is within currentNode
+        if (!currentNode.contains(range.startContainer)) {
+            return;
+        }
+    
+        // **Step 1: Remove everything after the caret in currentNode**
+    
+        // Clone the range and set it to cover everything after the caret
+        const afterCaretRange = range.cloneRange();
+        afterCaretRange.setEndAfter(currentNode);
+        afterCaretRange.deleteContents();
+    
+        // **Step 2: Map the caret position to newNode**
+    
+        // Function to map a node from currentNode to newNode
+        const mapNodeToNewNode = (node: Node): Node | null => {
+            const path: number[] = [];
+            let n: Node | null = node;
+    
+            // Build the path from the node up to currentNode
+            while (n && n !== currentNode) {
+                const parent: any = n.parentNode;
+                const index = Array.prototype.indexOf.call(parent!.childNodes, n);
+                path.unshift(index);
+                n = parent;
+            }
+    
+            if (n !== currentNode) {
+                return null;
+            }
+    
+            // Traverse newNode using the same path
+            let newN: Node = newNode;
+            for (const index of path) {
+                newN = newN.childNodes[index];
+            }
+    
+            return newN;
+        };
+    
+        // Map the start and end containers to newNode
+        const newStartContainer = mapNodeToNewNode(range.startContainer);
+        const newEndContainer = mapNodeToNewNode(range.endContainer);
+    
+        if (!newStartContainer || !newEndContainer) {
+            return;
+        }
+    
+        // **Step 3: Remove everything before the caret in newNode**
+    
+        const newRange = document.createRange();
+        newRange.setStart(newStartContainer, range.startOffset);
+        newRange.setEnd(newEndContainer, range.endOffset);
+    
+        // Create a range that covers everything before the caret
+        const beforeCaretRange = newRange.cloneRange();
+        beforeCaretRange.setStartBefore(newNode);
+        beforeCaretRange.deleteContents();
+    
+        // **Optional: Adjust the caret position in newNode**
+    
+        // Place the caret at the beginning of newNode
+        selection.removeAllRanges();
+        selection.selectAllChildren(newNode);
+        selection.collapseToStart();
     }
 
     /**
@@ -372,29 +426,58 @@ export class DOMUtils {
         const selection = window.getSelection();
         if (!selection) return;
 
+        // Remove qualquer seleção existente
         selection.removeAllRanges();
 
         const range = document.createRange();
+        let currentPos = 0;
+        let found = false;
+
+        // Cria um TreeWalker para percorrer nós de texto
         const treeWalker = document.createTreeWalker(
             element,
             NodeFilter.SHOW_TEXT,
-            { acceptNode: () => NodeFilter.FILTER_ACCEPT }
+            null
         );
 
         let currentNode = treeWalker.nextNode();
-        let currentPos = 0;
 
+        // Percorre os nós de texto para encontrar a posição correta
         while (currentNode) {
             const textLength = currentNode.textContent?.length || 0;
+
             if (currentPos + textLength >= position) {
-                range.setStart(currentNode, position - currentPos);
+                // Posição encontrada dentro do nó de texto atual
+                const offset = position - currentPos;
+                range.setStart(currentNode, offset);
                 range.collapse(true);
+                found = true;
                 break;
             }
+
             currentPos += textLength;
             currentNode = treeWalker.nextNode();
         }
 
+        if (!found) {
+            // Se a posição excede o comprimento total do texto, define o cursor no final
+            if (element.lastChild) {
+                if (element.lastChild.nodeType === Node.TEXT_NODE) {
+                    // Último filho é um nó de texto
+                    const textNode = element.lastChild as Text;
+                    range.setStart(textNode, textNode.length);
+                } else {
+                    // Último filho é um elemento
+                    range.setStartAfter(element.lastChild);
+                }
+            } else {
+                // O elemento não tem filhos, define o cursor no início
+                range.setStart(element, 0);
+            }
+            range.collapse(true);
+        }
+
+        // Adiciona o range à seleção
         selection.addRange(range);
     }
 
