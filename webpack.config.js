@@ -12,7 +12,7 @@ module.exports = {
   devtool: 'inline-source-map',
   output: {
     clean: true,
-    filename: 'bundle.js',
+    filename: 'johannes-bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
   resolve: {
