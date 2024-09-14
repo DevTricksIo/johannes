@@ -40,6 +40,53 @@ export class TextOperationsService implements ITextOperationsService {
         return this.instance;
     }
 
+    execCopy(): void {
+        this.memento.saveState();
+
+        if (document.queryCommandSupported('copy')) {
+            document.execCommand('copy');
+            EventEmitter.emitChangeTextTemporarilyEvent("copyOption", "Copied!");
+        } else {
+            console.error("Copy command is not supported");
+        }
+    }
+
+    execCut(): void {
+        this.memento.saveState();
+
+        if (document.queryCommandSupported('cut')) {
+            document.execCommand('cut');
+        } else {
+            console.error("Cut command is not supported");
+        }
+    }
+
+    async execReplace(): Promise<void> {
+        this.memento.saveState();
+
+        const selection = window.getSelection();
+        if (!selection?.rangeCount) {
+            console.error("No text is selected");
+            return;
+        }
+
+        try {
+            const replacementText = await navigator.clipboard.readText();
+            const range = selection.getRangeAt(0);
+            range.deleteContents();
+
+            const textNode = document.createTextNode(replacementText);
+            range.insertNode(textNode);
+
+            selection.removeAllRanges();
+            const newRange = document.createRange();
+            newRange.selectNodeContents(textNode);
+            selection.addRange(newRange);
+        } catch (error) {
+            console.error("Failed to read from clipboard", error);
+        }
+    }
+
     execInsertLink(url: string): void {
         this.memento.saveState();
 
@@ -62,8 +109,7 @@ export class TextOperationsService implements ITextOperationsService {
             anchor.normalize();
         });
     }
-
-
+    
     execToggleLink(): void {
         if (!this.queryAnchorCommandState()) {
             EventEmitter.emitShowElementEvent("linkBox");
@@ -322,7 +368,7 @@ export class TextOperationsService implements ITextOperationsService {
             element = element.parentNode;
         }
 
-        if(!(element instanceof Element)){
+        if (!(element instanceof Element)) {
             return false;
         }
 
@@ -352,7 +398,7 @@ export class TextOperationsService implements ITextOperationsService {
             element = element.parentNode;
         }
 
-        if(!(element instanceof Element)){
+        if (!(element instanceof Element)) {
             return false;
         }
 

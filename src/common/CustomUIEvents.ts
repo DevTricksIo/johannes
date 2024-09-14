@@ -1,5 +1,5 @@
 export enum CustomUIEvents {
-    
+    ChangeTextTemporarily = "ChangeTextTemporarily",
     ColorChangeRequest = "ColorChangeRequest",
     ShowHideActiveButton = "ShowHideActiveButton",
     ResetActiveButtons = "ResetActiveButtons",

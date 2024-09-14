@@ -1,4 +1,7 @@
 export interface ITextOperationsService {
+    execCopy(): void;
+    execCut(): void;
+    execReplace(): void;
     queryHiliteColor(expectedColor: string): boolean;
     queryForeColor(expectedColor: string): boolean;
     execToggleLink(): void;

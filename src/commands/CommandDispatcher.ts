@@ -84,6 +84,18 @@ export class CommandDispatcher {
 
         switch (command) {
 
+            case Commands.copySelected:
+                this.textOperationsService.execCopy();
+                break;
+
+            case Commands.cutSelected:
+                this.textOperationsService.execCut();
+                break;
+
+            case Commands.past:
+                this.textOperationsService.execReplace();
+                break;
+
             case Commands.linkReadyToInsert:
                 if (!value) {
                     throw new Error(`${Commands.linkReadyToInsert} requires value`);

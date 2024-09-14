@@ -12,6 +12,7 @@ import { ShowHideActiveButton } from "@/commands/UIActions/ShowHideActiveButton"
 import { DOMUtils } from "@/utilities/DOMUtils";
 import { ChangeBlockToolbarLanguage } from "@/commands/UIActions/ChangeBlockToolbarLanguage";
 import { DefaultJSEvents } from "@/common/DefaultJSEvents";
+import { ChangeTextTemporarily } from "@/commands/UIActions/ChangeTextTemporarily";
 
 export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMenuItem {
 
@@ -65,10 +66,6 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
 
         this.attachEvents();
     }
-
-    // attachOnFocus(func: () => void): void {
-    //     this.onFocusFunctionList.push(func);
-    // }
 
     addClass(classKey: string) {
         this.classList.push(classKey);
@@ -138,35 +135,16 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
 
         const block = DOMUtils.getParentTargetBySelector(event as MouseEvent, ".block") || DOMUtils.getParentFromSelection(".block");
 
-        const customEvent = new CustomEvent<ICommandEventDetail>(CustomEvents.emittedCommand, {            
+        const customEvent = new CustomEvent<ICommandEventDetail>(CustomEvents.emittedCommand, {
 
             detail: {
                 command: this.command,
                 value: this.value,
-                block: ( block ) as HTMLHtmlElement
+                block: (block) as HTMLHtmlElement
             }
         });
 
         document.dispatchEvent(customEvent);
-
-
-        // requestAnimationFrame(() => {
-        //     const selection = window.getSelection();
-        //     if (!selection || selection.rangeCount === 0) return;
-
-        //     const range = selection.getRangeAt(0);
-        //     let container: Node | null = range.commonAncestorContainer;
-
-        //     if (container?.nodeType === Node.TEXT_NODE) {
-        //         container = container.parentNode;
-        //     }
-
-        //     const focusableParent = (container as HTMLElement).closest(".focusable");
-
-        //     if (focusableParent) {
-        //         this.normalizeAndMergeElements(focusableParent as HTMLElement);
-        //     }
-        // });
     }
 
     attachEvents(): void {
@@ -192,96 +170,6 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
             this.emitCommandEvent(event);
         });
 
-
-        // document.addEventListener(CustomEvents.textFormatChanged, (event: Event) => {
-
-        //     const customEvent = event as CustomEvent<IFormatCommand>;
-        //     const states = customEvent.detail;
-
-        //     if (this.command == Commands.toggleHiliteColor) {
-
-        //         if (!this.value) {
-        //             throw new Error("A color value must be provided for the 'hiliteColor' command. Each 'ListMenuItem' must specify a color representing the text background color.");
-        //         }
-
-        //         if (states.hiliteColor[this.value]) {
-        //             this.activeIcon?.changeVisibilityToVisible();
-        //         } else {
-        //             this.activeIcon?.changeVisibilityToHidden();
-        //         }
-        //     }
-
-        //     if (this.command == Commands.toggleForeColor) {
-
-        //         if (!this.value) {
-        //             throw new Error("A color value must be provided for the 'coreColor' command. Each 'ListMenuItem' must specify a color representing the text color.");
-        //         }
-
-        //         if (states.foreColor[this.value]) {
-        //             this.activeIcon?.changeVisibilityToVisible();
-        //         } else {
-        //             this.activeIcon?.changeVisibilityToHidden();
-        //         }
-        //     }
-
-        //     if (this.command == Commands.toggleCellHiliteColor) {
-
-        //         if (!this.value) {
-        //             throw new Error("A color value must be provided for the 'coreColor' command. Each 'ListMenuItem' must specify a color representing the text color.");
-        //         }
-
-        //         if (states.cellHiliteColor[this.value]) {
-        //             this.activeIcon?.changeVisibilityToVisible();
-        //         } else {
-        //             this.activeIcon?.changeVisibilityToHidden();
-        //         }
-        //     }
-
-        // });
-
-        // document.addEventListener(CustomEvents.tableCellChanged, (event: Event) => {
-
-        //     const customEvent = event as CustomEvent<IFormatCommand>;
-        //     const states = customEvent.detail;
-
-
-        //     if (this.command == Commands.toggleCellHiliteColor) {
-
-        //         if (!this.value) {
-        //             throw new Error("A color value must be provided for the 'coreColor' command. Each 'ListMenuItem' must specify a color representing the text color.");
-        //         }
-
-        //         if (states.cellHiliteColor[this.value]) {
-        //             this.activeIcon?.changeVisibilityToVisible();
-        //         } else {
-        //             this.activeIcon?.changeVisibilityToHidden();
-        //         }
-        //     }
-        // });
-
-
-        // private handleCommandEvent = (event: CustomEvent<ICommandEventDetail>): void => {
-        //     const { command, showUI, value, targetBlockType } = event.detail;
-
-
-        // document.addEventListener("selectionchange", async () => {
-        //     if (
-        //         this.command == TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR ||
-        //         this.command == TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR) {
-
-        //         await this.changeCheckIconVisibility();
-        //     }
-        // });
-
-        // document.addEventListener("colorChange", async () => {
-        //     if (
-        //         this.command == TextOperationService.QUERY_TEXT_OPERATIONS.HILITE_COLOR ||
-        //         this.command == TextOperationService.QUERY_TEXT_OPERATIONS.FORE_COLOR) {
-
-        //         await this.changeCheckIconVisibility();
-        //     }
-        // });
-
         document.addEventListener(CustomUIEvents.ChangeBlockToolbarLanguage, this.handleChangeBlockToolbarLanguageEvent.bind(this));
     }
 
@@ -306,57 +194,10 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
         }
     }
 
-    // normalizeAndMergeElements(element: HTMLElement | null): void {
-    //     if (!element) return;
-
-    //     let child = element.firstChild;
-    //     while (child) {
-    //         if (child.nodeType === Node.ELEMENT_NODE) {
-    //             this.normalizeAndMergeElements(child as HTMLElement);
-    //         }
-
-    //         let nextSibling = child.nextSibling;
-    //         while (nextSibling && this.shouldMerge(child, nextSibling)) {
-    //             (child as HTMLElement).innerHTML += (nextSibling as HTMLElement).innerHTML;
-    //             const next = nextSibling.nextSibling;
-    //             nextSibling.parentNode!.removeChild(nextSibling);
-    //             nextSibling = next;
-    //         }
-
-    //         child = child.nextSibling;
-    //     }
-
-    //     element.normalize();
-    // }
-
-    // shouldMerge(node1: ChildNode, node2: ChildNode): boolean {
-    //     if (node1?.nodeType !== Node.ELEMENT_NODE || node2?.nodeType !== Node.ELEMENT_NODE) return false;
-    //     const elem1 = node1 as HTMLElement;
-    //     const elem2 = node2 as HTMLElement;
-    //     return elem1.tagName === elem2.tagName &&
-    //         elem1.style.cssText === elem2.style.cssText &&
-    //         window.getComputedStyle(elem1).color === window.getComputedStyle(elem2).color;
-    // }
-
-
-    // async changeCheckIconVisibility(): Promise<void> {
-    //     try {
-    //         const isActive = await this.textOperationService.queryCommandState(this.command, this.value);
-    //         if (isActive) {
-    //             this.activeIcon?.changeVisibilityToVisible();
-    //         } else {
-    //             this.activeIcon?.changeVisibilityToHidden();
-    //         }
-    //     } catch (error) {
-    //         console.error("Failed to query command state:", error);
-    //     }
-    // }
-
-
-
     attachUIEvent() {
         document.addEventListener(CustomUIEvents.ShowHideActiveButton, this.handleShowHideActiveButtonEvent.bind(this));
         document.addEventListener(CustomUIEvents.ResetActiveButtons, this.handleResetActiveButtonsEvent.bind(this));
+        document.addEventListener(CustomUIEvents.ChangeTextTemporarily, this.handleChangeTextTemporarilyEvent.bind(this));
     }
 
     handleShowHideActiveButtonEvent(event: Event) {
@@ -364,11 +205,6 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
         const details = customEvent.detail;
 
         if (this.classList?.includes(details.targetClass!)) {
-
-            // if(!(details.action instanceof ShowHideActiveButton)){
-            //     return;
-            // }
-
             const eventValues = (details.action as ShowHideActiveButton);
             const eventColor = eventValues.value;
 
@@ -385,45 +221,34 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
         const details = customEvent.detail;
 
         if (this.classList?.includes(details.targetClass!)) {
-
-            // if(!(details.action instanceof ResetActiveButtons)){
-            //     return;
-            // }
-
             this.activeIcon?.changeVisibilityToHidden();
         }
     }
 
-    // getLeftIconBackgroundColor(): string | null {
+    handleChangeTextTemporarilyEvent(event: Event) {
+        const customEvent = event as CustomEvent<IUIEventDetail>;
+        const details = customEvent.detail;
 
-    //     if (this.leftIcon) {
+        if (details.targetId == this.id) {
+            event.stopImmediatePropagation();
 
-    //         const style = window.getComputedStyle(this.leftIcon);
-    //         const rgbColor = style.backgroundColor;
+            const temporarilyText = (details.action as ChangeTextTemporarily).temporarilyText;
+            const element = this.htmlElement.querySelector(".text-option > span");
 
-    //         const hexColor = Utils.rgbToHex(rgbColor).toLocaleLowerCase();
-    //         return hexColor;
-    //     }
+            if (element && element.textContent) {
+                if (!element.hasAttribute('data-original-text')) {
+                    element.setAttribute('data-original-text', element.textContent);
+                }
 
-    //     return null;
-    // }
+                element.textContent = temporarilyText;
 
-    // getLeftIconColor(): string | null {
-
-    //     if (this.leftIcon) {
-
-    //         const style = window.getComputedStyle(this.leftIcon);
-    //         const rgbColor = style.backgroundColor;
-
-    //         const hexColor = Utils.rgbToHex(rgbColor).toLocaleLowerCase();
-    //         return hexColor;
-    //     }
-
-    //     return null;
-    // }
-
-
-    // changeActiveIconToVisible(): void {
-    //     this.activeIcon?.changeVisibilityToVisible();
-    // }
+                setTimeout(() => {
+                    const originalText = element.getAttribute('data-original-text');
+                    if (originalText !== null) {
+                        element.textContent = originalText;
+                    }
+                }, 2000);
+            }
+        }
+    }
 }
