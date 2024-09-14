@@ -1033,16 +1033,15 @@ td::placeholder {
     margin-right: 15px;
 }
 
-.nav-underline .nav-link {
+.nav-underline .nav-link-item {
     cursor: pointer;
     text-decoration: none;
-    color: rgb(55, 53, 47);
     color: rgba(55, 53, 47, 0.5);
     transition: 0.1s ease;
 }
 
 
-.nav-item.active .nav-link {
+.nav-item.active .nav-link-item {
     color: #37352fd9;
     font-weight: 600;
 }

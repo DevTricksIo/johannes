@@ -68,7 +68,7 @@ export class MediaInputter extends BaseUIComponent {
         li.id = id;
 
         const a = document.createElement("a");
-        a.classList.add("nav-link");
+        a.classList.add("nav-link-item");
         a.innerText = text;
         li.appendChild(a);
 
