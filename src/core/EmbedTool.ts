@@ -77,9 +77,8 @@ export class EmbedTool {
             iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
             iframe.allowFullscreen = true;
             container.appendChild(iframe);
-            container.classList.add(ToolboxOptions.AlignToolClass);
             // this.finalizeEmbed(container, ["x-resizable", ToolboxOptions.AlignToolClass], element);
-            this.finalizeEmbed(container, [ToolboxOptions.AlignToolClass], element);
+            this.finalizeEmbed(container, [], element);
         } else {
             console.error('Invalid YouTube video URL');
         }
@@ -102,7 +101,7 @@ export class EmbedTool {
             iframe.allowFullscreen = true;
             container.appendChild(iframe);
             // EmbedTool.finalizeEmbed(container, ["x-resizable", ToolboxOptions.AlignToolClass], element);
-            EmbedTool.finalizeEmbed(container, [ToolboxOptions.AlignToolClass], element);
+            EmbedTool.finalizeEmbed(container, [], element);
         } else {
             console.error('Invalid YouTube Shorts URL');
         }
@@ -120,7 +119,7 @@ export class EmbedTool {
             iframe.setAttribute("allowfullscreen", "true");
             container.appendChild(iframe);
             // EmbedTool.finalizeEmbed(container, ["x-resizable", ToolboxOptions.AlignToolClass], element);
-            EmbedTool.finalizeEmbed(container, [ToolboxOptions.AlignToolClass], element);
+            EmbedTool.finalizeEmbed(container, [], element);
         } else {
             console.error('Invalid YouTube playlist URL');
         }
@@ -129,7 +128,7 @@ export class EmbedTool {
     static embedSpotifyContent(urlObj: URL, element: HTMLElement, type: EmbedTypes) {
         const contentId = urlObj.pathname.split('/').pop();
         const container = this.createEmbedContainer(["embed-container"]);
-        container.classList.add("spotify-embed", ToolboxOptions.AlignToolClass);
+        container.classList.add("spotify-embed");
 
 
         if (!contentId) {
@@ -161,7 +160,7 @@ export class EmbedTool {
         }
 
         container.appendChild(iframe);
-        this.finalizeEmbed(container, [ToolboxOptions.AlignToolClass], element);
+        this.finalizeEmbed(container, [], element);
     }
 
     static async embedGistAsScript(urlObj: URL, element: HTMLElement) {
