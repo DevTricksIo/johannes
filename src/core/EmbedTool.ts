@@ -78,7 +78,8 @@ export class EmbedTool {
             iframe.allowFullscreen = true;
             container.appendChild(iframe);
             container.classList.add(ToolboxOptions.AlignToolClass);
-            this.finalizeEmbed(container, ["x-resizable", ToolboxOptions.AlignToolClass], element);
+            // this.finalizeEmbed(container, ["x-resizable", ToolboxOptions.AlignToolClass], element);
+            this.finalizeEmbed(container, [ToolboxOptions.AlignToolClass], element);
         } else {
             console.error('Invalid YouTube video URL');
         }
@@ -100,7 +101,8 @@ export class EmbedTool {
             iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
             iframe.allowFullscreen = true;
             container.appendChild(iframe);
-            EmbedTool.finalizeEmbed(container, ["x-resizable", ToolboxOptions.AlignToolClass], element);
+            // EmbedTool.finalizeEmbed(container, ["x-resizable", ToolboxOptions.AlignToolClass], element);
+            EmbedTool.finalizeEmbed(container, [ToolboxOptions.AlignToolClass], element);
         } else {
             console.error('Invalid YouTube Shorts URL');
         }
@@ -117,7 +119,8 @@ export class EmbedTool {
             iframe.src = `https://www.youtube.com/embed/videoseries?list=${safeListId}`;
             iframe.setAttribute("allowfullscreen", "true");
             container.appendChild(iframe);
-            EmbedTool.finalizeEmbed(container, ["x-resizable", ToolboxOptions.AlignToolClass], element);
+            // EmbedTool.finalizeEmbed(container, ["x-resizable", ToolboxOptions.AlignToolClass], element);
+            EmbedTool.finalizeEmbed(container, [ToolboxOptions.AlignToolClass], element);
         } else {
             console.error('Invalid YouTube playlist URL');
         }
@@ -158,7 +161,7 @@ export class EmbedTool {
         }
 
         container.appendChild(iframe);
-        this.finalizeEmbed(container, ["x-resizable", ToolboxOptions.AlignToolClass], element);
+        this.finalizeEmbed(container, [ToolboxOptions.AlignToolClass], element);
     }
 
     static async embedGistAsScript(urlObj: URL, element: HTMLElement) {
