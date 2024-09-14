@@ -8,14 +8,14 @@ export class TableUtils {
         const newRow = table.insertRow(insertPosition);
 
         const numColumns = Array.from(table.rows).reduce((max, row) => Math.max(max, row.cells.length), 0);
-        let affectedCells = [];  // Array to hold references to new cells
+        let affectedCells = [];
 
         for (let i = 0; i < numColumns; i++) {
             const cell = newRow.insertCell();
             cell.contentEditable = "true";
             cell.setAttribute("data-placeholder", "Enter text");
             cell.classList.add("editable");
-            affectedCells.push(cell);  // Add cell reference to array
+            affectedCells.push(cell);
         }
 
         setTimeout(() => {
@@ -25,14 +25,14 @@ export class TableUtils {
 
     static addColumn(table: HTMLTableElement, position: number | null = null): void {
         const insertPosition = position !== null ? position : undefined;
-        let affectedCells = [];  // Array to hold references to new cells
+        let affectedCells = [];
 
         for (let i = 0; i < table.rows.length; i++) {
             const cell = table.rows[i].insertCell(insertPosition);
             cell.contentEditable = "true";
             cell.setAttribute("data-placeholder", "cell");
             cell.classList.add("editable");
-            affectedCells.push(cell);  // Add cell reference to array
+            affectedCells.push(cell);
         }
 
         setTimeout(() => {
@@ -70,28 +70,11 @@ export class TableUtils {
         const table = row.parentElement as HTMLTableElement;
         const columnIndex = cell.cellIndex;
 
-        // Add fade-out class to all cells in the column
-        // for (let i = 0; i < table.rows.length; i++) {
-        //     if (columnIndex < table.rows[i].cells.length) {
-        //         table.rows[i].cells[columnIndex].classList.add("fade-out");
-        //     }
-        // }
-
-        // Delay the column removal for 300 milliseconds
-
         for (let i = 0; i < table.rows.length; i++) {
             if (columnIndex < table.rows[i].cells.length) {
                 table.rows[i].deleteCell(columnIndex);
             }
         }
-
-        // setTimeout(() => {
-        //     for (let i = 0; i < table.rows.length; i++) {
-        //         if (columnIndex < table.rows[i].cells.length) {
-        //             table.rows[i].deleteCell(columnIndex);
-        //         }
-        //     }
-        // }, 900);
     }
 
     static removeRowByCell(cell: HTMLTableCellElement): void {
@@ -102,18 +85,7 @@ export class TableUtils {
         const row = cell.parentElement as HTMLTableRowElement;
         const table = row.parentElement as HTMLTableElement;
 
-        // Add fade-out class to all cells in the row
-        // Array.from(row.cells).forEach(cell => {
-        //     cell.classList.add("fade-out");
-        // });
-
-        // Delay the row removal for 300 milliseconds
-
         table.deleteRow(row.rowIndex);
-
-        // setTimeout(() => {
-        //     table.deleteRow(row.rowIndex);
-        // }, 900);
     }
 
     static getActiveTableCell(): HTMLTableCellElement | null {
@@ -125,23 +97,6 @@ export class TableUtils {
 
         return activeElement?.closest('td') as HTMLTableCellElement || null;
     }
-
-
-    // static isActiveCellBackgroundColor(targetHexColor: string): boolean {
-    //     const activeCell = document.activeElement;
-
-    //     if (!activeCell || activeCell.tagName !== 'TD' || !activeCell.hasAttribute('data-placeholder')) {
-    //         return false;
-    //     }
-
-    //     const computedStyle = window.getComputedStyle(activeCell);
-    //     const currentBackgroundColor = computedStyle.getPropertyValue('background-color');
-
-    //     const hexBackgroundColor = Utils.rgbToHex(currentBackgroundColor);
-
-    //     return hexBackgroundColor.toUpperCase() === targetHexColor.toUpperCase();
-    // }
-
 
     static getLastTableCell(table: HTMLTableElement): HTMLElement | null {
         for (let i = table.rows.length - 1; i >= 0; i--) {
@@ -188,7 +143,6 @@ export class TableUtils {
         return null;
     }
 
-
     static changeCellBorderColor(
         table: HTMLTableElement,
         scope: TableScopes,
@@ -221,48 +175,25 @@ export class TableUtils {
         }
 
         if (cellsToChange) {
-
-
-
             Array.from(cellsToChange).forEach((cell) => {
-
-                // cell.style.border = `1px double ${color}`;
-                // const styles = window.getComputedStyle(cell);
-
-
                 cell.style.border = `1px double ${color}`;
-                // cell.style.boxShadow = `0 0 0 1px ${color} inset`;
-
-                // const boxShadow = styles.getPropertyValue('box-shadow');
-                // const border = styles.getPropertyValue('border');
-
-                // console.log("bbb");
-                // cell.style.border = border;
-                // cell.style.boxShadow = boxShadow;
-
-                // console.log('Box Shadow:', boxShadow);
-                // console.log('Border:', border);
-
             });
         }
     }
 
-
-
     static moveFocusToBelowCell(table: HTMLTableElement, cell: HTMLTableCellElement): boolean {
         const nextRow = cell.parentElement?.nextElementSibling as HTMLTableRowElement | null;
         if (!nextRow) {
-            return false; // No cell below
+            return false;
         }
 
         const cellIndex = cell.cellIndex;
         const belowCell = nextRow.cells[cellIndex];
         if (!belowCell || !belowCell.isContentEditable) {
-            return false; // No editable cell below
+            return false;
         }
 
         belowCell.focus();
         return true;
     }
-
 }

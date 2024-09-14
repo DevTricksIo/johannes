@@ -72,11 +72,9 @@ export class ElementFactoryService implements IElementFactoryService {
         this.register(ElementFactoryService.ELEMENT_TYPES.VIDEO, ElementFactoryService.placeholderCreator(ContentTypes.Iframe, Icons.YouTube, "Embed a YouTube video", [CommonClasses.ShowMediaInputEmbed, "youtube-embed-placeholder-text"]));
         this.register(ElementFactoryService.ELEMENT_TYPES.SPOTIFY, ElementFactoryService.placeholderCreator(ContentTypes.Iframe, Icons.Spotify, "Embed a Spotify audio track", [CommonClasses.ShowMediaInputEmbed, "spotify-embed-placeholder-text"]));
         this.register(ElementFactoryService.ELEMENT_TYPES.GITHUB_GIST, ElementFactoryService.placeholderCreator(ContentTypes.Iframe, Icons.GitHub, "Embed a GitHub Gist", [CommonClasses.ShowMediaInputEmbed, "github-gist-embed-placeholder-text"]));
-        //this.register(ElementFactoryService.ELEMENT_TYPES.GITLAB_SNIPPET, ElementFactoryService.placeholderCreator(ContentTypes.Script, Icons.GitLab, "Embed a snippet", [CommonClasses.ShowMediaInputEmbed]));
         this.register(ElementFactoryService.ELEMENT_TYPES.CODEPEN, ElementFactoryService.placeholderCreator(ContentTypes.Iframe, Icons.CodePen, "Embed a CodePen web demo", [CommonClasses.ShowMediaInputEmbed, "codepen-embed-placeholder-text"]));
         this.register(ElementFactoryService.ELEMENT_TYPES.CALLOUT, ElementFactoryService.calloutCreator());
         this.register(ElementFactoryService.ELEMENT_TYPES.SEPARATOR, ElementFactoryService.separatorCreator());
-
 
         ElementFactoryService._instance = this;
     }
@@ -167,7 +165,6 @@ export class ElementFactoryService implements IElementFactoryService {
                 hljs.highlightElement(code);
             });
 
-            // codeBlock.appendChild(languageSelector);
             codeBlock.appendChild(pre);
             container.appendChild(codeBlock);
 
@@ -403,12 +400,9 @@ export class ElementFactoryService implements IElementFactoryService {
         let element = document.createElement('li');
         element.classList.add("deletable", "no-list-style", "list-item", "list-item-checkable", "hide-turninto");
 
-        // initialItem.classList.add('key-trigger');
-
         let checkbox = document.createElement('input');
         checkbox.id = id;
         checkbox.setAttribute('type', 'checkbox');
-        // checkbox.contentEditable = "true";
 
         let span = document.createElement('div');
         span.textContent = content;
@@ -423,26 +417,6 @@ export class ElementFactoryService implements IElementFactoryService {
 
         return element;
     }
-
-    // private static listItem(text: string): HTMLElement {
-
-    //     let initialItem = document.createElement('li');
-
-    //     initialItem.classList.add('focusable');
-    //     initialItem.classList.add('deletable');
-    //     initialItem.classList.add('editable');
-    //     initialItem.classList.add('focus');
-    //     initialItem.classList.add('key-trigger');
-    //     initialItem.classList.add('list-item');
-
-    //     initialItem.innerText = text;
-
-    //     initialItem.contentEditable = "true";
-    //     initialItem.setAttribute('data-placeholder', 'Item');
-
-    //     return initialItem;
-
-    // }
 
     private static listItem_2(content: string | null = null): HTMLElement {
 
@@ -466,22 +440,13 @@ export class ElementFactoryService implements IElementFactoryService {
 
 
     static blockParagraph(content: string | null = null) {
-
         let newDiv = document.createElement('div');
-        newDiv.id = `b-${Utils.generateUniqueId()}`;
         let newElement = ElementFactoryService.paragraph(content);
-
-        // let dragHandler = document.createElement('button');
-        // dragHandler.innerHTML = '<svg width="1.375rem" height="1.375rem" fill="currentColor"><use href="#icon-material-drag"></use></svg>';
-
-        // newDiv.appendChild(newButton);
+        
+        newDiv.id = `b-${Utils.generateUniqueId()}`;
         newDiv.appendChild(newElement);
-
         newDiv.classList.add('block');
         newDiv.classList.add('deletable');
-        // dragHandler.classList.add('drag-handler');
-        // dragHandler.classList.add('button-reset');
-        // dragHandler.draggable = true;
 
         return newDiv;
     }
@@ -511,5 +476,4 @@ export class ElementFactoryService implements IElementFactoryService {
 
         return element;
     }
-
 }

@@ -4,7 +4,6 @@ import { Editor } from "../editor/Editor";
 describe("AddBlockButton", () => {
 
     beforeEach(() => {
-        // Setup the editor in the document body
         document.body.innerHTML = `
         <div id="johannesEditor"></div>
     `;

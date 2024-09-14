@@ -6,42 +6,22 @@ import { TableUtils } from "@/utilities/TableUtils";
 import { IQuickMenu } from "@/components/quick-menu/IQuickMenu";
 import { DependencyContainer } from "./DependencyContainer";
 
-/**
- * This class handles keyboard events to navigate between contenteditable elements using arrow keys,
- * and ensures focus management and caret placement within these elements.
- * It implements the `IEditableNavigation` interface and uses a singleton pattern to manage its instance.
- */
 export class EditableNavigation implements IEditableNavigation {
 
     private static instance: EditableNavigation;
 
     quickMenu: IQuickMenu;
 
-    /**
-     * Private constructor to prevent external instantiation.
-     * It binds the `handleArrowKeys` method to keyboard events on the document.
-     */
     private constructor(quickMenu: IQuickMenu) {
         document.addEventListener('keydown', this.handleArrowKeys.bind(this));
 
         this.quickMenu = quickMenu;
     }
 
-    /**
-     * Acts as a trigger within the dependency injection container to ensure instantiation of this singleton class.
-     * This method does not perform any operations itself but ensures that an instance of EditableNavigation
-     * is created and ready to listen to keyboard events. This is crucial for setting up the event listeners
-     * that manage navigation within editable content areas, as it triggers the necessary bindings upon instantiation.
-     */
     listen(): void {
         console.log("EditableNavigation is now listening for key events.");
     }
 
-    /**
-     * Retrieves the singleton instance of the EditableNavigation class.
-     * If the instance does not exist, it creates a new one.
-     * @returns {EditableNavigation} The singleton instance of the EditableNavigation class.
-     */
     public static getInstance(): EditableNavigation {
 
         if (!EditableNavigation.instance) {
@@ -87,20 +67,10 @@ export class EditableNavigation implements IEditableNavigation {
         }
     }
 
-    /**
-    * Determines if navigation should switch from the current editable element based on the arrow direction and caret position.
-    * It checks if the caret is at the start or end of the content and evaluates boundary conditions for vertical navigation.
-    * 
-    * @param {HTMLElement} element - The current contenteditable element being evaluated.
-    * @param {Directions} direction - The navigation direction indicated by the arrow key press.
-    * @returns {boolean} Returns true if the navigation should move to another element, false otherwise.
-    */
     private shouldSwitchEditable(element: HTMLElement, direction: Directions): boolean {
 
-        // DOMUtils.sanitizeContentEditable(element);
         const sel = window.getSelection();
 
-        // If has selection ignore navigation 
         if (sel && sel.rangeCount > 0) {
             let range = sel.getRangeAt(0);
             if (range.endOffset != range.startOffset) {
@@ -153,19 +123,10 @@ export class EditableNavigation implements IEditableNavigation {
         return false;
     }
 
-    /**
-    * Locates the next contenteditable element in the specified navigation direction.
-    * This function takes into account both horizontal (left/right) and vertical (up/down) directions and handles table cell boundaries.
-    * 
-    * @param {HTMLElement} current - The current contenteditable element.
-    * @param {Directions} direction - The direction of the arrow key navigation.
-    * @returns {HTMLElement | null} The next contenteditable element in the desired direction or null if no suitable element is found.
-    */
     private findNextEditable(current: HTMLElement, direction: Directions): HTMLElement | null {
         const allEditables = Array.from(document.querySelectorAll('[contenteditable="true"]')) as HTMLElement[];
         const currentIndex = allEditables.indexOf(current);
 
-        // The table navigation behavior is a little different
         if (current.closest("td")) {
             const table = current.closest("table");
             const cell = current.closest("td");
@@ -191,36 +152,6 @@ export class EditableNavigation implements IEditableNavigation {
         return allEditables[nextIndex] || null;
     }
 
-    /**
-    * Finds the next contenteditable element in a vertical direction (up or down) relative to the current element.
-    * It calculates the closest editable element based on vertical distance and minimal horizontal shift, favoring elements directly above or below.
-    * 
-    * @param {HTMLElement} current - The currently focused contenteditable element.
-    * @param {HTMLElement[]} allEditables - An array of all contenteditable elements.
-    * @param {Directions} direction - The direction of navigation, either up or down.
-    * @returns {number} The index of the closest vertical editable element or the current index if none are closer.
-    */
-    // private findVerticalEditable(current: HTMLElement, allEditables: HTMLElement[], direction: Directions): number {
-    //     const currentIndex = allEditables.indexOf(current);
-    //     const currentRect = current.getBoundingClientRect();
-    //     let closestIndex = -1;
-    //     let closestDistance = Infinity;
-
-    //     allEditables.forEach((editable, index) => {
-    //         if (editable !== current) {
-    //             const rect = editable.getBoundingClientRect();
-    //             const verticalDistance = direction === Directions.ArrowUp ? currentRect.top - rect.bottom : rect.top - currentRect.bottom;
-    //             const horizontalDistance = Math.abs(currentRect.left - rect.left);
-
-    //             if (verticalDistance > 0 && (verticalDistance + horizontalDistance < closestDistance)) {
-    //                 closestDistance = verticalDistance + horizontalDistance;
-    //                 closestIndex = index;
-    //             }
-    //         }
-    //     });
-
-    //     return closestIndex === -1 ? currentIndex : closestIndex;
-    // }
     private findVerticalEditableIndex(current: HTMLElement, allEditables: HTMLElement[], direction: Directions): number {
         const currentIndex = allEditables.indexOf(current);
         let nextIndex = currentIndex;
@@ -238,13 +169,6 @@ export class EditableNavigation implements IEditableNavigation {
         return -1;
     }
 
-    /**
-    * Places the caret in a position within the next element that closely matches its position in the current element.
-    * This is useful when moving focus between contenteditable elements to maintain a consistent user experience.
-    * 
-    * @param {HTMLElement} current - The current contenteditable element where the caret is located.
-    * @param {HTMLElement} next - The next contenteditable element to which the caret will move.
-    */
     private placeCaretInSimilarPosition(current: HTMLElement, next: HTMLElement) {
         const sel = window.getSelection();
         if (sel && sel.rangeCount > 0) {
@@ -291,5 +215,4 @@ export class EditableNavigation implements IEditableNavigation {
             }
         }
     }
-
 }

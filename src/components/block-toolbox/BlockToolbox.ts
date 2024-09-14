@@ -111,29 +111,12 @@ export class BlockToolbox implements IBlockToolbox {
         }
     }
 
-    /**
-    * Handles focus in events within a table. If the focus is within a table element,
-    * it triggers the toolbox visibility controller to potentially hide the toolbox.
-    * This is designed to prevent the toolbox from interfering with table interactions.
-    *
-    * @param {FocusEvent} event - The focus event triggered when an element within the table gains focus.
-    * @private
-    */
     private handleTableBehaviorFocusIn(event: FocusEvent): void {
         const targetElement = event.target as HTMLElement;
         if (targetElement.closest(DOMElements.TABLE)) {
             this.toolboxVisibilityController(targetElement, true);
         }
     }
-
-    /**
-     * Handles focus out events within a table. If the focus moves out of a table element,
-     * it triggers the toolbox visibility controller to potentially show the toolbox.
-     * This helps in ensuring that the toolbox is available for use when the table is not actively focused.
-     *
-     * @param {FocusEvent} event - The focus event triggered when an element within the table loses focus.
-     * @private
-     */
 
     private handleTableBehaviorFocusOut(event: FocusEvent): void {
         const targetElement = event.target as HTMLElement;
@@ -220,10 +203,6 @@ export class BlockToolbox implements IBlockToolbox {
 
                     iframe.addEventListener(DefaultJSEvents.Mouseleave, () => this.hideBlockToolbox(toolboxWrapper));
                 });
-
-
-
-
             }
         }
     }
@@ -320,5 +299,4 @@ export class BlockToolbox implements IBlockToolbox {
 
         return htmlElementWrapper;
     }
-
 }

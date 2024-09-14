@@ -12,7 +12,6 @@ export class EmbedTool {
 
         const container = this.createEmbedContainer();
 
-        // container.classList.add("x-resizable");
         container.style.maxWidth = "100%";
         container.style.width = 'fit-content';
         container.style.height = 'auto';
@@ -77,7 +76,6 @@ export class EmbedTool {
             iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
             iframe.allowFullscreen = true;
             container.appendChild(iframe);
-            // this.finalizeEmbed(container, ["x-resizable", ToolboxOptions.AlignToolClass], element);
             this.finalizeEmbed(container, [], element);
         } else {
             console.error('Invalid YouTube video URL');
@@ -100,7 +98,6 @@ export class EmbedTool {
             iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
             iframe.allowFullscreen = true;
             container.appendChild(iframe);
-            // EmbedTool.finalizeEmbed(container, ["x-resizable", ToolboxOptions.AlignToolClass], element);
             EmbedTool.finalizeEmbed(container, [], element);
         } else {
             console.error('Invalid YouTube Shorts URL');
@@ -118,7 +115,6 @@ export class EmbedTool {
             iframe.src = `https://www.youtube.com/embed/videoseries?list=${safeListId}`;
             iframe.setAttribute("allowfullscreen", "true");
             container.appendChild(iframe);
-            // EmbedTool.finalizeEmbed(container, ["x-resizable", ToolboxOptions.AlignToolClass], element);
             EmbedTool.finalizeEmbed(container, [], element);
         } else {
             console.error('Invalid YouTube playlist URL');
@@ -288,7 +284,6 @@ export class EmbedTool {
         }
     }
 
-
     static determineEmbedType(url: string): EmbedTypes | null {
         const urlObj = new URL(url);
         const domain = urlObj.hostname.toLowerCase();
@@ -337,8 +332,6 @@ export class EmbedTool {
     }
 
 }
-
-
 
 export enum EmbedTypes {
     SpotifyTrack = "track",

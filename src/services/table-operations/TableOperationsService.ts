@@ -292,5 +292,4 @@ export class TableOperationsService implements ITableOperationsService {
             TableUtils.changeCellBorderColor(table, scope, color)
         }
     }
-
 }

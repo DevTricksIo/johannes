@@ -13,8 +13,6 @@ export interface ITableOperationsService {
     hideInsertColumnElement(block: HTMLElement): void;
     removeColumn(): void;
     removeRow(): void;
-    // isActiveCellBackgroundColor(value: string): boolean;
-
     changeTableBorderColor(scope: TableScopes, color: Colors): void;
     queryStateCellBackgroundColor(value: string): boolean;
     queryAllStateCellBackgroundColor(elements: HTMLTableCellElement[], color: Colors): boolean;

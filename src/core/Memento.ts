@@ -69,17 +69,6 @@ export class Memento implements IMemento {
       }
     });
 
-    // document.addEventListener("input", (event: Event) => {
-    //   const inputEvent = event as InputEvent;
-    //   if (!inputEvent.isComposing && !inputEvent.inputType.startsWith("delete")) {
-    //     window.clearTimeout(this.debounceTimer);
-    //     this.debounceTimer = window.setTimeout(() => {
-    //       this.saveState();
-    //     }, this.debounceDelay);
-    //   }
-    // });
-
-
     document.addEventListener(DefaultJSEvents.Keyup, (event: KeyboardEvent) => {
       if (event.key == KeyboardKeys.Space) {
         this.saveState();
@@ -96,7 +85,6 @@ export class Memento implements IMemento {
     return Memento.instance;
   }
 
-
   private captureState(): { html: string } {
     DOMUtils.insertCaretMarker(this.content);
 
@@ -108,5 +96,4 @@ export class Memento implements IMemento {
 
     return { html: clone.innerHTML };
   }
-
 }
