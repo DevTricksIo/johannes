@@ -565,6 +565,13 @@ export class BlockOperationsService implements IBlockOperationsService {
 
             case ElementFactoryService.ELEMENT_TYPES.QUOTE: {
                 newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.QUOTE);
+
+                const quote = newContentBlock.querySelector("blockquote");
+
+                if (quote) {
+                    quote.innerText = content;
+                }
+
                 break;
             }
 
