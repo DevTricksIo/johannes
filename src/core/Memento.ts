@@ -70,7 +70,7 @@ export class Memento implements IMemento {
     });
 
     document.addEventListener(DefaultJSEvents.Keyup, (event: KeyboardEvent) => {
-      if (event.key == KeyboardKeys.Space) {
+      if (event.key == KeyboardKeys.Space || event.key == KeyboardKeys.Backspace || event.key == KeyboardKeys.Delete) {
         this.saveState();
       }
     });
