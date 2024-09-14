@@ -7,9 +7,7 @@ import { Colors } from "@/common/Colors";
 import { TableScopes } from "./TableScopes";
 import { DOMElements } from "@/common/DOMElements";
 import { EventEmitter } from "@/commands/EventEmitter";
-import { DOMUtils } from "@/utilities/DOMUtils";
 import { Utils } from "@/utilities/Utils";
-import { TableContextFloatingToolbar } from "@/components/floating-toolbar/TableContextFloatingToolbar";
 import { ToolbarIDs } from "@/core/ToolbarIDs";
 
 export class TableOperationsService implements ITableOperationsService {
@@ -84,8 +82,6 @@ export class TableOperationsService implements ITableOperationsService {
         }
     }
 
-
-
     static isCellBackgroundColor(cell: HTMLTableCellElement, targetHexColor: string): boolean {
         if (!cell || cell.tagName !== 'TD' || !cell.hasAttribute('data-placeholder')) {
             return false;
@@ -113,29 +109,6 @@ export class TableOperationsService implements ITableOperationsService {
         }
 
         return false;
-
-        // const a = DOMUtils.
-
-        //     this.memento.saveState();
-
-        // EventEmitter.emitResetActiveButtonsElementEvent("backgroundColor");
-
-        // const activeCell = TableUtils.getActiveTableCell();
-
-        // if (activeCell) {
-        //     const table = activeCell.closest('table')!;
-
-        //     const selectedCells = table.querySelectorAll('td.selected');
-
-        //     selectedCells.forEach(cell => {
-        //         (cell as HTMLElement).style.backgroundColor = value;
-        //     });
-
-        //     EventEmitter.emitShowHideActiveElementEvent("backgroundColor", value, "show");
-
-        // } else {
-        //     console.error("cell not found");
-        // }
     }
 
     queryAllStateCellBackgroundColor(elements: HTMLTableCellElement[], color: Colors): boolean {
@@ -160,18 +133,6 @@ export class TableOperationsService implements ITableOperationsService {
         return is;
     }
 
-
-    // execHiliteColor(value: string): void {
-
-    //     this.memento.saveState();
-
-    //     if (document.execCommand("hiliteColor", false, value)) {
-    //         EventEmitter.emitShowHideActiveElementEvent("hiliteColor", value, "show");
-    //     }else{
-    //         EventEmitter.emitShowHideActiveElementEvent("hiliteColor", value, "hide");
-    //     }
-    // }
-
     static getInstance(): TableOperationsService {
 
         const focusStack = DependencyContainer.Instance.resolve<IFocusStack>("IFocusStack");
@@ -187,112 +148,67 @@ export class TableOperationsService implements ITableOperationsService {
     insertRowAbove(): void {
         this.memento.saveState();
 
-        const cell = this.focusStack.peek(); // Agora, `cell` é a `td` diretamente
+        const cell = this.focusStack.peek();
         if (!cell) {
             console.error("No cell is focused");
             return;
         }
 
-        const row = cell.parentElement; // Obtem a linha (`tr`) pai da célula
+        const row = cell.parentElement;
         if (!row) {
             console.error("No row is focused");
             return;
         }
 
-        const table = row.closest("table"); // Encontra a tabela que contém a linha
+        const table = row.closest("table");
         if (!table) {
             console.error("Table does not exist");
             return;
         }
 
-        const tbody = table.querySelector('tbody') || table; // Assume table se tbody não existir
-        const rowIndex = Array.from(tbody.children).indexOf(row); // Encontra o índice da linha dentro do tbody ou da tabela
+        const tbody = table.querySelector('tbody') || table;
+        const rowIndex = Array.from(tbody.children).indexOf(row);
 
         if (rowIndex < 0) {
             console.error("Row index not found");
             return;
         }
 
-        TableUtils.addRow(table, rowIndex); // Insere uma nova linha no índice encontrado
+        TableUtils.addRow(table, rowIndex);
         EventEmitter.emitCloseElementEvent(ToolbarIDs.TableToolbar);
     }
 
-    insertRowBelow(block: HTMLElement): void {
+    insertRowBelow(): void {
         this.memento.saveState();
 
-        if (block) {
-            const table = block.querySelector("table");
-            if (table) {
-                const row = table.querySelector("tr:last-child");
-                if (row) {
-                    const rowIndex = Array.from(table.children[0].children).indexOf(row) + 1;
-                    TableUtils.addRow(table, rowIndex);
-                } else {
-                    console.error("No rows in the table");
-                    return;
-                }
-            } else {
-                console.error("Table does not exist");
-                return;
-            }
-        } else {
-            const element = this.focusStack.peek();
-            if (!element) {
-                console.error("No focused element available");
-                return;
-            }
-
-            const cell = element.closest("td");
-            if (!cell) {
-                console.error("No cell is focused");
-                return;
-            }
-
-            const row = cell.parentElement;
-            const table = cell.closest("table");
-            if (!table) {
-                console.error("Table does not exist");
-                return;
-            }
-
-            if (row) {
-                const rowIndex = Array.from(table.children[0].children).indexOf(row) + 1;
-                TableUtils.addRow(table, rowIndex);
-
-                EventEmitter.emitCloseElementEvent(ToolbarIDs.TableToolbar);
-            }
-
+        const cell = this.focusStack.peek();
+        if (!cell) {
+            console.error("No cell is focused");
+            return;
         }
+
+        const row = cell.parentElement;
+        if (!row) {
+            console.error("No row is focused");
+            return;
+        }
+
+        const table = row.closest("table");
+        if (!table) {
+            console.error("Table does not exist");
+            return;
+        }
+
+        const rowIndex = Array.from(table.children[0].children).indexOf(row) + 1;
+
+        if (rowIndex < 0) {
+            console.error("Row index not found");
+            return;
+        }
+
+        TableUtils.addRow(table, rowIndex);
+        EventEmitter.emitCloseElementEvent(ToolbarIDs.TableToolbar);
     }
-
-    // insertColumn(direction: 'left' | 'right'): void {
-    //     this.memento.saveState();  // Salva o estado atual para possível desfazimento
-
-    //     const element = this.focusStack.peek();  // Pega o elemento atualmente focado
-    //     if (!element) {
-    //         console.error("No focused element available");
-    //         return;
-    //     }
-
-    //     const cell = element.closest("td");  // Encontra a célula focada dentro da tabela
-    //     if (!cell) {
-    //         console.error("No cell is focused");
-    //         return;
-    //     }
-
-    //     const table = cell.closest("table");  // Encontra a tabela contendo a célula
-    //     if (!table) {
-    //         console.error("Table does not exist");
-    //         return;
-    //     }
-
-    //     const columnIndex = Array.from(cell.parentElement.children).indexOf(cell);  // Determina o índice da coluna atual
-    //     if (direction === 'left') {
-    //         TableUtils.addColumn(table, columnIndex);  // Adiciona coluna à esquerda
-    //     } else {
-    //         TableUtils.addColumn(table, columnIndex + 1);  // Adiciona coluna à direita
-    //     }
-    // }
 
     insertColumnLeft(): void {
         this.memento.saveState();
@@ -319,41 +235,33 @@ export class TableOperationsService implements ITableOperationsService {
         TableUtils.addColumn(table, columnIndex);
 
         EventEmitter.emitCloseElementEvent(ToolbarIDs.TableToolbar);
-
     }
 
-    insertColumnRight(block: HTMLElement | null): void {
+    insertColumnRight(): void {
         this.memento.saveState();
 
-        if (block) {
-            const table = block.querySelector("table");
-            if (table) {
-                TableUtils.addColumn(table);
-            }
-        } else {
-            const element = this.focusStack.peek();
-            if (!element) {
-                console.error("No focused element available");
-                return;
-            }
-
-            const cell = element.closest("td");
-            if (!cell) {
-                console.error("No cell is focused");
-                return;
-            }
-
-            const table = cell.closest("table");
-            if (!table) {
-                console.error("Table does not exist");
-                return;
-            }
-
-            const columnIndex = Array.from(cell.parentElement!.children).indexOf(cell);
-            TableUtils.addColumn(table, columnIndex + 1);
-
-            EventEmitter.emitCloseElementEvent(ToolbarIDs.TableToolbar);
+        const element = this.focusStack.peek();
+        if (!element) {
+            console.error("No focused element available");
+            return;
         }
+
+        const cell = element.closest("td");
+        if (!cell) {
+            console.error("No cell is focused");
+            return;
+        }
+
+        const table = cell.closest("table");
+        if (!table) {
+            console.error("Table does not exist");
+            return;
+        }
+
+        const columnIndex = Array.from(cell.parentElement!.children).indexOf(cell);
+        TableUtils.addColumn(table, columnIndex + 1);
+
+        EventEmitter.emitCloseElementEvent(ToolbarIDs.TableToolbar);
     }
 
     showInsertLineElement(block: HTMLElement): void {
@@ -375,19 +283,6 @@ export class TableOperationsService implements ITableOperationsService {
         const insertLine = block.querySelector(".add-table-column") as HTMLElement;
         insertLine.style.visibility = "hidden";
     }
-
-    // isActiveCellBackgroundColor(value: string): boolean {
-    //     return TableUtils.isActiveCellBackgroundColor(value);
-    // }
-
-    // emitChangeTableBorderColorEvent = (scope: TableScopes, color: Colors): void => {
-    //     const customEvent = new CustomEvent(Commands., {
-    //         detail: { scope: scope }
-    //     });
-
-    //     document.dispatchEvent(customEvent);
-    // }
-
 
     changeTableBorderColor(scope: TableScopes, color: Colors): void {
 
