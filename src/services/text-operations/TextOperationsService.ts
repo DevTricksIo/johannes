@@ -99,28 +99,6 @@ export class TextOperationsService implements ITextOperationsService {
         }
     }
 
-    // toggleInlineCode(): boolean {
-    //     const selection = window.getSelection();
-    //     if (!selection || selection.rangeCount === 0) return false;
-
-    //     const range = selection.getRangeAt(0);
-    //     const selectedContent = range.extractContents();
-
-    //     if (selection.anchorNode?.parentElement?.tagName === "CODE") {
-    //         const textNode = document.createTextNode(selectedContent.textContent || '');
-    //         range.insertNode(textNode);
-    //     } else {
-    //         const codeElement = document.createElement("code");
-    //         codeElement.appendChild(selectedContent);
-    //         range.insertNode(codeElement);
-    //     }
-
-    //     selection.removeAllRanges();
-    //     selection.addRange(range);
-
-    //     return true;
-    // }
-
     toggleInlineCode(): boolean {
         const selection = window.getSelection();
         if (!selection || selection.rangeCount === 0) return false;
@@ -262,74 +240,6 @@ export class TextOperationsService implements ITextOperationsService {
         return document.queryCommandState(command);
     }
 
-    // private queryAnchorCommandState(): boolean {
-    //     const selection = window.getSelection();
-    //     if (!selection || !selection.rangeCount) return false;
-
-    //     const range = selection.getRangeAt(0);
-    //     let node: Node | null = range.commonAncestorContainer;
-
-    //     if (node.nodeType === Node.TEXT_NODE) {
-    //         node = node.parentNode;
-    //     }
-
-    //     // Verifica se algum nó pai é uma âncora
-    //     while (node) {
-    //         if (node.nodeType === Node.ELEMENT_NODE) {
-    //             const element = node as HTMLElement;
-    //             if (element.tagName === 'A') {
-    //                 return true;  // A seleção está dentro de uma âncora
-    //             }
-    //             if (element.closest('a')) {
-    //                 return true;  // A seleção está dentro de algo que está dentro de uma âncora
-    //             }
-    //         }
-    //         node = node.parentNode;
-    //     }
-
-    //     // Verifica se a seleção contém uma âncora completa
-    //     if (range.startContainer === range.endContainer) {
-    //         const children = Array.from(range.commonAncestorContainer.childNodes);
-    //         let selectedAnchor: HTMLElement | null = null;
-    //         for (let child of children) {
-    //             if (child.nodeType === Node.ELEMENT_NODE && (child as HTMLElement).tagName === 'A') {
-    //                 if (range.intersectsNode(child)) {
-    //                     selectedAnchor = child as HTMLElement;
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //         if (selectedAnchor && range.toString() === selectedAnchor.textContent) {
-    //             return true;  // A seleção é exatamente o texto de uma âncora
-    //         }
-    //     }
-
-    //     return false;
-    // }
-
-
-    //ORIGINAL
-    // private queryAnchorCommandState(): boolean {
-    //     const selection = window.getSelection();
-    //     if (!selection || !selection.rangeCount) return false;
-
-    //     let node: Node | null = selection.getRangeAt(0).commonAncestorContainer;
-
-    //     if (node.nodeType === Node.TEXT_NODE) {
-    //         node = node.parentNode;
-    //     }
-
-    //     while (node && node !== null) {
-    //         if (node.nodeType == Node.ELEMENT_NODE && (node as HTMLElement).closest('a')) {
-    //             return true;
-    //         }
-    //         node = node.parentNode;
-    //     }
-
-    //     return false;
-    // }
-
-    // multiples elements
     private queryAnchorCommandState(): boolean {
         const selection = window.getSelection();
         if (!selection || !selection.rangeCount) return false;
@@ -338,7 +248,6 @@ export class TextOperationsService implements ITextOperationsService {
         const startContainer = range.startContainer;
         const endContainer = range.endContainer;
 
-        // Function to check if a node or its parents are an <a> element
         const isNodeInsideAnchor = (node: Node | null): boolean => {
             while (node && node !== document.body) {
                 if (node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).tagName.toLowerCase() === 'a') {
@@ -349,12 +258,10 @@ export class TextOperationsService implements ITextOperationsService {
             return false;
         };
 
-        // Check if the start or end of the selection is within an <a> element
         if (isNodeInsideAnchor(startContainer) || isNodeInsideAnchor(endContainer)) {
             return true;
         }
 
-        // Check all elements between start and end if necessary
         const nodesInRange = range.cloneContents().querySelectorAll('a');
         return nodesInRange.length > 0;
     }
@@ -517,7 +424,6 @@ export class TextOperationsService implements ITextOperationsService {
 
         return null;
     }
-
 
     getSelectedTextNodes(): Node[] {
         const selection = window.getSelection();
