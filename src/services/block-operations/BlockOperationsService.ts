@@ -554,6 +554,12 @@ export class BlockOperationsService implements IBlockOperationsService {
 
             case ElementFactoryService.ELEMENT_TYPES.CODE: {
                 newContentBlock = this.elementFactoryService.create(ElementFactoryService.ELEMENT_TYPES.CODE);
+                const code = newContentBlock.querySelector("code");
+
+                if (code) {
+                    code.innerText = content;
+                }
+
                 break;
             }
 
