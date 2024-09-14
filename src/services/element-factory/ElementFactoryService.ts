@@ -401,7 +401,7 @@ export class ElementFactoryService implements IElementFactoryService {
         const id = Utils.generateUniqueId();
 
         let element = document.createElement('li');
-        element.classList.add("deletable", "no-list-style", "list-item", "list-item-checkable");
+        element.classList.add("deletable", "no-list-style", "list-item", "list-item-checkable", "hide-turninto");
 
         // initialItem.classList.add('key-trigger');
 
@@ -446,10 +446,9 @@ export class ElementFactoryService implements IElementFactoryService {
 
     private static listItem_2(content: string | null = null): HTMLElement {
 
-        let initialItem = document.createElement('li');
+        let initialItem = document.createElement("li");
 
-        initialItem.classList.add('deletable');
-        initialItem.classList.add('list-item');
+        initialItem.classList.add("deletable", "list-item", "hide-turninto");
 
         const div = document.createElement("div");
 
