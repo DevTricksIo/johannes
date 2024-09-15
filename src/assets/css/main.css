@@ -30,7 +30,7 @@
 
 figure figcaption[data-placeholder]:empty:before {
     content: attr(data-placeholder) !important;
-    color: #84888d !important;
+    /* color: #84888d !important; */
     display: inline-block !important;
 }
 
@@ -38,6 +38,7 @@ figure figcaption{
     max-width: inherit;
     width: fit-content;
     display: inline-block;
+    color: #84888d;
 }
 
 /** CSS reset */
@@ -920,7 +921,7 @@ td::placeholder {
     width: fit-content;
     justify-content: space-between;
     padding: 8px 16px;
-    background-color: #f9f9f9;
+    /* background-color: #f9f9f9; */
     width: fit-content;
     z-index: 999999;
     position: absolute;
@@ -1225,7 +1226,8 @@ td::placeholder {
     right: 0;
     display: flex;
     flex-direction: row;
-    background-color: #f9f9f9;
+    /* background-color: #f9f9f9; */
+    background-color: white;
     color: black !important;
     justify-content: center;
     align-items: center;
