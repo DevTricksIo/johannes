@@ -180,35 +180,37 @@ export class TableOperationsService implements ITableOperationsService {
 
     insertRowBelow(): void {
         this.memento.saveState();
-
-        const cell = this.focusStack.peek();
-        if (!cell) {
-            console.error("No cell is focused");
-            return;
+    
+        let table: HTMLTableElement | null = null;
+        let rowIndex: number = 0;
+    
+        const element = this.focusStack.peek();
+    
+        if (element) {
+            const cell = element.closest("td");
+            if (cell) {
+                const row = cell.parentElement as HTMLTableRowElement;
+                if (row) {
+                    table = row.closest("table") as HTMLTableElement;
+                    if (table) {
+                        rowIndex = row.rowIndex + 1;
+                    }
+                }
+            }
         }
-
-        const row = cell.parentElement;
-        if (!row) {
-            console.error("No row is focused");
-            return;
-        }
-
-        const table = row.closest("table");
+    
         if (!table) {
-            console.error("Table does not exist");
-            return;
+            table = document.querySelector("table");
+            if (!table) {
+                console.error("Tabela não encontrada");
+                return;
+            }
+            rowIndex = table.rows.length;
         }
-
-        const rowIndex = Array.from(table.children[0].children).indexOf(row) + 1;
-
-        if (rowIndex < 0) {
-            console.error("Row index not found");
-            return;
-        }
-
+    
         TableUtils.addRow(table, rowIndex);
         EventEmitter.emitCloseElementEvent(ToolbarIDs.TableToolbar);
-    }
+    }    
 
     insertColumnLeft(): void {
         this.memento.saveState();
@@ -239,30 +241,38 @@ export class TableOperationsService implements ITableOperationsService {
 
     insertColumnRight(): void {
         this.memento.saveState();
-
+    
+        let table: HTMLTableElement | null = null;
+        let columnIndex: number = 0;
+    
         const element = this.focusStack.peek();
-        if (!element) {
-            console.error("No focused element available");
-            return;
+    
+        if (element) {
+            const cell = element.closest("td") as HTMLTableCellElement;
+            if (cell) {
+                const row = cell.parentElement as HTMLTableRowElement;
+                if (row) {
+                    table = row.closest("table") as HTMLTableElement;
+                    if (table) {
+                        columnIndex = cell.cellIndex + 1;
+                    }
+                }
+            }
         }
-
-        const cell = element.closest("td");
-        if (!cell) {
-            console.error("No cell is focused");
-            return;
-        }
-
-        const table = cell.closest("table");
+    
         if (!table) {
-            console.error("Table does not exist");
-            return;
+            table = document.querySelector("table");
+            if (!table) {
+                console.error("Tabela não encontrada");
+                return;
+            }
+            columnIndex = table.rows[0].cells.length;
         }
-
-        const columnIndex = Array.from(cell.parentElement!.children).indexOf(cell);
-        TableUtils.addColumn(table, columnIndex + 1);
-
+    
+        TableUtils.addColumn(table, columnIndex);
         EventEmitter.emitCloseElementEvent(ToolbarIDs.TableToolbar);
     }
+    
 
     showInsertLineElement(block: HTMLElement): void {
         const insertLine = block.querySelector(".add-table-row") as HTMLElement;
