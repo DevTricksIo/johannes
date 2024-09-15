@@ -14,6 +14,7 @@ import { TableContextFloatingToolbar } from './components/floating-toolbar/Table
 import { Memento } from './core/Memento';
 import { EditableNavigation } from './core/EditableNavigation';
 import { BlockToolbox } from './components/block-toolbox/BlockToolbox';
+import { ImageAlt } from './core/listeners/ImageAlt';
 
 /**
  * This script initializes the editor and sets up event listeners once the DOM content has fully loaded.
@@ -45,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
     CommandDispatcher.getInstance().listen();
     EditableNavigation.getInstance().listen();
     BlockToolbox.getInstance().listen();
+    ImageAlt.getInstance().listen();
 
     document.dispatchEvent(new Event("TextEditorLoaded"));
 
