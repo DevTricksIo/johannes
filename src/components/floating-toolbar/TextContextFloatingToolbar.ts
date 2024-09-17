@@ -258,7 +258,7 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
         const rects = this.currentSelectionRange.getClientRects();
 
         if (rects.length === 0) {
-            console.error('No rects found');
+            // console.error('No rects found');
             return;
         }
 

@@ -6,6 +6,8 @@ export class ImageAlt implements IImageAlt {
 
   currentImage: HTMLImageElement | null = null;
   inputElement: HTMLInputElement | null = null;
+  containerDiv: HTMLDivElement | null = null;
+  closeButton: HTMLButtonElement | null = null;
 
   private constructor() {
     this.listen();
@@ -28,10 +30,12 @@ export class ImageAlt implements IImageAlt {
       this.currentImage.style.boxShadow = "";
       this.currentImage = null;
     }
-    if (this.inputElement) {
-      this.inputElement.parentNode?.removeChild(this.inputElement);
-      this.inputElement = null;
+    if (this.containerDiv) {
+      this.containerDiv.parentNode?.removeChild(this.containerDiv);
+      this.containerDiv = null;
     }
+    this.inputElement = null;
+    this.closeButton = null;
   }
 
   listen() {
@@ -45,34 +49,75 @@ export class ImageAlt implements IImageAlt {
 
         img.style.boxShadow = "0px 0px 0px 2px #007bff";
 
+        this.containerDiv = document.createElement("div");
+        this.containerDiv.classList.add("image-alt-container", CommonClasses.EditorOnly, "soft-box-shadow");
+
+        this.containerDiv.style.position = "absolute";
+        this.containerDiv.style.padding = "10px 15px";
+        this.containerDiv.style.borderRadius = "4px";
+        this.containerDiv.style.backgroundColor = "white";
+        this.containerDiv.style.color = "#242424";
+        this.containerDiv.style.zIndex = "1000";
+        this.containerDiv.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.1)";
+        this.containerDiv.style.display = "flex";
+        this.containerDiv.style.alignItems = "center";
+        this.containerDiv.style.gap = "5px";
+
         this.inputElement = document.createElement("input");
-        this.inputElement.classList.add(CommonClasses.EditorOnly, "soft-box-shadow", );
+        this.inputElement.classList.add(
+          
+        );
         this.inputElement.type = "text";
         this.inputElement.placeholder = "Alt text";
         this.inputElement.value = img.alt || "";
 
-        this.inputElement.style.position = "absolute";
-        this.inputElement.style.padding = "5px 15px";        
-
-        this.inputElement.style.borderRadius = "4px";
-        this.inputElement.style.backgroundColor = "white";
-        this.inputElement.style.color = "#242424";
         this.inputElement.style.outline = "none";
+        this.inputElement.style.borderColor = "transparent";
+        this.inputElement.style.width = "100%";
+        this.inputElement.style.boxSizing = "border-box";
+
+        this.closeButton = document.createElement("button");
+        this.closeButton.innerHTML = "&times;";
+        this.closeButton.classList.add("close-button");
+
+        this.closeButton.style.background = "none";
+        this.closeButton.style.border = "none";
+        this.closeButton.style.fontSize = "16px";
+        this.closeButton.style.cursor = "pointer";
+        this.closeButton.style.color = "#242424";
+        this.closeButton.style.padding = "0";
+        this.closeButton.style.margin = "0";
+
+        this.closeButton.addEventListener("click", () => {
+          if (this.currentImage && this.inputElement) {
+            this.currentImage.alt = this.inputElement.value;
+            this.cleanup();
+          }
+        });
+
+        this.containerDiv.appendChild(this.inputElement);
+        this.containerDiv.appendChild(this.closeButton);
 
         const rect = img.getBoundingClientRect();
         const scrollX = window.scrollX || window.pageXOffset;
         const scrollY = window.scrollY || window.pageYOffset;
 
-        this.inputElement.style.left = `${rect.left + scrollX - 2}px`;
-        this.inputElement.style.top = `${rect.top + scrollY - this.inputElement.offsetHeight -40}px`;
-        this.inputElement.style.zIndex = "1000";
+        document.body.appendChild(this.containerDiv);
 
-        document.body.appendChild(this.inputElement);
+        const containerRect = this.containerDiv.getBoundingClientRect();
+
+        this.containerDiv.style.left = `${rect.left + scrollX - 2}px`;
+        this.containerDiv.style.top = `${
+          rect.top + scrollY - containerRect.height - 10
+        }px`;
 
         this.inputElement.focus();
 
         this.currentImage = img;
-      } else if (this.inputElement && target === this.inputElement) {
+      } else if (
+        this.inputElement &&
+        (target === this.inputElement || target === this.closeButton)
+      ) {
       } else {
         if (this.currentImage && this.inputElement) {
           this.currentImage.alt = this.inputElement.value;
@@ -86,6 +131,16 @@ export class ImageAlt implements IImageAlt {
         if (this.currentImage && this.inputElement) {
           this.currentImage.alt = this.inputElement.value;
           this.cleanup();
+        }
+      } else if (event.key === "Enter") {
+        if (
+          this.inputElement &&
+          document.activeElement === this.inputElement
+        ) {
+          if (this.currentImage && this.inputElement) {
+            this.currentImage.alt = this.inputElement.value;
+            this.cleanup();
+          }
         }
       }
     });
