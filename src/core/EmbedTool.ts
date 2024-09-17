@@ -1,9 +1,8 @@
 import { CommonClasses } from "@/common/CommonClasses";
-import { ToolboxOptions } from "../components/block-toolbox/ToolboxOptions";
 
 export class EmbedTool {
 
-    static async embedImage(urlObj: string, lastFocusedElement: HTMLElement) {
+    static async embedImage(urlObj: string, lastFocusedElement: HTMLElement, width: number = 1, height: number = 1) {
         const url = new URL(urlObj);
 
         if (!await EmbedTool.validateImage(url.toString())) {
@@ -12,19 +11,27 @@ export class EmbedTool {
 
         const container = this.createEmbedContainer();
 
-        container.style.maxWidth = "100%";
-        container.style.width = 'fit-content';
-        container.style.height = 'auto';
-        container.style.display = "table-caption"
+        const figContent = document.createElement("div");
+        figContent.classList.add("figure-content");
+        figContent.style.width = `${width}px`;
+        figContent.style.height = "auto";
 
         const image = document.createElement('img');
 
         image.src = url.toString();
         image.alt = '';
 
-        container.prepend(image);
-        container.classList.add(ToolboxOptions.AlignToolClass);
-        EmbedTool.finalizeEmbed(container, [ToolboxOptions.AlignToolClass, "fit-content"], lastFocusedElement);
+        const figcaption = document.createElement('figcaption');
+        figcaption.setAttribute("data-placeholder", "Type a caption for this image");
+        figcaption.setAttribute("contenteditable", "true");
+        figcaption.classList.add("editable", "hide-turninto", "hide-moreoptions", "hide-inlineCode");
+
+        figContent.appendChild(image);
+        figContent.appendChild(figcaption);
+
+        container.appendChild(figContent);
+
+        EmbedTool.finalizeEmbed(container, ["fit-content", "figure-align"], lastFocusedElement, ["justify-center"]);
     }
 
     static validateImage(urlToCheck: string): Promise<boolean> {
@@ -258,17 +265,10 @@ export class EmbedTool {
         const figure = document.createElement('figure');
         figure.classList.add(...classes);
 
-        const figcaption = document.createElement('figcaption');
-        figcaption.setAttribute("data-placeholder", "Type a caption for this image");
-        figcaption.setAttribute("contenteditable", "true");
-        figcaption.classList.add("editable", "hide-turninto", "hide-moreoptions", "hide-inlineCode");
-
-        figure.appendChild(figcaption);
-
         return figure;
     }
 
-    private static finalizeEmbed(container: HTMLElement, contentElementClasses: string[] = [], lastFocusedElement: HTMLElement): void {
+    private static finalizeEmbed(container: HTMLElement, contentElementClasses: string[] = [], lastFocusedElement: HTMLElement, rootBlockClasses: string[] = []): void {
 
         const content = lastFocusedElement.closest(`.${CommonClasses.ContentElement}`);
         if (content) {
@@ -279,6 +279,7 @@ export class EmbedTool {
             content.appendChild(container);
 
             const block = content.closest(".block");
+            block?.classList.add(...rootBlockClasses);
             const toolbarWrapper = block?.querySelector(".block-toolbar-wrapper");
             toolbarWrapper?.remove();
         }

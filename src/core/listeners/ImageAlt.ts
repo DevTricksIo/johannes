@@ -63,8 +63,8 @@ export class ImageAlt implements IImageAlt {
         const scrollX = window.scrollX || window.pageXOffset;
         const scrollY = window.scrollY || window.pageYOffset;
 
-        this.inputElement.style.left = `${rect.left + scrollX + 5}px`;
-        this.inputElement.style.top = `${rect.top + scrollY - this.inputElement.offsetHeight + 5}px`;
+        this.inputElement.style.left = `${rect.left + scrollX - 2}px`;
+        this.inputElement.style.top = `${rect.top + scrollY - this.inputElement.offsetHeight -40}px`;
         this.inputElement.style.zIndex = "1000";
 
         document.body.appendChild(this.inputElement);

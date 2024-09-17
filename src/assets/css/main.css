@@ -1,3 +1,31 @@
+.figure-align {
+    text-align: center;
+    max-width: 100%;
+}
+
+.figure-content {
+    display: inline-block;
+    text-align: center;
+    max-width: 100%;
+}
+
+.figure-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.figure-content figcaption {
+    width: 100%;
+    text-align: center;
+}
+
+.w-100{
+    width: 100%;
+}
+
+
+
 .justify-center table,
 .justify-center figure {
     margin-left: auto;
