@@ -143,6 +143,6 @@ export class ImageAlt implements IImageAlt {
           }
         }
       }
-    });
+    }, true);
   }
 }
