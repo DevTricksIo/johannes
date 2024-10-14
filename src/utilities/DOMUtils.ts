@@ -886,9 +886,10 @@ export class DOMUtils {
         }
     }
 
-    static removeCaretMarker(element: HTMLElement): void {
-        const marker = element.querySelector(`#${START_MARKER_ID}`);
-        marker?.parentNode?.removeChild(marker);
+    static removeCaretMarkers() {
+        document.querySelectorAll(`#${START_MARKER_ID}, #${END_MARKER_ID}`).forEach(marker => {
+            marker.parentNode?.removeChild(marker);
+        });
     }
 
     static restoreCaretFromMarker(element: HTMLElement): void {

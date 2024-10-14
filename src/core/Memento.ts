@@ -97,7 +97,7 @@ export class Memento implements IMemento {
 
     clone.querySelectorAll(`.${CommonClasses.EditorOnly}`).forEach(el => el.remove());
 
-    DOMUtils.removeCaretMarker(this.content);
+    DOMUtils.removeCaretMarkers();
 
     return { html: clone.innerHTML };
   }
