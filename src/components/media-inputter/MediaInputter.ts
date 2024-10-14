@@ -111,30 +111,36 @@ export class MediaInputter extends BaseUIComponent {
         const input = event.target as HTMLInputElement;
         if (input.files && input.files[0]) {
             const file = input.files[0];
-    
+
             if (!file.type.startsWith('image/')) {
                 alert('Please select an image file.');
                 return;
             }
-    
+
             const reader = new FileReader();
             reader.onload = async (e) => {
                 const src = e.target!.result as string;
-    
+
                 const img = new Image();
                 img.onload = async () => {
-                    
+
                     const width: number = img.naturalWidth;
                     const height: number = img.naturalHeight;
-                    console.log(`Width: ${width}, Height: ${height}`);
-    
+
                     const focusedElement = this.focusStack.peek();
                     if (focusedElement) {
                         await EmbedTool.embedImage(src, focusedElement, width, height);
                         this.hide();
+
+                        const imageUploadEvent = new CustomEvent('imageUploaded', {
+                            detail: {
+                                file: file
+                            }
+                        });
+                        document.dispatchEvent(imageUploadEvent);
                     }
                 };
-    
+
                 img.src = src;
             };
             reader.readAsDataURL(file);

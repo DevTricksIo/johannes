@@ -17,7 +17,7 @@ export class EmbedTool {
         figContent.style.height = "auto";
 
         const image = document.createElement('img');
-
+        image.classList.add("img-fluid");
         image.src = url.toString();
         image.alt = '';
 

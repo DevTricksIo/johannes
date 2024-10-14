@@ -82,7 +82,7 @@ export class ImageAlt implements IImageAlt {
 
         this.closeButton.style.background = "none";
         this.closeButton.style.border = "none";
-        this.closeButton.style.fontSize = "16px";
+        this.closeButton.style.fontSize = "1rem";
         this.closeButton.style.cursor = "pointer";
         this.closeButton.style.color = "#242424";
         this.closeButton.style.padding = "0";
