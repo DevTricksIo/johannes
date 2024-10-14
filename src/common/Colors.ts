@@ -1,9 +1,9 @@
 export enum Colors {
 
-    HiliteColorRed = "#FDDEDE",
-    HiliteColorGreen = "#D7F7DC",
-    HiliteColorBlue = "#D9EDF6",
-    HiliteColorYellow = "#FAF4D1",
+    HiliteColorRed = "#fddede7f",
+    HiliteColorGreen = "#d7f7dc7f",
+    HiliteColorBlue = "#d9edf67f",
+    HiliteColorYellow = "#faf4d17f",
     HiliteColorGrey = "#E1E0E0",
     HiliteColorNone = "transparent",
 
