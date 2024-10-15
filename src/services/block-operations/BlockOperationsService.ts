@@ -127,8 +127,8 @@ export class BlockOperationsService implements IBlockOperationsService {
             }
         }
 
-        if (command == Commands.removeFormat) {
-            return document.execCommand(Commands.removeFormat, false);
+        if (command === Commands.removeFormat) {
+            this.removeTextFormatting();
         }
 
         if (command == Commands.createDefaultBlock) {
@@ -208,6 +208,41 @@ export class BlockOperationsService implements IBlockOperationsService {
         throw new Error();
     }
 
+    removeTextFormatting(): boolean {
+        const selection = document.getSelection();
+        if (!selection || selection.rangeCount === 0) {
+            return false;
+        }
+    
+        const range = selection.getRangeAt(0);
+        const fragment = range.cloneContents();
+    
+        const tempDiv = document.createElement('div');
+        tempDiv.appendChild(fragment);
+    
+        const textContent = tempDiv.textContent || '';
+    
+        try {
+            range.deleteContents();
+            const textNode = document.createTextNode(textContent);
+            range.insertNode(textNode);
+    
+            selection.removeAllRanges();
+            const newRange = document.createRange();
+    
+            if (textNode.parentNode) {
+                newRange.setStart(textNode, 0);
+                newRange.setEnd(textNode, textContent.length);
+            }
+    
+            selection.addRange(newRange);
+            return true;
+        } catch (error) {
+            console.error("Error removing formatting:", error);
+            return false;
+        }
+    }
+
     execMergeWithPreviousBlock(): void {
         this.memento.saveState();
 
@@ -254,7 +289,6 @@ export class BlockOperationsService implements IBlockOperationsService {
         });
     }
 
-
     execMergeWithNextBlock(): void {
         this.memento.saveState();
 
@@ -296,7 +330,6 @@ export class BlockOperationsService implements IBlockOperationsService {
         });
     }
 
-
     execDuplicateBlock(block?: HTMLElement): boolean {
         if (!block) {
             block = (this.getCurrentSelectedBlock() || DOMUtils.getCurrentActiveBlock()) as HTMLElement;
@@ -320,7 +353,6 @@ export class BlockOperationsService implements IBlockOperationsService {
 
         return true;
     }
-
 
     execDeleteBlock(block?: HTMLElement): boolean {
 
@@ -543,7 +575,6 @@ export class BlockOperationsService implements IBlockOperationsService {
             EventEmitter.emitShowElementEvent("mediaInputter");
         }
 
-
         const blockToolbar = blockElement?.querySelector(".block-toolbar-wrapper");
         if (blockToolbar) {
             blockToolbar.remove();
@@ -666,7 +697,6 @@ export class BlockOperationsService implements IBlockOperationsService {
         return true;
     }
 
-
     createANewParagraphFromTitle(): void {
 
         this.memento.saveState();
@@ -727,7 +757,6 @@ export class BlockOperationsService implements IBlockOperationsService {
         return true;
 
     }
-
 
     execDeleteFocusOnPrevious(): boolean {
 
@@ -823,55 +852,6 @@ export class BlockOperationsService implements IBlockOperationsService {
         return;
     }
 
-    private getPreviousFocusableElement(actualElement: Element): Element | null {
-
-        let tag = actualElement.tagName.toUpperCase();
-        let focusedElement = null;
-
-        if (tag === 'LI') {
-            let previousElement = actualElement.previousElementSibling;
-
-            if (!previousElement) {
-                return null;
-            }
-
-            if (previousElement && previousElement.classList.contains('focusable')) {
-                focusedElement = previousElement as HTMLElement;
-                return focusedElement;
-            }
-        }
-
-        if ((actualElement.parentNode as HTMLElement).tagName.toUpperCase() === 'LI') {
-
-            let previousElement = actualElement.closest('li')?.previousElementSibling?.querySelector('.focusable');
-
-            if (previousElement && previousElement.classList.contains('focusable')) {
-                focusedElement = previousElement as HTMLElement;
-
-                return focusedElement;
-            }
-        }
-
-        let parent = actualElement.closest('.block');
-
-        if (!parent) {
-            return null;
-        }
-        let sibling = parent.previousElementSibling;
-
-        while (sibling) {
-            let focusableCandidates = sibling.querySelectorAll('.focusable');
-            if (focusableCandidates.length > 0) {
-                focusedElement = focusableCandidates[focusableCandidates.length - 1] as HTMLElement;
-                return focusedElement;
-            }
-
-            sibling = sibling.previousElementSibling;
-        }
-
-        return focusedElement;
-    }
-
     private focusOnNext(actualElement: Element, position: number | null = null) {
         let tag = actualElement.tagName.toUpperCase();
         let focusedElement = null;
@@ -922,50 +902,6 @@ export class BlockOperationsService implements IBlockOperationsService {
                 } else {
                     DOMUtils.placeCursorAtStartOfEditableElement(focusedElement);
                 }
-                return focusedElement;
-            }
-
-            sibling = sibling.nextElementSibling;
-        }
-
-        return focusedElement;
-    }
-
-
-    private getNextFocusableElement(actualElement: Element): Element | null {
-        let tag = actualElement.tagName.toUpperCase();
-        let focusedElement = null;
-
-        if (tag === 'LI') {
-            let nextElement = actualElement.nextElementSibling;
-
-            if (nextElement && nextElement.classList.contains('focusable')) {
-                focusedElement = nextElement as HTMLElement;
-                return focusedElement;
-            }
-        }
-
-        if ((actualElement.parentNode as HTMLElement).tagName.toUpperCase() === 'LI') {
-            let nextElement = actualElement.closest('li')?.nextElementSibling?.querySelector('.focusable');
-
-            if (nextElement && nextElement.classList.contains('focusable')) {
-                focusedElement = nextElement as HTMLElement;
-                return focusedElement;
-            }
-        }
-
-        let parent = actualElement.closest('.block');
-
-        if (!parent) {
-            return null;
-        }
-
-        let sibling = parent.nextElementSibling;
-
-        while (sibling) {
-            let focusableCandidates = sibling.querySelectorAll('.focusable');
-            if (focusableCandidates.length > 0) {
-                focusedElement = focusableCandidates[0] as HTMLElement;
                 return focusedElement;
             }
 
@@ -1108,7 +1044,6 @@ export class BlockOperationsService implements IBlockOperationsService {
 
         return focusableParent;
     }
-
 
     justifyLeft(block: HTMLElement): void {
 
