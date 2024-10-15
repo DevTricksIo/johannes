@@ -1,12 +1,14 @@
 import { Commands } from "@/commands/Commands";
 import { ITextOperationsService } from "./ITextOperationsService";
-import { Utils } from "@/utilities/Utils";
 import { Colors } from "@/common/Colors";
 import { IMemento } from "@/core/IMemento";
 import { DependencyContainer } from "@/core/DependencyContainer";
 import { EventEmitter } from "@/commands/EventEmitter";
 import { ButtonIDs } from "@/core/ButtonIDs";
 import { DOMUtils } from "@/utilities/DOMUtils";
+
+import rangy from 'rangy';
+import 'rangy/lib/rangy-classapplier';
 
 type TargetNode = {
     nodeType: string;
@@ -20,6 +22,8 @@ export class TextOperationsService implements ITextOperationsService {
     private memento: IMemento;
 
     textOperationService: any;
+
+    lastDropdownColorChangeTime : number = 0;
 
     private constructor(memento: IMemento) {
         if (TextOperationsService.instance) {
@@ -41,23 +45,53 @@ export class TextOperationsService implements ITextOperationsService {
     }
 
     execCopy(): void {
-        this.memento.saveState();
+        const selection = document.getSelection();
+        if (!selection || selection.isCollapsed) {
+            console.error("No text is selected");
+            return;
+        }
 
-        if (document.queryCommandSupported('copy')) {
-            document.execCommand('copy');
-            EventEmitter.emitChangeTextTemporarilyEvent("copyOption", "Copied!");
-        } else {
-            console.error("Copy command is not supported");
+        const selectedText = selection.toString();
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(selectedText).then(() => {
+                EventEmitter.emitChangeTextTemporarilyEvent("copyOption", "Copied!");
+            }).catch(err => {
+                console.error("Failed to copy: ", err);
+            });
         }
     }
 
-    execCut(): void {
+    async execCut(): Promise<void> {
         this.memento.saveState();
-
-        if (document.queryCommandSupported('cut')) {
-            document.execCommand('cut');
-        } else {
-            console.error("Cut command is not supported");
+    
+        const selection = document.getSelection();
+        if (!selection || selection.isCollapsed) {
+            console.error("No text is selected.");
+            return;
+        }
+    
+        const selectedText = selection.toString();
+    
+        try {
+            if (navigator.clipboard && navigator.clipboard.write) {
+                const blob = new Blob([selectedText], { type: "text/plain" });
+                const clipboardItem = new ClipboardItem({ "text/plain": blob });
+    
+                await navigator.clipboard.write([clipboardItem]);
+            } else if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(selectedText);
+            } else {
+                throw new Error("The cut functionality is not supported in this browser.");
+            }
+    
+            const range = selection.getRangeAt(0);
+            range.deleteContents();
+    
+            selection.removeAllRanges();
+        } catch (err) {
+            console.error("Failed to cut: ", err);
+            alert("Could not cut automatically. Please cut the text manually.");
         }
     }
 
@@ -66,7 +100,7 @@ export class TextOperationsService implements ITextOperationsService {
 
         const selection = window.getSelection();
         if (!selection?.rangeCount) {
-            console.error("No text is selected");
+            console.error("No text is selected.");
             return;
         }
 
@@ -83,14 +117,33 @@ export class TextOperationsService implements ITextOperationsService {
             newRange.selectNodeContents(textNode);
             selection.addRange(newRange);
         } catch (error) {
-            console.error("Failed to read from clipboard", error);
+            console.error("Failed to read from clipboard:", error);
         }
     }
 
     execInsertLink(url: string): void {
         this.memento.saveState();
 
-        document.execCommand("createLink", false, url);
+        const selection = document.getSelection();
+        if (!selection || selection.isCollapsed) {
+            console.error("No text is selected.");
+            return;
+        }
+
+        const range = selection.getRangeAt(0);
+
+        const anchor = document.createElement("a");
+        anchor.href = url;
+
+        const selectedContent = range.extractContents();
+        anchor.appendChild(selectedContent);
+
+        range.insertNode(anchor);
+
+        selection.removeAllRanges();
+        const newRange = document.createRange();
+        newRange.selectNodeContents(anchor);
+        selection.addRange(newRange);
 
         setTimeout(() => {
             EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Link, Colors.IconActiveBlue);
@@ -109,27 +162,71 @@ export class TextOperationsService implements ITextOperationsService {
             anchor.normalize();
         });
     }
-    
+
     execToggleLink(): void {
         if (!this.queryAnchorCommandState()) {
             EventEmitter.emitShowElementEvent("linkBox");
         } else {
-            document.execCommand('unlink', false);
-            EventEmitter.emitChangeComponentColorEvent("linkButton", Colors.IconDefaultBlack);
+            const selection = document.getSelection();
+            if (!selection || selection.rangeCount === 0) {
+                console.error("No selection found.");
+                return;
+            }
+
+            let node: Node | null = selection.anchorNode;
+            while (node && node.nodeType !== Node.ELEMENT_NODE) {
+                node = node.parentNode;
+            }
+
+            if (node && node.nodeType === Node.ELEMENT_NODE) {
+                const elementNode = node as Element;
+                const anchorElement = elementNode.closest('a');
+                if (anchorElement) {
+                    const parent = anchorElement.parentNode;
+                    if (parent) {
+                        while (anchorElement.firstChild) {
+                            parent.insertBefore(anchorElement.firstChild, anchorElement);
+                        }
+                        parent.removeChild(anchorElement);
+                    }
+                    EventEmitter.emitChangeComponentColorEvent("linkButton", Colors.IconDefaultBlack);
+                } else {
+                    console.error("No link found to remove.");
+                }
+            } else {
+                console.error("No element selected.");
+            }
         }
     }
 
     execBold(): void {
-
         this.memento.saveState();
 
-        if (document.execCommand("bold")) {
-            if (document.queryCommandState("bold")) {
-                EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Bold, Colors.IconActiveBlue);
-            } else {
-                EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Bold, Colors.IconDefaultBlack);
-            }
-        }
+        const boldApplier = rangy.createClassApplier("bold", {
+            elementTagName: "span",
+            elementProperties: {
+                style: {
+                    fontWeight: "bold"
+                }
+            },
+            toggle: true
+        });
+
+        boldApplier.toggleSelection();
+
+        const isBold = this.checkBoldState();
+        EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Bold, isBold ? Colors.IconActiveBlue : Colors.IconDefaultBlack);
+    }
+
+    private checkBoldState(): boolean {
+        const selection = rangy.getSelection();
+        if (!selection.rangeCount) return false;
+
+        const range = selection.getRangeAt(0);
+        if (!range) return false;
+
+        const spanBold = range.commonAncestorContainer.querySelectorAll("span[style*='font-weight: bold'], span[style*='font-weight: 700']");
+        return spanBold.length > 0;
     }
 
     execInlineCode(): void {
@@ -199,67 +296,138 @@ export class TextOperationsService implements ITextOperationsService {
     }
 
     execItalic(): void {
-
         this.memento.saveState();
 
-        if (document.execCommand("italic")) {
-            if (document.queryCommandState("italic")) {
-                EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Italic, Colors.IconActiveBlue);
-            } else {
-                EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Italic, Colors.IconDefaultBlack);
-            }
-        }
+        const italicApplier = rangy.createClassApplier("italic", {
+            elementTagName: "span",
+            elementProperties: {
+                style: {
+                    fontStyle: "italic"
+                }
+            },
+            toggle: true
+        });
+
+        italicApplier.toggleSelection();
+
+        const isItalic = this.checkItalicState();
+        EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Italic, isItalic ? Colors.IconActiveBlue : Colors.IconDefaultBlack);
+    }
+
+    private checkItalicState(): boolean {
+        const selection = rangy.getSelection();
+        if (!selection.rangeCount) return false;
+
+        const range = selection.getRangeAt(0);
+        if (!range) return false;
+
+        const spanItalic = range.commonAncestorContainer.querySelectorAll("span[style*='font-style: italic']");
+        return spanItalic.length > 0;
     }
 
     execStrikeThrough(): void {
-
         this.memento.saveState();
 
-        if (document.execCommand("strikeThrough")) {
-            if (document.queryCommandState("strikeThrough")) {
-                EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Strikethrough, Colors.IconActiveBlue);
-            } else {
-                EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Strikethrough, Colors.IconDefaultBlack);
-            }
-        }
+        const strikethroughApplier = rangy.createClassApplier("strikethrough", {
+            elementTagName: "span",
+            elementProperties: {
+                style: {
+                    textDecoration: "line-through"
+                }
+            },
+            toggle: true
+        });
+
+        strikethroughApplier.toggleSelection();
+
+        const isStrikethrough = this.checkStrikethroughState();
+        EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Strikethrough, isStrikethrough ? Colors.IconActiveBlue : Colors.IconDefaultBlack);
+    }
+
+    private checkStrikethroughState(): boolean {
+        const selection = rangy.getSelection();
+        if (!selection.rangeCount) return false;
+
+        const range = selection.getRangeAt(0);
+        if (!range) return false;
+
+        const spanStrikethrough = range.commonAncestorContainer.querySelectorAll("span[style*='text-decoration: line-through']");
+        return spanStrikethrough.length > 0;
     }
 
     execUnderline(): void {
         this.memento.saveState();
 
-        if (document.execCommand("underline")) {
-            setTimeout(() => {
-                if (document.queryCommandState("underline")) {
-                    EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Underline, Colors.IconActiveBlue);
-                } else {
-                    EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Underline, Colors.IconDefaultBlack);
+        const underlineApplier = rangy.createClassApplier("underline", {
+            elementTagName: "span",
+            elementProperties: {
+                style: {
+                    textDecoration: "underline"
                 }
-            }, 10);
-        }
+            },
+            toggle: true
+        });
+
+        underlineApplier.toggleSelection();
+
+        setTimeout(() => {
+            const isUnderlined = this.checkUnderlineState();
+            EventEmitter.emitChangeComponentColorEvent(ButtonIDs.Underline, isUnderlined ? Colors.IconActiveBlue : Colors.IconDefaultBlack);
+        }, 10);
+    }
+
+    private checkUnderlineState(): boolean {
+        const selection = rangy.getSelection();
+        if (!selection.rangeCount) return false;
+
+        const range = selection.getRangeAt(0);
+        if (!range) return false;
+
+        const spanUnderline = range.commonAncestorContainer.querySelectorAll("span[style*='text-decoration: underline']");
+        return spanUnderline.length > 0;
     }
 
     execHiliteColor(value: string): void {
-
         this.memento.saveState();
 
-        EventEmitter.emitResetActiveButtonsElementEvent("hiliteColor");
+        this.lastDropdownColorChangeTime = Date.now();
 
-        if (document.execCommand("hiliteColor", false, value)) {
-            EventEmitter.emitShowHideActiveElementEvent("hiliteColor", value, "show");
-        }
+        const className = `highlight-${value.replace(/[^a-zA-Z0-9]/g, '')}`;
+    
+        const highlightApplier = rangy.createClassApplier(className, {
+            elementTagName: "span",
+            elementProperties: {
+                style: {
+                    backgroundColor: value
+                }
+            },
+            toggle: true
+        });
+    
+        highlightApplier.toggleSelection();
+
+        EventEmitter.emitShowHideActiveElementEvent("hiliteColor", value, "show");
     }
 
     execForeColor(value: string): void {
-
         this.memento.saveState();
 
-        EventEmitter.emitResetActiveButtonsElementEvent("foreColor");
+        this.lastDropdownColorChangeTime = Date.now();
 
-        if (document.execCommand("foreColor", false, value)) {
-            EventEmitter.emitShowHideActiveElementEvent("foreColor", value, "show");
-        }
+        const colorApplier = rangy.createClassApplier(`textColor-${value.replace(/[^a-zA-Z0-9]/g, '')}`, {
+            elementTagName: "span",
+            elementProperties: {
+                style: {
+                    color: value
+                }
+            },
+            toggle: true
+        });
+
+        colorApplier.toggleSelection();
+
+        EventEmitter.emitShowHideActiveElementEvent("foreColor", value, "show");
     }
-
 
     queryCommandState(command: string, value: string | null): boolean {
 
@@ -312,7 +480,6 @@ export class TextOperationsService implements ITextOperationsService {
         return nodesInRange.length > 0;
     }
 
-
     private queryInlineCodeCommandState(): boolean {
         const selection = window.getSelection();
         if (!selection || !selection.rangeCount) return false;
@@ -332,7 +499,6 @@ export class TextOperationsService implements ITextOperationsService {
 
         return false;
     }
-
 
     private queryUnderlineCommandState(): boolean {
         const selection = window.getSelection();
@@ -356,64 +522,50 @@ export class TextOperationsService implements ITextOperationsService {
 
     queryForeColor(expectedColor: string): boolean {
         const selection = window.getSelection();
-
-        if (!selection) {
+    
+        if (!selection || !selection.rangeCount) {
             return false;
         }
-        if (!selection.rangeCount) return false;
-
+    
         let element: Node | null = selection.getRangeAt(0).commonAncestorContainer;
-
+    
         if (element.nodeType === Node.TEXT_NODE) {
             element = element.parentNode;
         }
-
+    
         if (!(element instanceof Element)) {
             return false;
         }
-
-        const fontColor = (element as HTMLElement).closest("font[color]");
-        if (!fontColor) return false;
-
-        const style = window.getComputedStyle(fontColor);
-        const rgbColor = style.color;
-
-        const hexColor = Utils.rgbToHex(rgbColor);
-
-        return hexColor.toUpperCase() === expectedColor.toUpperCase();
+    
+        const normalizedColor = expectedColor.replace('#', '').toLowerCase();
+    
+        const className = `textColor-${normalizedColor}`;
+    
+        return element.closest(`.${className}`) !== null;
     }
 
     queryHiliteColor(expectedColor: string): boolean {
-
         const selection = window.getSelection();
-
-        if (!selection) {
+    
+        if (!selection || !selection.rangeCount) {
             return false;
         }
-        if (!selection.rangeCount) return false;
-
+    
         let element: Node | null = selection.getRangeAt(0).commonAncestorContainer;
-
+    
         if (element.nodeType === Node.TEXT_NODE) {
             element = element.parentNode;
         }
-
+    
         if (!(element instanceof Element)) {
             return false;
         }
-
-        const spanWithBackground =
-            (element as HTMLElement).closest("span[style*='background-color']") ||
-            (element as HTMLElement).closest("font[style*='background-color']");
-
-        if (!spanWithBackground) return false;
-
-        const style = window.getComputedStyle(spanWithBackground);
-        const rgbColor = style.backgroundColor;
-
-        const hexColor = Utils.rgbToHex(rgbColor);
-
-        return hexColor.toUpperCase() === expectedColor.toUpperCase();
+    
+        const normalizedColor = expectedColor.replace('#', '').toLowerCase();
+    
+        const className = `highlight-${normalizedColor}`;
+    
+        return element.closest(`.${className}`) !== null;
     }
 
     getTargetElementMap(command: string): keyof HTMLElementTagNameMap {
