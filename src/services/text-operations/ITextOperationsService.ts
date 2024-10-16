@@ -13,5 +13,6 @@ export interface ITextOperationsService {
     execUnderline(): void
     execHiliteColor(value: string): void;
     execForeColor(value: string): void;
-    queryCommandState(command: string, value?: string | null): boolean
+    queryCommandState(command: string, value?: string | null): boolean;
+    lastDropdownColorChangeTime : number;
 }

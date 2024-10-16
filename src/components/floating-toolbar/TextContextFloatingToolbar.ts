@@ -46,63 +46,48 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
 
     processSelectionChangeEffects() {
 
-        //This block checks for an active selection and whether it contains any content.
-        // In Firefox, the `selectionchange` event may be fired even while typing,
-        // which is not the intended trigger since we only want to react to actual changes in selection.
-        // If the selection is empty or null, the function returns early, effectively ignoring
-        // these unwanted `selectionchange` events during typing.
-        // const selection = document.getSelection();
-        // if (!selection || selection.isCollapsed || selection.toString().trim.length == 0) {
-        //     return;
-        // }
-        // const txt = selection.toString();
-        // console.log(txt);
+        EventEmitter.emitResetActiveButtonsElementEvent("hiliteColor");
+        EventEmitter.emitResetActiveButtonsElementEvent("foreColor");
 
-        setTimeout(() => {
+        const isLink: boolean = this.textOperationsService.queryCommandState('createLink');
+        const isBold: boolean = this.textOperationsService.queryCommandState('bold');
+        const isItalic: boolean = this.textOperationsService.queryCommandState('italic');
+        const isUnderline: boolean = this.textOperationsService.queryCommandState('underline');
+        const isInlineCode: boolean = this.textOperationsService.queryCommandState("inlineCode");
+        const isStrikeThrough: boolean = this.textOperationsService.queryCommandState('strikeThrough');
 
-            EventEmitter.emitResetActiveButtonsElementEvent("hiliteColor");
-            EventEmitter.emitResetActiveButtonsElementEvent("foreColor");
+        const hiliteColors: { [key: string]: boolean } = {};
+        hiliteColors[Colors.HiliteColorRed] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorRed);
+        hiliteColors[Colors.HiliteColorGreen] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorGreen);
+        hiliteColors[Colors.HiliteColorBlue] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorBlue);
+        hiliteColors[Colors.HiliteColorYellow] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorYellow);
+        hiliteColors[Colors.HiliteColorGrey] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorGrey);
 
-            const isLink: boolean = this.textOperationsService.queryCommandState('createLink');
-            const isBold: boolean = this.textOperationsService.queryCommandState('bold');
-            const isItalic: boolean = this.textOperationsService.queryCommandState('italic');
-            const isUnderline: boolean = this.textOperationsService.queryCommandState('underline');
-            const isInlineCode: boolean = this.textOperationsService.queryCommandState("inlineCode");
-            const isStrikeThrough: boolean = this.textOperationsService.queryCommandState('strikeThrough');
+        const foreColors: { [key: string]: boolean } = {};
+        foreColors[Colors.ForeColorRed] = this.textOperationsService.queryForeColor(Colors.ForeColorRed);
+        foreColors[Colors.ForeColorGreen] = this.textOperationsService.queryForeColor(Colors.ForeColorGreen);
+        foreColors[Colors.ForeColorBlue] = this.textOperationsService.queryForeColor(Colors.ForeColorBlue);
+        foreColors[Colors.ForeColorYellow] = this.textOperationsService.queryForeColor(Colors.ForeColorYellow);
+        foreColors[Colors.ForeColorGrey] = this.textOperationsService.queryForeColor(Colors.ForeColorGrey);
 
-            const hiliteColors: { [key: string]: boolean } = {};
-            hiliteColors[Colors.HiliteColorRed] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorRed);
-            hiliteColors[Colors.HiliteColorGreen] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorGreen);
-            hiliteColors[Colors.HiliteColorBlue] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorBlue);
-            hiliteColors[Colors.HiliteColorYellow] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorYellow);
-            hiliteColors[Colors.HiliteColorGrey] = this.textOperationsService.queryHiliteColor(Colors.HiliteColorGrey);
+        Object.entries(hiliteColors).forEach(([color, active]) => {
+            if (active) {
+                EventEmitter.emitShowHideActiveElementEvent("hiliteColor", color, "show");
+            }
+        });
 
-            const foreColors: { [key: string]: boolean } = {};
-            foreColors[Colors.ForeColorRed] = this.textOperationsService.queryForeColor(Colors.ForeColorRed);
-            foreColors[Colors.ForeColorGreen] = this.textOperationsService.queryForeColor(Colors.ForeColorGreen);
-            foreColors[Colors.ForeColorBlue] = this.textOperationsService.queryForeColor(Colors.ForeColorBlue);
-            foreColors[Colors.ForeColorYellow] = this.textOperationsService.queryForeColor(Colors.ForeColorYellow);
-            foreColors[Colors.ForeColorGrey] = this.textOperationsService.queryForeColor(Colors.ForeColorGrey);
+        Object.entries(foreColors).forEach(([color, active]) => {
+            if (active) {
+                EventEmitter.emitShowHideActiveElementEvent("foreColor", color, "show");
+            }
+        });
 
-            Object.entries(hiliteColors).forEach(([color, active]) => {
-                if (active) {
-                    EventEmitter.emitShowHideActiveElementEvent("hiliteColor", color, "show");
-                }
-            });
-
-            Object.entries(foreColors).forEach(([color, active]) => {
-                if (active) {
-                    EventEmitter.emitShowHideActiveElementEvent("foreColor", color, "show");
-                }
-            });
-
-            this.emitChangeComponentColorEvent(isLink, ButtonIDs.Link);
-            this.emitChangeComponentColorEvent(isBold, ButtonIDs.Bold);
-            this.emitChangeComponentColorEvent(isItalic, ButtonIDs.Italic);
-            this.emitChangeComponentColorEvent(isInlineCode, ButtonIDs.InlineCode);
-            this.emitChangeComponentColorEvent(isUnderline, ButtonIDs.Underline);
-            this.emitChangeComponentColorEvent(isStrikeThrough, ButtonIDs.Strikethrough);
-        }, 20);
+        this.emitChangeComponentColorEvent(isLink, ButtonIDs.Link);
+        this.emitChangeComponentColorEvent(isBold, ButtonIDs.Bold);
+        this.emitChangeComponentColorEvent(isItalic, ButtonIDs.Italic);
+        this.emitChangeComponentColorEvent(isInlineCode, ButtonIDs.InlineCode);
+        this.emitChangeComponentColorEvent(isUnderline, ButtonIDs.Underline);
+        this.emitChangeComponentColorEvent(isStrikeThrough, ButtonIDs.Strikethrough);
     }
 
     private emitChangeComponentColorEvent(active: boolean, targetId: string) {
@@ -113,24 +98,28 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
         }
     }
 
-    processAfterChange(event: Event) {
+    processAfterChange(event: Event): void {
         const selection = document.getSelection();
         if (selection && !selection.isCollapsed) {
-
-            this.processSelectionChangeEffects();
+            const now = Date.now();
+            if (now - this.textOperationsService.lastDropdownColorChangeTime > 900) {
+                this.processSelectionChangeEffects();
+            }
         }
     }
 
     attachEvents(): void {
+
+        let debouncedProcessAfterChange = this.debounce(this.processAfterChange.bind(this), 20);
 
         let isSelecting = false;
         let debounceTimer: any;
 
         this.htmlElement.addEventListener(DefaultJSEvents.Mouseup, (event) => { event.preventDefault(); });
 
-        document.addEventListener(DefaultJSEvents.Mouseup, this.processAfterChange.bind(this));
-        document.addEventListener(DefaultJSEvents.BblClick, this.processAfterChange.bind(this));
-        document.addEventListener(DefaultJSEvents.SelectionChange, this.processAfterChange.bind(this));
+        document.addEventListener(DefaultJSEvents.Mouseup, debouncedProcessAfterChange);
+        document.addEventListener(DefaultJSEvents.BblClick, debouncedProcessAfterChange);
+        document.addEventListener(DefaultJSEvents.SelectionChange, debouncedProcessAfterChange);
 
         document.addEventListener(DefaultJSEvents.Keydown, (event) => {
             if (event.shiftKey) {
@@ -180,6 +169,19 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
         });
 
         super.attachEvents();
+    }
+
+    debounce(func: Function, wait: number) {
+        let timeout: number | null = null;
+        return (...args: any[]) => {
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+            timeout = window.setTimeout(() => {
+                timeout = null; // Reset the timeout
+                func.apply(this, args);
+            }, wait);
+        };
     }
 
     shouldUpdatePosition(): boolean {
@@ -245,7 +247,6 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
         return false;
     }
 
-
     changeToolbarPositionToBeClosedToSelection(): void {
         const selection = window.getSelection();
 
@@ -304,7 +305,7 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
         this.changeToolbarPositionToBeClosedToSelection();
         this.hideTurnInto();
         this.hideMoreOptions();
-        
+
     }
 
     hideTurnInto(): void {
