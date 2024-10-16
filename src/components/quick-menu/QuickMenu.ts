@@ -258,54 +258,46 @@ export class QuickMenu extends BaseUIComponent implements IQuickMenu {
 
         document.addEventListener('input', (event) => {
             const target = event.target as HTMLElement;
-
+        
             if (!(target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target.isContentEditable)) {
                 return;
             }
-
+        
             const block = DOMUtils.findClosestAncestorOfActiveElementByClass("block");
-
+        
             let value = '';
-
+        
             if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
                 value = target.value;
             } else if (target.isContentEditable) {
                 value = target.textContent || '';
             }
-
+        
             const slashIndex = value.lastIndexOf('/');
-
-            if (!this.isVisible && block && slashIndex !== -1) {
-
+        
+            if (!this.isVisible && block && value.endsWith('/')) {
+        
                 const currentCell = target.closest(".ignore-quick-menu") as HTMLTableCellElement;
-
+        
                 if (currentCell) {
                     return;
                 }
-
-                this.filterInput = value.substring(slashIndex + 1);
-
-                if (this.filterInput.length > 0) {
-                    this.show();
-                    this.filterItems();
-                } else {
-                    this.show();
-                }
+        
+                this.filterInput = '';
+        
+                this.show();
             } else if (this.isVisible) {
-
+        
                 if (slashIndex !== -1) {
                     this.filterInput = value.substring(slashIndex + 1);
-
-                    if (this.filterInput.length > 0) {
-                        this.filterItems();
-                    } else {
-                        this.filterItems();
-                    }
+        
+                    this.filterItems();
                 } else {
                     this.hide();
                 }
             }
         });
+        
 
 
         document.addEventListener('keydown', (event: KeyboardEvent) => {
