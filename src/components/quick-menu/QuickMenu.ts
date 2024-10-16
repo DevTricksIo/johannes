@@ -255,22 +255,64 @@ export class QuickMenu extends BaseUIComponent implements IQuickMenu {
 
         }) as EventListener);
 
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
+
+        document.addEventListener('input', (event) => {
+            const target = event.target as HTMLElement;
+
+            if (!(target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target.isContentEditable)) {
+                return;
+            }
 
             const block = DOMUtils.findClosestAncestorOfActiveElementByClass("block");
 
-            if (!this.isVisible && event.key === '/' && !event.ctrlKey && !event.shiftKey && !event.altKey && block) {
+            let value = '';
 
-                // Prevent show quickMenu
-                const target = event.target as HTMLElement;
+            if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
+                value = target.value;
+            } else if (target.isContentEditable) {
+                value = target.textContent || '';
+            }
+
+            const slashIndex = value.lastIndexOf('/');
+
+            if (!this.isVisible && block && slashIndex !== -1) {
+
                 const currentCell = target.closest(".ignore-quick-menu") as HTMLTableCellElement;
 
                 if (currentCell) {
                     return;
                 }
 
-                this.show();
-            } else if (this.isVisible && event.key === 'ArrowLeft' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                this.filterInput = value.substring(slashIndex + 1);
+
+                if (this.filterInput.length > 0) {
+                    this.show();
+                    this.filterItems();
+                } else {
+                    this.show();
+                }
+            } else if (this.isVisible) {
+
+                if (slashIndex !== -1) {
+                    this.filterInput = value.substring(slashIndex + 1);
+
+                    if (this.filterInput.length > 0) {
+                        this.filterItems();
+                    } else {
+                        this.filterItems();
+                    }
+                } else {
+                    this.hide();
+                }
+            }
+        });
+
+
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+
+            const block = DOMUtils.findClosestAncestorOfActiveElementByClass("block");
+
+            if (this.isVisible && event.key === 'ArrowLeft' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
                 event.preventDefault();
                 event.stopPropagation();
             } else if (this.isVisible && event.key === 'ArrowRight' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
@@ -283,17 +325,6 @@ export class QuickMenu extends BaseUIComponent implements IQuickMenu {
             } else if (this.isVisible && event.key === 'ArrowUp' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
                 event.preventDefault();
                 this.focusPreviousVisibleItem();
-            } else if (this.isVisible && /^[a-z0-9 ]$/i.test(event.key) && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-                this.concatFilterInput(event.key);
-                this.filterItems();
-            } else if (this.isVisible && event.key === 'Backspace') {
-
-                if (this.filterInput == "") {
-                    this.hide();
-                } else {
-                    this.removeLastFilterInputCharacter();
-                    this.filterItems();
-                }
             } else if (this.isVisible && event.key === 'Escape' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
                 this.hide();
             }
