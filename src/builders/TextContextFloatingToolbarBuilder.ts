@@ -118,15 +118,15 @@ export class TextContextFloatingToolbarBuilder {
         const hiliteColorGrey = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionGrey, colorDropdownList, Commands.toggleHiliteColor, Colors.HiliteColorGrey, new ColorIcon(Colors.HiliteColorGrey).htmlElement, "Grey");
         hiliteColorGrey.addClass("hiliteColor");
 
-        const hiliteColorNone = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionNone, colorDropdownList, Commands.toggleHiliteColor, Colors.HiliteColorNone, new ColorIcon(Colors.HiliteColorNone).htmlElement, "None");
-        hiliteColorNone.addClass("hiliteColor");
+        // const hiliteColorNone = new DropdownMenuListItem(DropdownItemIDs.BackgroundOptionNone, colorDropdownList, Commands.toggleHiliteColor, Colors.HiliteColorNone, new ColorIcon(Colors.HiliteColorNone).htmlElement, "None");
+        // hiliteColorNone.addClass("hiliteColor");
 
         colorDropdownList.append(hiliteColorRed);
         colorDropdownList.append(hiliteColorGreen);
         colorDropdownList.append(hiliteColorBlue);
         colorDropdownList.append(hiliteColorYellow);
         colorDropdownList.append(hiliteColorGrey);
-        colorDropdownList.append(hiliteColorNone);
+        // colorDropdownList.append(hiliteColorNone);
 
         colorDropdownList.append(new DropdownMenuListItemTitle(colorDropdownList, "Text"));
 
@@ -145,15 +145,15 @@ export class TextContextFloatingToolbarBuilder {
         const foreColorGrey = new DropdownMenuListItem("colorOptionGrey", colorDropdownList, Commands.toggleForeColor, Colors.ForeColorGrey, new SVGIcon("icon-material-format", Sizes.large).htmlElement, "Grey");
         foreColorGrey.addClass("foreColor");
 
-        const foreColorNone = new DropdownMenuListItem("colorOptionNone", colorDropdownList, Commands.toggleForeColor, Colors.ForeColorInitial, new SVGIcon("icon-material-format", Sizes.large).htmlElement, "None");
-        foreColorNone.addClass("foreColor");
+        // const foreColorNone = new DropdownMenuListItem("colorOptionNone", colorDropdownList, Commands.toggleForeColor, Colors.ForeColorInitial, new SVGIcon("icon-material-format", Sizes.large).htmlElement, "None");
+        // foreColorNone.addClass("foreColor");
 
         colorDropdownList.append(foreColorRed);
         colorDropdownList.append(foreColorGreen);
         colorDropdownList.append(foreColorBlue);
         colorDropdownList.append(foreColorYellow);
         colorDropdownList.append(foreColorGrey);
-        colorDropdownList.append(foreColorNone);
+        // colorDropdownList.append(foreColorNone);
 
         return colorDropdown;
     }
@@ -169,8 +169,8 @@ export class TextContextFloatingToolbarBuilder {
         moreOptionsList.append(new DropdownMenuListItemTitle(moreOptionsList, "More options"));
 
         moreOptionsList.append(new DropdownMenuListItem("copyOption", moreOptionsList, Commands.copySelected, null, SVGIcons.copy.htmlElement, "Copy", "Ctrl+C"));
-        moreOptionsList.append(new DropdownMenuListItem("cutOption", moreOptionsList, Commands.cutSelected, null, SVGIcons.cut.htmlElement, "Cut", "Ctrl+X"));
-        moreOptionsList.append(new DropdownMenuListItem("pasteOption", moreOptionsList, Commands.past, null, SVGIcons.paste.htmlElement, "Replace", "Ctrl+V"));
+        //moreOptionsList.append(new DropdownMenuListItem("cutOption", moreOptionsList, Commands.cutSelected, null, SVGIcons.cut.htmlElement, "Cut", "Ctrl+X"));
+        //moreOptionsList.append(new DropdownMenuListItem("pasteOption", moreOptionsList, Commands.past, null, SVGIcons.paste.htmlElement, "Replace", "Ctrl+V"));
         moreOptionsList.append(new DropdownMenuListItem("duplicateOption", moreOptionsList, Commands.duplicateBlock, null, SVGIcons.duplicate.htmlElement, "Clone", "Ctrl+D"));
         moreOptionsList.append(new DropdownMenuListItem("resetOption", moreOptionsList, Commands.removeFormat, null, SVGIcons.eraser.htmlElement, "Reset Style", "Ctrl+\\"));
 
