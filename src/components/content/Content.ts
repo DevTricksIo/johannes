@@ -35,15 +35,6 @@ export class Content extends BaseUIComponent {
         return htmlElement;
     }
 
-    /**
-    * Clears text selection when initiating a drag from elements with the `.drag-handler` class.
-    * This function attaches a `mousedown` event listener to the entire document. When a mousedown
-    * event occurs on an element that is a child of a `.drag-handler` or on the `.drag-handler` itself,
-    * it checks if the target or its parent is a designated drag handler. If true, it clears any current text selections.
-    * This prevents text from being accidentally selected during drag-and-drop interactions, enhancing UX in draggable interfaces.
-    * 
-    * @function clearSelectionOnDrag
-    */
     clearSelectionOnDrag() {
         document.addEventListener(DefaultJSEvents.Mousedown, (event) => {
             const element = event.target as HTMLElement;
@@ -86,32 +77,28 @@ export class Content extends BaseUIComponent {
             }
         });
 
-
-        // Event selector
         document.addEventListener(DefaultJSEvents.Click, (event: MouseEvent) => {
-            // Remove a classe 'block-selected' de qualquer bloco previamente selecionado
             const previousSelected = document.querySelectorAll('.separator-selected');
 
             previousSelected.forEach(selected => {
                 selected.classList.remove('separator-selected');
-                selected.removeAttribute('tabindex'); // Remove tabindex quando não está mais selecionado
+                selected.removeAttribute('tabindex');
             });
 
-            // Verifica se o elemento clicado é um filho de um 'separator'
-            let currentElement = event.target as HTMLElement; // Cast do target para HTMLElement
+            let currentElement = event.target as HTMLElement;
 
             if (currentElement && currentElement.closest(".separator-wrapper")) {
 
                 event.stopImmediatePropagation();
                 event.preventDefault();
 
-                let parentBlock = currentElement.closest('.separator-wrapper') as HTMLElement; // Cast para HTMLElement
+                let parentBlock = currentElement.closest('.separator-wrapper') as HTMLElement;
                 if (parentBlock) {
                     parentBlock.classList.add('separator-selected');
-                    parentBlock.setAttribute('tabindex', '-1'); // Adiciona tabindex para permitir foco
+                    parentBlock.setAttribute('tabindex', '-1');
 
                     setTimeout(() => {
-                        parentBlock.focus(); // Coloca o foco no bloco selecionado
+                        parentBlock.focus();
                     }, 50);
                 }
             }
@@ -127,16 +114,9 @@ export class Content extends BaseUIComponent {
                 const separator = target.closest('.separator-selected')!;
 
                 separator.classList.remove('separator-selected');
-                separator.removeAttribute('tabindex'); // Limpa o atributo para não interferir com a navegação normal
-
-                // Reaplicar atributos que garantem o foco
-                // setTimeout(() => {
-                //     separator.setAttribute('tabindex', '-1');
-                // }, 50);
+                separator.removeAttribute('tabindex');
             }
         }, true);
-        //end event selector
-
 
         document.addEventListener("copiedText", () => {
             const copyElementItem = document.querySelector("#copyOption .text-option span") as HTMLSpanElement;
@@ -150,7 +130,6 @@ export class Content extends BaseUIComponent {
             }
         });
 
-        //Focus on P when load
         window.addEventListener("load", () => {
             const editor = document.querySelector('.johannes-editor');
 
@@ -190,11 +169,6 @@ export class Content extends BaseUIComponent {
 
 
             if (event.key === KeyboardKeys.Enter && !event.shiftKey && !quickMenu.isVisible && !tableToolbar.isVisible) {
-
-                // if(DOMUtils.findClosestAncestorOfActiveElementByClass(".johannes-code")){
-                //     event.stopImmediatePropagation();
-                //     return;
-                // }
 
                 event.preventDefault();
 
@@ -323,15 +297,30 @@ export class Content extends BaseUIComponent {
                 if (DOMUtils.isEventTargetDescendantOf(event, ".johannes-code")) {
                     event.preventDefault();
                     const tabCharacter = '\u00a0\u00a0\u00a0\u00a0';
-                    document.execCommand('insertText', false, tabCharacter);
+
+                    const selection = document.getSelection();
+                    if (!selection) return;
+
+                    // Remove a seleção atual, se houver
+                    if (!selection.isCollapsed) {
+                        selection.deleteFromDocument();
+                    }
+
+                    const range = selection.getRangeAt(0);
+                    const textNode = document.createTextNode(tabCharacter);
+                    range.insertNode(textNode);
+
+                    // Move o cursor após o texto inserido
+                    range.setStartAfter(textNode);
+                    range.setEndAfter(textNode);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
                 }
             }
         });
 
-
         document.addEventListener(DefaultJSEvents.Blur, (event: Event) => this.sanitizeElementEventHandler(event), true)
     }
-
 
     sanitizeElementEventHandler(event: Event): void {
         const target = event.target as HTMLElement;
@@ -341,23 +330,6 @@ export class Content extends BaseUIComponent {
         }
     }
 
-
-    /**
-    * Adds an input event listener to the entire document to handle placeholder behavior for contentEditable elements.
-    * This workaround is specifically designed to address a known issue in Firefox where contentEditable elements
-    * do not properly reset their placeholders after the content is deleted by the user.
-    * 
-    * The event listener checks if the target of the input event is a contentEditable element and whether it has a
-    * custom 'data-placeholder' attribute. If the element's content is empty (ignoring white spaces), the function
-    * resets the 'data-placeholder' to ensure it displays correctly, and clears any residual text content that might
-    * interfere with the placeholder display.
-    * 
-    * @example
-    * // To utilize this workaround, ensure your contentEditable elements have a 'data-placeholder' attribute.
-    * // <div contentEditable="true" data-placeholder="Enter text here..."></div>
-    * 
-    * @param {Event} event - The input event triggered by user interaction with the document's input-capable elements.
-    */
     reRenderPlaceholder() {
         document.addEventListener(DefaultJSEvents.Input, function (event: Event) {
             if (event.target instanceof HTMLElement) {
@@ -431,7 +403,6 @@ export class Content extends BaseUIComponent {
 
         return rangeBottom === elementBottom;
     }
-
 
     static didCursorMove(event: KeyboardEvent): Promise<boolean> {
         const selection = window.getSelection()!;
