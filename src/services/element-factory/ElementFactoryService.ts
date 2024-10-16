@@ -376,7 +376,7 @@ export class ElementFactoryService implements IElementFactoryService {
         p.contentEditable = "true";
         p.setAttribute('data-content-type', ContentTypes.Paragraph);
         p.classList.add("johannes-content-element", "swittable", "focusable", "key-trigger", "editable");
-        p.setAttribute('data-placeholder', 'Write something or type / (slash) to choose a block...');
+        p.setAttribute('data-placeholder', 'Start typing...');
 
         return p;
     }
