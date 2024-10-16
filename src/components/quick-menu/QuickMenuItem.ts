@@ -40,7 +40,7 @@ export class QuickMenuItem extends BaseUIComponent {
         const optionImage = document.createElement('div');
         optionImage.classList.add('option-image');
 
-        const svg = new SVGIcon(this.props.iconId, '100%');
+        const svg = new SVGIcon(this.props.iconId, '2.875rem');
 
         optionImage.appendChild(svg.htmlElement);
 
