@@ -209,9 +209,9 @@ export class DropdownMenuListItem extends BaseUIComponent implements IDropdownMe
             const eventColor = eventValues.value;
 
             if (this.value?.toLowerCase() == eventColor.toLowerCase()) {
-                if (eventValues.intention == "show") {
-                    this.activeIcon?.changeVisibilityToVisible();
-                }
+                event.stopImmediatePropagation();
+                event.preventDefault();
+                this.activeIcon?.toggleVisibility();
             }
         }
     }
