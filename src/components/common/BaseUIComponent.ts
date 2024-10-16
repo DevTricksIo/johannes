@@ -159,6 +159,14 @@ export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
         this.htmlElement.style.visibility = "hidden";
     }
 
+    toggleVisibility(): void {
+        if (this.htmlElement.style.visibility === "hidden") {
+            this.htmlElement.style.visibility = "visible";
+        } else {
+            this.htmlElement.style.visibility = "hidden";
+        }
+    }
+
     get doesElementOverflowScreen(): boolean {
 
         const originalDisplay = this.htmlElement.style.display;
