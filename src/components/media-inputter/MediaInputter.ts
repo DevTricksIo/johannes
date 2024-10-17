@@ -209,15 +209,15 @@ export class MediaInputter extends BaseUIComponent {
                 switch (embedType) {
 
                     case EmbedTypes.YouTubeVideo:
-                        EmbedTool.embedYouTubeVideoAsIframe(url, focusedElement);
+                        EmbedTool.embedYouTubeVideoAsIframe(MediaInputter.normalizeYouTubeUrl(url), focusedElement);
                         break;
 
                     case EmbedTypes.YouTubePlaylist:
-                        EmbedTool.embedYouTubePlaylistAsIframe(url, focusedElement);
+                        EmbedTool.embedYouTubePlaylistAsIframe(MediaInputter.normalizeYouTubeUrl(url), focusedElement);
                         break;
 
                     case EmbedTypes.YouTubeShort:
-                        EmbedTool.embedYouTubeShortAsIframe(url, focusedElement);
+                        EmbedTool.embedYouTubeShortAsIframe(MediaInputter.normalizeYouTubeUrl(url), focusedElement);
                         break;
 
                     case EmbedTypes.SpotifyTrack:
@@ -280,6 +280,23 @@ export class MediaInputter extends BaseUIComponent {
         }
     }
 
+    static normalizeYouTubeUrl(urlObj: URL): URL {
+        if (urlObj.hostname === 'youtu.be') {
+            const newUrl = new URL('https://www.youtube.com/watch');
+    
+            const videoId = urlObj.pathname.substring(1);
+    
+            newUrl.searchParams.set('v', videoId);
+    
+            urlObj.searchParams.forEach((value, key) => {
+                newUrl.searchParams.set(key, value);
+            });
+    
+            return newUrl;
+        }
+    
+        return new URL(urlObj.toString());
+    }
 
     set inputValue(value: string) {
         const inputText = this.htmlElement.querySelector("input");

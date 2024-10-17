@@ -302,7 +302,7 @@ export class EmbedTool {
             } else if (path.includes("/show")) {
                 return EmbedTypes.SpotifyShow;
             }
-        } else if (/^(?:.*\.)?(youtube\.com|youtu\.be)$/.test(domain)) {
+        } else if (/^(?:.*\.)?(youtube\.com|youtu\.be)$/.test(domain) ) {
             if (path.includes("/watch")) {
                 if (urlObj.searchParams.has("list")) {
                     return EmbedTypes.YouTubePlaylist;
@@ -312,6 +312,8 @@ export class EmbedTool {
                 return EmbedTypes.YouTubePlaylist;
             } else if (path.includes("/shorts")) {
                 return EmbedTypes.YouTubeShort;
+            }else{
+                return EmbedTypes.YouTubeVideo;
             }
         } else if (domain === "vimeo.com") {
             return EmbedTypes.VimeoVideo;
@@ -331,7 +333,6 @@ export class EmbedTool {
 
         return null;
     }
-
 }
 
 export enum EmbedTypes {
