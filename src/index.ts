@@ -49,5 +49,63 @@ document.addEventListener('DOMContentLoaded', function () {
     ImageAlt.getInstance().listen();
 
     document.dispatchEvent(new Event("TextEditorLoaded"));
+});
 
+
+document.addEventListener("DOMContentLoaded", () => {
+    const el = document.getElementById('textFloatingToolbar') as HTMLElement;
+    if (!el) return;
+
+    const dropdownClasses = ['.dependent-box', '.dropdown-menu2', '.dropdown-menu3'];
+    let initialPosX: number = 0;
+    let initialPosY: number = 0;
+    let posX: number = 0;
+    let posY: number = 0;
+    let isDragging: boolean = false;
+
+    el.addEventListener('touchstart', (e: TouchEvent) => {
+        const target = e.target as HTMLElement;
+
+        if (dropdownClasses.some(className => target.closest(className))) {
+            console.log('Touch inside a dropdown: Ignore drag');
+            return;
+        }
+
+        initialPosX = e.touches[0].clientX - el.offsetLeft;
+        initialPosY = e.touches[0].clientY - el.offsetTop;
+    }, false);
+
+    el.addEventListener('touchmove', (e: TouchEvent) => {
+        const target = e.target as HTMLElement;
+        if (dropdownClasses.some(className => target.closest(className))) {
+            console.log('Movement inside a dropdown: Allow scroll');
+            return;
+        }
+
+        const diffX = Math.abs(e.touches[0].clientX - initialPosX);
+        const diffY = Math.abs(e.touches[0].clientY - initialPosY);
+        if (diffX > 10 || diffY > 10) {
+            isDragging = true;
+            e.preventDefault();
+            posX = e.touches[0].clientX - initialPosX;
+            posY = e.touches[0].clientY - initialPosY;
+            el.style.left = `${posX}px`;
+            el.style.top = `${posY}px`;
+        }
+    }, false);
+
+    el.addEventListener('touchend', (e: TouchEvent) => {
+        const target = e.target as HTMLElement;
+        if (dropdownClasses.some(className => target.closest(className))) {
+            console.log('End of touch inside a dropdown');
+            return;
+        }
+
+        if (isDragging) {
+            e.preventDefault();
+            isDragging = false;
+        } else {
+            console.log('Click detected');
+        }
+    }, false);
 });
