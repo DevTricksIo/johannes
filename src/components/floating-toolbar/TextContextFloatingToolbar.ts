@@ -240,10 +240,27 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
         if (selection && selection.rangeCount > 0) {
             const selectedText = selection.toString().trim();
             if (selectedText !== '') {
-                return true;
+                const range = selection.getRangeAt(0);
+                let container : Node | null = range.commonAncestorContainer;
+                if (container.nodeType !== Node.ELEMENT_NODE) {
+                    container = container.parentNode;
+                }
+                
+                return this.isDescendant(document.getElementById('johannesEditor'), container as Node);
             }
         }
+        return false;
+    }
 
+    isDescendant(parent: Element | null, child: Node): boolean {
+        if (!parent) return false;
+        let node = child.parentNode;
+        while (node != null) {
+            if (node === parent) {
+                return true;
+            }
+            node = node.parentNode;
+        }
         return false;
     }
 
