@@ -20,7 +20,7 @@
     text-align: center;
 }
 
-.w-100{
+.w-100 {
     width: 100%;
 }
 
@@ -60,7 +60,7 @@ figure figcaption[data-placeholder]:empty:before {
     display: inline-block !important;
 }
 
-figure figcaption{
+figure figcaption {
     max-width: inherit;
     width: fit-content;
     display: inline-block;
@@ -1475,12 +1475,6 @@ pre code {
 /** end separator */
 
 
-
-
-#linkBoxInput{
-
-}
-
 .content-data input:focus,
 #linkBoxInput:focus {
     outline: 2px solid #4A90E2;
@@ -1488,6 +1482,32 @@ pre code {
 }
 
 
-.d-none{
+.d-none {
     display: none !important;
+}
+
+
+
+@media (max-width: 768px) {
+    .drag-handler {
+        display: none;
+    }
+
+    #quickMenu {
+        max-width: 300px;
+    }
+
+    .add-table-column,
+    .add-table-row {
+        opacity: 1;
+    }
+
+    #linkBox .link-box-shell input,
+    .embed-content input {
+        max-width: 250px;
+    }
+
+    #linkBox{
+        left: 1rem !important;
+    }
 }
