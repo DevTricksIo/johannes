@@ -19,9 +19,10 @@ export class Utils {
         const pattern = new RegExp(
             '^(https?:\\/\\/)' +
             '(?!-)[a-zA-Z\\d-]{1,63}(?<!-)\\.' +
-            '([a-zA-Z\\d-]+\\.)*[a-zA-Z]{2,}' +
+            '([a-zA-Z\\d-]+\\.)*' +
+            '[a-zA-Z]{2,}' +
             '(\\:\\d{1,5})?' +
-            '(\\/[-a-zA-Z\\d%_.~+]*)*' +
+            '(\\/[-a-zA-Z\\d%_.~+@]*)*' +   // Updated path segment
             '(\\?[-a-zA-Z\\d%_.~+=&]*)?' +
             '(#[-a-zA-Z\\d_]*)?$',
             'i'
