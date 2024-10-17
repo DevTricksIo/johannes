@@ -1,4 +1,5 @@
 import './assets/css/main.css';
+import 'highlight.js/styles/an-old-hope.css';
 import { UIBuilder } from './builders/UIBuilder';
 import { CommandDispatcher } from './commands/CommandDispatcher';
 import { ShortcutListeners } from './core/ShortcutListeners';

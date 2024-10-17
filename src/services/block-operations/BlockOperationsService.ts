@@ -12,6 +12,7 @@ import { Commands } from "@/commands/Commands";
 import { Utils } from "@/utilities/Utils";
 import { CommonClasses } from "@/common/CommonClasses";
 import { ICommandEventDetail } from "@/commands/ICommandEventDetail";
+import hljs from 'highlight.js';
 
 export class BlockOperationsService implements IBlockOperationsService {
 

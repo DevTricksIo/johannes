@@ -4,6 +4,7 @@ import { Utils } from "@/utilities/Utils";
 import { Icons } from "@/common/Icons";
 import { ToolboxOptions } from "@/components/block-toolbox/ToolboxOptions";
 import { CommonClasses } from "@/common/CommonClasses";
+import hljs from 'highlight.js';
 
 interface ElementCreator {
     (content: string | null): HTMLElement;
