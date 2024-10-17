@@ -1510,4 +1510,8 @@ pre code {
     #linkBox{
         left: 1rem !important;
     }
+
+    #johannesEditor {
+        width: 100%;
+    }
 }
