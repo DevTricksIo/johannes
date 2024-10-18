@@ -67,8 +67,8 @@ document.addEventListener("DOMContentLoaded", () => {
     el.addEventListener('touchstart', (e: TouchEvent) => {
         const target = e.target as HTMLElement;
 
+        //Touch inside a dropdown: Ignore drag
         if (dropdownClasses.some(className => target.closest(className))) {
-            console.log('Touch inside a dropdown: Ignore drag');
             return;
         }
 
@@ -78,8 +78,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     el.addEventListener('touchmove', (e: TouchEvent) => {
         const target = e.target as HTMLElement;
+        // Movement inside a dropdown: Allow scroll
         if (dropdownClasses.some(className => target.closest(className))) {
-            console.log('Movement inside a dropdown: Allow scroll');
             return;
         }
 
@@ -97,16 +97,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     el.addEventListener('touchend', (e: TouchEvent) => {
         const target = e.target as HTMLElement;
+        //End of touch inside a dropdown
         if (dropdownClasses.some(className => target.closest(className))) {
-            console.log('End of touch inside a dropdown');
             return;
         }
 
         if (isDragging) {
             e.preventDefault();
             isDragging = false;
-        } else {
-            console.log('Click detected');
         }
     }, false);
 });

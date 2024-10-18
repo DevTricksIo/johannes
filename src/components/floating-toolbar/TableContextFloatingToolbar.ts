@@ -70,7 +70,6 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
         const cell = target.closest(DOMElements.TD) as HTMLTableCellElement;
 
         if (cell && !cell.matches('.figure-embed-container td')) {
-            console.log("MouseDown event on: ", event.target);
 
             event.stopImmediatePropagation();
 
