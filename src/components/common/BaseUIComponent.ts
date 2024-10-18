@@ -206,8 +206,6 @@ export abstract class BaseUIComponent<T extends HTMLElement = HTMLElement> {
 
         if (relevantContainer) {
             this.htmlElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-        } else {
-            console.warn('Attempted to make a non-relevant item visible');
         }
     }
 

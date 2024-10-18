@@ -31,7 +31,7 @@ export class AltV2 {
             case 'inserttext':
                 return AltV2.execInsertText(value);
             default:
-                console.warn(`Comando '${commandId}' não é suportado.`);
+                console.warn(`Command '${commandId}' not supported.`);
                 return false;
         }
     }
@@ -43,7 +43,7 @@ export class AltV2 {
             navigator.clipboard.writeText(selection.toString());
             return true;
         } catch (err) {
-            console.error('Falha ao copiar texto:', err);
+            console.error('Copy failed:', err);
             return false;
         }
     }
@@ -57,7 +57,7 @@ export class AltV2 {
             range.deleteContents();
             return true;
         } catch (err) {
-            console.error('Falha ao cortar texto:', err);
+            console.error('Cut failed:', err);
             return false;
         }
     }
