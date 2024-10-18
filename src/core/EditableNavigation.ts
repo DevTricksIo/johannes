@@ -54,7 +54,7 @@ export class EditableNavigation implements IEditableNavigation {
                         event.stopImmediatePropagation();
 
                         if (event.key == Directions.ArrowUp || event.key == Directions.ArrowDown) {
-                            this.placeCaretInSimilarPosition(currentEditable, nextEditable);
+                            this.placeCaretInSimilarPosition(currentEditable, nextEditable, event.key as Directions);
                         }
 
                         if (event.key == Directions.ArrowLeft) {
@@ -174,50 +174,56 @@ export class EditableNavigation implements IEditableNavigation {
         return -1;
     }
 
-    private placeCaretInSimilarPosition(current: HTMLElement, next: HTMLElement) {
+    private placeCaretInSimilarPosition(current: HTMLElement, next: HTMLElement, direction: Directions) {
         const sel = window.getSelection();
         if (sel && sel.rangeCount > 0) {
             const currentRange = sel.getRangeAt(0);
             const rect = currentRange.getBoundingClientRect();
-
+    
             sel.removeAllRanges();
             const range = document.createRange();
-
+    
             const walker = document.createTreeWalker(next, NodeFilter.SHOW_TEXT);
-            let node = walker.nextNode();
-            let bestNode = node;
+            let node;
+            let bestNode = null;
             let bestOffset = 0;
             let bestDistance = Infinity;
-
-            if (bestNode) {
-                do {
-                    if (!node || !node.nodeValue) continue;
-
-                    range.setStart(node, 0);
-                    range.setEnd(node, node.nodeValue.length);
-
-                    for (let i = 0; i < node.nodeValue.length; i++) {
-                        range.setStart(node, i);
-                        range.collapse(true);
-                        const testRect = range.getBoundingClientRect();
-
-                        const horizontalDistance = Math.abs(testRect.left - rect.left);
-                        if (horizontalDistance < bestDistance) {
-                            bestDistance = horizontalDistance;
-                            bestNode = node;
-                            bestOffset = i;
-                        }
+    
+            while ((node = walker.nextNode())) {
+                if (!node || !node.nodeValue) continue;
+    
+                for (let i = 0; i <= node.nodeValue.length; i++) {
+                    range.setStart(node, i);
+                    range.collapse(true);
+                    const testRect = range.getBoundingClientRect();
+    
+                    if (!testRect || (testRect.width === 0 && testRect.height === 0)) continue;
+    
+                    const dx = testRect.left - rect.left;
+                    const dy = testRect.top - rect.top;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+    
+                    if (distance < bestDistance) {
+                        bestDistance = distance;
+                        bestNode = node;
+                        bestOffset = i;
                     }
-                } while (node = walker.nextNode());
-
+                }
+            }
+    
+            if (bestNode) {
                 range.setStart(bestNode, bestOffset);
                 range.collapse(true);
                 sel.addRange(range);
             } else {
                 range.selectNodeContents(next);
-                range.collapse(true);
+                if (direction === Directions.ArrowUp) {
+                    range.collapse(false);
+                } else if (direction === Directions.ArrowDown) {
+                    range.collapse(true);
+                }
                 sel.addRange(range);
             }
         }
-    }
+    }    
 }
