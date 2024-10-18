@@ -120,6 +120,10 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
 
     private handleKeyDown(event: KeyboardEvent) {
 
+        if(event.key !== KeyboardKeys.Enter && event.key !== KeyboardKeys.Escape){
+            return;
+        }
+
         const target = event.target as HTMLElement;
         const currentCell = target.closest(DOMElements.TD) as HTMLTableCellElement;
 
@@ -143,6 +147,10 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
 
     private handleStartSelectionInCellKeyDown(event: KeyboardEvent) {
 
+        if (event.key !== KeyboardKeys.Shift) {
+            return;
+        }
+
         const target = event.target as HTMLElement;
         const currentCell = target.closest(DOMElements.TD) as HTMLTableCellElement;
 
@@ -161,6 +169,11 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
     }
 
     private handleCellSelectionContinuationOnKeyDown(event: KeyboardEvent) {
+
+        if (!event.shiftKey && !event.key.startsWith('Arrow')) {
+            return;
+        }
+
         if (this.selectionFlag) {
             const target = event.target as HTMLElement;
             const currentCell = target.closest(DOMElements.TD) as HTMLTableCellElement;
@@ -241,6 +254,10 @@ export class TableContextFloatingToolbar extends FloatingToolbar implements ITab
     }
 
     private handleKeyUp(event: KeyboardEvent) {
+
+        if(event.key !== KeyboardKeys.Shift){
+            return;
+        }
 
         const target = event.target as HTMLElement;
         const currentCell = target.closest(DOMElements.TD) as HTMLTableCellElement;

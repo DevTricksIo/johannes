@@ -14,9 +14,17 @@ import { DefaultJSEvents } from "@/common/DefaultJSEvents";
 import { KeyboardKeys } from "@/common/KeyboardKeys";
 
 export class Content extends BaseUIComponent {
+
+
+    quickMenu: IQuickMenu;
+    tableToolbar: ITableContextFloatingToolbar;
+
     constructor() {
 
         super({});
+
+        this.quickMenu = DependencyContainer.Instance.resolve<IQuickMenu>("IQuickMenu");
+        this.tableToolbar = DependencyContainer.Instance.resolve<ITableContextFloatingToolbar>("ITableContextFloatingToolbar");
 
         this.attachEvent();
     }
@@ -146,9 +154,12 @@ export class Content extends BaseUIComponent {
             }
         });
 
-
         document.addEventListener(DefaultJSEvents.Keydown, (event: KeyboardEvent) => {
-            if (event.key === 'Enter' && !event.shiftKey && DOMUtils.isEventTargetDescendantOf(event, "#johannesEditor .content-wrapper .title")) {
+            if (event.key !== KeyboardKeys.Enter) {
+                return;
+            }
+
+            if (event.key === KeyboardKeys.Enter && !event.shiftKey && DOMUtils.isEventTargetDescendantOf(event, "#johannesEditor .content-wrapper .title")) {
                 event.preventDefault();
                 document.dispatchEvent(new CustomEvent(CustomEvents.pressedEnterOnTitle, {}));
             }
@@ -156,19 +167,24 @@ export class Content extends BaseUIComponent {
 
         document.addEventListener(DefaultJSEvents.Keydown, async (event) => {
 
-            if (DOMUtils.isEventTargetDescendantOf(event, ".ignore-events") && event.key !== 'Tab') {
+            if (
+                event.key !== KeyboardKeys.Enter &&
+                event.key !== KeyboardKeys.Backspace &&
+                event.key !== KeyboardKeys.Delete &&
+                event.key !== KeyboardKeys.Tab
+            ) {
                 return;
             }
 
-            const quickMenu = DependencyContainer.Instance.resolve<IQuickMenu>("IQuickMenu");
-            const tableToolbar = DependencyContainer.Instance.resolve<ITableContextFloatingToolbar>("ITableContextFloatingToolbar");
+            if (DOMUtils.isEventTargetDescendantOf(event, ".ignore-events") && event.key !== 'Tab') {
+                return;
+            }
 
             if (event.ctrlKey || event.shiftKey || event.altKey) {
                 return;
             }
 
-
-            if (event.key === KeyboardKeys.Enter && !event.shiftKey && !quickMenu.isVisible && !tableToolbar.isVisible) {
+            if (event.key === KeyboardKeys.Enter && !event.shiftKey && !this.quickMenu.isVisible && !this.tableToolbar.isVisible) {
 
                 event.preventDefault();
 
@@ -191,7 +207,6 @@ export class Content extends BaseUIComponent {
 
                     return;
                 }
-
 
                 if ((event.target as Element).closest(".johannes-code")) {
                     return;
@@ -284,15 +299,7 @@ export class Content extends BaseUIComponent {
                         }));
                     }
                 }
-            } else if (event.key === 'ArrowRight' && Content.isCursorAtEnd(event.target as HTMLElement)) {
-                // this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_NEXT, false);
-            } else if (event.key === 'ArrowLeft' && Content.isCursorAtStart(event.target as HTMLElement)) {
-                // this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_PREVIOUS, false);
-            } else if (event.key === 'ArrowDown' && Content.isCursorOnLastLine()) {
-                // this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_NEXT, false);
-            } else if (event.key === 'ArrowUp' && Content.isCursorOnFirstLine()) {
-                // this.blockOperationsService.execCommand(BlockOperationsService.BLOCK_OPERATIONS.FOCUS_ON_PREVIOUS, false);
-            } else if (event.key === 'Tab') {
+            } else if (event.key === KeyboardKeys.Tab) {
 
                 if (DOMUtils.isEventTargetDescendantOf(event, ".johannes-code")) {
                     event.preventDefault();
@@ -301,7 +308,7 @@ export class Content extends BaseUIComponent {
                     const selection = document.getSelection();
                     if (!selection) return;
 
-                    // Remove a seleção atual, se houver
+                    // Remove current selection
                     if (!selection.isCollapsed) {
                         selection.deleteFromDocument();
                     }

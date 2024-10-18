@@ -5,5 +5,10 @@ export enum KeyboardKeys {
     Backspace = "Backspace",
     Control = "Control",
     Space = " ",
-    Delete = "Delete"
+    Delete = "Delete",
+    Tab = "Tab",
+    ArrowRight = "ArrowRight",
+    ArrowLeft = "ArrowLeft",
+    ArrowDown = "ArrowDown",
+    ArrowUp = "ArrowUp"
 }

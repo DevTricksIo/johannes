@@ -70,6 +70,10 @@ export class InputLinkBoxWrapper extends BaseUIComponent {
     attachEvent(): void {
 
         document.addEventListener(DefaultJSEvents.Keydown, (event) => {
+            if(event.key !== KeyboardKeys.Escape){
+                return;
+            }
+
             if (this.canHide && (event.key === KeyboardKeys.Escape)) {
                 event.stopImmediatePropagation();
                 this.hide();

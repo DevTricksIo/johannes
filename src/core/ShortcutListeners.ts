@@ -3,6 +3,7 @@ import { ICommandEventDetail } from "@/commands/ICommandEventDetail";
 import { CustomEvents } from "@/common/CustomEvents";
 import { ElementFactoryService } from "@/services/element-factory/ElementFactoryService";
 import { IShortcutListeners } from "./IShortcutListeners";
+import { DefaultJSEvents } from "@/common/DefaultJSEvents";
 
 export class ShortcutListeners implements IShortcutListeners {
 
@@ -29,7 +30,7 @@ export class ShortcutListeners implements IShortcutListeners {
     }
 
     private listen() {
-        document.addEventListener("keydown", (event) => {
+        document.addEventListener(DefaultJSEvents.Keydown, (event) => {
 
             const isNumPad = event.code.startsWith("Numpad");
             const numLockOn = event.getModifierState("NumLock");

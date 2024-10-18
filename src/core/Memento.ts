@@ -59,7 +59,7 @@ export class Memento implements IMemento {
   }
 
   attachEvents() {
-    document.addEventListener("keydown", (event) => {
+    document.addEventListener(DefaultJSEvents.Keydown, (event) => {
       if (event.ctrlKey && event.key === 'z') {
         this.undo();
         event.preventDefault();
@@ -79,7 +79,6 @@ export class Memento implements IMemento {
         this.saveState();
       }
     });
-
   }
 
   static getInstance(): Memento {

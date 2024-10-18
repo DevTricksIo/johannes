@@ -5,6 +5,7 @@ import { Boundaries } from "@/common/Boundaries";
 import { TableUtils } from "@/utilities/TableUtils";
 import { IQuickMenu } from "@/components/quick-menu/IQuickMenu";
 import { DependencyContainer } from "./DependencyContainer";
+import { DefaultJSEvents } from "@/common/DefaultJSEvents";
 
 export class EditableNavigation implements IEditableNavigation {
 
@@ -13,7 +14,7 @@ export class EditableNavigation implements IEditableNavigation {
     quickMenu: IQuickMenu;
 
     private constructor(quickMenu: IQuickMenu) {
-        document.addEventListener('keydown', this.handleArrowKeys.bind(this));
+        document.addEventListener(DefaultJSEvents.Keydown, this.handleArrowKeys.bind(this));
 
         this.quickMenu = quickMenu;
     }
@@ -34,6 +35,10 @@ export class EditableNavigation implements IEditableNavigation {
     }
 
     private handleArrowKeys(event: KeyboardEvent) {
+
+        if(!event.key.startsWith('Arrow')){
+            return;
+        }
 
         if (!this.quickMenu.isVisible && event.key.startsWith('Arrow') && !event.altKey && !event.ctrlKey && !event.altKey && !event.shiftKey && !event.metaKey) {
 

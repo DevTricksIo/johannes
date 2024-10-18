@@ -12,6 +12,8 @@ import { CustomEvents } from '@/common/CustomEvents';
 import { Commands } from '@/commands/Commands';
 import { DOMUtils } from '@/utilities/DOMUtils';
 import { ZIndex } from '@/common/ZIndex';
+import { DefaultJSEvents } from '@/common/DefaultJSEvents';
+import { KeyboardKeys } from '@/common/KeyboardKeys';
 
 export class QuickMenu extends BaseUIComponent implements IQuickMenu {
 
@@ -258,66 +260,76 @@ export class QuickMenu extends BaseUIComponent implements IQuickMenu {
 
         document.addEventListener('input', (event) => {
             const target = event.target as HTMLElement;
-        
+
             if (!(target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target.isContentEditable)) {
                 return;
             }
-        
-            const block = DOMUtils.findClosestAncestorOfActiveElementByClass("block");
-        
+
             let value = '';
-        
+
             if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
                 value = target.value;
             } else if (target.isContentEditable) {
                 value = target.textContent || '';
             }
-        
+
             const slashIndex = value.lastIndexOf('/');
-        
-            if (!this.isVisible && block && value.endsWith('/')) {
-        
-                const currentCell = target.closest(".ignore-quick-menu") as HTMLTableCellElement;
-        
-                if (currentCell) {
-                    return;
+
+            if (!this.isVisible && value.endsWith('/')) {
+
+                const block = DOMUtils.findClosestAncestorOfActiveElementByClass("block");
+
+                if (block) {
+                    const currentCell = target.closest(".ignore-quick-menu") as HTMLTableCellElement;
+
+                    if (currentCell) {
+                        return;
+                    }
+
+                    this.filterInput = '';
+
+                    this.show();
                 }
-        
-                this.filterInput = '';
-        
-                this.show();
+
             } else if (this.isVisible) {
-        
+
                 if (slashIndex !== -1) {
                     this.filterInput = value.substring(slashIndex + 1);
-        
+
                     this.filterItems();
                 } else {
                     this.hide();
                 }
             }
         });
-        
 
+        document.addEventListener(DefaultJSEvents.Keydown, (event: KeyboardEvent) => {
 
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (
+                event.key !== KeyboardKeys.ArrowLeft &&
+                event.key !== KeyboardKeys.ArrowRight &&
+                event.key !== KeyboardKeys.ArrowDown &&
+                event.key !== KeyboardKeys.ArrowUp &&
+                event.key !== KeyboardKeys.Escape) {
+                return;
+            }
 
             const block = DOMUtils.findClosestAncestorOfActiveElementByClass("block");
 
-            if (this.isVisible && event.key === 'ArrowLeft' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+            if (this.isVisible && event.key === KeyboardKeys.ArrowLeft && !event.ctrlKey && !event.shiftKey && !event.altKey) {
                 event.preventDefault();
                 event.stopPropagation();
-            } else if (this.isVisible && event.key === 'ArrowRight' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+            } else if (this.isVisible && event.key === KeyboardKeys.ArrowRight && !event.ctrlKey && !event.shiftKey && !event.altKey) {
                 event.preventDefault();
                 event.stopPropagation();
             }
-            else if (this.isVisible && event.key === 'ArrowDown' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+            else if (this.isVisible && event.key === KeyboardKeys.ArrowDown && !event.ctrlKey && !event.shiftKey && !event.altKey) {
                 event.preventDefault();
                 this.focusNextVisibleItem();
-            } else if (this.isVisible && event.key === 'ArrowUp' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+            } else if (this.isVisible && event.key === KeyboardKeys.ArrowUp && !event.ctrlKey && !event.shiftKey && !event.altKey) {
                 event.preventDefault();
                 this.focusPreviousVisibleItem();
-            } else if (this.isVisible && event.key === 'Escape' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+            } else if (this.isVisible && event.key === KeyboardKeys.Escape && !event.ctrlKey && !event.shiftKey && !event.altKey) {
                 this.hide();
             }
         });
@@ -328,9 +340,9 @@ export class QuickMenu extends BaseUIComponent implements IQuickMenu {
             }
         });
 
-        document.addEventListener('keydown', (event) => {
+        document.addEventListener(DefaultJSEvents.Keydown, (event) => {
 
-            if (this.isVisible && event.key === 'Enter' && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+            if (this.isVisible && event.key === KeyboardKeys.Enter && !event.ctrlKey && !event.shiftKey && !event.altKey) {
 
                 event.preventDefault();
                 event.stopPropagation();
@@ -342,7 +354,7 @@ export class QuickMenu extends BaseUIComponent implements IQuickMenu {
                     this.transformHtmlFocusedElementBeforeOpenQuickMenu(blockType);
                 }
             }
-        });
+        }, true);
 
         document.addEventListener(CustomEvents.blockTypeChanged, (event) => {
             this.hide();

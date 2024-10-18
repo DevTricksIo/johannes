@@ -60,7 +60,7 @@ export class DropdownMenuList extends BaseUIComponent {
         this.parentDropdownParentButton = dropdownParentButton;
     }
 
-    
+
 
     attachEvents(): void {
 
@@ -68,7 +68,9 @@ export class DropdownMenuList extends BaseUIComponent {
         // This prevents the event from being handled by earlier `Content` component listeners.
         document.addEventListener(DefaultJSEvents.Keydown, (event) => {
 
-            if (this.isVisible && this.currentFocusedMenuItem && event.key === "Enter") {
+            if (event.key !== KeyboardKeys.Enter) return;
+
+            if (this.isVisible && this.currentFocusedMenuItem && event.key === KeyboardKeys.Enter) {
                 event.stopImmediatePropagation();
                 event.preventDefault();
 
@@ -84,15 +86,22 @@ export class DropdownMenuList extends BaseUIComponent {
 
         document.addEventListener(DefaultJSEvents.Keydown, (event) => {
 
+            if (
+                event.key !== KeyboardKeys.ArrowDown &&
+                event.key !== KeyboardKeys.ArrowUp &&
+                event.key !== KeyboardKeys.Escape) {
+                return;
+            }
+
             if (this.keyPressedOutsideTheDropdownWhileDropdownIsVisible(event)) {
 
-                if (event.key == "ArrowDown") {
+                if (event.key == KeyboardKeys.ArrowDown) {
                     event.preventDefault();
 
                     this.focusNextVisibleItem();
                 }
 
-                if (event.key == "ArrowUp") {
+                if (event.key == KeyboardKeys.ArrowUp) {
                     event.preventDefault();
                     this.focusPreviousVisibleItem();
                 }

@@ -155,6 +155,8 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
 
 
         document.addEventListener(DefaultJSEvents.Keydown, (event) => {
+            if (event.key !== KeyboardKeys.Escape) return;
+
             setTimeout(() => {
                 if (this.canHide && (event.key === KeyboardKeys.Escape) && !this.lockedHide) {
 
@@ -241,11 +243,11 @@ export class TextContextFloatingToolbar extends FloatingToolbar {
             const selectedText = selection.toString().trim();
             if (selectedText !== '') {
                 const range = selection.getRangeAt(0);
-                let container : Node | null = range.commonAncestorContainer;
+                let container: Node | null = range.commonAncestorContainer;
                 if (container.nodeType !== Node.ELEMENT_NODE) {
                     container = container.parentNode;
                 }
-                
+
                 return this.isDescendant(document.getElementById('johannesEditor'), container as Node);
             }
         }
